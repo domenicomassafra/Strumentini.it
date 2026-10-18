@@ -7,11 +7,7 @@ import UiIcon from "../icons/UiIcon.astro";
 import ToolCard from "../tools/ToolCard.astro";
 import MembershipBootstrap from "../account/MembershipBootstrap.astro";
 
-/**
- * Server-rendered tool list with three layouts, facets and pagination. The
- * client adjusts the existing cards from URL query parameters without fetching.
- * The JSON metadata map adds filtering data attributes without changing `<li>`.
- */
+/** Server-rendered catalog with URL-driven facets and pagination. */
 interface Props {
   tools: readonly ToolSummary[];
   verifiedIds: ReadonlySet<string>;
@@ -259,9 +255,11 @@ const groupedTools = groups.map((group) => ({
       }
       const groupRank = new Map(groupOrder.map((slug, index) => [slug, index]));
       const collator = new Intl.Collator("it", { sensitivity: "base" });
+      // Match /cerca/: fold accents ("eta" -> "età").
+      const foldSearch = (value) => value.normalize("NFKD")
+        .replace(/[\u0300-\u036f]/gu, "")
+        .toLocaleLowerCase("it-IT");
 
-      // The server map, projected onto each card as data-* attributes before the
-      // first filter runs: category, group, input types, quality and name.
       for (const card of cards) {
         const link = card.querySelector(".tool-card-name a");
         const route = link ? link.getAttribute("href") : "";
@@ -317,7 +315,7 @@ const groupedTools = groups.map((group) => ({
           for (const type of state.inputs) if (mine.indexOf(type) >= 0) found = true;
           if (!found) return false;
         }
-        if (state.q && (card.textContent || "").toLocaleLowerCase("it").indexOf(state.q.toLocaleLowerCase("it")) < 0) {
+        if (state.q && !foldSearch(card.textContent || "").includes(foldSearch(state.q))) {
           return false;
         }
         return true;
@@ -481,18 +479,37 @@ const groupedTools = groups.map((group) => ({
         syncControls(state, counts);
       };
 
-      const write = (next, page) => {
-        window.history.replaceState(null, "", window.location.pathname + buildQuery(next, page, next.view) + window.location.hash);
+      const write = (next, page, replace = false) => {
+        const url = window.location.pathname + buildQuery(next, page, next.view) + window.location.hash;
+        if (url !== window.location.pathname + window.location.search + window.location.hash) {
+          window.history[replace ? "replaceState" : "pushState"](null, "", url);
+        }
         render();
       };
 
       let typing = 0;
+      let typingSession = false;
+      let typingNeedsEntry = false;
       if (queryInput instanceof HTMLInputElement) {
         queryInput.addEventListener("input", () => {
+          if (!typingSession) {
+            typingSession = true;
+            typingNeedsEntry = true;
+          }
           window.clearTimeout(typing);
-          typing = window.setTimeout(() => write(Object.assign(readState(), { q: queryInput.value.trim() }), 1), 120);
+          typing = window.setTimeout(() => {
+            write(Object.assign(readState(), { q: queryInput.value.trim() }), 1, !typingNeedsEntry);
+            typingNeedsEntry = false;
+          }, 120);
         });
+        queryInput.addEventListener("blur", () => { typingSession = false; });
       }
+      window.addEventListener("popstate", () => {
+        window.clearTimeout(typing);
+        typingSession = false;
+        typingNeedsEntry = false;
+        render();
+      });
 
       for (const box of facets) {
         box.addEventListener("change", () => {
@@ -576,7 +593,6 @@ const groupedTools = groups.map((group) => ({
     padding-bottom: var(--space-16);
   }
 
-  /* --- Views -------------------------------------------------------------- */
 
   .directory-tabs {
     display: flex;
@@ -588,12 +604,10 @@ const groupedTools = groups.map((group) => ({
   .directory-tab { font-size: var(--font-size-sm); }
   .directory-tab[aria-current="page"] { border-color: transparent; }
 
-  /* --- Layout ------------------------------------------------------------- */
 
   .directory-layout { display: grid; gap: var(--space-6); }
   .directory-main { min-width: 0; }
 
-  /* --- Filters ------------------------------------------------------------ */
 
   .filtri {
     display: grid;
@@ -692,7 +706,6 @@ const groupedTools = groups.map((group) => ({
   .filtri-more summary:hover { text-decoration: underline; }
   .filtri-more .filtri-list { margin-top: var(--space-2); }
 
-  /* --- Results header ----------------------------------------------------- */
 
   .directory-head {
     display: flex;
@@ -733,7 +746,6 @@ const groupedTools = groups.map((group) => ({
 
   .directory-sort select:hover { border-color: var(--brand); }
 
-  /* --- Grid and groups ---------------------------------------------------- */
 
   .directory-grid[hidden] { display: none; }
   .directory-grid :global(.tool-card[hidden]) { display: none; }
@@ -763,7 +775,6 @@ const groupedTools = groups.map((group) => ({
   .directory-group-text small { color: var(--text-faint); font-size: var(--font-size-xs); }
   .directory-group .section-link { margin-left: auto; }
 
-  /* --- Empty state -------------------------------------------------------- */
 
   .directory-empty {
     margin: 0 0 var(--space-6);
@@ -779,7 +790,6 @@ const groupedTools = groups.map((group) => ({
   .directory-empty a { color: var(--brand); font-weight: var(--font-weight-semibold); }
   .directory-empty a:hover { text-decoration: underline; }
 
-  /* --- Pagination --------------------------------------------------------- */
 
   .directory-pagination {
     display: flex;
