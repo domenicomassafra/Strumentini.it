@@ -107,6 +107,19 @@ try {
     assert.ok(measure.scroll <= measure.width + 1, `horizontal overflow at ${width}px: ${JSON.stringify(measure)}`);
     assert.ok(await scope.locator('button[type="submit"]').isVisible(), `submit must be visible at ${width}px`);
   }
+  const noJsContext = await browser.newContext({ javaScriptEnabled: false });
+  const noJsPage = await noJsContext.newPage();
+  const noJsNavigations = [];
+  noJsPage.on("request", (request) => { if (request.isNavigationRequest()) noJsNavigations.push(request.url()); });
+  await noJsPage.goto(origin + "/tools/irpef-annuale/");
+  const noJsForm = noJsPage.locator("[data-irpef-annuale] form");
+  assert.equal(await noJsPage.locator("[data-irpef-noscript]").isVisible(), true, "no-JS disclosure visible");
+  assert.equal(await noJsForm.locator('button[type="submit"]').isDisabled(), true, "no-JS submit disabled");
+  await noJsForm.locator('[name="income"]').fill("40000");
+  await noJsForm.locator('[name="income"]').press("Enter");
+  assert.equal(new URL(noJsPage.url()).search, "", "no-JS Enter must not put income into URL");
+  assert.deepEqual(noJsNavigations.filter((url) => new URL(url).search !== ""), [], "no-JS makes no navigation with income");
+  await noJsContext.close();
   assert.deepEqual(errors, []);
   assert.deepEqual(outside, []);
   console.log("PASS STR-012 Chromium: 2025/26 scaglioni, source provenance, no individual-net claim, invalid/stale inputs, 2027 fail-closed; 320/390/768/1024/1440 no overflow");

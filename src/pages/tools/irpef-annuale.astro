@@ -11,6 +11,7 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
     <aside class="scope" aria-label="Limiti del calcolo">
       <p><strong>Calcolo parziale:</strong> detrazioni, crediti d'imposta e addizionali regionali e comunali <strong>non calcolate</strong>. Non sono valori pari a zero. Questo risultato <strong>non è l'imposta netta individuale dovuta</strong> e non è una dichiarazione fiscale.</p>
     </aside>
+    <noscript><p data-irpef-noscript>Questo calcolo locale richiede JavaScript: senza JavaScript il modulo resta disattivato e non trasmette redditi.</p></noscript>
 
     <section class="input-panel" aria-labelledby="calculator-heading">
       <h2 id="calculator-heading">Dati per il calcolo</h2>
@@ -22,7 +23,7 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
         <label for="irpef-annual-income">Reddito imponibile IRPEF annuo (€)</label>
         <input id="irpef-annual-income" name="income" type="text" inputmode="decimal" placeholder="40000,00" autocomplete="off" aria-describedby="income-help" required />
         <p class="hint" id="income-help">Inserisci euro senza separatori delle migliaia, con al massimo due decimali (es. 40000,50). Reddito massimo modellato: 1 miliardo di euro.</p>
-        <button type="submit">Calcola IRPEF lorda</button>
+        <button type="submit" disabled>Calcola IRPEF lorda</button>
       </form>
       <p class="error" role="alert" hidden></p>
     </section>
@@ -106,6 +107,7 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
         error.hidden = false;
       }
     });
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   }
 </script>
 
