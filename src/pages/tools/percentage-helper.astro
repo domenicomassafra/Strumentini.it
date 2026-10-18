@@ -15,7 +15,7 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
       <button type="submit">Calcola IVA</button>
     </form>
     <p role="alert" data-vat-error hidden></p>
-    <output aria-live="polite" data-vat-result></output>
+    <output aria-live="polite" aria-atomic="true" data-vat-result></output>
   </section>
 </ItalianToolPage>
 
@@ -44,12 +44,27 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
       const [whole = "0", fractional = ""] = rawAmount.split(/[.,]/u);
       const amountCents = Number(whole) * 100 + Number(fractional.padEnd(2, "0"));
       try {
+        const operation = data.get("operation") === "scorporo" ? "scorporo" : "add";
         const response = calculateVat126({
-          operation: data.get("operation") === "scorporo" ? "scorporo" : "add",
+          operation,
           amountCents,
           rate: { kind: "custom", percent: rawRate },
         });
-        result.textContent = `Imponibile: ${format(response.netCents)} · IVA (${response.ratePercent}%): ${format(response.vatCents)} · Lordo: ${format(response.grossCents)}. Aliquota scelta dall'utente; ${response.rounding}.`;
+        const answer = document.createElement("strong");
+        answer.textContent = operation === "add"
+          ? `Totale lordo: ${format(response.grossCents)}`
+          : `Imponibile: ${format(response.netCents)}`;
+        const breakdown = document.createElement("p");
+        breakdown.textContent = `Imponibile: ${format(response.netCents)} · Aliquota dichiarata: ${response.ratePercent}% · IVA: ${format(response.vatCents)} · Totale lordo: ${format(response.grossCents)}.`;
+        const explanation = document.createElement("p");
+        explanation.textContent = operation === "add"
+          ? "Calcolo: IVA = imponibile × aliquota / 100; totale lordo = imponibile + IVA."
+          : "Calcolo: imponibile = totale lordo / (1 + aliquota / 100); IVA = totale lordo − imponibile.";
+        const rounding = document.createElement("p");
+        rounding.textContent = operation === "add"
+          ? "Arrotondamento finale ai centesimi (metà verso l'alto)."
+          : "Imponibile arrotondato ai centesimi (metà verso l'alto); IVA calcolata per differenza dal totale lordo.";
+        result.replaceChildren(answer, breakdown, explanation, rounding);
       } catch {
         error.textContent = "Aliquota non valida: inserisci una percentuale fra 0 e 100, con massimo quattro decimali.";
         error.hidden = false;
@@ -63,4 +78,6 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
   .vat126-panel form { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
   .vat126-panel label { display: grid; gap: 6px; min-width: min(100%, 180px); }
   .vat126-panel input, .vat126-panel select { padding: 9px; max-width: 100%; }
+  .vat126-panel output:not(:empty) { display: grid; gap: 8px; padding: 12px; border-left: 3px solid currentColor; }
+  .vat126-panel output p { margin: 0; }
 </style>

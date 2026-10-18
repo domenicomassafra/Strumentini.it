@@ -25374,7 +25374,7 @@
         },
         "page": {
           "path": "src/pages/tools/percentage-helper.astro",
-          "sha256": "c50288a1181e5f8e91ad13fa703809b772e0a7755dc18c049d3b03e51e1dee2e"
+          "sha256": "429bd728f7508f4ac428f7d2125b2268069a0b7bf748ef601b4a16ea59cd05ff"
         },
         "testFiles": [
           "tests/business-tools.test.ts"
