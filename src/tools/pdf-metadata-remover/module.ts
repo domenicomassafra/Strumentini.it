@@ -13,7 +13,7 @@ const module: ToolModule = {
       before: verified.before,
       after: verified.after,
       verification: verified.verification,
-      policy: "Info dictionary entries and XMP /Metadata streams addressed by this bounded engine are removed. The produced PDF is reparsed; page count and bounded extracted text must remain stable when text extraction is supported.",
+      policy: "Rimossi campi /Info e stream XMP /Metadata del PDF. Il PDF finale viene riparsato e ogni JPEG DCT incorporato viene ispezionato: se conserva metadati il risultato viene rifiutato. Codec e contenuti non supportati sono elencati come residui non verificati, senza dichiarare il documento completamente anonimo. Pagine e testo estratto rimangono stabili entro i limiti del motore.",
     };
   },
 };

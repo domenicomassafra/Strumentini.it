@@ -23133,7 +23133,7 @@
         },
         "module": {
           "path": "src/tools/pdf-metadata-remover/module.ts",
-          "sha256": "fbb026968fd4f0c66294aa60644bde8801d4993a251495b611b62eb8aaa20983"
+          "sha256": "451df57004af046a3ff36ed2d918cedf940330867b35d3fc974e71e3ed3aecd7"
         },
         "page": {
           "path": "src/pages/tools/pdf-metadata-remover.astro",
