@@ -55,6 +55,16 @@ function sha256(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
 }
 
+function isCanonicalNpmSource(source: Source): boolean {
+  // A registry prefix is not package identity: no unrelated distribution,
+  // query, fragment, redirect-shaped path, or version substitution is valid.
+  if (!/^(?:@[a-z0-9._-]+\/)?[a-z0-9._-]+$/u.test(source.package) ||
+      !/^\d+\.\d+\.\d+(?:-[0-9a-zA-Z.-]+)?$/u.test(source.version)) return false;
+  const unscoped = source.package.split("/").at(-1)!;
+  return source.url ===
+    `https://registry.npmjs.org/${source.package}/-/${unscoped}-${source.version}.tgz`;
+}
+
 /** Validate each component before reading it. lstat on the final asset alone
  * misses symlinked parents (public/fonts, public/ocr-246/core, etc.). */
 function safeLocalPath(root: string, canonicalRoot: string, path: string, type: "file" | "directory"): boolean {
@@ -133,7 +143,7 @@ export function verifyPrimarySource366(
   }
   for (const [id, source] of Object.entries(manifest.primaryNpmTarballs)) {
     const integrity = source.integrity;
-    if (!source.url.startsWith("https://registry.npmjs.org/") || !source.package || !source.version ||
+    if (!isCanonicalNpmSource(source) ||
         !/^sha512-[a-zA-Z0-9+/]+=*$/u.test(integrity) ||
         Buffer.from(integrity.slice(7), "base64").length !== 64) failures.push(`INVALID_NPM_SOURCE ${id}`);
   }

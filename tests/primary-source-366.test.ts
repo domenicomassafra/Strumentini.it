@@ -152,4 +152,25 @@ describe("STR-366 primary source assets: offline fail-closed evidence", () => {
     expect(verifyPrimarySource366(root, altered).failures)
       .toContain("INVALID_NPM_SOURCE tesseract-core");
   });
+
+  it("rejects a substituted npm distribution even if all linked asset URLs and the SRI are coherent", () => {
+    const altered = structuredClone(original);
+    const forged = "https://registry.npmjs.org/arbitrary-package/-/fake-99.0.0.tgz?untrusted=1";
+    altered.primaryNpmTarballs["tesseract-core"]!.url = forged;
+    for (const asset of altered.assets) {
+      if (asset.packageId === "tesseract-core") asset.sourceUrl = forged;
+    }
+    const failures = verifyPrimarySource366(root, altered).failures;
+    expect(failures).toContain("INVALID_NPM_SOURCE tesseract-core");
+    expect(failures).toContain("MANIFEST_ATTESTATION_MISMATCH");
+  });
+
+  it("rejects queries and fragments on an otherwise authentic npm tarball path", () => {
+    for (const suffix of ["?download=1", "#integrity"]) {
+      const altered = structuredClone(original);
+      altered.primaryNpmTarballs["italian-model"]!.url += suffix;
+      expect(verifyPrimarySource366(root, altered).failures)
+        .toContain("INVALID_NPM_SOURCE italian-model");
+    }
+  });
 });
