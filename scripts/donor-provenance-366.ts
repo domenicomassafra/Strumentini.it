@@ -1,8 +1,4 @@
-/**
- * #366: read-only provenance gate. No registry fetch, package installation or
- * adoption decision is implied by a recorded SPDX identifier or npm SRI.
- * Run: npx tsx scripts/donor-provenance-366.ts --check
- */
+/** #366 offline provenance gate; npm SRI metadata does not approve adoption. */
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
@@ -11,10 +7,9 @@ import { fileURLToPath } from "node:url";
 import { expectedAssetDistribution366 } from "./donor-asset-distributions-366";
 import { knownSpdx366 as knownSpdx } from "./donor-spdx-366";
 import { isLocalAuthored366, verifyLocalAuthored366 } from "./donor-local-authored-366";
+import { verifiedFontPrimary366 } from "./donor-font-primary-366";
 
-// Reuse the already installed, production-lock-pinned npm semver 6.3.1.
-// A lock entry's integrity/registry URL is not evidence that its version
-// satisfies the consuming package's actual dependency contract.
+// Use pinned semver for actual dependency constraints.
 const semver = createRequire(import.meta.url)("semver") as {
   validRange: (range: string) => string | null;
   satisfies: (version: string, range: string) => boolean;
@@ -210,7 +205,8 @@ function safeAssetPath(root: string, name: string): string | null {
   const full = resolve(root, name);
   return full.startsWith(resolve(root) + sep) ? full : null;
 }
-function validAssetSource(asset: AssetPin366): boolean {
+function validAssetSource(asset: AssetPin366, root: string): boolean {
+  if (asset.path.startsWith("public/fonts/")) return verifiedFontPrimary366(root, asset);
   const distribution = expectedAssetDistribution366(asset.path);
   if (VENDORED_DIRS_366.some((dir) => asset.path.startsWith(dir + "/"))) {
     return !!distribution && validSource(distribution, asset.version, asset.source);
@@ -244,8 +240,8 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     pinned.add(asset.path);
     const authored = isLocalAuthored366(asset.path);
     if (!authored && !knownSpdx(asset.license)) failures.push(`UNKNOWN_ASSET_LICENSE ${asset.path}`);
-    if (!authored && !/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/u.test(asset.version)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
-    if (!authored && !validAssetSource(asset)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
+    if (!authored && !asset.path.startsWith("public/fonts/") && !/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/u.test(asset.version)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
+    if (!authored && !validAssetSource(asset, root)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
     // Do not allow arbitrary vendor paths to claim first-party provenance.
     if (!authored && (asset.license === "LOCAL_AUTHORED" || asset.version === "GIT" || asset.source.startsWith("git:"))) {
       failures.push(`INVALID_LOCAL_AUTHORED ${asset.path}`);

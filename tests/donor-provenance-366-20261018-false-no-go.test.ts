@@ -53,8 +53,15 @@ describe("#366 false refusals versus real provenance blockers", () => {
       expect(pin.source).toMatch(/^git:[a-f0-9]{40}:[a-f0-9]{40}$/u);
     }
     expect(report.status).toBe("NO_GO");
-    expect(report.failures.filter((failure) => failure.includes("public/fonts/")).length).toBe(24);
-    expect(report.failures.filter((failure) => failure.includes("public/ocr-246/")).length).toBe(17);
+    // The 8 CDN fonts + 4 primary OFL notices and the 7 OCR core binaries/
+    // license now carry exact upstream attestations. The three Italian-model
+    // language assets remain a legal-license refusal, even if bytes match.
+    expect(report.failures.filter((failure) => failure.includes("public/fonts/"))).toEqual([]);
+    expect(report.failures.filter((failure) => failure.includes("public/ocr-246/"))).toEqual([
+      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE",
+      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE",
+      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/ita.traineddata.gz",
+    ]);
   });
 
   // Five negative cases each rehash the entire pinned vendor corpus; under CI

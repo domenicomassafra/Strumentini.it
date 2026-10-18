@@ -12,7 +12,7 @@ const spreadsheetBoundary = /^(?:src\/engines\/table\/spreadsheet-interchange\.t
 export function classifyPath(path: string): readonly ChangeDomain[] {
   if (!path || path.startsWith("/") || path.includes("\\") || /[\u0000-\u001f\u007f\ufffd]/u.test(path) || path.split("/").some((part) => part === "." || part === ".." || part === "")) return ["unknown"];
   // Reviewed root hooks and agent budget files require CI/security gates.
-  if ([".githooks/pre-push", ".githooks/pre-commit", ".agent-size-baseline", ".agent-size-ignore", "orca.yaml", "scripts/ci-path-classification-404.ts"].includes(path)) return ["ci"];
+  if ([".githooks/pre-push", ".githooks/pre-commit", ".gitattributes", ".agent-size-baseline", ".agent-size-ignore", "orca.yaml", "scripts/ci-path-classification-404.ts"].includes(path)) return ["ci"];
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   // Both Cloudflare deploy contracts can route the Worker or bind D1, so
