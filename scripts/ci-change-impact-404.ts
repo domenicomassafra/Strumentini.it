@@ -59,9 +59,8 @@ const requiredSpreadsheetSuites = ["tests/spreadsheet-interchange.test.ts", "tes
 /** Only known documentation roots count as docs; never infer from a .md suffix. */
 export function classifyPath(path: string): readonly ChangeDomain[] {
   if (!path || path.startsWith("/") || path.includes("\\") || /[\u0000-\u001f\u007f\ufffd]/u.test(path) || path.split("/").some((part) => part === "." || part === ".." || part === "")) return ["unknown"];
-  // Git hooks and Orca workspace setup execute commands before source checks.
-  // Admit only these reviewed root paths, with full CI/security gates.
-  if (path === ".githooks/pre-push" || path === "orca.yaml") return ["ci"];
+  // Reviewed root hooks and agent budget files require CI/security gates.
+  if ([".githooks/pre-push", ".githooks/pre-commit", ".agent-size-baseline", ".agent-size-ignore", "orca.yaml"].includes(path)) return ["ci"];
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   // Both Cloudflare deploy contracts can route the Worker or bind D1, so

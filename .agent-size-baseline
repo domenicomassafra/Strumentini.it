@@ -81,7 +81,7 @@
   "scripts/acceptance/browser-performance-matrix.mjs": 22840,
   "scripts/audit-office-fidelity-368.ts": 34621,
   "scripts/audit-pdf-engine-provenance-369.ts": 21452,
-  "scripts/ci-change-impact-404.ts": 23738,
+  "scripts/ci-change-impact-404.ts": 23729,
   "scripts/compare-jsquash-367.ts": 22499,
   "scripts/donor-codecs-367.ts": 20391,
   "scripts/forensic-redaction-378.ts": 20710,
