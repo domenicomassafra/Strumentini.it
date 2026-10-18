@@ -1,0 +1,88 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-annual-117";
+---
+
+<BaseLayout title="Stipendio netto da RAL — scenario parziale 2025/2026" description="Da RAL a imponibile e IRPEF nazionale lorda, con contributi ipotizzati dall'utente: stima parziale, non netto di cedolino." noindex>
+  <main class="salary" data-salary-estimate-13>
+    <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / Stipendio netto da RAL</nav>
+    <h1>Stima parziale dello stipendio netto da RAL</h1>
+    <p>Inserisci la RAL e <strong>una percentuale di contributi a tuo carico ricavata dal cedolino</strong>: non assumiamo alcuna aliquota INPS o inquadramento contrattuale. Calcoliamo soltanto l'IRPEF <strong>lorda nazionale</strong> su quell'imponibile; non è il netto in busta paga.</p>
+    <form novalidate>
+      <label for="salary-year">Anno d'imposta verificato</label>
+      <select id="salary-year" name="year"><option value="2025">2025</option><option value="2026">2026</option></select>
+      <label for="salary-ral">RAL annuale (€; senza separatori delle migliaia)</label>
+      <input id="salary-ral" name="ral" type="text" inputmode="decimal" placeholder="40000,00" autocomplete="off" required />
+      <label for="salary-rate">Contributi dipendente ipotizzati (%) — <strong>da verificare sul tuo cedolino</strong></label>
+      <input id="salary-rate" name="rate" type="text" inputmode="decimal" placeholder="Inserisci l'aliquota, es. 9,19" autocomplete="off" required />
+      <label for="salary-months">Mensilità di presentazione</label>
+      <select id="salary-months" name="months"><option value="12">12</option><option value="13" selected>13</option><option value="14">14</option></select>
+      <button type="submit">Calcola scenario nazionale parziale</button>
+    </form>
+    <p class="error" role="alert" hidden></p>
+    <output aria-live="polite" data-salary-result-13></output>
+    <section aria-label="Perimetro e fonti">
+      <h2>Che cosa non viene calcolato</h2>
+      <p>Non sono determinati detrazioni e crediti, addizionali regionali e comunali, trattamento integrativo, conguagli, premi, benefit e condizioni individuali. Il risultato è una <strong>stima parziale nazionale prima delle voci escluse</strong>, non una promessa di netto effettivo. Cambiare 12, 13 o 14 mensilità modifica soltanto la divisione indicativa, non l'imposta annuale.</p>
+      <p>Riferimenti dei soli scaglioni nazionali verificati:</p>
+      <ul>{VERIFIED_IRPEF_EXCERPTS_117.map((pack) => <li>Anno {pack.taxYear}: {pack.sources.map((source) => <a href={source.url}>{source.authority} — normativa vigente estratta</a>)}</li>)}</ul>
+      <p><a href="/tools/irpef-componenti/">Confronta la copertura delle altre componenti IRPEF</a>.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import { estimateSalaryNet13 } from "../../engines/italy/salary-net-13";
+  const root = document.querySelector<HTMLElement>("[data-salary-estimate-13]");
+  if (root !== null) {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const output = root.querySelector<HTMLOutputElement>("output")!;
+    const error = root.querySelector<HTMLElement>(".error")!;
+    const field = (name: string): string => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
+    const euros = (cents: number): string => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
+    const parseRal = (value: string): number | null => {
+      const match = /^(0|[1-9]\d{0,8})(?:[.,](\d{1,2}))?$/u.exec(value);
+      return match === null ? null : Number(match[1]) * 100 + Number((match[2] ?? "").padEnd(2, "0") || "0");
+    };
+    const clear = () => { output.replaceChildren(); error.hidden = true; error.textContent = ""; };
+    form.addEventListener("input", clear);
+    form.addEventListener("change", clear);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); clear();
+      const ralCents = parseRal(field("ral").trim());
+      if (ralCents === null) { error.textContent = "RAL non valida: euro non negativi, fino a due decimali e senza separatori delle migliaia."; error.hidden = false; return; }
+      try {
+        const result = estimateSalaryNet13({ taxYear: Number(field("year")), ralCents, employeeRate: field("rate"), installments: Number(field("months")) as 12 | 13 | 14 });
+        const heading = document.createElement("h2");
+        heading.textContent = `Residuo annuo parziale dopo IRPEF lorda nazionale: ${euros(result.partialAnnualNetCents)}`;
+        const breakdown = document.createElement("ol");
+        const lines = [
+          `RAL dichiarata: ${euros(result.ralCents)}`,
+          `Contributi dipendente ${result.contributionRate}% (ipotesi utente): −${euros(result.contributionsCents)}`,
+          `Imponibile nazionale modellato: ${euros(result.taxableCents)}`,
+          ...result.nationalTaxBands.map((band) => `Scaglione ${band.rateBasisPoints / 100}% su ${euros(band.taxableBandCents)}: ${euros(band.taxCents)}`),
+          `IRPEF lorda nazionale: −${euros(result.grossNationalTaxCents)}`,
+        ];
+        for (const line of lines) { const item = document.createElement("li"); item.textContent = line; breakdown.append(item); }
+        const monthly = document.createElement("p");
+        monthly.textContent = `${result.installments} mensilità: circa ${euros(result.indicativeInstallmentCents)} ciascuna, prima delle voci non modellate.`;
+        const limitation = document.createElement("p"); limitation.textContent = result.assumptions;
+        output.append(heading, breakdown, monthly, limitation);
+      } catch {
+        error.textContent = "Anno o aliquota non supportati. Inserisci una percentuale tra 0 e 100 con al massimo due decimali; solo anni 2025/2026.";
+        error.hidden = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .salary { width:min(760px, calc(100% - 32px)); margin:32px auto 72px; display:grid; gap:20px; min-width:0; }
+  .salary h1,.salary h2,.salary p { margin:0; }
+  .salary form { display:grid; gap:12px; border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; }
+  .salary input,.salary select,.salary button { width:100%; min-width:0; box-sizing:border-box; padding:12px; }
+  .salary :focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+  .salary output:not(:empty) { display:grid; gap:12px; border-left:3px solid currentColor; padding:16px; }
+  .salary section { display:grid; gap:12px; }
+  .salary .error { color:var(--danger); }
+</style>
