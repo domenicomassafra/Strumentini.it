@@ -71,18 +71,22 @@ describe("#366 root optionalDependencies resolve against the installed version",
     expect(result.failures).toContain("ROOT_OPTIONAL_DEPENDENCIES_DIFFER");
   });
 
-  it("refuses malformed OR specs and dev-marked present optional root entries", () => {
+  it("refuses malformed OR and true dev, but verifies present devOptional roots", () => {
     const badRange = optionalRoot("^99.0.0 ||");
     const invalid = auditLockedPackages366(badRange.lock, badRange.manifest);
     expect(invalid.status).toBe("NO_GO");
     expect(invalid.failures).toContain("ROOT_OPTIONAL_VERSION_MISMATCH fflate (^99.0.0 || vs 0.8.3)");
 
-    for (const flag of ["dev", "devOptional"] as const) {
-      const { lock, manifest } = optionalRoot("0.8.3");
-      lock.packages["node_modules/fflate"]![flag] = true;
-      const report = auditLockedPackages366(lock, manifest);
-      expect(report.status).toBe("NO_GO");
-      expect(report.failures).toContain("DEV_ONLY_ROOT_OPTIONAL fflate -> node_modules/fflate");
-    }
+    const dev = optionalRoot("0.8.3");
+    dev.lock.packages["node_modules/fflate"]!.dev = true;
+    expect(auditLockedPackages366(dev.lock, dev.manifest).failures)
+      .toContain("DEV_ONLY_ROOT_OPTIONAL fflate -> node_modules/fflate");
+    const optional = optionalRoot("0.8.3");
+    optional.lock.packages["node_modules/fflate"]!.devOptional = true;
+    expect(auditLockedPackages366(optional.lock, optional.manifest))
+      .toMatchObject({ status: "VERIFIED_METADATA", failures: [] });
+    optional.lock.packages["node_modules/fflate"]!.integrity = "sha512-bogus";
+    expect(auditLockedPackages366(optional.lock, optional.manifest).failures)
+      .toContain("INVALID_SRI node_modules/fflate");
   });
 });
