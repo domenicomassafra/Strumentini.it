@@ -1,0 +1,11 @@
+# STR-158 — Local-only Italy reference freshness report
+
+Scope: versioned index of the six Italy source-pack decisions plus five currently pinned annual excerpts and one FatturaPA technical-schema snapshot. The operational review owner is identified by the existing STR source ticket. This is a **source-only gate**, not a claim that current live national rules were rechecked. It neither scrapes the authorities nor changes the tax tables.
+
+`npm run italy:freshness:158` prints a structured report; `npm run italy:freshness:158 -- --check` prints scoped review warnings and is now included in `npm run check`. A reproducible next-year simulation is `npm run italy:freshness:158 -- --as-of 2027-01-01`. The as-of date is UTC. Distinct `recordId` keys prevent a bounded yearly pack and its parent source decision from hiding one another.
+
+In October 2026, narrow national gross IRPEF, 2026 INPS profiles, and national-holiday snapshots can be labelled current **only within their documented bounds**. The 2025 ATECO2007 forfettario coefficients and 13–31 December 2025 IVA excerpt are **historical**, never promoted into 2026. The full fiscal source decision STR-117 remains BLOCKED even though narrow verified excerpts exist. FatturaPA is checked on documented source change, not on an invented annual release cadence.
+
+`assertItalyCurrentYearClaim158` fails closed for a current-year claim whose bounded source year is missing, whose pack is not yet verified at the chosen as-of date, or whose dataset identifier is unknown. Unit tests sabotage the calendar to 2027 and a retrospective 2025 as-of date; they require warnings and refusals rather than synthetic backdating. Existing runtime tax consumers retain their own explicit year and source-scope refusals.
+
+**Unresolved:** The report is not an exhaustive audit of every time-varying rule hidden in every tool, does not detect new official publications automatically, and does not substitute a fresh primary-source review or legal sign-off. This PR alone is **not sufficient to close #98** under the original every-dataset requirement. A future exhaustive consumer-to-pack inventory and independently verified upstream-change monitor remain necessary. All historical tools can continue without network access.
