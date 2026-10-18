@@ -101,11 +101,16 @@ describe("ticket 318 PDF metadata inspect/remove upgrade", () => {
     expect(output.after.metadata.recognizedInfo).toEqual({});
     expect(output.after.metadata.unknownInfo).toEqual({});
     expect(output.after.metadata.xmpObjectIds).toEqual([]);
-    expect(output.verification).toEqual({
+    expect(output.verification).toMatchObject({
       reparsed: true,
       metadataRemoved: true,
       pageCount: { before: 2, after: 2, stable: true },
       textBaseline: { status: "verified", stable: true, changedPages: [] },
+      embeddedImageAudit: {
+        jpegChecked: 2,
+        privacyFindings: [],
+        unsupported: expect.arrayContaining([expect.stringMatching(/JPEG DHT unused/u), expect.stringMatching(/FlateDecode/u)]),
+      },
     });
     const reparsed = inspectPdfBytes(output.artifacts[0]!.bytes);
     expect(reparsed.pageCount).toBe(2);

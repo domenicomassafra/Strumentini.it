@@ -245,7 +245,9 @@ export interface PdfImageExtractionResult {
 
 export interface PdfMetadataRemovalVerification {
   readonly reparsed: true;
+  /** This result only attests PDF /Info and /Metadata, not all document bytes. */
   readonly metadataRemoved: boolean;
+  readonly embeddedImageAudit: import("./metadata-residual-394").PdfEmbeddedMetadataAudit;
   readonly pageCount: {
     readonly before: number;
     readonly after: number;

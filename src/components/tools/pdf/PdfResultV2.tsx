@@ -1,6 +1,8 @@
 import type { ComponentChildren } from "preact";
 import { useMemo, useState } from "preact/hooks";
 import type { PdfArtifact } from "../../../engines/pdf";
+import { pdfMetadataBeforeAfterRows } from "./pdf-metadata-summary-394";
+import { formatBytes, scalar } from "./pdf-result-fields";
 import { inspectPdfBytes } from "../../../engines/pdf";
 import { verifyGeneratedArtifact } from "../../../runtime/artifact-verifier";
 import { createBoundedTextPreview } from "../../../runtime/bounded-preview";
@@ -121,12 +123,6 @@ function serializedResult(value: PdfResultRecord): string {
   }
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1).replace(".", ",")} KiB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1).replace(".", ",")} MiB`;
-}
-
 function textArtifact(name: string, text: string, mime: "text/plain" | "text/markdown" | "application/json"): OutputArtifactDescriptor {
   const bytes = new TextEncoder().encode(text);
   if (mime === "application/json") JSON.parse(text);
@@ -237,13 +233,6 @@ function SecondaryRaw({ raw }: { readonly raw: PdfResultRecord }) {
       <BoundedTextResultPreview preview={rawPreview(raw)} />
     </details>
   );
-}
-
-function scalar(value: unknown): string | undefined {
-  if (typeof value === "string") return value;
-  if (typeof value === "number" && Number.isFinite(value)) return String(value);
-  if (typeof value === "boolean") return value ? "Sì" : "No";
-  return undefined;
 }
 
 function factRows(raw: PdfResultRecord): readonly { label: string; value: ComponentChildren }[] {
@@ -599,6 +588,7 @@ export function PdfResultV2({ toolId, result, sourceFiles, onReset, onRetry }: P
           ? <p role="note">Anteprima del PDF cifrato non disponibile senza password. Scarica il file e aprilo in un lettore PDF compatibile con AES-256.</p>
           : displayDeclaration.class === "pdf" ? <PdfPagePreview outputs={result.artifacts} /> : null}
         {displayDeclaration.class === "pdf" ? <div data-result-slot="operation-summary"><ResultBreakdown label="Riepilogo operazione" rows={rows} /></div> : null}
+        {toolId === "pdf-metadata-remover" && <ResultBreakdown label="Bonifica PDF: confronto prima/dopo e residui" rows={pdfMetadataBeforeAfterRows(result.raw)} />}
         {targetMode ? <ResultInterpretation state={result.raw.allMet === true ? "success" : "warning"}>
           {result.raw.allMet === true ? "Ogni PDF elaborato rispetta la soglia esatta sui byte del file finale." :
             "Almeno un file non ha raggiunto la soglia o non è stato elaborato. Controlla lo stato individuale nel report tecnico; i PDF best-effort non sono indicati come sotto limite."}
