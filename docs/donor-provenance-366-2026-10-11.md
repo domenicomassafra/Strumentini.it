@@ -13,6 +13,7 @@ Production direct package pins (versions determined from the current lockfile, n
 | Package | Version | Declared SPDX | Directly installed? | Primary metadata |
 | --- | --- | --- | --- | --- |
 | @astrojs/preact | 6.0.5 | MIT | yes | https://registry.npmjs.org/@astrojs/preact/6.0.5 |
+| @noble/hashes | 2.4.0 | MIT | yes | https://registry.npmjs.org/@noble/hashes/2.4.0 |
 | astro | 7.3.4 | MIT | yes | https://registry.npmjs.org/astro/7.3.4 |
 | css-tree | 3.2.1 | MIT | yes | https://registry.npmjs.org/css-tree/3.2.1 |
 | fflate | 0.8.3 | MIT | yes | https://registry.npmjs.org/fflate/0.8.3 |
@@ -24,7 +25,7 @@ Production direct package pins (versions determined from the current lockfile, n
 | svgo | 4.1.0 | MIT | yes | https://registry.npmjs.org/svgo/4.1.0 |
 | write-excel-file | 4.1.1 | MIT | yes | https://registry.npmjs.org/write-excel-file/4.1.1 |
 
-The transitive matrix is generated from the checked-in lockfile by `auditLockedPackages366`, and the exact 366 entries (name, version, license, integrity and primary npm tarball URL) are available through the checker's machine-readable `--matrix` mode (redirect locally if a retained JSON evidence copy is needed). The checker tests metadata completeness and dependency references; it does **not** run legal compatibility analysis, verify built artifacts' inclusion of notices, validate remote SRI against fetched tarballs, or decide license compatibility on the owner's behalf. Notable production obligations: `heic-to` and some transitive packages declare LGPL-3.0 or LGPL-3.0-or-later; the lockfile also contains MPL-2.0 entries and non-MIT licenses. These require distribution-specific review, especially static/WASM bundling and corresponding source notices. The current lockfile has **seven anomalous runtime dependency references** that point to entries tagged `dev` / `devOptional` (WASM runtime/tslib and optional sharp); the conservative checker refuses these until a reproducible fresh-install/package graph review resolves the classification.
+The transitive matrix is generated from the checked-in lockfile by `auditLockedPackages366`, and the exact 367 entries on `origin/main` of 2026-10-18 (name, version, license, integrity and primary npm tarball URL) are available through the checker's machine-readable `--matrix` mode (redirect locally if a retained JSON evidence copy is needed). The checker tests metadata completeness and dependency references; it does **not** run legal compatibility analysis, verify built artifacts' inclusion of notices, validate remote SRI against fetched tarballs, or decide license compatibility on the owner's behalf. Notable production obligations: `heic-to` and some transitive packages declare LGPL-3.0 or LGPL-3.0-or-later; the lockfile also contains MPL-2.0 entries and non-MIT licenses. These require distribution-specific review, especially static/WASM bundling and corresponding source notices. The current lockfile has **seven anomalous runtime dependency references** that point to entries tagged `dev` / `devOptional` (WASM runtime/tslib and optional sharp); the conservative checker refuses these until a reproducible fresh-install/package graph review resolves the classification.
 
 ## Donor candidates and third-party codec decisions
 
@@ -95,6 +96,10 @@ src/engines/video/vendor/mediabunny-mpl-1.61.3/README.md	70677829c34cc3684b67a2a
 src/engines/video/vendor/mediabunny-mpl-1.61.3/index.d.mts	34a6fe8a7df0db2609da691ef40fe7f8bfce6f04f0d8284aba0de9f0a3baae42	MPL-2.0	1.61.3	https://registry.npmjs.org/mediabunny/-/mediabunny-1.61.3.tgz
 src/engines/video/vendor/mediabunny-mpl-1.61.3/index.mjs	d7b3a90e82158a7022729cbd4f861daf73cbb4f69d23349d2aefc9c8281cf70c	MPL-2.0	1.61.3	https://registry.npmjs.org/mediabunny/-/mediabunny-1.61.3.tgz
 <!-- ASSET-PINS-366-END -->
+
+Current source-bound usage, unresolved real distribution rights, and the
+2026-10-18 fake npm-origin regression are recorded separately in
+[the current active dependency and asset audit](donor-provenance-366-active-2026-10-18.md).
 
 ## Blocking evidence / recovery
 
