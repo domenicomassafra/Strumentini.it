@@ -30,6 +30,7 @@ try {
     verify((await ctas.evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height)))
       .every((height) => height >= 44), `touch-sized links ${width}px`);
     await page.locator('a[href="#preferenze"]').click();
+    await page.locator('[data-settings-panel="preferenze"]').waitFor({ state: "visible" });
     verify(await page.locator('[data-settings-panel="preferenze"]').isVisible(), `JS #preferenze opens panel ${width}px`);
     await page.locator('[data-settings-tab="preferenze"]').focus();
     await page.keyboard.press("ArrowRight");
@@ -70,6 +71,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`${origin}/impostazioni/`);
   await page.locator('a[href="#preferenze"]').click();
+  await page.locator('[data-settings-panel="preferenze"]').waitFor({ state: "visible" });
   verify(await page.locator('[data-settings-panel="preferenze"]').isVisible(), "denied-storage preferences still navigable");
   await page.goto(`${origin}/onboarding/`);
   verify(await page.locator('[data-onboarding-action="start"]').count() === 1, "denied-storage onboarding still renders");
