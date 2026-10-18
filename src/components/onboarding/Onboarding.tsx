@@ -32,6 +32,7 @@ import { applyStarterSelection, createDefaultWorkbenchState, type WorkbenchState
 import { COPY } from "../workbench/copy";
 import styles from "./Onboarding.module.css";
 import { OnboardingWelcome358 } from "./OnboardingWelcome358";
+import { OnboardingAfterSave358 } from "./OnboardingAfterSave358";
 
 export interface OnboardingProps {
   readonly tools: readonly ToolSummary[];
@@ -459,11 +460,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
                   {saving ? COPY.onboarding.saving : COPY.onboarding.save}
                 </button>
               </div>
-              <p class={styles.muted}>
-                Dopo il salvataggio torni alla home. Potrai modificare le scelte da
-                {" "}<a href="/impostazioni/#preferenze">Impostazioni e preferenze</a>, oppure sfogliare il
-                {" "}<a href="/strumenti/">catalogo degli strumenti</a>.
-              </p>
+              <OnboardingAfterSave358 completed={completed} />
             </div>
           )}
         </section>
