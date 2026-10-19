@@ -31610,7 +31610,7 @@
         },
         "module": {
           "path": "src/tools/text-markup-converter/module.ts",
-          "sha256": "d9bcc5217f5d50e5dd9b8cd1f1e9842185121d0d755db4425ff49c1ccd95c693"
+          "sha256": "4c21a6791b8628dff739f465056fc51667af7bca74a076395e0b1561d9d274a3"
         },
         "page": {
           "path": "src/pages/tools/text-markup-converter.astro",
