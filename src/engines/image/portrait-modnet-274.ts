@@ -2,6 +2,11 @@
 export const PORTRAIT_MODEL_UPSTREAM = "Xenova/modnet";
 export const PORTRAIT_MODEL_REVISION = "fa2fa546052fba4c08921230a26cc69a333fca12";
 export const PORTRAIT_MODEL_SHA256 = "92e49898c3e05a6d7a944fc67a8cb87c4aad754ffb6ebd949528c7d1105fee3a";
+export const PORTRAIT_LOCAL_FILES = [
+  "/models/portrait-modnet/config.json",
+  "/models/portrait-modnet/preprocessor_config.json",
+  "/models/portrait-modnet/onnx/model_quantized.onnx",
+] as const;
 export const PORTRAIT_MAX_FILE_BYTES = 8 * 1024 * 1024;
 export const PORTRAIT_MAX_SIDE = 1600;
 export const PORTRAIT_MAX_PIXELS = 2_000_000;
