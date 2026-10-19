@@ -1,8 +1,6 @@
 import { invalid, type DeveloperWebResult } from "./types";
 
 const BASE_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
-const IPV4_BITS = 32;
-const IPV6_BITS = 128;
 
 export const MAX_BASE_INTEGER_DIGITS = 4096;
 
@@ -10,12 +8,6 @@ interface ParsedRadixInteger {
   readonly value: bigint;
   readonly digits: string;
   readonly sign: -1 | 1;
-}
-
-interface ParsedIpAddress {
-  readonly family: "IPv4" | "IPv6";
-  readonly bits: 32 | 128;
-  readonly value: bigint;
 }
 
 function invalidWithContext(message: string, character?: number, context?: string): never {
@@ -115,169 +107,14 @@ export function baseConversionOperation(rawValue: string, rawFromBase: string, r
   };
 }
 
-function parseIpv4Address(input: string): ParsedIpAddress {
-  const parts = input.split(".");
-  if (parts.length !== 4) invalidWithContext("IPv4 address must contain exactly four decimal octets.", 1, "IPv4 requires four octets");
-  let value = 0n;
-  let character = 1;
-  for (const part of parts) {
-    if (!/^\d{1,3}$/u.test(part)) invalidWithContext("IPv4 octet is not a decimal integer.", character, `invalid IPv4 octet ${JSON.stringify(part)}`);
-    const octet = Number(part);
-    if (octet < 0 || octet > 255) invalidWithContext("IPv4 octet must be from 0 through 255.", character, `IPv4 octet out of range: ${part}`);
-    value = (value << 8n) | BigInt(octet);
-    character += part.length + 1;
-  }
-  return { family: "IPv4", bits: IPV4_BITS, value };
-}
-
-function ipv4FromBigInt(value: bigint): string {
-  const octets: string[] = [];
-  for (let shift = 24n; shift >= 0n; shift -= 8n) octets.push(((value >> shift) & 255n).toString(10));
-  return octets.join(".");
-}
-
-function normalizeIpv4Tail(address: string): string {
-  if (!address.includes(".")) return address;
-  const lastColon = address.lastIndexOf(":");
-  if (lastColon < 0) invalidWithContext("Embedded IPv4 syntax is only valid at the end of an IPv6 address.", 1, "invalid embedded IPv4");
-  const tail = address.slice(lastColon + 1);
-  const parsed = parseIpv4Address(tail);
-  const high = ((parsed.value >> 16n) & 0xffffn).toString(16);
-  const low = (parsed.value & 0xffffn).toString(16);
-  return `${address.slice(0, lastColon + 1)}${high}:${low}`;
-}
-
-function parseIpv6Hextet(part: string, character: number): bigint {
-  if (!/^[0-9a-fA-F]{1,4}$/u.test(part)) invalidWithContext("IPv6 hextets must contain one through four hexadecimal digits.", character, `invalid IPv6 hextet ${JSON.stringify(part)}`);
-  return BigInt(`0x${part}`);
-}
-
-function parseIpv6Address(input: string): ParsedIpAddress {
-  if (input.includes("%")) invalidWithContext("IPv6 zone identifiers are not part of a CIDR network address.", input.indexOf("%") + 1, "zone identifier is unsupported in CIDR input");
-  const address = normalizeIpv4Tail(input);
-  const firstDouble = address.indexOf("::");
-  if (firstDouble >= 0 && address.indexOf("::", firstDouble + 2) >= 0) invalidWithContext("IPv6 address may contain at most one :: compression marker.", firstDouble + 3, "multiple :: markers");
-
-  let parts: string[];
-  if (firstDouble >= 0) {
-    const leftText = address.slice(0, firstDouble);
-    const rightText = address.slice(firstDouble + 2);
-    const left = leftText === "" ? [] : leftText.split(":");
-    const right = rightText === "" ? [] : rightText.split(":");
-    if (left.length + right.length >= 8) invalidWithContext("IPv6 :: must compress at least one zero hextet.", firstDouble + 1, "too many IPv6 hextets");
-    parts = [...left, ...Array.from({ length: 8 - left.length - right.length }, () => "0"), ...right];
-  } else {
-    parts = address.split(":");
-    if (parts.length !== 8) invalidWithContext("IPv6 address without :: must contain exactly eight hextets.", 1, `found ${parts.length} hextets`);
-  }
-
-  if (parts.length !== 8) invalidWithContext("IPv6 address must expand to exactly eight hextets.", 1, `expanded hextets: ${parts.length}`);
-  let value = 0n;
-  let character = 1;
-  for (const part of parts) {
-    const hextet = parseIpv6Hextet(part, character);
-    value = (value << 16n) | hextet;
-    character += part.length + 1;
-  }
-  return { family: "IPv6", bits: IPV6_BITS, value };
-}
-
-function ipv6FromBigInt(value: bigint): string {
-  const hextets: string[] = [];
-  for (let shift = 112n; shift >= 0n; shift -= 16n) hextets.push(((value >> shift) & 0xffffn).toString(16));
-
-  let bestStart = -1;
-  let bestLength = 0;
-  for (let index = 0; index < hextets.length;) {
-    if (hextets[index] !== "0") {
-      index += 1;
-      continue;
-    }
-    let end = index;
-    while (end < hextets.length && hextets[end] === "0") end += 1;
-    const length = end - index;
-    if (length >= 2 && length > bestLength) {
-      bestStart = index;
-      bestLength = length;
-    }
-    index = end;
-  }
-  if (bestStart < 0) return hextets.join(":");
-  const before = hextets.slice(0, bestStart).join(":");
-  const after = hextets.slice(bestStart + bestLength).join(":");
-  if (before === "" && after === "") return "::";
-  if (before === "") return `::${after}`;
-  if (after === "") return `${before}::`;
-  return `${before}::${after}`;
-}
-
-function parsePrefix(raw: string, bits: 32 | 128): number {
-  if (!/^\d{1,3}$/u.test(raw)) invalidWithContext("CIDR prefix must be a decimal integer.", 1, `invalid prefix ${JSON.stringify(raw)}`);
-  const prefix = Number(raw);
-  if (prefix < 0 || prefix > bits) invalidWithContext(`CIDR prefix for ${bits === 32 ? "IPv4" : "IPv6"} must be from 0 through ${bits}.`, 1, `prefix /${prefix}`);
-  return prefix;
-}
-
-function parseCidr(input: string): { readonly address: ParsedIpAddress; readonly prefix: number } {
-  const text = input.trim();
-  const slash = text.lastIndexOf("/");
-  if (slash <= 0 || slash === text.length - 1 || text.indexOf("/") !== slash) invalidWithContext("CIDR input must contain one address/prefix separator.", Math.max(1, slash + 1), "expected address/prefix");
-  const addressText = text.slice(0, slash);
-  const address = addressText.includes(":") ? parseIpv6Address(addressText) : parseIpv4Address(addressText);
-  return { address, prefix: parsePrefix(text.slice(slash + 1), address.bits) };
-}
-
-function addressMask(bits: 32 | 128, prefix: number): { readonly networkMask: bigint; readonly hostMask: bigint } {
-  const hostBits = bits - prefix;
-  const all = (1n << BigInt(bits)) - 1n;
-  const hostMask = hostBits === 0 ? 0n : (1n << BigInt(hostBits)) - 1n;
-  return { hostMask, networkMask: all ^ hostMask };
-}
-
-export function cidrOperation(rawCidr: string): DeveloperWebResult {
-  const { address, prefix } = parseCidr(rawCidr);
-  const { networkMask, hostMask } = addressMask(address.bits, prefix);
-  const network = address.value & networkMask;
-  const last = network | hostMask;
-  const addressCount = 1n << BigInt(address.bits - prefix);
-
-  if (address.family === "IPv4") {
-    const networkText = ipv4FromBigInt(network);
-    const broadcastText = ipv4FromBigInt(last);
-    const subnetMask = ipv4FromBigInt(networkMask);
-    const wildcardMask = ipv4FromBigInt(hostMask);
-    const hostStart = prefix <= 30 ? network + 1n : network;
-    const hostEnd = prefix <= 30 ? last - 1n : last;
-    const usableHostCount = prefix <= 30 ? addressCount - 2n : addressCount;
-    return {
-      valid: true,
-      family: "IPv4",
-      prefix,
-      network: `${networkText}/${prefix}`,
-      range: { first: networkText, last: broadcastText },
-      addressCount: addressCount.toString(10),
-      subnetMask,
-      wildcardMask,
-      broadcast: broadcastText,
-      hostRange: {
-        first: ipv4FromBigInt(hostStart),
-        last: ipv4FromBigInt(hostEnd),
-        count: usableHostCount.toString(10),
-        semantics: prefix === 31 ? "RFC 3021 point-to-point endpoints" : prefix === 32 ? "single host route" : "network and broadcast excluded",
-      },
-    };
-  }
-
-  const networkText = ipv6FromBigInt(network);
-  return {
-    valid: true,
-    family: "IPv6",
-    prefix,
-    network: `${networkText}/${prefix}`,
-    range: { first: networkText, last: ipv6FromBigInt(last) },
-    addressCount: addressCount.toString(10),
-    broadcastSemantics: "not applicable to IPv6",
-  };
+// Load the pinned MIT parser only when the CIDR route is invoked.
+export async function cidrOperation(rawCidr: string, signal?: AbortSignal): Promise<DeveloperWebResult> {
+  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+  const { cidrOperationWithIpaddr } = await import("./cidr-ipaddr");
+  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+  const result = cidrOperationWithIpaddr(rawCidr);
+  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+  return result;
 }
 
 interface PermissionTriplet {

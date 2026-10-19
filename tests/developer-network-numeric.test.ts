@@ -49,9 +49,9 @@ function record(value: unknown): Record<string, unknown> {
 }
 
 describe("ticket 173 — IPv4/IPv6 CIDR calculator", () => {
-  it("matches the hand-worked IPv4/IPv6 fixture boundaries", () => {
+  it("matches the hand-worked IPv4/IPv6 fixture boundaries", async () => {
     for (const vector of fixtures.cidr) {
-      const output = record(cidrOperation(vector.input));
+      const output = record(await cidrOperation(vector.input));
       if (vector.expected.family !== undefined) expect(output.family, vector.input).toBe(vector.expected.family);
       if (vector.expected.network !== undefined) expect(output.network, vector.input).toBe(vector.expected.network);
       if (vector.expected.broadcast !== undefined) expect(output.broadcast, vector.input).toBe(vector.expected.broadcast);
@@ -61,36 +61,36 @@ describe("ticket 173 — IPv4/IPv6 CIDR calculator", () => {
     }
   });
 
-  it("defines IPv4 /0, /31 and /32 semantics explicitly", () => {
-    const zero = record(cidrOperation("203.0.113.9/0"));
+  it("defines IPv4 /0, /31 and /32 semantics explicitly", async () => {
+    const zero = record(await cidrOperation("203.0.113.9/0"));
     expect(zero.network).toBe("0.0.0.0/0");
     expect(zero.broadcast).toBe("255.255.255.255");
     expect(zero.addressCount).toBe("4294967296");
     expect(record(zero.hostRange)).toMatchObject({ first: "0.0.0.1", last: "255.255.255.254", count: "4294967294" });
 
-    const pointToPoint = record(cidrOperation("192.0.2.10/31"));
+    const pointToPoint = record(await cidrOperation("192.0.2.10/31"));
     expect(record(pointToPoint.hostRange)).toMatchObject({ first: "192.0.2.10", last: "192.0.2.11", count: "2", semantics: "RFC 3021 point-to-point endpoints" });
 
-    const host = record(cidrOperation("192.0.2.10/32"));
+    const host = record(await cidrOperation("192.0.2.10/32"));
     expect(host.network).toBe("192.0.2.10/32");
     expect(host.broadcast).toBe("192.0.2.10");
     expect(record(host.hostRange)).toMatchObject({ first: "192.0.2.10", last: "192.0.2.10", count: "1", semantics: "single host route" });
   });
 
-  it("keeps 128-bit IPv6 ranges exact at /0, /127 and /128 without inventing broadcast", () => {
-    const zero = record(cidrOperation("2001:db8::1/0"));
+  it("keeps 128-bit IPv6 ranges exact at /0, /127 and /128 without inventing broadcast", async () => {
+    const zero = record(await cidrOperation("2001:db8::1/0"));
     expect(zero.network).toBe("::/0");
     expect(zero.addressCount).toBe("340282366920938463463374607431768211456");
     expect(record(zero.range)).toEqual({ first: "::", last: "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff" });
     expect(Object.hasOwn(zero, "broadcast")).toBe(false);
     expect(zero.broadcastSemantics).toBe("not applicable to IPv6");
 
-    const pair = record(cidrOperation("2001:db8::5/127"));
+    const pair = record(await cidrOperation("2001:db8::5/127"));
     expect(pair.network).toBe("2001:db8::4/127");
     expect(record(pair.range)).toEqual({ first: "2001:db8::4", last: "2001:db8::5" });
     expect(pair.addressCount).toBe("2");
 
-    const single = record(cidrOperation("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff/128"));
+    const single = record(await cidrOperation("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff/128"));
     expect(single.network).toBe("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff/128");
     expect(single.addressCount).toBe("1");
     expect(Object.hasOwn(single, "broadcast")).toBe(false);
