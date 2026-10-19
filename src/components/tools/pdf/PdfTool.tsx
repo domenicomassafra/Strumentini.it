@@ -788,8 +788,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         )}
         {optionMode === "text-extraction" && (
           <div class="field-grid">
-            <label class="field"><span>Pagine (facoltativo)</span><input aria-label="Pagine da estrarre" value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3-5 · vuoto = tutte" disabled={isWorking} /></label>
-            <label class="field"><span>Modalità testo</span><select aria-label="Modalità estrazione testo" value={textExtractionMode} onChange={(event) => setTextExtractionMode(event.currentTarget.value as PdfTextExportMode53)} disabled={isWorking}><option value="content-order">Ordine degli operatori, testo compatto</option><option value="operator-lines">Ordine degli operatori, una stringa per riga</option><option value="visual-lines">Righe per posizione visiva (PDF.js, semplice)</option></select><small>La modalità visuale ordina per coordinata dall'alto, poi da sinistra. Su colonne/tabelle non determina la corretta lettura semantica; testo ruotato non supportato e rifiutato.</small></label>
+            <label class="field"><span>Pagine (facoltativo)</span><input aria-label="Pagine da estrarre" value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="es. 1, 3-5 · vuoto = tutte" disabled={isWorking} /></label>
+            <label class="field"><span>Modalità testo</span><select aria-label="Modalità estrazione testo" value={textExtractionMode} onChange={(event) => { setTextExtractionMode(event.currentTarget.value as PdfTextExportMode53); setResult(null); }} disabled={isWorking}><option value="content-order">Ordine degli operatori, testo compatto</option><option value="operator-lines">Ordine degli operatori, una stringa per riga</option><option value="visual-lines">Righe per posizione visiva (PDF.js, semplice)</option></select><small>La modalità visuale ordina dall'alto a sinistra; non ricostruisce il senso di colonne/tabelle e rifiuta testo ruotato.</small></label>
           </div>
         )}
         {optionMode === "image-extraction" && (
