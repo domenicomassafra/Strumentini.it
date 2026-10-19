@@ -55,3 +55,26 @@ The openpyxl-backed cases use `it.skipIf(!process.env.SPREADSHEET370_PYTHON)`. *
 **Verification receipt:** `SPREADSHEET370_PYTHON=/tmp/strumentini-370-openpyxl/bin/python ./node_modules/.bin/vitest run tests/donor-spreadsheets-370.test.ts tests/spreadsheet-interchange.test.ts` on 2026-10-11: **15/15 PASS**, including all independent oracle checks. Without that environment the 4 openpyxl-specific tests are intentionally skipped, and such a run does not establish this receipt.
 
 **Ticket disposition:** **PARTIAL / OPEN**. AC-370.1 donor runtime comparative benchmark is incomplete (candidate libraries not installed); AC-370.2 disclosure is documented here, while macro refusal is *not implemented*; AC-370.3 installed-engine/openpyxl oracle and bounded performance samples are verified but hostile package security, physical/mobile and comprehensive resource bounds remain open. No licensing, purchase, production or publication authorization implied.
+
+## Independent recheck — 2026-10-19 (issue #130)
+
+The October 11 rows above are an **historical receipt**, not a description of the current import guard. On October 19 the installed local stack was rechecked (`npm ls --depth=0`): `papaparse@5.7.0`, `read-excel-file@9.3.10`, `write-excel-file@4.1.1`; the **isolated, non-product donor** at `spikes/heavy-local-feasibility/node_modules` is `xlsx@0.18.5`. OpenPyXL `3.1.5` and `et_xmlfile 2.0.0` were installed in the isolated `/tmp/strumentini-370-openpyxl` environment. No Excel donor replacement or dependency change was shipped. Source of versions: checked-in npm lockfiles and the actual installed `npm ls` output on this date.
+
+The benchmark now uses **two independent consumers**: Python OpenPyXL reads the actual XLSX bytes to compare every cell's value, OOXML cell type and date number format on **both sheets**; Python's stdlib `csv.reader` decodes the selected-sheet CSV output independently of PapaParse. `tests/donor-spreadsheets-370.test.ts` additionally checks the supported write policies and explicit import refusal. The separately installed SheetJS candidate is exercised through `tests/audit-xlsx-fidelity-370.test.ts` and `scripts/audit-xlsx-fidelity-370.ts`, with OpenPyXL and the ZIP/XML inventory reading both source and donor output.
+
+| Input / consumer | Independently observed value, type or loss | Decision |
+| --- | --- | --- |
+| Two-sheet workbook (`Prima`, `Seconda`) | OpenPyXL: `00123` / `00007` / `00009` are strings (`s`), `12.5`, `-2` and `37.25` numeric (`n`), dates `2026-02-21`, `2026-03-01` type `d` with `yyyy-mm-dd`, locale-looking dates stay `s`; selecting either sheet yields the exact corresponding Python `csv.reader` matrix | **PASS** for explicitly selected sheet and value-only CSV; import without selection refuses `SHEET_SELECTION_REQUIRED`. The public writer supports only **one** sheet, so two-sheet workbook roundtrip is **NOT_SUPPORTED** |
+| Formula-looking text exported to XLSX | OpenPyXL sees `=1+1` as **literal string (`s`)**; output CSV prefixes an apostrophe. Negative numeric `-2` now stays `-2` in CSV; executable `-CMD()` / expression `-2+3` remain escaped | **PASS** for safe literal text and negative numeric fidelity; **intentional text change** for formula-like inputs |
+| Genuine input XLSX cell formulas (including hyperlink formulas) | OpenPyXL sees `=1+1` as `f`; importer refuses `UNSUPPORTED_XLSX_FEATURE` before selecting/exporting a sheet. Forged cached result `777` and macro marker are also refused | **REFUSAL**, no claim of formula evaluation, recomputation or expression preservation |
+| External workbook and sheet hyperlinks | Actual external-workbook relationship is refused; a plain worksheet hyperlink is read as inert displayed text, the hyperlink target does not survive to CSV | **REFUSAL** for external-workbook dependencies; **loss** of ordinary hyperlink target in supported value-only export; no claim of comprehensive link sanitization |
+| Installed SheetJS `xlsx@0.18.5` donor (real `complex.xlsx` corpus) | Source 171,698 bytes, donor 9,303 bytes; OpenPyXL/ZIP oracle detected `MEDIA_PARTS_LOST:2->0` and `CHART_PARTS_LOST:1->0`; local single sample donor time ~49 ms | **NO_GO** donor adoption; other complex style/macro/security/device performance cases remain unsupported or **NOT_RUN** |
+
+Reproduction (run with the independent oracle enabled, otherwise the optional OpenPyXL cases are skipped):
+
+```sh
+SPREADSHEET370_PYTHON=/tmp/strumentini-370-openpyxl/bin/python npx vitest run tests/donor-spreadsheets-370.test.ts tests/spreadsheet-interchange.test.ts tests/audit-xlsx-fidelity-370.test.ts --maxWorkers=1
+SPREADSHEET370_PYTHON=/tmp/strumentini-370-openpyxl/bin/python npx tsx scripts/audit-xlsx-fidelity-370.ts tests/ooxml-68-corpus/complex.xlsx
+```
+
+Result on this host: **22/22 PASS** in 3 test files with the oracle, and the donor CLI reports `decision: NO_GO`, `productionApproved: false` with exit **2** by design. The public CSV/XLSX path remains bounded and value-only; unsupported charts, VBA, original styles, external workbook links and formula semantics are **not promised**. Browser/mobile device benchmarking and adversarial XLSX security certification remain **NOT_RUN** and do not follow from these tests.

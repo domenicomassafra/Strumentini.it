@@ -10,7 +10,7 @@ import {
 } from "../src/engines/table/spreadsheet-interchange";
 
 /**
- * #370 feasibility contract: no production package adoption or engine edits.
+ * #370: installed-engine behavior and an independent parser; no donor adoption.
  * Opt-in independent oracle: SPREADSHEET370_PYTHON points to an isolated
  * Python environment pinned to openpyxl==3.1.5 (see the decision report).
  */
@@ -44,6 +44,25 @@ def inspect(cell):
         value = value.isoformat()
     return {"value": value, "type": cell.data_type, "format": cell.number_format}
 print(json.dumps({"sheets": book.sheetnames, "cells": [[inspect(c) for c in row] for row in book.active.iter_rows(min_row=2, max_row=2)]}, ensure_ascii=False))
+`;
+
+const pythonWorkbookReadback = String.raw`
+import io, json, sys, datetime, openpyxl
+assert openpyxl.__version__ == "3.1.5"
+book = openpyxl.load_workbook(io.BytesIO(sys.stdin.buffer.read()), data_only=False, keep_links=False)
+def inspect(cell):
+    value = cell.value
+    if isinstance(value, (datetime.datetime, datetime.date)):
+        value = value.isoformat()
+    return {"value": value, "type": cell.data_type, "format": cell.number_format}
+print(json.dumps({sheet.title: [[inspect(cell) for cell in row] for row in sheet.iter_rows()]
+                  for sheet in book.worksheets}, ensure_ascii=False))
+`;
+
+const pythonCsvReadback = String.raw`
+import csv, io, json, sys
+text = sys.stdin.buffer.read().decode("utf-8-sig")
+print(json.dumps(list(csv.reader(io.StringIO(text, newline=""))), ensure_ascii=False))
 `;
 
 const pythonHostileWorkbook = String.raw`
@@ -114,6 +133,8 @@ describe("#370 installed CSV/XLSX donor fidelity and refusal probes", () => {
       ["00123", '\'=HYPERLINK("https://example.invalid","go")'],
       ["00007", "'+42"],
     ]);
+    expect(parseCsvTable(serializeCsvTable(parseCsvTable("value\n-2\n-2.75\n-CMD()\n-2+3\n"))).rows)
+      .toEqual([["-2"], ["-2.75"], ["'-CMD()"], ["'-2+3"]]);
   });
 
   it("keeps formula-looking CSV values inert when writing an XLSX; rejects implicit type coercion", async () => {
@@ -187,15 +208,54 @@ describe("#370 installed CSV/XLSX donor fidelity and refusal probes", () => {
     ]);
   });
 
-  it.skipIf(!oraclePython)("openpyxl hostile formula/hyperlink fixture is not evaluated or presented as preserved formula", async () => {
+  it.skipIf(!oraclePython)("independent formula/hyperlink workbook is refused without a lossy CSV export", async () => {
     const bytes = runOracle(pythonHostileWorkbook);
     const original = bytes.slice();
     const input = bufferToArrayBuffer(bytes);
-    await expect(xlsxToCsv(input)).rejects.toMatchObject({ code: "SHEET_SELECTION_REQUIRED" });
-    const selected = await xlsxToCsv(input, { sheet: "Inputs" });
-    expect(selected.sheetNames).toEqual(["Inputs", "Secondary"]);
-    expect(parseCsvTable(selected.csv).rows[0]).toEqual(["00123", "", "", "03/04/2026", "OPEN"]);
-    expect(selected.csv).not.toMatch(/example\.invalid|HYPERLINK|=1\+1/u);
+    const source = JSON.parse(runOracle(pythonWorkbookReadback, bytes).toString()) as Record<string, Array<Array<{ value: unknown; type: string }>>>;
+    expect(Object.keys(source)).toEqual(["Inputs", "Secondary"]);
+    expect(source.Inputs?.[1]?.[1]).toMatchObject({ value: "=1+1", type: "f" });
+    await expect(xlsxToCsv(input)).rejects.toMatchObject({ code: "UNSUPPORTED_XLSX_FEATURE" });
+    await expect(xlsxToCsv(input, { sheet: "Inputs" })).rejects.toMatchObject({ code: "UNSUPPORTED_XLSX_FEATURE" });
+    expect(bytes).toEqual(original);
+  });
+
+  it.skipIf(!oraclePython)("checks all cells on both sheets with independent XLSX and CSV parsers", async () => {
+    const sheetRows = [
+      ["id", "amount", "day", "date-like", "expression"],
+      ["00123", 12.5, new Date("2026-02-21T00:00:00.000Z"), "03/04/2026", "=1+1"],
+      ["00007", -2, new Date("2026-03-01T00:00:00.000Z"), "11/12/2026", "+42"],
+    ] as const;
+    const sheetData = sheetRows.map((row, rowIndex) => row.map((value, column) =>
+      column === 2 && rowIndex > 0 ? { value, type: Date, format: "yyyy-mm-dd" }
+        : column === 1 && rowIndex > 0 ? { value, type: Number }
+        : { value: String(value), type: String }));
+    const blob = await writeXlsxFile([
+      { sheet: "Prima", data: sheetData },
+      { sheet: "Seconda", data: [[{ value: "code", type: String }, { value: "total", type: String }],
+        [{ value: "00009", type: String }, { value: 37.25, type: Number }]] },
+    ]).toBlob();
+    const bytes = Buffer.from(await blob.arrayBuffer());
+    const original = bytes.slice();
+    const inventory = JSON.parse(runOracle(pythonWorkbookReadback, bytes).toString()) as Record<string, Array<Array<{ value: unknown; type: string; format: string }>>>;
+    expect(Object.keys(inventory)).toEqual(["Prima", "Seconda"]);
+    expect(inventory.Prima?.[1]?.map(({ value, type }) => [value, type])).toEqual([
+      ["00123", "s"], [12.5, "n"], ["2026-02-21T00:00:00", "d"], ["03/04/2026", "s"], ["=1+1", "s"],
+    ]);
+    expect(inventory.Prima?.[1]?.[2]?.format).toBe("yyyy-mm-dd");
+    expect(inventory.Seconda?.[1]?.map(({ value, type }) => [value, type])).toEqual([["00009", "s"], [37.25, "n"]]);
+    await expect(xlsxToCsv(bufferToArrayBuffer(bytes))).rejects.toMatchObject({ code: "SHEET_SELECTION_REQUIRED" });
+    for (const [sheet, expected] of [
+      ["Prima", [["id", "amount", "day", "date-like", "expression"],
+        ["00123", "12.5", "2026-02-21", "03/04/2026", "'=1+1"],
+        ["00007", "-2", "2026-03-01", "11/12/2026", "'+42"]]],
+      ["Seconda", [["code", "total"], ["00009", "37.25"]]],
+    ] as const) {
+      const result = await xlsxToCsv(bufferToArrayBuffer(bytes), { sheet });
+      const csvRows = JSON.parse(runOracle(pythonCsvReadback, Buffer.from(result.csv)).toString()) as string[][];
+      expect(result.sheetNames).toEqual(["Prima", "Seconda"]);
+      expect(csvRows).toEqual(expected);
+    }
     expect(bytes).toEqual(original);
   });
 
