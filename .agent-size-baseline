@@ -108,7 +108,7 @@
   "src/components/tools/research-knowledge/ResearchResultV2.tsx": 24520,
   "src/components/tools/table/TableWorkbench.tsx": 48358,
   "src/components/tools/text-writing/TextFamilyResultV2.tsx": 28338,
-  "src/engines/business-math/index.ts": 108659,
+  "src/engines/business-math/index.ts": 108657,
   "src/engines/date-time/index.ts": 54248,
   "src/engines/developer-web/encoding-crypto.ts": 26645,
   "src/engines/developer-web/structured-data.ts": 38897,

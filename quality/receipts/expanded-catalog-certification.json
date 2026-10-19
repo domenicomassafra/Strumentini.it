@@ -16251,6 +16251,7 @@
           "sha256": "247c8d31b2e30b27df3e9adcf39f643e1294bc43e2ca92444583423ca0a53b97"
         },
         "testFiles": [
+          "tests/business-math-expansion.test.ts",
           "tests/business-tools.test.ts"
         ]
       },
