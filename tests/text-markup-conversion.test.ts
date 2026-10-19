@@ -101,12 +101,19 @@ describe("ticket 54 — normalized TXT/Markdown/HTML conversion core", () => {
     });
   });
 
-  it("exposes correct local runtime filenames, MIME types and full UTF-8 outputs", () => {
+  it("exposes correct local runtime filenames, MIME types and full UTF-8 outputs", async () => {
     const html = converterModule.run({ mode: "markdown-to-html", text: "# È" }, { defaults: {} }) as ReturnType<typeof convertTextMarkup>;
     expect(html).toMatchObject({ filename: "documento-convertito.html", mime: "text/html", output: "<h1>È</h1>" });
-    const markdown = converterModule.run({ mode: "html-to-markdown", text: "<p>È</p>" }, { defaults: {} }) as ReturnType<typeof convertTextMarkup>;
-    expect(markdown).toMatchObject({ filename: "documento-convertito.md", mime: "text/markdown", output: "È" });
+    await expect(converterModule.run({ mode: "html-to-markdown", text: "<p>È</p>" }, { defaults: {} }))
+      .rejects.toThrow("HTML_MARKDOWN_BROWSER_ONLY");
     const text = converterModule.run({ mode: "html-to-text", text: "<p>È</p>" }, { defaults: {} }) as ReturnType<typeof convertTextMarkup>;
     expect(text).toMatchObject({ filename: "documento-convertito.txt", mime: "text/plain", output: "È" });
+  });
+
+  it("cancels the HTML donor before lazy-loading it when the operation was aborted", () => {
+    const controller = new AbortController();
+    controller.abort();
+    expect(() => converterModule.run({ mode: "html-to-markdown", text: "<p>annullato</p>" }, { defaults: {} }, controller.signal))
+      .toThrow(expect.objectContaining({ name: "AbortError" }));
   });
 });
