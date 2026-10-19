@@ -8,6 +8,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { tmpdir } from "node:os";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { editorHydrated, invalidPdfRejected } from "./pdf-engine-369-browser-state.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18469;
@@ -147,14 +148,14 @@ try {
   await tab.send("Network.enable");
   await tab.send("DOM.enable");
   await tab.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
-  await waitFor('Boolean(document.querySelector("[data-pdf-watermark] input[type=file]"))', "editor hydration");
+  await waitFor(editorHydrated, "editor hydration");
   assert(await tab.evaluate("document.documentElement.scrollWidth <= innerWidth + 2"),
     "PDF editor route must fit 390px");
   temporary = await mkdtemp(join(tmpdir(), "pdf-369-browser-"));
   const invalid = join(temporary, "invalid.pdf");
   await writeFile(invalid, Buffer.from("%PDF-1.7\ninvalid\n%%EOF\n"));
   await setFile(invalid);
-  await waitFor('Boolean(document.querySelector("[role=alert]"))', "invalid PDF rejection");
+  await waitFor(invalidPdfRejected, "invalid PDF rejection");
   assert.equal(await tab.evaluate(
     '[...document.querySelectorAll("a")].filter((a)=>a.textContent.includes("Scarica PDF con filigrana")).length'), 0,
     "invalid input must not generate a PDF");
