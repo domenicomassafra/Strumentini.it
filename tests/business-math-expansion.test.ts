@@ -163,7 +163,7 @@ describe("ticket 313 — invoice discounts at the inclusive upper bound", () => 
     expect(validateInvoiceMath({ ...order, discountPercent: "99.99", total: "0.01" })).toMatchObject({ taxableAmount: "0.01", expectedTotal: "0.01", valid: true, issues: [] });
     for (const discountPercent of ["-1", "101"]) {
       expect(() => validateInvoiceMath({ ...order, discountPercent })).toThrow("INVALID_DISCOUNT_RATE");
-      expect(() => validateInvoiceMath({ ...line, lineItems: [{ ...line.lineItems[0], discountPercent }] })).toThrow("INVALID_DISCOUNT_RATE");
+      expect(() => validateInvoiceMath({ ...line, lineItems: [{ ...line.lineItems[0]!, discountPercent }] })).toThrow("INVALID_DISCOUNT_RATE");
     }
   });
 
@@ -173,7 +173,7 @@ describe("ticket 313 — invoice discounts at the inclusive upper bound", () => 
     expect(invoiceMathValidatorModule.run({ ...order, discountPercent: "99.99", total: "0.01" }, context)).toMatchObject({ expectedTotal: "0.01", valid: true });
     for (const discountPercent of ["-1", "101"]) {
       expect(() => invoiceMathValidatorModule.run({ ...order, discountPercent }, context)).toThrow("INVALID_DISCOUNT_RATE");
-      expect(() => invoiceMathValidatorModule.run({ ...line, lineItems: [{ ...line.lineItems[0], discountPercent }] }, context)).toThrow("INVALID_DISCOUNT_RATE");
+      expect(() => invoiceMathValidatorModule.run({ ...line, lineItems: [{ ...line.lineItems[0]!, discountPercent }] }, context)).toThrow("INVALID_DISCOUNT_RATE");
     }
   });
 });
