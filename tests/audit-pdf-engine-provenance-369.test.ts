@@ -62,9 +62,36 @@ describe("#369 execution-backed installed PDF vendor provenance gate", () => {
     expect(evidence.probe.fixturePageCount).toBe(2);
     expect(evidence.probe.extractedText).toMatch(/alpha|beta/iu);
     expect(evidence.probe.fixtureSha256).toMatch(/^[a-f0-9]{64}$/u);
+    expect(evidence.probe.roundTrip).toMatchObject({
+      operation: "ADD_VISIBLE_TEXT_OVERLAY_PAGE_1", pageCount: 2,
+      firstPageText: expect.stringMatching(/alpha.*STR369_OVERLAY/u),
+      untouchedPageText: "beta", independentReader: "pdfjs-dist/legacy", verdict: "PASS",
+    });
+    expect(evidence.probe.roundTrip.originalSha256).toBe(evidence.probe.fixtureSha256);
+    expect(evidence.probe.roundTrip.outputSha256).toMatch(/^[a-f0-9]{64}$/u);
+    expect(evidence.probe.roundTrip.outputSha256).not.toBe(evidence.probe.roundTrip.originalSha256);
     expect(evidence.adoption).toBe("NO_ADOPT_NO_GOLD");
     expect(evidence.comparison.some((r) => r.engine === "MuPDF" && r.installed === false && r.licenseGate === "AGPL_OR_COMMERCIAL_UNAPPROVED")).toBe(true);
     expect(evidence.comparison.some((r) => r.engine === "in-house PDF parser/writer" && r.installed)).toBe(true);
+    expect(evidence.comparison.map((row) => row.engine)).toEqual([
+      "in-house PDF parser/writer", "Mozilla PDF.js", "pdfstudio / qpdf WASM",
+      "pdf-lib", "@cantoo/pdf-lib (feasibility)", "MuPDF", "macOS PDFKit",
+    ]);
+    expect(evidence.comparison.every((row) => row.checkedAt === "2026-10-19"
+      && row.source.length > 0 && row.licenseSource.length > 0
+      && row.browserBundle.length > 0 && row.mobileEvidence.length > 0
+      && row.unsupported.length > 0)).toBe(true);
+    expect(evidence.comparison.find((r) => r.engine === "in-house PDF parser/writer")?.decision).toBe("KEEP_SCOPED");
+    expect(evidence.comparison.find((r) => r.engine === "Mozilla PDF.js")?.decision).toBe("RENDER_ONLY");
+    expect(evidence.comparison.find((r) => r.engine === "MuPDF")).toMatchObject({
+      installed: false, licenseGate: "AGPL_OR_COMMERCIAL_UNAPPROVED", decision: "NO_ADOPT",
+      mobileEvidence: "NOT_RUN",
+    });
+    expect(evidence.comparison.find((r) => r.engine === "pdfstudio / qpdf WASM")?.browserBundle)
+      .toMatch(/local qpdf WASM \d+B raw\/\d+B gzip/u);
+    expect(evidence.comparison.find((r) => r.engine === "pdf-lib")).toMatchObject({
+      installed: false, decision: "NO_ADOPT",
+    });
   }, 20_000);
 
   it("admits unchanged bounded local vendor evidence but never claims transitive legal clearance", () => {
