@@ -30161,13 +30161,14 @@
         },
         "module": {
           "path": "src/tools/slug-generator/module.ts",
-          "sha256": "9ec70de81cc49bef8d4a779b6bd702967b7942671092ded669efcc3829c36c5f"
+          "sha256": "16395627fcaa8550af4d250dc5fff8dc6bedc1ba083e539cb0522c193f3066bb"
         },
         "page": {
           "path": "src/pages/tools/slug-generator.astro",
           "sha256": "0bad78c2c740abd6f27fcb913e7e8b8f204df7596fdd7bf3b5dad7c493ab6ec4"
         },
         "testFiles": [
+          "tests/strume305-slugify.test.ts",
           "tests/text-writing-catalog.test.ts",
           "tests/text-writing-engine.test.ts"
         ]
