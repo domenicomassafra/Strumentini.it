@@ -55,11 +55,19 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     const canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) throw new Error("CANVAS_UNAVAILABLE");
+    // The donor's putAlpha() replaces any alpha originally present in a PNG or
+    // WebP. Preserve user-provided transparency by intersecting that alpha with
+    // the predicted matte (a fully transparent input pixel stays transparent).
+    const sourceBitmap = await createImageBitmap(imageBlob);
+    ctx.drawImage(sourceBitmap, 0, 0);
+    sourceBitmap.close();
+    const originalPixels = ctx.getImageData(0, 0, width, height).data;
     const rgba = new Uint8ClampedArray(output.data);
     let transparent = 0;
     let mixed = 0;
     let opaque = 0;
     for (let i = 3; i < rgba.length; i += 4) {
+      rgba[i] = Math.round(rgba[i] * originalPixels[i] / 255);
       if (rgba[i] === 0) transparent++;
       else if (rgba[i] === 255) opaque++;
       else mixed++;

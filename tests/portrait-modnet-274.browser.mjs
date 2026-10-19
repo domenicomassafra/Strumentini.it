@@ -109,6 +109,27 @@ for (const [name, engine] of Object.entries(engines)) {
         assert.ok(assetRequests.length > 0 && assetRequests.every(([method]) => method === "GET"), "Only same-origin GET model and runtime assets");
         console.log(`PASS ${name} ${photo} real pixel matte/point oracle accuracy=${accuracy} baseline=${noAbilityBaseline} ${JSON.stringify(pixels)}`);
       }
+      // Independent RGBA donor input: original Pexels portrait with a manually
+      // authored fully clear corner and a 100/255 alpha face patch.
+      await page.locator('input[type="file"]').setInputFiles(resolve("tests/fixtures/portrait-modnet-274/portrait-derived-alpha.png"));
+      await page.getByRole("button", { name: /Avvia/u }).click();
+      await page.waitForFunction(() => /PNG RGBA decodificato|Rimozione sfondo non disponibile|Tempo limite/.test(document.querySelector('[data-portrait-274] [role="status"]')?.textContent ?? ""), null, { timeout: 135_000 });
+      assert.match(await page.locator('[data-portrait-274] [role="status"]').textContent(), /PNG RGBA decodificato/u);
+      const preserved = await page.evaluate(async () => {
+        const response = await fetch(document.querySelector('[data-portrait-274] img').src);
+        const bitmap = await createImageBitmap(await response.blob());
+        const canvas = document.createElement("canvas");
+        canvas.width = bitmap.width; canvas.height = bitmap.height;
+        const ctx = canvas.getContext("2d"); ctx.drawImage(bitmap, 0, 0); bitmap.close();
+        const alpha = (x, y) => ctx.getImageData(x, y, 1, 1).data[3];
+        return { clearCorner: alpha(20, 20), semiTransparentFace: alpha(340, 100), originalDimensions: [canvas.width, canvas.height] };
+      });
+      assert.deepEqual(preserved.originalDimensions, [768, 512]);
+      assert.equal(preserved.clearCorner, 0);
+      assert.ok(preserved.semiTransparentFace > 0 && preserved.semiTransparentFace <= 100,
+        `Preexisting PNG alpha must not be discarded by the model: ${JSON.stringify(preserved)}`);
+      assert.deepEqual(network, [], "RGBA path must not upload or call offsite services");
+      console.log(`PASS ${name} originally transparent portrait PNG alpha preservation ${JSON.stringify(preserved)}`);
       await page.route(`${origin}/models/**`, (route) => route.abort("internetdisconnected"));
       await page.locator('input[type="file"]').setInputFiles(resolve(`tests/fixtures/portrait-modnet-274/portrait-pexels-${samples[0]}.jpg`));
       await page.getByRole("button", { name: /Avvia/u }).click();
