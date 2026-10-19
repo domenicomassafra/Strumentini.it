@@ -8,6 +8,7 @@ import { generateDocxFromSemanticText } from "../src/engines/ooxml/office-semant
 
 const execFileAsync = promisify(execFile);
 const fixtures = ["sample.xlsx", "sample.docx", "sample.pptx"] as const;
+const richFixtures = ["complex.docx", "complex.xlsx", "complex.pptx"] as const;
 const directory = await mkdtemp(join(tmpdir(), "strumentini-ooxml-reopen-"));
 
 try {
@@ -25,6 +26,19 @@ try {
       throw new Error(`${fixture}: independent zipinfo did not report every member as deflated.`);
     }
     console.log(`${fixture}: PASS ${rebuilt.inputByteLength} -> ${rebuilt.byteLength} (${rebuilt.sizeOutcome}), ${methods.length} DEFLATE members`);
+  }
+  // #368: import and export authentic rich Office packages without flattening
+  // their layout, font declarations, tables, images, charts or relationships.
+  // Python's standard-library ZIP and XML readers independently reopen both
+  // physical archives and compare *every* member (including embedded media).
+  for (const fixture of richFixtures) {
+    const sourcePath = `tests/ooxml-68-corpus/${fixture}`;
+    const source = await readFile(sourcePath);
+    const rebuilt = await rebuildOoxmlPackage(new Uint8Array(source));
+    const outputPath = join(directory, `rich-${fixture}`);
+    await writeFile(outputPath, new Uint8Array(rebuilt.bytes));
+    const { stdout } = await execFileAsync("python3", ["scripts/check-office-rich-reopen-368.py", sourcePath, outputPath]);
+    console.log(stdout.trim());
   }
   const generated = await generateDocxFromSemanticText("# Generated\n\n- one\n\n| id | value |\n| --- | --- |\n| 001 | ok |", "markdown");
   const generatedPath = join(directory, "generated-semantic.docx");
