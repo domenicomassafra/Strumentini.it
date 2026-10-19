@@ -39,6 +39,28 @@ try {
     const next = await output.innerText();
     check(next.includes("27.137,08") && next.includes("14 mensilità") && next !== first,
       `monthly presentation changes but annual tax does not ${width}px`);
+    await form.locator('[name="year"]').selectOption("2025");
+    await form.locator('[name="profile"]').selectOption("agricultural-2025-fpld");
+    await form.locator('[name="rate"]').fill("");
+    await form.locator('[name="base"]').check();
+    await form.locator('[name="employee"]').check();
+    await form.locator('[name="region"]').selectOption("puglia");
+    await form.locator('[name="municipality"]').selectOption("bari");
+    await form.locator('button[type="submit"]').click();
+    const modeled = await output.innerText();
+    check(modeled.includes("27.421,56") && modeled.includes("9042,44") && modeled.includes("3536,00") &&
+      modeled.includes("Detrazione lavoro dipendente") && modeled.includes("Addizionale regionale Puglia") &&
+      modeled.includes("Addizionale comunale Bari"), `2025 INPS/MEF gross-to-net and individual deductions exact ${width}px`);
+    await form.locator('[name="months"]').selectOption("12");
+    await form.locator('button[type="submit"]').click();
+    check((await output.innerText()).includes("27.421,56") && (await output.innerText()).includes("12 mensilità"),
+      `2025 annual modeled net unchanged across installments ${width}px`);
+    await form.locator('[name="base"]').uncheck();
+    await form.locator('button[type="submit"]').click();
+    const inpsError = page.locator('[data-salary-estimate-13] [role="alert"]');
+    check(await inpsError.isVisible() && (await output.textContent())?.trim() === "",
+      `unconfirmed official INPS profile refuses net ${width}px`);
+    await form.locator('[name="profile"]').selectOption("declared-rate");
     await form.locator('[name="rate"]').fill("9,999");
     await form.locator('button[type="submit"]').click();
     const alert = page.locator('[data-salary-estimate-13] [role="alert"]');

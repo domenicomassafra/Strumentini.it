@@ -60,7 +60,10 @@ for (const previewPath of previewOnlyPaths) {
         preview.includes("Puglia") && preview.includes("Bari") &&
         preview.includes("non sono calcolate") && preview.includes("Normattiva")
     : previewPath === "tools/stipendio-netto/index.html"
-      ? preview?.includes("data-salary-estimate-13") && preview.includes("stima parziale") &&
+      ? preview?.includes("data-salary-estimate-13") &&
+        preview.includes("Stima dello stipendio netto annuale da RAL") &&
+        preview.includes("residuo nazionale parziale") &&
+        preview.includes("non significa che siano zero") &&
         preview.includes("cedolino") && preview.includes("IRPEF") &&
         preview.includes("2025") && preview.includes("2026")
     : previewPath === "tools/irpef-componenti/index.html"
