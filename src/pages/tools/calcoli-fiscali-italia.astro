@@ -22,9 +22,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     </section>
 
     <section aria-labelledby="forf133-title">
-      <h2 id="forf133-title">Regime forfettario 2025 — professionisti Gestione Separata</h2>
-      <p>Coefficienti per i soli codici ATECO2007 della tabella ufficiale, con profilo INPS professionale 2025 dichiarato. La contribuzione stimata e quella già pagata sono mostrate separatamente: soltanto la seconda viene dedotta dall'imponibile dell'imposta sostitutiva.</p>
-      <form data-calculator="forf133">
+      <h2 id="forf133-title">Regime forfettario annuale — professionisti Gestione Separata</h2>
+      <p>Anno 2025: nove gruppi ATECO2007 della tabella ufficiale e due profili INPS professionali dichiarati. Il 2026 è selezionabile ma rifiutato finché non è verificato il pacchetto completo di regole applicabili: nessuna aliquota trasferita automaticamente da un anno all'altro. Solo i contributi già versati sono dedotti dall'imponibile.</p>
+      <noscript><p data-forf133-noscript>La simulazione richiede JavaScript. Senza JavaScript il modulo resta disattivato e non invia ricavi o contributi.</p></noscript>
+      <form data-calculator="forf133" novalidate>
+        <label>Anno d'imposta <select name="year"><option value="2025">2025 — fonti verificate</option><option value="2026">2026 — calcolo non verificato</option></select></label>
         <label>Codice ATECO2007 <input name="ateco" placeholder="62.01.00" required /></label>
         <label>Ricavi anno precedente 2024 (€) <input name="prior" inputmode="decimal" required /></label>
         <label>Ricavi 2025 (€) <input name="revenue" inputmode="decimal" required /></label>
@@ -32,12 +34,14 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         <label>INPS 2025 <select name="inps"><option value="gs-2025-exclusive">Professionista Gestione Separata senza altra copertura — 26,07%</option><option value="gs-2025-other-coverage">Professionista pensionato o con altra copertura obbligatoria — 24%</option></select></label>
         <label>Imposta sostitutiva <select name="rate"><option value="standard-15">15% ordinaria dichiarata</option><option value="startup-5">5% startup dichiarata</option></select></label>
         <label class="check"><input name="eligible" type="checkbox" required /> Dichiaro di aver verificato i requisiti di accesso al regime forfettario.</label>
+        <label class="check"><input name="gsProfessional" type="checkbox" required /> Confermo di essere un professionista ordinario iscritto alla Gestione Separata INPS, senza una cassa professionale propria né disciplina previdenziale speciale.</label>
         <label class="check"><input name="paidVerified" type="checkbox" required /> Confermo l'importo dei contributi effettivamente già pagati, distinto dalla previsione INPS.</label>
         <label class="check"><input name="startup" type="checkbox" /> Solo se seleziono 5%: confermo i requisiti specifici per la nuova attività.</label>
-        <button type="submit">Calcola imposte e contributi</button>
+        <p>Al cambio di anno, i dati fiscali e le dichiarazioni sono azzerati. Usa importi in euro con massimo due decimali e nessun separatore delle migliaia.</p>
+        <button type="submit" disabled>Calcola imposte e contributi</button>
         <p role="alert" hidden></p><output aria-live="polite"></output>
       </form>
-      <p class="source">Fonti: <a href="https://www.gazzettaufficiale.it/eli/gu/2018/12/31/302/so/62/sg/pdf">Gazzetta, allegato coefficienti ATECO</a>; <a href="https://www.normattiva.it/eli/id/2014/12/29/14G00203/CONSOLIDATED/20251231">legge 190/2014 al 2025</a>; <a href="https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf">INPS circ. 27/2025</a>. Sono escluse altre casse, categorie speciali, versamenti/acconti e requisiti individuali non verificati.</p>
+      <p class="source">Fonti per il 2025: <a href="https://www.gazzettaufficiale.it/eli/gu/2018/12/31/302/so/62/sg/pdf">Gazzetta, legge 145/2018, allegato 2 pagina 218 (nove righe coefficienti ATECO2007)</a>; <a href="https://www.normattiva.it/eli/id/2014/12/29/14G00203/CONSOLIDATED/20251231">legge 190/2014 consolidata al 31/12/2025 (limite 85.000 €, aliquote 15% e 5%)</a>; <a href="https://www.normattiva.it/eli/id/2025/06/12/25G00090/CONSOLIDATED/20251231">D.Lgs. 81/2025 (transizione ATECO2007)</a>; <a href="https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf">INPS circ. 27/2025, sezioni 2 e 6 (26,07%, 24% e massimale)</a>. Esclusi altre casse, artigiani/commercianti, sport, casi speciali, acconti e requisiti personali non attestati. Il netto è illustrativo e non include altri costi o imposte.</p>
     </section>
 
     <section aria-labelledby="tfr134-title">
@@ -97,6 +101,18 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     const reset = () => { output.textContent = ""; alert.textContent = ""; alert.hidden = true; };
     form.addEventListener("input", reset);
     form.addEventListener("change", reset);
+    if (form.dataset.calculator === "forf133") {
+      const year = form.elements.namedItem("year") as HTMLSelectElement;
+      year.addEventListener("change", () => {
+        form.querySelectorAll<HTMLInputElement>('input:not([type="checkbox"])').forEach((input) => { input.value = ""; });
+        form.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => { input.checked = false; });
+        form.querySelectorAll<HTMLSelectElement>('select:not([name="year"])').forEach((select) => { select.selectedIndex = 0; });
+        alert.textContent = year.value === "2025"
+          ? "Anno cambiato: inserisci nuovamente ricavi, contributi e dichiarazioni per il 2025."
+          : "Anno 2026 non verificato per il regime forfettario: nessun calcolo disponibile. Dati precedenti azzerati.";
+        alert.hidden = false;
+      });
+    }
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       reset();
@@ -107,17 +123,19 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
             declaresFpldBaseEqualsRal: checked(form, "baseConfirmed") });
           output.textContent = `RAL: ${euro(result.ralCents)}. Contributi INPS a carico lavoratore: ${euro(result.workerContributionsCents)}; a carico datore (fuori dalla RAL): ${euro(result.employerContributionsCents)}. Imponibile IRPEF nazionale: ${euro(result.taxableCents)}. IRPEF lorda nazionale: ${euro(result.nationalIrpefCents)}. Netto annuo illustrativo: ${euro(result.annualNetCents)}. ${result.installmentsCents.length} rate: ${result.installmentsCents.map(euro).join(" + ")}. ${result.limitations}`;
         } else if (form.dataset.calculator === "forf133") {
+          if (value(form, "year") !== "2025") throw new Error("Anno 2026 non verificato: il calcolo forfettario copre soltanto il 2025.");
           if (!checked(form, "paidVerified")) throw new Error("Conferma i contributi effettivamente pagati.");
           const result = calculateForfettarioWithInps133({
-            taxYear: 2025, atecoVersion: "ATECO2007", atecoCode: value(form, "ateco").trim(),
+            taxYear: Number(value(form, "year")), atecoVersion: "ATECO2007", atecoCode: value(form, "ateco").trim(),
             priorYearReceiptsCents: money(form, "prior"), yearReceiptsCents: money(form, "revenue"),
             paidMandatoryContributionsCents: money(form, "paid"),
             inpsProfile: value(form, "inps") as "gs-2025-exclusive" | "gs-2025-other-coverage",
             declaredRate: value(form, "rate") as "standard-15" | "startup-5",
             declaresEligible: checked(form, "eligible"),
+            declaresOrdinaryGsProfessional: checked(form, "gsProfessional"),
             declaresStartupFivePercentRequirements: checked(form, "startup"),
           });
-          output.textContent = `Ricavi 2025: ${euro(result.yearReceiptsCents)}. Coefficiente ATECO2007: ${result.coefficientPercent}% (riga ${result.coefficientTableRow}). Reddito forfettario: ${euro(result.grossForfettarioIncomeCents)}. INPS 2025 stimata ${result.forecastContributionRatePercent}%: ${euro(result.forecastContributionsCents)}. Contributi già pagati dichiarati: ${euro(result.paidMandatoryContributionsCents)}. Imponibile imposta: ${euro(result.taxableIncomeCents)}. Sostitutiva ${result.declaredTaxRatePercent}%: ${euro(result.substituteTaxCents)}. Disponibile indicativo dopo imposta e INPS stimata: ${euro(result.forecastNetAfterTaxAndInpsCents)}. ${result.inpsLimitations}`;
+          output.textContent = `Anno ${result.taxYear}; codice ATECO2007 ${result.atecoCode}. Ricavi 2025: ${euro(result.yearReceiptsCents)}. Coefficiente ATECO2007: ${result.coefficientPercent}% (riga ${result.coefficientTableRow}). Reddito forfettario: ${euro(result.grossForfettarioIncomeCents)}. INPS 2025 stimata ${result.forecastContributionRatePercent}% sul reddito forfettario: ${euro(result.forecastContributionsCents)}. Contributi già pagati dichiarati, dedotti dal reddito: ${euro(result.paidMandatoryContributionsCents)}. Imponibile imposta (reddito meno contributi pagati): ${euro(result.taxableIncomeCents)}. Sostitutiva ${result.declaredTaxRatePercent}%: ${euro(result.substituteTaxCents)}. Netto con contributi già pagati (ricavi meno versato meno imposta): ${euro(result.estimatedNetAfterTaxAndContributionsCents)}. Netto previsionale sostituendo i versamenti con la stima INPS annuale: ${euro(result.forecastNetAfterTaxAndInpsCents)}. ${result.inpsLimitations}`;
         } else if (form.dataset.calculator === "tfr134") {
           const result = calculateTfr134({ referenceYear: 2025, priorTfrCents: money(form, "prior"),
             eligibleAnnualSalaryCents: money(form, "salary"), serviceMonthsThisYear: Number(value(form, "months")),
@@ -147,6 +165,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         alert.hidden = false;
       }
     });
+    if (form.dataset.calculator === "forf133") form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   });
 </script>
 

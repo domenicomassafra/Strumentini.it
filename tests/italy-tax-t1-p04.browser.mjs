@@ -63,19 +63,29 @@ try {
   for (const [name, number] of Object.entries({ ateco: "62.01.00", prior: "20000", revenue: "30000.00", paid: "1000.00" }))
     await input(piva, name).fill(number);
   await input(piva, "eligible").check();
+  await input(piva, "gsProfessional").check();
   await input(piva, "paidVerified").check();
   await send(piva);
   const forf = await output(piva);
   assert(forf.includes("Reddito forfettario: " + euro(20100)));
-  assert(forf.includes("INPS 2025 stimata 26.07%: " + euro(5240.07)));
+  assert(forf.includes("INPS 2025 stimata 26.07% sul reddito forfettario: " + euro(5240.07)));
   assert(forf.includes("Sostitutiva 15%: " + euro(2865)));
-  assert(forf.includes("Contributi già pagati dichiarati: " + euro(1000)));
+  assert(forf.includes("Contributi già pagati dichiarati, dedotti dal reddito: " + euro(1000)));
+  assert(forf.includes("Netto con contributi già pagati (ricavi meno versato meno imposta): " + euro(26135)));
+  assert(forf.includes("Netto previsionale sostituendo i versamenti con la stima INPS annuale: " + euro(21894.93)));
   await input(piva, "rate").selectOption("startup-5");
   await send(piva);
   assert.match(await error(piva), /5_PERCENT_DECLARATION_REQUIRED/);
   await input(piva, "startup").check();
   await send(piva);
   assert((await output(piva)).includes("Sostitutiva 5%: " + euro(955)));
+  await input(piva, "year").selectOption("2026");
+  assert.equal(await input(piva, "revenue").inputValue(), "", "year change discards stale receipts");
+  assert.equal(await input(piva, "gsProfessional").isChecked(), false, "year change discards GS declaration");
+  assert.equal(await input(piva, "rate").inputValue(), "standard-15", "year change resets startup-rate choice");
+  assert.equal(await input(piva, "inps").inputValue(), "gs-2025-exclusive", "year change resets prior INPS profile");
+  await send(piva);
+  assert.match(await error(piva), /2026 non verificato/u);
 
   const tfr = form("tfr134");
   await input(tfr, "prior").fill("10000");
