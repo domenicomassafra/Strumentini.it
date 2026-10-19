@@ -3,6 +3,7 @@ import { h } from "preact";
 import render from "preact-render-to-string";
 import { describe, expect, it } from "vitest";
 import { ImageResultV2, prepareImageResult } from "../src/components/tools/image-visual/ImageResultV2";
+import { copyPayload, metadataGroupsLabel } from "../src/components/tools/image-visual/image-result-fields";
 import { resultV2Inventory } from "../src/catalog/result-v2-inventory.generated";
 import { IMAGE_RESULT_DECLARATIONS } from "../src/tools/image-result-declarations";
 import { catalog } from "../src/generated/catalog";
@@ -95,6 +96,24 @@ describe("ticket 97 image Result v2 migration", () => {
     expect(validatorHtml).toContain('data-result-class="validator"');
     expect(validatorHtml).toContain('data-result-slot="checks"');
     expect(validatorHtml).toContain('data-result-action="retry"');
+  });
+
+  it("keeps GPS private in the metadata viewer and formats legacy metadata groups", () => {
+    const raw = {
+      name: "photo.jpg", signature: "jpeg", cameraMake: "Camera", orientation: 6,
+      metadataStatus: "read", gpsPresent: true,
+      gps: { latitude: 40.5, longitude: 16.91666667 },
+    };
+    const html = render(h(ImageResultV2, {
+      toolId: "image-metadata-viewer", result: { raw, artifacts: [] }, onReset: () => undefined,
+    }));
+    expect(html).toContain("coordinate nascoste");
+    expect(html).toContain("Mostra coordinate GPS");
+    expect(html).not.toContain("40.5");
+    expect(html).not.toContain("16.91666667");
+    expect(copyPayload(raw)).not.toContain('"gps"');
+    expect(copyPayload(raw)).not.toContain("latitude");
+    expect(metadataGroupsLabel([{ carrier: "EXIF", count: 2, bytes: 1536 }])).toBe("EXIF ×2 · 1,5 KiB");
   });
 
   it("removes the family legacy-primary image-resize panel without changing certification truth", () => {
