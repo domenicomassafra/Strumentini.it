@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ITALIAN_PASSPHRASE_WORDLIST } from "../src/reference-data/italian-passphrase-v1";
 import {
   generateItalianPassphrase,
@@ -9,7 +9,7 @@ import {
   unbiasedRandomIndex,
   type RandomFill,
 } from "../src/tools/password-pin-passphrase-generator/module";
-import { estimatePasswordStrength, PASSWORD_STRENGTH_MAX_LENGTH } from "../src/tools/password-strength-estimator/module";
+import { estimatePasswordStrength, estimatePasswordStrengthWithDonor, PASSWORD_STRENGTH_MAX_LENGTH } from "../src/tools/password-strength-estimator/module";
 
 function sequenceFill(values: readonly number[]): RandomFill {
   let index = 0;
@@ -98,5 +98,55 @@ describe("explainable password strength estimator", () => {
     expect(copy).toContain("non afferma che la password sia presente o assente");
     expect(copy).toContain("non sostituisce una blocklist");
     expect(copy).toContain("Non normalizza Unicode");
+  });
+});
+
+describe("STR-304 — conservative, lazy zxcvbn-ts adoption", () => {
+  it("compares synthetic Italian words, predictable sequences, repetition, Unicode and passphrases with the original estimator", async () => {
+    const fixture = JSON.parse(await readFile(resolve("quality/fixtures/password-security/donor-304.json"), "utf8")) as {
+      vectors: Array<{ password: string; expected_min_score?: number; expected_max_score?: number; expected_factor_code?: string }>;
+    };
+    const samples = [
+      ...fixture.vectors,
+      { password: "🙂".repeat(1024), expected_max_score: 2 },
+      { password: "a".repeat(1024), expected_max_score: 2 },
+    ];
+    let dictionaryMatches = 0;
+    let loweredScores = 0;
+    for (const { password: sample, expected_max_score, expected_min_score, expected_factor_code } of samples) {
+      const baseline = estimatePasswordStrength(sample);
+      const result = await estimatePasswordStrengthWithDonor(sample);
+      expect(result.score).toBeLessThanOrEqual(baseline.score);
+      if (expected_max_score !== undefined) expect(result.score).toBeLessThanOrEqual(expected_max_score);
+      if (expected_min_score !== undefined) expect(result.score).toBeGreaterThanOrEqual(expected_min_score);
+      if (expected_factor_code !== undefined) expect(result.factors.map(({ code }) => code)).toContain(expected_factor_code);
+      expect(result.length).toBe(baseline.length);
+      expect(result.characterClasses).toBe(baseline.characterClasses);
+      expect(result.factors.map(({ code }) => code)).toEqual(expect.arrayContaining(baseline.factors.map(({ code }) => code)));
+      expect(JSON.stringify(result)).not.toContain(sample);
+      expect(await estimatePasswordStrengthWithDonor(sample)).toEqual(result);
+      dictionaryMatches += Number(result.factors.some(({ code }) => code === "donor-dictionary"));
+      loweredScores += Number(result.score < baseline.score);
+    }
+    expect(dictionaryMatches).toBeGreaterThan(0);
+    expect(loweredScores).toBeGreaterThan(0);
+  });
+
+  it("validates the 1,024 code-point limit before lazy loading and preserves cancellation", async () => {
+    await expect(estimatePasswordStrengthWithDonor("🙂".repeat(1024) + "a")).rejects.toThrow("PASSWORD_TOO_LONG");
+    const controller = new AbortController();
+    controller.abort();
+    await expect(estimatePasswordStrengthWithDonor("Gatto77", controller.signal))
+      .rejects.toMatchObject({ name: "AbortError" });
+  });
+
+  it("restores the identical prior result if the browser cannot create a Worker", async () => {
+    vi.stubGlobal("Worker", class { constructor() { throw new Error("Worker unavailable"); } });
+    try {
+      const sample = "Ghiaia!Torre7Menta?Fiume";
+      expect(await estimatePasswordStrengthWithDonor(sample)).toEqual(estimatePasswordStrength(sample));
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

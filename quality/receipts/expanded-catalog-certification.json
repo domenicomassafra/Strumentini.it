@@ -21327,7 +21327,7 @@
         },
         "module": {
           "path": "src/tools/password-strength-estimator/module.ts",
-          "sha256": "71a4408556d684933342eeab051e603a4b4f8173bb48929f46834b1fd742d638"
+          "sha256": "3b588001862f859edc2ed03fef51f8938980919d2cfb56ab203761913ba58984"
         },
         "page": {
           "path": "src/pages/tools/password-strength-estimator.astro",
