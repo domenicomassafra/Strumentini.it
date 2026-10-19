@@ -200,9 +200,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
 
   useEffect(() => {
     if (optionMode !== "order" || files[0] === undefined) return;
-    const file = files[0];
     let active = true;
-    void file.arrayBuffer().then(async (bytes) => {
+    void files[0].arrayBuffer().then(async (bytes) => {
       const { inspectPdfBytes } = await import("../../../engines/pdf");
       const count = inspectPdfBytes(new Uint8Array(bytes)).pageCount;
       if (active) setSelectionPageCount(count);
@@ -686,7 +685,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         ) : optionMode === "groups" ? (
           <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => { setGroups(event.currentTarget.value); setResult(null); }} placeholder="1-2; 3-4" disabled={isWorking} /></label>
         ) : null}
-        {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
+        {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); setResult(null); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
         {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="1-3, 5" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => { setRotation(event.currentTarget.value); setResult(null); }} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
         {optionMode === "rotation" && files[0] !== undefined && (
           <div class="actions" data-pdf-rotation-helpers>

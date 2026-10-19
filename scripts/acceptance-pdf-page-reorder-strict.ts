@@ -66,9 +66,21 @@ try {
 
     await submit.click();
     await page.locator(".result-panel[data-state='success']").waitFor({ timeout: 30000 });
-    const downloadTask = page.waitForEvent("download");
-    await page.getByRole("link", { name: "Scarica three-pages-reordered.pdf" }).click();
-    const downloaded = await downloadTask;
+    const link = page.getByRole("link", { name: "Scarica three-pages-reordered.pdf" });
+    const target = await link.getAttribute("href");
+    const fileName = await link.getAttribute("download");
+    if (!target?.startsWith("blob:") || fileName !== "three-pages-reordered.pdf") {
+      throw new Error(`Result link is not a verified local download: ${target} (${fileName})`);
+    }
+    const downloadTask = page.waitForEvent("download", { timeout: 15000 });
+    await link.click();
+    const downloaded = await downloadTask.catch(async () => {
+      const status = await page.evaluate(async (url) => {
+        try { const blob = await (await fetch(url)).blob(); return `blob bytes=${blob.size}`; }
+        catch (cause) { return `blob fetch failed: ${String(cause)}`; }
+      }, target);
+      throw new Error(`Browser did not emit a download event; link ${fileName} ${target}, ${status}`);
+    });
     const bytes = new Uint8Array(await readFile(await downloaded.path()));
     if (inspectPdfBytes(bytes).pageCount !== 3) throw new Error("Downloaded PDF has an incorrect page count");
     const texts = (await extractPdfText(bytes)).map((entry) => entry.text.trim());
@@ -76,6 +88,13 @@ try {
       throw new Error(`Downloaded PDF has the wrong page order: ${texts.join(",")}`);
     }
     if (downloads.length !== 1) throw new Error(`Expected exactly one download, got ${downloads.length}`);
+    await order.fill("3,NON_NUMERICO,1,2");
+    if (await page.getByRole("link", { name: /Scarica .*reordered\.pdf/u }).count() > 0) {
+      throw new Error("Editing the completed order kept a stale PDF available for download");
+    }
+    await submit.click();
+    await page.locator("form p.error[role='alert']").filter({ hasText: "NON_NUMERICO" }).waitFor();
+    if (downloads.length !== 1) throw new Error("Invalid edit triggered a second download");
     console.log("PDF reorder strict acceptance PASS: 5 rejected expressions, 0 invalid jobs/downloads, visual organizer, 3 downloaded pages in THIRD,FIRST,SECOND order");
   } finally {
     await context.close();
