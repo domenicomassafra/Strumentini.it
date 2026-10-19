@@ -134,7 +134,9 @@ for (const [name, engine] of Object.entries(engines)) {
       await page.locator('input[type="file"]').setInputFiles(resolve(`tests/fixtures/portrait-modnet-274/portrait-pexels-${samples[0]}.jpg`));
       await page.getByRole("button", { name: /Avvia/u }).click();
       await page.waitForFunction(() => /PNG RGBA decodificato|Rimozione sfondo non disponibile|Tempo limite/.test(document.querySelector('[data-portrait-274] [role="status"]')?.textContent ?? ""), null, { timeout: 135_000 });
-      console.log(`CACHE ${name} ${await page.locator('[role="status"]').textContent()}`);
+      const warmCacheStatus = await page.locator('[data-portrait-274] [role="status"]').textContent();
+      assert.match(warmCacheStatus, /PNG RGBA decodificato/u, `${name} must reuse same-origin warm model cache without refetch`);
+      console.log(`PASS ${name} warm-cache inference with model network blocked`);
     }
     await context.close();
     const denied = await browser.newContext();
