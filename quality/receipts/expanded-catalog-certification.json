@@ -15890,7 +15890,8 @@
           "sha256": "38a3b1a1ce8e6db81e3d74af3385c06ddbb9e9767d9534423599d11b27e01b95"
         },
         "testFiles": [
-          "tests/business-tools.test.ts"
+          "tests/business-tools.test.ts",
+          "tests/calculator-math-core.test.ts"
         ]
       },
       "oracle": {
