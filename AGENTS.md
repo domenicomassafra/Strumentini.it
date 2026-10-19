@@ -7,6 +7,12 @@ Repo e issue: `https://github.com/domenicomassafra/strumentini-it`.
 Checkout principale: `/Users/domenico/Code/Strumentini.it`.
 GitHub Issues è il tracker corrente. `.scratch/strumentini-expansion-20261005/` è uno snapshot storico/operativo: consultalo solo quando l'issue corrente lo richiama e non creare ticket duplicati.
 
+## Riuso prima di tutto (regola dell'owner, 15/10/2026)
+
+Prima di scrivere codice per una funzione, cerca chi l'ha già fatto: repository GitHub/GitLab, pacchetti npm/PyPI/crates, issue e PR di altri progetti che risolvono lo stesso problema. Registra nella issue i candidati con link, licenza, ultimo rilascio e attività. Adotta il pacchetto, oppure forka/clona il repository e adattalo; scrivi codice proprio solo per la parte mancante e con il motivo scritto nella issue. Licenze: annota obblighi (MIT/Apache/BSD ok; LGPL/MPL/GPL/AGPL vanno segnalati all'orchestratore prima dell'adozione). Mantieni la provenienza (repo, commit, licenza) in un file di donor del progetto.
+
+Registro donor esistente: [`docs/donor-provenance-366-active-2026-10-18.md`](docs/donor-provenance-366-active-2026-10-18.md).
+
 ## Architettura e ordine di lettura
 
 1. Astro 7 + Preact + TypeScript generano il sito statico in `dist/`.
