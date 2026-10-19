@@ -114,7 +114,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "toml-formatter") return tomlFormatterOperation(stringField(value, "text", "input", "toml"));
   if (toolId === "json-yaml-converter") return jsonYamlConverterOperation(stringField(value, "text", "input", "source"), requireDirection(value), optionalNumberField(value, "indent", "spaces") ?? 2);
   if (toolId === "url-codec") return urlCodecOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", optionalStringField(value, "set", "encodingSet") ?? "component");
-  if (toolId === "html-entity-codec") return htmlEntityOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", booleanField(value, false, "numeric"));
+  if (toolId === "html-entity-codec") return htmlEntityOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", booleanField(value, false, "numeric"), signal);
   if (toolId === "base64-codec") {
     const urlSafeValue = optionalStringField(value, "urlSafe", "base64url");
     const urlSafe = urlSafeValue === "url-safe" || urlSafeValue === "base64url" || urlSafeValue === "true";
