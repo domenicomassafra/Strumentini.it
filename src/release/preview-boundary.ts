@@ -1,3 +1,11 @@
+export const fiscalToolPreviews = [
+  ["calcoli-fiscali-italia", "data-fiscal-t1"],
+  ["irpef-annuale", "data-irpef-annuale"],
+  ["irpef-componenti", "data-irpef-components"],
+  ["iva-calcolo", "data-tax-iva"],
+  ["stipendio-netto", "data-salary-estimate-13"],
+] as const;
+
 /**
  * A very narrow exception for audited noncatalog or dev-only tool pages.
  * It does NOT promote either page, waive release evidence, or forgive another
@@ -15,6 +23,7 @@ export function narrowUncataloguedToolPreviews(input: {
   readonly pdfOcr247Source?: string;
   readonly pdfOcr247Html?: string;
   readonly redaction237Source?: string;
+  readonly fiscalPreviews?: Readonly<Record<string, { readonly source: string; readonly html: string }>>;
   readonly signatureSource: string;
   readonly sitemapXml: string;
 }): { readonly toolPageFiles: string[]; readonly staticFiles: string[]; readonly safePreviewNames: string[] } {
@@ -98,6 +107,24 @@ export function narrowUncataloguedToolPreviews(input: {
   if (redactionDevOnly) {
     toolPageFiles.splice(toolPageFiles.indexOf(redactionSourcePath), 1);
     safePreviewNames.push("pdf-true-redaction-237");
+  }
+  for (const [name, marker] of fiscalToolPreviews) {
+    const sourcePath = `src/pages/tools/${name}.astro`;
+    const staticPath = `tools/${name}/index.html`;
+    const preview = input.fiscalPreviews?.[name];
+    // Only these exact standalone pages may remain noindex previews. A missing
+    // build, marker, or discovery guard leaves the original error visible.
+    if (preview && toolPageFiles.includes(sourcePath) && staticFiles.includes(staticPath) &&
+      !inCatalog(`/tools/${name}`) &&
+      /<BaseLayout\b[\s\S]*?\bnoindex\s*>/u.test(preview.source) &&
+      new RegExp(`<main\\b[^>]*\\s${marker}(?:\\s|>)`, "u").test(preview.source) &&
+      /<meta\s+name="robots"\s+content="noindex, nofollow"\s*\/?\s*>/u.test(preview.html) &&
+      new RegExp(`<main\\b[^>]*\\s${marker}(?:[\\s=>])`, "u").test(preview.html) &&
+      !input.sitemapXml.includes(`/tools/${name}/`)) {
+      toolPageFiles.splice(toolPageFiles.indexOf(sourcePath), 1);
+      staticFiles.splice(staticFiles.indexOf(staticPath), 1);
+      safePreviewNames.push(name);
+    }
   }
   return { toolPageFiles, staticFiles, safePreviewNames };
 }

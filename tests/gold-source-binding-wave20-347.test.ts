@@ -79,7 +79,7 @@ async function withReleaseFixture(run: (root: string) => Promise<void>): Promise
       // Even though this fixture invokes --no-write-receipt without the
       // manual release gate, copy its transitive source so the synthetic CLI
       // can be loaded and continue proving genuine Gold byte binding.
-      "scripts/lib/current-remote-main-404.ts",
+      "scripts/lib/current-remote-main-404.ts", "scripts/lib/load-release-previews.ts",
       "src/release/validation.ts", "src/release/preview-boundary.ts", "src/catalog/groups.ts",
       "src/seo/public-discovery.ts",
     ]) fixtureFile(root, path);
