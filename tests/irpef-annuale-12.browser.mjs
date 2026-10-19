@@ -49,9 +49,8 @@ try {
   assert.equal(await scope.count(), 1);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
   assert.deepEqual(await year.locator("option").evaluateAll((items) => items.map((item) => item.value)), ["2025", "2026"]);
-  assert.match(await scope.innerText(), /detrazioni.*non calcolate/isu);
-  assert.match(await scope.innerText(), /addizionali.*non calcolate/isu);
-  assert.match(await scope.innerText(), /non.*imposta netta.*dovuta/isu);
+  assert.match(await scope.innerText(), /2026 detrazioni e addizionali non sono calcolate/isu);
+  assert.match(await scope.innerText(), /non è l'imposta personale definitiva/isu);
 
   let text = await submit("40000");
   assert.match(text, /IRPEF lorda nazionale.*10\.640,00\s*€/su);
@@ -62,12 +61,33 @@ try {
   assert.match(text, /35\s*%/u);
   assert.match(text, /non determinata/iu);
   assert.ok(await result.locator('a[href*="normattiva.it"]').count() >= 3, "provenance per bracket");
+
+  await scope.locator('[name="region"]').selectOption("puglia");
+  await scope.locator('[name="municipality"]').selectOption("bari");
+  await scope.locator('[name="employee"]').check();
+  text = await submit("40000");
+  assert.match(text, /Detrazione ordinaria lavoro dipendente.*868,10\s*€/su);
+  assert.match(text, /Addizionale regionale Puglia.*581,00\s*€/su);
+  assert.match(text, /Addizionale comunale Bari.*320,00\s*€/su);
+  assert.match(text, /Imposta finale modellata 2025.*10\.672,90\s*€/su);
+  assert.ok(await result.locator('a[href*="finanze.gov.it"]').count() >= 2, "official regional and municipal sources");
+  assert.ok(await result.locator('a[href*="def.finanze.it"]').count() >= 1, "official employment deduction source");
+  assert.match(text, /Restano escluse le altre detrazioni/iu);
+
+  await scope.locator('[name="municipality"]').selectOption("unknown");
+  assert.equal((await result.innerText()).trim(), "", "changing locality revokes previous final tax");
+  text = await submit("40000");
+  assert.match(text, /Imposta finale modellata: non determinata/iu);
+  assert.doesNotMatch(text, /10\.672,90\s*€/u, "partial sum cannot appear as final modeled tax");
+  await scope.locator('[name="municipality"]').selectOption("bari");
   await year.selectOption("2026");
   assert.equal((await result.innerText()).trim(), "", "switching tax year revokes previous gross tax");
   assert.equal(await income.inputValue(), "", "switching tax year requires fresh taxable income");
   text = await submit("40000");
   assert.match(text, /IRPEF lorda nazionale.*10\.400,00\s*€/su);
   assert.match(text, /33\s*%/u);
+  assert.match(text, /Imposta finale modellata: non determinata/iu, "2026 components are unverified");
+  assert.match(text, /NON calcolate.*anno 2025/isu, "2026 exclusions must be explicit");
   assert.ok(await result.locator('a[href*="normattiva.it"]').count() >= 6, "2026 has both source laws per bracket");
 
   for (const [taxYear, grossAt50k] of [["2025", "14.140,00"], ["2026", "13.700,00"]]) {
@@ -122,7 +142,7 @@ try {
   await noJsContext.close();
   assert.deepEqual(errors, []);
   assert.deepEqual(outside, []);
-  console.log("PASS STR-012 Chromium: 2025/26 scaglioni, source provenance, no individual-net claim, invalid/stale inputs, 2027 fail-closed; 320/390/768/1024/1440 no overflow");
+  console.log("PASS STR-012 Chromium: 2025 modeled final 10640-868.10+581+320=10672.90, 2026/partial unknown, official sources, stale/invalid/2027/noJS fail-closed, five viewports");
 } finally {
   await page.close();
   await context.close();

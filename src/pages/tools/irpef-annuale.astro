@@ -3,13 +3,13 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-annual-117";
 ---
 
-<BaseLayout title="Calcolo IRPEF annua lorda per scaglioni" description="Calcola l'IRPEF nazionale lorda per gli anni fiscali 2025 e 2026 con il dettaglio di ogni scaglione e le fonti normative, senza presumere detrazioni e addizionali." noindex>
+<BaseLayout title="Calcolo IRPEF annua per scaglioni e componenti" description="Calcolo IRPEF nazionale 2025/2026 e imposta finale modellata nel caso documentato 2025 di lavoro dipendente, Puglia e Bari." noindex>
   <main class="irpef-annual" data-irpef-annuale>
     <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / IRPEF annua</nav>
     <h1>Calcolo IRPEF annua per scaglioni</h1>
-    <p>Calcola la sola <strong>IRPEF lorda nazionale</strong> sul reddito imponibile annuo che hai già determinato, al netto degli eventuali oneri deducibili. Sono disponibili esclusivamente gli anni d'imposta con scaglioni nazionali verificati: 2025 e 2026.</p>
+    <p>Parti dal reddito imponibile IRPEF annuo già determinato, al netto degli oneri deducibili. Gli scaglioni nazionali sono verificati per 2025 e 2026. L'imposta finale modellata è disponibile solo per il caso documentato <strong>2025, lavoro dipendente per l'intero anno, Regione Puglia e Comune di Bari</strong>.</p>
     <aside class="scope" aria-label="Limiti del calcolo">
-      <p><strong>Calcolo parziale:</strong> detrazioni, crediti d'imposta e addizionali regionali e comunali <strong>non calcolate</strong>. Non sono valori pari a zero. Questo risultato <strong>non è l'imposta netta individuale dovuta</strong> e non è una dichiarazione fiscale.</p>
+      <p><strong>Limiti:</strong> nel 2026 detrazioni e addizionali non sono calcolate. Nel 2025 si modellano solo detrazione ordinaria per lavoro dipendente a tempo pieno nell'anno e addizionali Puglia/Bari, dietro conferma delle condizioni. Altre detrazioni, carichi familiari, crediti, bonus e condizioni speciali <strong>restano esclusi (non sono zero)</strong>. Il risultato non è l'imposta personale definitiva né una dichiarazione fiscale.</p>
     </aside>
     <noscript><p data-irpef-noscript>Questo calcolo locale richiede JavaScript: senza JavaScript il modulo resta disattivato e non trasmette redditi.</p></noscript>
 
@@ -23,7 +23,12 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
         <label for="irpef-annual-income">Reddito imponibile IRPEF annuo (€)</label>
         <input id="irpef-annual-income" name="income" type="text" inputmode="decimal" placeholder="40000,00" autocomplete="off" aria-describedby="income-help" required />
         <p class="hint" id="income-help">Inserisci euro senza separatori delle migliaia, con al massimo due decimali (es. 40000,50). Reddito massimo modellato: 1 miliardo di euro.</p>
-        <button type="submit" disabled>Calcola IRPEF lorda</button>
+        <label for="irpef-annual-region">Regione per l'addizionale</label>
+        <select id="irpef-annual-region" name="region"><option value="unknown">Altra regione / non indicata (non coperta)</option><option value="puglia">Puglia (solo 2025)</option></select>
+        <label for="irpef-annual-municipality">Comune per l'addizionale</label>
+        <select id="irpef-annual-municipality" name="municipality"><option value="unknown">Altro Comune / non indicato (non coperto)</option><option value="bari">Bari, con Regione Puglia (solo 2025)</option></select>
+        <label class="employee-confirm"><input type="checkbox" name="employee" /> Confermo per il 2025 lavoro dipendente ordinario per tutto l'anno (365 giorni), reddito complessivo pari al reddito imponibile inserito, e assenza di condizioni speciali. Altre detrazioni e crediti restano esclusi dalla simulazione.</label>
+        <button type="submit" disabled>Calcola IRPEF annua</button>
       </form>
       <p class="error" role="alert" hidden></p>
     </section>
@@ -38,13 +43,13 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
         <p>Validità {pack.effectiveFrom} – {pack.effectiveTo}. {pack.bands.map((band) => `${(band.rateBasisPoints / 100).toLocaleString("it-IT")}%${band.upToCents === null ? " oltre l'ultimo limite" : ` fino a ${(band.upToCents / 100).toLocaleString("it-IT")} €`}`).join(" · ")}.</p>
         <p>Fonti: {pack.sources.map((source, i) => <span>{i > 0 ? " · " : ""}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.authority}, normativa {pack.taxYear}</a></span>)}</p>
       </div>)}
-      <p>Consulta anche il <a href="/fonti-fiscali-italia/">registro delle fonti fiscali per anno</a>. Per detrazioni o addizionali con condizioni documentate specifiche è disponibile il <a href="/tools/irpef-componenti/">calcolo delle componenti IRPEF</a>: la sua copertura è distinta e più ristretta.</p>
+      <p>Per la detrazione ordinaria da lavoro dipendente 2025, <a href="https://def.finanze.it/DocTribFrontend/getAttoNormativoDetail.do?ACTION=getArticolo&amp;codiceOrdinamento=0000000000000130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&amp;id=%7B31D694E8-4398-4030-873B-FEAF5A6647F9%7D">articolo 13 del TUIR (MEF)</a>; per le addizionali <a href="https://www1.finanze.gov.it/finanze2/dipartimentopolitichefiscali/fiscalitalocale/addregirpef/addregirpef.php?anno=2025&amp;reg=14">Puglia 2025 (MEF)</a> e <a href="https://www1.finanze.gov.it/finanze2/dipartimentopolitichefiscali/fiscalitalocale/nuova_addcomirpef/risultato.htm?anno=9999&amp;cc=A662&amp;pr=BA&amp;r=1">Bari 2025 (MEF)</a>. Consulta anche il <a href="/fonti-fiscali-italia/">registro delle fonti fiscali per anno</a> e il <a href="/tools/irpef-componenti/">calcolo delle componenti IRPEF</a>.</p>
     </section>
   </main>
 </BaseLayout>
 
 <script>
-  import { calculateNationalGrossIrpef127 } from "../../engines/italy/irpef-national-127";
+  import { calculateIrpefComponents128 } from "../../engines/italy/irpef-components-128";
 
   const root = document.querySelector<HTMLElement>("[data-irpef-annuale]");
   if (root) {
@@ -53,6 +58,9 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
     const error = root.querySelector<HTMLElement>(".error")!;
     const income = form.elements.namedItem("income") as HTMLInputElement;
     const year = form.elements.namedItem("year") as HTMLSelectElement;
+    const region = form.elements.namedItem("region") as HTMLSelectElement;
+    const municipality = form.elements.namedItem("municipality") as HTMLSelectElement;
+    const employee = form.elements.namedItem("employee") as HTMLInputElement;
     const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
     const reset = () => { output.replaceChildren(); error.hidden = true; error.textContent = ""; };
     const paragraph = (content: string) => { const element = document.createElement("p"); element.textContent = content; return element; };
@@ -68,7 +76,14 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
       }
       const [whole = "0", fraction = ""] = raw.split(/[.,]/u);
       try {
-        const calculated = calculateNationalGrossIrpef127(Number(year.value), Number(whole) * 100 + Number(fraction.padEnd(2, "0")));
+        const result = calculateIrpefComponents128({
+          taxYear: Number(year.value),
+          taxableIncomeCents: Number(whole) * 100 + Number(fraction.padEnd(2, "0")),
+          region: region.value as "puglia" | "unknown",
+          municipality: municipality.value as "bari" | "unknown",
+          employeeFullYearConfirmed: employee.checked,
+        });
+        const calculated = result.national;
         const heading = document.createElement("h2");
         heading.textContent = `IRPEF lorda nazionale: ${euro(calculated.grossNationalTaxCents)} (anno ${calculated.taxYear})`;
         const introduction = paragraph(`Reddito imponibile dichiarato: ${euro(calculated.taxableIncomeCents)}. Ogni scaglione tassa soltanto la propria quota, senza applicare l'aliquota massima a tutto il reddito.`);
@@ -99,9 +114,49 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
           if (band.upperBoundCents !== null) lower = band.upperBoundCents;
         }
         table.append(caption, head, body); tableBox.append(table);
-        const limitations = paragraph("Detrazioni, crediti d'imposta e addizionali regionali e comunali: non calcolate (non sono zero). IRPEF netta individuale: non determinata. L'IRPEF lorda nazionale non corrisponde necessariamente all'imposta dovuta.");
+        const componentHeading = document.createElement("h3");
+        componentHeading.textContent = "Detrazione e addizionali documentate";
+        const componentList = document.createElement("ul");
+        const labels = {
+          "employee-deduction": "Detrazione ordinaria lavoro dipendente (sottratta)",
+          "puglia-regional": "Addizionale regionale Puglia (aggiunta)",
+          "bari-municipal": "Addizionale comunale Bari (aggiunta)",
+        };
+        for (const component of result.components) {
+          const item = document.createElement("li");
+          item.append(document.createTextNode(`${labels[component.id]}: ${euro(component.cents)}. `));
+          const detail = component.breakdown.map((line) =>
+            `${line.description}: ${euro(line.taxableCents)}${line.rateBasisPoints === undefined ? "" : ` × ${line.rateBasisPoints / 100}%`} → ${euro(line.taxCents)}`).join("; ");
+          item.append(document.createTextNode(`${detail}. Fonte ${component.source.version}: `));
+          const source = document.createElement("a");
+          source.href = component.source.url;
+          source.textContent = component.source.provision;
+          source.target = "_blank"; source.rel = "noopener noreferrer";
+          item.append(source);
+          componentList.append(item);
+        }
+        if (!result.components.length) {
+          const none = document.createElement("li");
+          none.textContent = "Nessuna componente aggiuntiva verificata per le condizioni selezionate.";
+          componentList.append(none);
+        }
+
+        const summary = document.createElement("p");
+        summary.className = "result-limits";
+        if (result.finalModeledTaxCents !== null) {
+          const deduction = result.components.find((part) => part.id === "employee-deduction")!.cents;
+          const regional = result.components.find((part) => part.id === "puglia-regional")!.cents;
+          const municipal = result.components.find((part) => part.id === "bari-municipal")!.cents;
+          summary.textContent = `IRPEF nazionale dopo detrazione: ${euro(result.nationalAfterSelectedDeductionCents!)}. Imposta finale modellata 2025 (sole voci supportate): ${euro(calculated.grossNationalTaxCents)} − ${euro(deduction)} + ${euro(regional)} + ${euro(municipal)} = ${euro(result.finalModeledTaxCents)}.`;
+        } else {
+          summary.textContent = "Imposta finale modellata: non determinata. Il solo totale delle voci verificate non rappresenta l'imposta finale quando manca la copertura di una detrazione o addizionale.";
+        }
+        const unsupported = paragraph(result.unsupported.length
+          ? `Voci NON calcolate (non sono zero): ${result.unsupported.join(" ")}`
+          : "Le tre voci selezionate sono calcolate. Restano escluse le altre detrazioni e imposte fuori dal modello.");
+        const limitations = paragraph(result.limitations);
         limitations.className = "result-limits";
-        output.append(heading, introduction, tableBox, limitations);
+        output.append(heading, introduction, tableBox, componentHeading, componentList, summary, unsupported, limitations);
       } catch {
         error.textContent = "Anno non supportato o importo non coperto: solo il 2025 e il 2026 sono verificati, fino a 1 miliardo di euro.";
         error.hidden = false;
@@ -120,6 +175,8 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
   .input-panel,.sources { border:1px solid var(--border); border-radius:14px; padding:20px; display:grid; gap:14px; min-width:0; }
   .irpef-annual form { display:grid; gap:12px; }
   .irpef-annual label { font-weight:650; }
+  .irpef-annual .employee-confirm { display:flex; align-items:flex-start; gap:10px; font-weight:400; }
+  .irpef-annual .employee-confirm input { width:auto; flex:0 0 auto; margin-top:5px; }
   .irpef-annual input,.irpef-annual select,.irpef-annual button { box-sizing:border-box; min-width:0; width:100%; padding:12px; border-radius:8px; }
   .irpef-annual button { cursor:pointer; }
   .irpef-annual :focus-visible { outline:3px solid currentColor; outline-offset:2px; }
