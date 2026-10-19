@@ -9,19 +9,18 @@ const lock = JSON.parse(readFileSync(resolve("package-lock.json"), "utf8"));
 const manifest = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
 const pins = parseAssetPins366(readFileSync(resolve("docs/donor-provenance-366-2026-10-11.md"), "utf8"));
 const authored = [
-  "src/engines/pdf/vendor/pdfstudio/PROVENANCE.md",
   "src/engines/video/vendor/gifenc-mit-1.0.3/README.md",
   "src/engines/video/vendor/gifenc-mit-1.0.3/index.d.mts",
-  "src/engines/video/vendor/mediabunny-mpl-1.61.3/README.md",
 ] as const;
 
 describe("#366 false refusals versus real provenance blockers", () => {
-  it("keeps repository-level NO_GO until build-wide redistribution duties are discharged", () => {
+  it("accepts proven primary sources after the prohibited codecs are removed", () => {
     const report = auditRepository366(process.cwd());
     expect(report.assets.status).toBe("VERIFIED_METADATA");
     expect(report.primary.failures).toEqual([]);
-    expect(report.status).toBe("NO_GO");
-    expect(report.failures).toContain("REDISTRIBUTION_OBLIGATIONS_NOT_CLEARED");
+    expect(report.primary.unresolved).toBe(0);
+    expect(report.status).toBe("VERIFIED_METADATA");
+    expect(report.failures).toEqual([]);
     expect(report.candidates.every((candidate) => candidate.decision === "NO_ADOPT")).toBe(true);
   }, 30_000);
   it("audits installed optional-runtime peers even after a new dependency makes sharp required", () => {
@@ -52,7 +51,7 @@ describe("#366 false refusals versus real provenance blockers", () => {
     expect(auditLockedPackages366(broken, manifest).failures).toContain("UNKNOWN_LICENSE node_modules/tslib");
   });
 
-  it("recognizes only the four exact locally authored git-pinned files", () => {
+  it("recognizes only the two retained locally authored git-pinned files", () => {
     const report = auditVendoredAssets366(process.cwd(), pins, VENDORED_DIRS_366);
     for (const path of authored) {
       expect(report.failures.filter((failure) => failure.endsWith(" " + path)), path).toEqual([]);
@@ -77,7 +76,7 @@ describe("#366 false refusals versus real provenance blockers", () => {
       { ...original, source: "git:" + "f".repeat(40) + ":" + original.source.split(":")[2] },
       { ...original, license: "MIT" },
       { ...original, sha256: "a".repeat(64) },
-      { ...original, path: "src/engines/pdf/vendor/pdfstudio/wasm/qpdf.wasm" },
+      { ...original, path: "src/engines/video/vendor/gifenc-mit-1.0.3/index.mjs" },
     ];
     for (const attack of attacks) {
       const modified = pins.map((item) => item.path === original.path ? attack : item);

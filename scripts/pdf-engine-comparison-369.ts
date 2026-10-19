@@ -82,16 +82,6 @@ export async function auditInstalledPdfEngine369(projectRoot: string): Promise<P
     || /STR369_OVERLAY/u.test(edited.text[1] ?? "")) {
     refuse("independent PDF.js overlay round-trip text/page preservation mismatch");
   }
-  const vendorRoot = "src/engines/pdf/vendor/pdfstudio/";
-  const provenance = readBounded(root, vendorRoot + "PROVENANCE.md", 100).toString("utf8");
-  const studioLicense = readBounded(root, vendorRoot + "LICENSE", 200).toString("utf8");
-  const qpdfWasm = readBounded(root, vendorRoot + "wasm/qpdf.wasm", 4096);
-  const studioEntry = readBounded(root, vendorRoot + "index.js", 100);
-  if (!/pdfstudio@0\.4\.0/u.test(provenance) || !/github\.com\/fayazara\/pdfstudio/u.test(provenance)
-    || !/Apache License\s+Version 2\.0/u.test(studioLicense)
-    || !provenance.includes(hash(qpdfWasm))) {
-    refuse("pdfstudio vendor provenance/license/WASM mismatch");
-  }
   const mainBytes = inspection.assets.find((item) => item.path === "build/pdf.mjs")?.bytes ?? 0;
   const workerBytes = inspection.assets.find((item) => item.path === "build/pdf.worker.mjs")?.bytes ?? 0;
   const mainGzip = gzipSync(readBounded(root, "node_modules/pdfjs-dist/build/pdf.mjs")).length;
@@ -120,14 +110,13 @@ export async function auditInstalledPdfEngine369(projectRoot: string): Promise<P
         browserBundle: "local main " + mainBytes + "B raw/" + mainGzip + "B gzip + worker " + workerBytes
           + "B raw/" + workerGzip + "B gzip; codec assets separate; deployed transfer NOT_MEASURED",
         mobileEvidence: "NOT_RUN: physical peak RAM and decode profile", decision: "RENDER_ONLY" },
-      { engine: "pdfstudio / qpdf WASM", installed: true, licenseGate: "APACHE_2_0_DECLARED_TRANSITIVES_UNREVIEWED",
-        source: vendorRoot + "PROVENANCE.md (pdfstudio@0.4.0, published npm tarball provenance claim)",
-        checkedAt, licenseSource: "src/engines/pdf/vendor/pdfstudio/LICENSE; https://github.com/qpdf/qpdf (Apache-2.0)",
-        capabilities: ["existing local password/protection operations through qpdf wrapper"],
-        unsupported: ["arbitrary existing page text editing NOT_PROVEN", "vendored qpdf/zlib/libjpeg chain independently reattested NOT_RUN"],
-        browserBundle: "local qpdf WASM " + qpdfWasm.length + "B raw/" + gzipSync(qpdfWasm).length
-          + "B gzip + index.js " + studioEntry.length + "B raw; lazy-loaded; production transfer NOT_MEASURED",
-        mobileEvidence: "NOT_RUN: physical WASM peak RAM and decode profile", decision: "KEEP_SCOPED" },
+      { engine: "pdfstudio / qpdf WASM", installed: false, licenseGate: "REMOVED_OWNER_OPTION_B_126",
+        source: "https://github.com/fayazara/pdfstudio (previously bundled 0.4.0)",
+        checkedAt, licenseSource: "https://github.com/qpdf/qpdf (upstream Apache-2.0; native transitive rights not cleared)",
+        capabilities: ["none: owner removed password encryption/decryption"],
+        unsupported: ["PDF password protect/unlock intentionally unavailable"],
+        browserBundle: "0B: donor deleted and imports removed",
+        mobileEvidence: "NOT_RUN: codec removed", decision: "NOT_APPLICABLE" },
       { engine: "pdf-lib", installed: false, licenseGate: "MIT_DECLARED_NOT_ADOPTED",
         source: "https://github.com/Hopding/pdf-lib (upstream README/docs, checked 2026-10-19)",
         checkedAt, licenseSource: "https://github.com/Hopding/pdf-lib/blob/master/LICENSE.md (MIT)",

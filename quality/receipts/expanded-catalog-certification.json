@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 11
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 255,
-    "releaseBlockedCount": 15,
+    "releaseEligibleGoldCount": 254,
+    "releaseBlockedCount": 16,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 270,
     "fixtureBoundCount": 270,
@@ -14988,12 +14988,12 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-format-conversion.gold.json",
-      "releaseGate": "PASS",
-      "goldEligible": true,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-format-conversion/manifest.ts",
-          "sha256": "48b4d71460304a1582229f9929809cfe8908958a50f657059065dcb6854f20b8"
+          "sha256": "d7fe976ad61f3c6edb0de82fc0966a00c81844bc1ab2832dd27efb96fdf645cf"
         },
         "module": {
           "path": "src/tools/image-format-conversion/module.ts",
@@ -15118,7 +15118,9 @@
           "status": "PASS"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
+      ],
       "coverageGaps": []
     },
     {
@@ -24291,7 +24293,7 @@
     {
       "id": "pdf-password-check-remove",
       "route": "/tools/pdf-password-check-remove",
-      "name": "Proteggi, controlla e sblocca PDF",
+      "name": "Controlla cifratura PDF",
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
@@ -24302,11 +24304,11 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-password-check-remove/manifest.ts",
-          "sha256": "e64a2693948d1593b6d621855b4fa3d5d2117d3f1f8a3e4ac2180ce33cc8cb8c"
+          "sha256": "f19fcc7149c9de0fc75f212bf08913a265bf67d0e283c72dd844035f7a19eded"
         },
         "module": {
           "path": "src/tools/pdf-password-check-remove/module.ts",
-          "sha256": "bcdaaecf82f60039edc122e95e0f7016127c116815271c08f1c102d55cc34f6a"
+          "sha256": "08551d32bf504a5ef9d0518f5be0f9b60222554b634f8982fa14fce89d4238ba"
         },
         "page": {
           "path": "src/pages/tools/pdf-password-check-remove.astro",
