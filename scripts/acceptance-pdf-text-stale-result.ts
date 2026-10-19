@@ -63,7 +63,9 @@ try {
       await txt.waitFor();
       await md.waitFor();
       const content = await summary.innerText();
-      if (!content.includes(`${count} pagine di testo`) || !content.includes(expectedPages)) {
+      const selectedPages = await summary.locator("dt").filter({ hasText: /^Pagine selezionate$/u })
+        .locator("xpath=following-sibling::dd").innerText();
+      if (!content.includes(`${count} pagine di testo`) || selectedPages.trim() !== expectedPages) {
         throw new Error(`Wrong extraction summary: ${JSON.stringify(content.slice(0, 1500))}`);
       }
       const status = await page.locator("[data-pdf-text-exports-53]").innerText();
