@@ -834,7 +834,9 @@
           "path": "src/pages/tools/audio-generator.astro",
           "sha256": "252a7635085606589db61554a98daeb1784a81db765631349151d429326d6062"
         },
-        "testFiles": []
+        "testFiles": [
+          "tests/regroom-str-281.test.ts"
+        ]
       },
       "oracle": {
         "entryId": "cand-247",
@@ -15424,6 +15426,7 @@
           "tests/image-result-v2.test.ts",
           "tests/image-visual-tools.test.ts",
           "tests/regroom-str-280.test.ts",
+          "tests/regroom-str-281.test.ts",
           "tests/release-scope-405.test.ts",
           "tests/release-validation.test.ts"
         ]

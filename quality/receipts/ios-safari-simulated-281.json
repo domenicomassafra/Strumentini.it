@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "ticket": 109,
+  "generatedAt": "2026-10-19T08:45:21.001Z",
+  "evidenceKind": "SIMULATED_DESKTOP_WEBKIT_MOBILE",
+  "physicalDeviceObserved": false,
+  "browser": {
+    "platform": "macOS Playwright",
+    "engine": "webkit",
+    "version": "26.6",
+    "deviceProfile": "iPhone 17"
+  },
+  "build": {
+    "revision": "f1932c124dd8568fac37241ffcdfdfad702df37d",
+    "pages": {
+      "/tools/image-resize/": "5ac6e70d62e0579c7311d20cc70f07a5e7126b7557270c73be30372bce62410b",
+      "/tools/audio-generator/": "019b8d7f4cfc5b3a0338bc82205a9d3827de3c4ebd56a85c631785749fedfb73"
+    },
+    "fingerprintSha256": "5aa464f2626cd00bf1bd1935cbcc587cb73d70137c1ba5412023c0521d0c57c0"
+  },
+  "routes": [
+    {
+      "route": "/tools/image-resize/",
+      "status": "PASS",
+      "picker": {
+        "mechanism": "playwright-setInputFiles",
+        "nativeIosPickerObserved": false,
+        "selection": "PASS"
+      },
+      "memory": {
+        "measurement": "POLICY_ESTIMATE_ONLY",
+        "estimatedBytes": 94400000,
+        "hardLimitBytes": 100663296,
+        "observedPeakBytes": null,
+        "limitation": "Safari does not expose reliable per-tab peak JS/WASM/canvas memory; decoded memory is an application-policy estimate, not a measured browser peak."
+      },
+      "share": {
+        "status": "NOT_RUN",
+        "limitation": "Native iOS Share sheet, Files/Photos picker, and Files-app reopening cannot be observed from macOS Playwright WebKit."
+      },
+      "network": {
+        "offsite": [],
+        "uploads": []
+      },
+      "source": {
+        "bytes": 237060,
+        "dimensions": {
+          "width": 4000,
+          "height": 4000,
+          "pixels": 16000000
+        },
+        "fixtureSha256": "ca8455d8504b35c80a29ec12d8fd03f056786fb622715af5d0fbb9695a1e45b2",
+        "thresholdCoverage": {
+          "sourcePixelLimitFraction": 1,
+          "decodedWorkingSetLimitFraction": 0.9377797444661459
+        }
+      },
+      "recovery": {
+        "invalidInput": "PASS",
+        "cancel": "NOT_OBSERVED",
+        "retry": "PASS",
+        "cancelLimitation": "The image job completed before a cancellable UI state could be intercepted in this WebKit run."
+      },
+      "download": {
+        "filename": "image-resize-boundary-4000x4000-1200x1200.jpg",
+        "bytes": 201647,
+        "sha256": "7b3db33097ca78fc5e7ea03d6225e60ca691dcd5be536ca1b691657e38fe8b2a",
+        "blobHref": true,
+        "reopenedIndependently": "PASS",
+        "format": "jpeg",
+        "width": 1200,
+        "height": 1200
+      }
+    },
+    {
+      "route": "/tools/audio-generator/",
+      "status": "PASS",
+      "picker": {
+        "mechanism": "playwright-setInputFiles",
+        "nativeIosPickerObserved": false,
+        "selection": "PASS"
+      },
+      "memory": {
+        "measurement": "POLICY_ESTIMATE_ONLY",
+        "estimatedBytes": 32088,
+        "hardLimitBytes": 25165824,
+        "observedPeakBytes": null,
+        "limitation": "Safari does not expose reliable per-tab peak JS/WASM/canvas memory; decoded memory is an application-policy estimate, not a measured browser peak."
+      },
+      "share": {
+        "status": "NOT_RUN",
+        "limitation": "Native iOS Share sheet, Files/Photos picker, and Files-app reopening cannot be observed from macOS Playwright WebKit."
+      },
+      "network": {
+        "offsite": [],
+        "uploads": []
+      },
+      "source": {
+        "bytes": 16044,
+        "sampleRate": 8000,
+        "frames": 8000
+      },
+      "recovery": {
+        "invalidInput": "PASS",
+        "cancel": "PASS",
+        "retry": "PASS",
+        "workers": {
+          "held": 1,
+          "created": 3,
+          "terminated": 3,
+          "holdNext": false
+        }
+      },
+      "download": {
+        "filename": "montaggio-pcm16.wav",
+        "bytes": 16044,
+        "sha256": "03bdffca899373ff48458ba2c658718abf3e83544a9989e873e05cb990e230b9",
+        "blobHref": true,
+        "reopenedIndependently": "PASS",
+        "format": "RIFF/WAVE PCM16"
+      }
+    }
+  ],
+  "limitations": [
+    "Safari does not expose reliable per-tab peak JS/WASM/canvas memory; decoded memory is an application-policy estimate, not a measured browser peak.",
+    "Native iOS Share sheet, Files/Photos picker, and Files-app reopening cannot be observed from macOS Playwright WebKit.",
+    "No native iOS Simulator Safari automation session: SafariDriver reported session not created; macOS WebKit emulation cannot prove iOS Safari memory ceilings."
+  ]
+}
