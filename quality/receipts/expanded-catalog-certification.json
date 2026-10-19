@@ -34360,7 +34360,7 @@
         },
         "page": {
           "path": "src/pages/tools/video-inspector.astro",
-          "sha256": "c87817bf2d476c0dfa9202aca5a471e428c60613908ec655650bcdafe67bedb7"
+          "sha256": "30dc7c1f5ff7c2c47984af0ca6b31a6811569cad9850882e8018ff9a5f3d8b42"
         },
         "testFiles": [
           "tests/video-catalog-232.test.ts"
