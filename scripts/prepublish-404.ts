@@ -35,6 +35,12 @@ export function prepublishSteps404(expectedSha: string): readonly PrepublishStep
       args: ["node_modules/tsx/dist/cli.mjs", "scripts/validate-release.ts", "--no-write-receipt", "--require-ready", `--expected-sha=${expectedSha}`],
       publishes: false,
     },
+    // Production publishes the entire dist, so every catalog tool is in scope.
+    {
+      name: "scope-and-staging-rollback-admission", program: "node",
+      args: ["node_modules/tsx/dist/cli.mjs", "scripts/verify-release-scope-405.ts", "--all"],
+      publishes: false,
+    },
     { name: "wrangler-production-deploy", program: "node_modules/.bin/wrangler", args: ["deploy"], publishes: true },
   ];
 }
