@@ -49,7 +49,8 @@ import {
 } from "./transform-workspace";
 import { createZip, inspectZip } from "../file-privacy";
 import { decodePortableImage } from "./portable-decode";
-import { inspectGifBlob, type GifStructure } from "./gif-structure";
+import type { GifStructure } from "./gif-structure";
+import { decodeForConversion212 } from "./first-frame-gif-212";
 import { findImageTargetSize, parseImageTarget } from "./target-size";
 import { compressPngLossless47 } from "./png-lossless-47";
 import { quantizePngPalette47 } from "./png-palette-lossy-47";
@@ -277,15 +278,7 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
   const file = asFile(value.file);
   const mime = assertOutputMime(value.mime);
   const quality = validateQuality(value.quality ?? 0.92);
-  // Inspect GIF frame boundaries before decoding: a still export must never imply
-  // that the source animation or its frame delays survive conversion.
-  const header = new Uint8Array(await file.blob.slice(0, 6).arrayBuffer());
-  abortIfNeeded(signal);
-  const gifSignature = String.fromCharCode(...header) === "GIF87a" || String.fromCharCode(...header) === "GIF89a";
-  const gifSource = gifSignature || /\.gif$/iu.test(file.name) || file.type === "image/gif"
-    ? await inspectGifBlob(file.blob, signal)
-    : undefined;
-  const decoded = await decodePortableImage(file, signal, progress);
+  const { decoded, gifSource } = await decodeForConversion212(file, signal, progress);
   try {
     if (decoded.kind === "gif" && gifSource === undefined) {
       throw new ImageVisualError("INVALID_GIF", "GIF input requires an identifiable GIF container");
@@ -298,7 +291,7 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
     const blob = await outputBlob(canvas, mime, quality, decoded.width, decoded.height, signal, progress);
     const lossy = mime === "image/jpeg" || mime === "image/webp";
     const sourceNote = decoded.framePolicy === "first-frame-only"
-      ? ` GIF input has ${gifSource?.frameCount ?? "unknown"} source frame(s), with ${gifSource?.totalDelayCentiseconds ?? "unknown"} centiseconds of declared delays. Only its first decoded frame is exported; animation and frame timings are lost. Short delays may be clamped by GIF players.`
+      ? ` GIF input has ${gifSource?.frameCount ?? "unknown"} source frame(s), with ${gifSource?.totalDelayCentiseconds ?? "unknown"} centiseconds of declared delays. Only its first decoded frame is exported; animation and frame timings are lost. Local first-frame extraction accepts GIFs up to 4 MiB and one million pixels. Short delays may be clamped by GIF players.`
       : decoded.decoder === "libheif-wasm"
         ? " HEIC/HEIF is decoded locally with the lazy libheif/WASM path before re-encoding."
         : decoded.kind === "avif"

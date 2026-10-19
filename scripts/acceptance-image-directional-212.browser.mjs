@@ -58,6 +58,7 @@ try {
       for (const entry of examples) {
         const proof = await page.evaluate(async ({ base64, animated, oraclePixels }) => {
           const { gifFirstFrameToPng212 } = await import("/src/engines/image/directional-212.ts");
+          const { convertImageFormatLocal } = await import("/src/engines/image/visual-tools.ts");
           const bytes = Uint8Array.from(atob(base64), x => x.charCodeAt(0));
           const source = new Blob([bytes], { type: "image/gif" });
           let refusedWithoutConsent = false;
@@ -78,6 +79,10 @@ try {
           };
           const gifPixels = await pixels(source);
           const pngPixels = await pixels(new Blob([output.png], { type: "image/png" }));
+          const publicResult = await convertImageFormatLocal({
+            file: new File([bytes], "first-frame.gif", { type: "image/gif" }), mime: "image/png",
+          });
+          const publicPixels = await pixels(publicResult.blob);
           const mismatchAt = gifPixels.findIndex((byte, index) => byte !== pngPixels[index]);
           const controller = new AbortController(); controller.abort();
           let abortRefused = false;
@@ -90,10 +95,23 @@ try {
             independentPixelParity: oraclePixels.length === pngPixels.length && oraclePixels.every((value, index) => value === pngPixels[index]),
             delays: output.frameDelaysCentiseconds, discarded: output.animationDiscarded,
             framePolicy: output.framePolicy, prefix: Array.from(output.png.subarray(0, 8)),
+            publicConverter: {
+              sourceKind: publicResult.inputKind, outputMime: publicResult.outputMime,
+              framePolicy: publicResult.framePolicy, sourceFrames: publicResult.gifSource?.frameCount,
+              sourceDelays: publicResult.gifSource?.frameDelaysCentiseconds,
+              pixelParity: oraclePixels.length === publicPixels.length && oraclePixels.every((byte, i) => byte === publicPixels[i]),
+              pngPrefix: [...new Uint8Array(await publicResult.blob.slice(0, 8).arrayBuffer())],
+            },
             refusedWithoutConsent, abortRefused,
           };
         }, entry);
         assert.equal(proof.independentPixelParity, true, `${engine.name()} GIF output differs from independently decoded Sharp canonical RGBA`);
+        assert.deepEqual(proof.publicConverter, {
+          sourceKind: "gif", outputMime: "image/png", framePolicy: "first-frame-only",
+          sourceFrames: entry.frames,
+          sourceDelays: entry.animated ? [25, 25, 25, 25] : entry.interlaced ? [12] : [0],
+          pixelParity: true, pngPrefix: [137, 80, 78, 71, 13, 10, 26, 10],
+        }, `${engine.name()} public converter must use the canonical first-frame pixels even if native GIF rendering differs`);
         if (!entry.partial) assert.equal(proof.firstPixelParity, true, `${engine.name()} full GIF pixel mismatch ${JSON.stringify(proof.mismatch)}`);
         assert.deepEqual([proof.frames, proof.width, proof.height], [entry.frames, entry.width, entry.height]);
         assert.deepEqual(proof.prefix, [137, 80, 78, 71, 13, 10, 26, 10]);
@@ -106,6 +124,27 @@ try {
         checks += entry.animated || entry.interlaced ? 8 : 7;
         console.log(`${engine.name()} ${entry.partial ? "partial transparent" : entry.animated ? "animated" : "still"} GIF first frame: native-source-parity=${proof.firstPixelParity}, independent-Sharp-parity=${proof.independentPixelParity}, ${entry.frames} source frame(s) PASS${proof.firstPixelParity ? "" : ` (native GIF offset discrepancy ${JSON.stringify(proof.mismatch)})`}`);
       }
+      // The publicly converted Blob must survive an actual browser download
+      // and independent reopening, not just a canvas-only preview.
+      const [download] = await Promise.all([
+        page.waitForEvent("download"),
+        page.evaluate(async base64 => {
+          const { convertImageFormatLocal } = await import("/src/engines/image/visual-tools.ts");
+          const bytes = Uint8Array.from(atob(base64), x => x.charCodeAt(0));
+          const exported = await convertImageFormatLocal({ file: new File([bytes], "source.gif", { type: "image/gif" }), mime: "image/png" });
+          const url = URL.createObjectURL(exported.blob);
+          const link = document.createElement("a");
+          link.href = url; link.download = exported.filename;
+          document.body.append(link); link.click(); link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1_000);
+        }, examples[1].base64),
+      ]);
+      assert.match(download.suggestedFilename(), /\.png$/u);
+      const downloaded = await readFile(await download.path());
+      assert.deepEqual([...downloaded.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+      assert.deepEqual([...await sharp(downloaded).ensureAlpha().raw().toBuffer()], examples[1].oraclePixels,
+        `${engine.name()} actual downloaded file must reopen with independent RGBA parity`);
+      checks += 3;
       const avifProbe = await page.evaluate(async encoded => {
         const { probeAvifDecode212 } = await import("/src/engines/image/directional-212.ts");
         const blob = new Blob([Uint8Array.from(atob(encoded), x => x.charCodeAt(0))], { type: "image/avif" });
