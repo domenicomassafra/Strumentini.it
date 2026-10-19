@@ -126,67 +126,6 @@ export function mimeTypeOperation(lookup: string, mode: string, byteInput?: stri
   return { valid: true, extension, mime: entry.mime, extensions: entry.extensions, source: "Riferimento dei tipi multimediali IANA; l'estensione è un'etichetta, non una verifica di sicurezza." } as DeveloperWebResult;
 }
 
-export interface UserAgentInfo {
-  readonly raw: string;
-  readonly browser: string;
-  readonly version: string | null;
-  readonly os: string;
-  readonly device: "desktop" | "mobile" | "tablet" | "bot" | "unknown";
-  readonly engine: string | null;
-  readonly mobile: boolean;
-  readonly bot: boolean;
-  readonly warnings: string[];
-}
-
-export function parseUserAgent(raw: string): UserAgentInfo {
-  assertInputSize(raw, 100_000);
-  const bot = /bot|crawler|spider|slurp|bingpreview|facebookexternalhit|curl|wget|headlesschrome/iu.test(raw);
-  const mobile = /Mobile|Android|iPhone|iPod|Windows Phone/iu.test(raw);
-  const tablet = /iPad|Tablet|PlayBook|Silk/iu.test(raw) || (/Android/iu.test(raw) && !/Mobile/iu.test(raw));
-  let browser = "Sconosciuto";
-  let version: string | null = null;
-  const browserPatterns: Array<[string, RegExp]> = [
-    ["Edge", /Edg(?:e|A|iOS)?\/([\d.]+)/iu],
-    ["Opera", /(?:OPR|Opera)\/([\d.]+)/iu],
-    ["Chrome", /(?:Chrome|CriOS)\/([\d.]+)/iu],
-    ["Firefox", /(?:Firefox|FxiOS)\/([\d.]+)/iu],
-    ["Safari", /Version\/([\d.]+).*Safari/iu],
-    ["Internet Explorer", /(?:MSIE\s|rv:)([\d.]+)/iu],
-  ];
-  for (const [name, pattern] of browserPatterns) {
-    const match = pattern.exec(raw);
-    if (match !== null) {
-      browser = name;
-      version = match[1] ?? null;
-      break;
-    }
-  }
-  let os = "Sconosciuto";
-  if (/Windows NT/iu.test(raw)) os = "Windows";
-  else if (/iPhone|iPod|iPad/iu.test(raw)) os = "iOS";
-  else if (/Android/iu.test(raw)) os = "Android";
-  else if (/Mac OS X|Macintosh/iu.test(raw)) os = "macOS";
-  else if (/CrOS/iu.test(raw)) os = "ChromeOS";
-  else if (/Linux/iu.test(raw)) os = "Linux";
-  const engine = /Gecko\//iu.test(raw) && !/like Gecko/iu.test(raw) ? "Gecko" : /WebKit\//iu.test(raw) ? "WebKit" : /Trident\//iu.test(raw) ? "Trident" : null;
-  const device = bot ? "bot" : tablet ? "tablet" : mobile ? "mobile" : /Windows|Macintosh|X11|Linux/iu.test(raw) ? "desktop" : "unknown";
-  return {
-    raw,
-    browser,
-    version,
-    os,
-    device,
-    engine,
-    mobile,
-    bot,
-    warnings: ["L'analisi dello User-Agent è soltanto descrittiva; le capacità vanno determinate verificando direttamente le funzionalità disponibili."],
-  };
-}
-
-export function userAgentOperation(raw: string): DeveloperWebResult {
-  return { valid: true, ...parseUserAgent(raw) } as DeveloperWebResult;
-}
-
 export function queryStringOperation(input: Record<string, unknown>): DeveloperWebResult {
   const query = stringField(input, "query", "url", "input", "text");
   const baseUrl = optionalStringField(input, "baseUrl", "url");

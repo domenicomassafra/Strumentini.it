@@ -22,7 +22,7 @@ import {
   runDeveloperWebTool,
   urlCodecOperation,
 } from "../src/engines/developer-web";
-import { cronNextRunOperation, explainCronOperation, httpStatusOperation, mimeTypeOperation, parseUserAgent, queryStringOperation, unixTimestampOperation } from "../src/engines/developer-web/web-reference";
+import { cronNextRunOperation, explainCronOperation, httpStatusOperation, mimeTypeOperation, queryStringOperation, unixTimestampOperation } from "../src/engines/developer-web/web-reference";
 import { jsonFormatterManifest } from "../src/tools/json-formatter/manifest";
 import { yamlFormatterManifest } from "../src/tools/yaml-formatter/manifest";
 import { tomlFormatterManifest } from "../src/tools/toml-formatter/manifest";
@@ -275,12 +275,6 @@ describe("developer/web references and schedule operations", () => {
     expect(httpStatusOperation(404)).toMatchObject({ class: "client-error", reason: "Non trovato" });
     expect(mimeTypeOperation("png", "extension")).toMatchObject({ mime: "image/png" });
     expect(mimeTypeOperation("89504e470d0a1a0a", "signature")).toMatchObject({ mime: "image/png", confidence: "signature-hint" });
-  });
-
-  it("parses user agents descriptively without capability claims", () => {
-    const result = parseUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Version/17.0 Mobile/15E148 Safari/604.1");
-    expect(result).toMatchObject({ browser: "Safari", os: "iOS", device: "mobile", mobile: true });
-    expect(result.warnings[0]).toMatch(/funzionalità disponibili/u);
   });
 
   it("preserves query pair order and converts Unix time", () => {

@@ -1,4 +1,4 @@
-import { parseUserAgent } from "../../engines/developer-web/web-reference";
+import { parseUserAgent } from "../../engines/developer-web/user-agent";
 import type { ToolModule } from "../../runtime/types";
 
 export const PUBLIC_IP_ENDPOINT = "https://api64.ipify.org?format=json";
