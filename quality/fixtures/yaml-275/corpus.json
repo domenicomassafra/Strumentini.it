@@ -1,0 +1,89 @@
+{
+  "note": "#275 — corpus indipendente per il confronto differenziale fra il formattatore YAML storico e yaml@2.9.1. Ogni voce è un documento YAML realistico o un caso limite documentato; nessuna voce è copiata da output del donor.",
+  "fixtures": [
+    {
+      "id": "scalars-flat",
+      "source": "name: Ada\nenabled: true\nretries: 3\nratio: 0.25\nnothing: null\n"
+    },
+    {
+      "id": "sequence-plain",
+      "source": "tools:\n  - json-formatter\n  - yaml-formatter\n  - toml-formatter\n"
+    },
+    {
+      "id": "sequence-of-maps",
+      "source": "steps:\n  - name: checkout\n    uses: actions/checkout@v4\n  - name: test\n    run: npm test\n    env:\n      CI: true\n"
+    },
+    {
+      "id": "nested-map",
+      "source": "service:\n  name: api\n  ports:\n    http: 8080\n    metrics: 9090\n  health:\n    path: /health\n    interval: 30s\n"
+    },
+    {
+      "id": "flow-collections",
+      "source": "matrix: {os: [linux, macos], node: [22, 24], experimental: [true, false]}\nempty_list: []\nempty_map: {}\n"
+    },
+    {
+      "id": "anchors-and-aliases",
+      "source": "defaults: &defaults\n  retries: 3\n  timeout: 30\nproduction: *defaults\n"
+    },
+    {
+      "id": "merge-keys-refused",
+      "source": "defaults: &defaults\n  retries: 3\nstaging:\n  <<: *defaults\n  timeout: 60\n"
+    },
+    {
+      "id": "quoted-scalars",
+      "source": "single: 'it''s here'\ndouble: \"tab\\there\"\ncolon_key: 'key: with colon'\nleading: ' indented'\ntrailing: 'trailing '\n"
+    },
+    {
+      "id": "block-scalar-literal",
+      "source": "script: |\n  set -e\n  npm ci\n  npm test\n"
+    },
+    {
+      "id": "unicode",
+      "source": "title: Caffè ☕ e città\nemoji: 😀🚀\naccenti: àèìòù\n"
+    },
+    {
+      "id": "comments",
+      "source": "# configurazione locale\nname: demo # nome visibile\n# commento finale\n"
+    },
+    {
+      "id": "comments-only",
+      "source": "# solo commenti\n# nessun valore\n"
+    },
+    {
+      "id": "crlf",
+      "source": "name: demo\r\nports:\r\n  - 80\r\n  - 443\r\n"
+    },
+    {
+      "id": "numbers-core",
+      "source": "decimal: 42\nnegative: -7\nfloat: 3.5\nexponent: 1e3\nhexadecimal: 0x1f\noctal_style: 0777\n"
+    },
+    {
+      "id": "strings-that-look-typed",
+      "source": "yes_string: 'yes'\nnull_string: 'null'\nnumber_string: '1'\nbool_string: 'True'\n"
+    },
+    {
+      "id": "long-scalar",
+      "source": "description: this is a deliberately long single line value that must not be folded by the formatter because folding would change the stored scalar content and the byte counts reported by the tool\n"
+    },
+    {
+      "id": "deep-but-bounded",
+      "source": "a:\n  b:\n    c:\n      d:\n        e:\n          - 1\n          - nested:\n              value: true\n"
+    },
+    {
+      "id": "empty-values",
+      "source": "explicit_null: null\ntilde_null: ~\nimplicit_null:\n"
+    },
+    {
+      "id": "duplicate-like-keys",
+      "source": "Case: upper\ncase: lower\n"
+    },
+    {
+      "id": "numeric-keys",
+      "source": "ports:\n  80: http\n  443: https\n"
+    },
+    {
+      "id": "date-strings",
+      "source": "created: 2026-10-19\nupdated: 2026-10-19T08:30:00Z\n"
+    }
+  ]
+}

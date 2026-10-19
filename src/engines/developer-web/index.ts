@@ -15,8 +15,8 @@ import {
   jsonValidatorOperation,
   jsonYamlConverterOperation,
   tomlFormatterOperation,
-  yamlFormatterOperation,
 } from "./structured-data";
+import { yamlFormatterOperation } from "./yaml-adapter";
 import {
   jsonInferenceOperation,
   jsonRepairOperation,
@@ -53,6 +53,7 @@ import {
 
 export * from "./types";
 export * from "./structured-data";
+export * from "./yaml-adapter";
 export * from "./encoding-crypto";
 export * from "./web-reference";
 export * from "./network-numeric";
@@ -110,7 +111,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
     if (mode !== "format" && mode !== "prettify" && mode !== "minify") invalid("INVALID_MODE", "JSON mode must be prettify, minify, or validate.");
     return jsonFormatterOperation(text, indent, sortKeys, mode === "minify" ? "minify" : "prettify");
   }
-  if (toolId === "yaml-formatter") return yamlFormatterOperation(stringField(value, "text", "input", "yaml"), optionalNumberField(value, "indent", "spaces") ?? 2);
+  if (toolId === "yaml-formatter") return yamlFormatterOperation(stringField(value, "text", "input", "yaml"), optionalNumberField(value, "indent", "spaces") ?? 2, signal);
   if (toolId === "toml-formatter") return tomlFormatterOperation(stringField(value, "text", "input", "toml"));
   if (toolId === "json-yaml-converter") return jsonYamlConverterOperation(stringField(value, "text", "input", "source"), requireDirection(value), optionalNumberField(value, "indent", "spaces") ?? 2);
   if (toolId === "url-codec") return urlCodecOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", optionalStringField(value, "set", "encodingSet") ?? "component");

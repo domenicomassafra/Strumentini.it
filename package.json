@@ -131,7 +131,8 @@
     "read-excel-file": "9.3.10",
     "svgo": "4.1.0",
     "turndown": "7.2.4",
-    "write-excel-file": "4.1.1"
+    "write-excel-file": "4.1.1",
+    "yaml": "2.9.1"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",

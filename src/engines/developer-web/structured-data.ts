@@ -535,7 +535,8 @@ export function formatYaml(value: unknown, indent = 2): string {
   return emit(value, 0).join("\n") + "\n";
 }
 
-export function yamlFormatterOperation(input: string, indent = 2): DeveloperWebResult {
+/** Original hand-written formatter: rollback path for the YAML→YAML formatter and the JSON↔YAML converter engine. */
+export function legacyYamlFormatterOperation(input: string, indent = 2): DeveloperWebResult {
   const parsed = parseYaml(input);
   const formatted = formatYaml(parsed.value, indent);
   const inputBytes = new TextEncoder().encode(input).byteLength;

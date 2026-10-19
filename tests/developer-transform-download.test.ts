@@ -4,10 +4,10 @@ import { cssMinifyOperation, htmlMinifyOperation, jsonFormatterOperation, xmlOpe
 import { createOutputArtifactDescriptor } from "../src/runtime/output-artifact";
 
 describe("ticket 59 — raw transformed file export", () => {
-  it("returns the actual parser-approved output, UTF-8 byte counts and correct names/MIME", () => {
+  it("returns the actual parser-approved output, UTF-8 byte counts and correct names/MIME", async () => {
     const fixtures = [
       ["json-formatter", '{ "uno": "à" }', jsonFormatterOperation('{ "uno": "à" }', 2, false, "minify"), "json", "application/json"],
-      ["yaml-formatter", 'uno: "caffè ☕"\n', yamlFormatterOperation('uno: "caffè ☕"\n'), "yaml", "application/yaml"],
+      ["yaml-formatter", 'uno: "caffè ☕"\n', await yamlFormatterOperation('uno: "caffè ☕"\n'), "yaml", "application/yaml"],
       ["toml-formatter", 'uno = "caffè ☕"\n', tomlFormatterOperation('uno = "caffè ☕"\n'), "toml", "application/toml"],
       ["xml-formatter-validator", '<root> <a/> </root>', xmlOperation('<root> <a/> </root>', "minify"), "xml", "application/xml"],
       ["css-minifier", 'p { color: red; }', cssMinifyOperation('p { color: red; }'), "css", "text/css"],
