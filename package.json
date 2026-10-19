@@ -19,6 +19,7 @@
     "certification:check": "tsx scripts/build-certification-index.ts --check",
     "ci:scope": "tsx scripts/ci-change-impact-404.ts",
     "test": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && npm run audit:original-200:final && vitest run",
+    "test:workerd": "vitest run --config vitest.workerd.config.ts",
     "check": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && npm run italy:freshness:158 -- --check && astro check",
     "italy:freshness:158": "tsx scripts/italy-source-freshness-158.ts",
     "build": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && astro build && tsx scripts/inspect-build.ts",
@@ -134,6 +135,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@cloudflare/vitest-plugin": "1.4.4",
     "@playwright/test": "1.63.0",
     "@types/css-tree": "^3.2.0",
     "@types/he": "1.2.3",

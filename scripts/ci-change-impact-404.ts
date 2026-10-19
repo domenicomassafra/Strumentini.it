@@ -130,6 +130,11 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
     if (!needsFullSuite) commands.push({ program: "npm", args: ["run", "catalog:build"] });
     if (needsFullSuite) commands.push({ program: "npm", args: ["run", "test"] });
     else commands.push({ program: "node", args: ["node_modules/vitest/vitest.mjs", "run", ...selectedTests] });
+    // The workerd project uses a separate Vite config and real local D1/DO;
+    // it cannot run in the normal Node Vitest pool selected above.
+    if (domains.includes("worker-auth") || domains.includes("d1")) {
+      commands.push({ program: "npm", args: ["run", "test:workerd"] });
+    }
     // Ticket generator/test changes need the actual Python oracle.  The
     // full JS suite's tickets:check is not a substitute for this unittest.
     if (paths.some((path) => path === "tests/test_ticket_dashboard.py" ||
