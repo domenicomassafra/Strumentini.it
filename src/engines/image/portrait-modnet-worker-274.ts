@@ -50,23 +50,6 @@ self.onmessage = async (event: MessageEvent<Request>) => {
           match: (key) => modelCache.match(localCacheKey(key)),
           put: (key, response) => modelCache.put(localCacheKey(key), response),
         };
-        // The donor does not reliably populate CacheStorage from WebKit
-        // workers. Explicitly warm the three pinned same-origin assets before
-        // pipeline initialization, so subsequent workers can run offline.
-        const modelFiles = [
-          "/models/portrait-modnet/config.json",
-          "/models/portrait-modnet/preprocessor_config.json",
-          "/models/portrait-modnet/onnx/model_quantized.onnx",
-        ].map((path) => new URL(path, self.location.origin).href);
-        const missing: string[] = [];
-        for (const url of modelFiles) {
-          if (!await modelCache.match(url)) missing.push(url);
-        }
-        for (const url of missing) {
-          const response = await nativeFetch(url);
-          if (!response.ok) throw new Error("MODEL_NOT_AVAILABLE");
-          await modelCache.put(url, response);
-        }
       } catch {
         // Private browsing or storage quotas may make offline reuse unavailable.
         // Inference still uses only the same-origin local model files.

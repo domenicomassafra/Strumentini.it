@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { checkPortraitInput, PORTRAIT_MODEL_REVISION, PORTRAIT_MAX_FILE_BYTES, PORTRAIT_MAX_PIXELS, PORTRAIT_TIMEOUT_MS } from "../../../engines/image/portrait-modnet-274";
+import { checkPortraitInput, PORTRAIT_LOCAL_FILES, PORTRAIT_MODEL_REVISION, PORTRAIT_MAX_FILE_BYTES, PORTRAIT_MAX_PIXELS, PORTRAIT_TIMEOUT_MS } from "../../../engines/image/portrait-modnet-274";
 
 type Reply = { kind: "progress"; message: string } | { kind: "error"; code: string }
   | { kind: "result"; bytes: ArrayBuffer; width: number; height: number; transparent: number; opaque: number; mixed: number };
@@ -19,12 +19,14 @@ export function PortraitMattingPanel274() {
   const [status, setStatus] = useState("Modello inattivo: il download parte solo dopo il consenso.");
   const [result, setResult] = useState<{ url: string; width: number; height: number; transparent: number; opaque: number; mixed: number } | null>(null);
   const worker = useRef<Worker | null>(null);
+  const preload = useRef<AbortController | null>(null);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const generation = useRef(0);
   const resultUrl = useRef<string | null>(null);
 
   function stop() {
     worker.current?.terminate(); worker.current = null;
+    preload.current?.abort(); preload.current = null;
     if (timeout.current !== null) clearTimeout(timeout.current);
     timeout.current = null;
   }
@@ -64,6 +66,37 @@ export function PortraitMattingPanel274() {
       if (generation.current !== id) return;
       const bytes = await file.arrayBuffer();
       if (generation.current !== id) return;
+      const preloadController = new AbortController();
+      preload.current = preloadController;
+      timeout.current = setTimeout(() => {
+        if (generation.current === id) {
+          stop(); setBusy(false); setStatus(readableError("TIMEOUT"));
+        }
+      }, PORTRAIT_TIMEOUT_MS);
+      // Warm CacheStorage in the page. WebKit workers can read this cache but
+      // discard entries written from a Worker when the Worker terminates.
+      // The model is fetched only after the explicit user click.
+      if (typeof caches !== "undefined") {
+        try {
+          const cache = await caches.open("portrait-modnet-274");
+          for (const path of PORTRAIT_LOCAL_FILES) {
+            if (generation.current !== id) return;
+            const url = new URL(path, window.location.origin).href;
+            if (await cache.match(url)) continue;
+            setStatus("Download del modello autorizzato dal sito e preparazione cache locale…");
+            const response = await fetch(url, { signal: preloadController.signal });
+            if (!response.ok) throw new Error("MODEL_NOT_AVAILABLE");
+            await cache.put(url, response);
+          }
+        } catch (error) {
+          if (generation.current !== id || preloadController.signal.aborted) return;
+          // Private browsing and storage quotas may disable persistence.
+          // The Worker can still perform same-origin inference without it.
+          if (error instanceof Error && error.message === "MODEL_NOT_AVAILABLE") throw error;
+        }
+      }
+      preload.current = null;
+      if (generation.current !== id) return;
       const instance = new Worker(new URL("../../../engines/image/portrait-modnet-worker-274.ts", import.meta.url), { type: "module" });
       worker.current = instance;
       instance.onerror = () => {
@@ -85,11 +118,6 @@ export function PortraitMattingPanel274() {
           setStatus("PNG RGBA decodificato e verificato localmente. Controlla visivamente capelli, contorni e sfondi complessi.");
         }
       };
-      timeout.current = setTimeout(() => {
-        if (generation.current === id) {
-          stop(); setBusy(false); setStatus(readableError("TIMEOUT"));
-        }
-      }, PORTRAIT_TIMEOUT_MS);
       instance.postMessage({ kind: "start", bytes, mime: file.type, memoryGB: (navigator as Navigator & { deviceMemory?: number }).deviceMemory }, [bytes]);
       setStatus("Caricamento dal sito: download autorizzato, nessuna immagine inviata in rete…");
     } catch (error) {
