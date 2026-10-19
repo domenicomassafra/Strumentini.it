@@ -67,6 +67,12 @@ try {
     await submit.click();
     await page.locator(".result-panel[data-state='success']").waitFor({ timeout: 30000 });
     const link = page.getByRole("link", { name: "Scarica three-pages-reordered.pdf" });
+    if (await link.count() !== 1) {
+      const workspace = await page.locator('[data-result-slot="file-workspace"]').allTextContents();
+      const alerts = await page.locator('[role="alert"]').allTextContents();
+      const downloadLinks = await page.locator("a[download]").evaluateAll((anchors) => anchors.map((anchor) => anchor.textContent));
+      throw new Error(`Successful PDF reorder without a verified download: ${JSON.stringify({ workspace, alerts, downloadLinks })}`);
+    }
     const target = await link.getAttribute("href");
     const fileName = await link.getAttribute("download");
     if (!target?.startsWith("blob:") || fileName !== "three-pages-reordered.pdf") {
