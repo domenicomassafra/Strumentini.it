@@ -55,10 +55,10 @@ for (const previewPath of previewOnlyPaths) {
         preview.includes("dicembre 2025") && preview.includes("categorie") &&
         preview.includes("Calcolo locale")
     : previewPath === "tools/irpef-annuale/index.html"
-      ? preview?.includes("data-irpef-annuale") && preview.includes("IRPEF lorda nazionale") &&
+      ? preview?.includes("data-irpef-annuale") && preview.includes("imposta finale modellata") &&
         preview.includes("2025") && preview.includes("2026") &&
-        preview.includes("detrazioni") && preview.includes("addizionali") &&
-        preview.includes("non calcolate") && preview.includes("Normattiva")
+        preview.includes("Puglia") && preview.includes("Bari") &&
+        preview.includes("non sono calcolate") && preview.includes("Normattiva")
     : previewPath === "tools/stipendio-netto/index.html"
       ? preview?.includes("data-salary-estimate-13") && preview.includes("stima parziale") &&
         preview.includes("cedolino") && preview.includes("IRPEF") &&

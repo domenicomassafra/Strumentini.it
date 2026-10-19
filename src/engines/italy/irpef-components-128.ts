@@ -122,6 +122,8 @@ export function calculateIrpefComponents128(input: {
     }
   } else unsupported.push("Addizionale comunale: combinazione Comune/anno non coperta.");
   const surtaxes = components.filter((c) => c.id !== "employee-deduction").reduce((n, c) => n + c.cents, 0);
+  const completeSourceCoverage = unsupported.length === 0
+    && components.length === 3 && nationalAfterSelectedDeductionCents !== null;
   return {
     status: unsupported.length ? "PARTIAL" as const : "SUPPORTED_COMPONENTS_ONLY" as const,
     national,
@@ -129,6 +131,9 @@ export function calculateIrpefComponents128(input: {
     unsupported,
     nationalAfterSelectedDeductionCents,
     selectedComponentsEstimateCents: nationalAfterSelectedDeductionCents === null ? null : nationalAfterSelectedDeductionCents + surtaxes,
+    // A final modeled value is valid only when all three selected components
+    // have source-backed coverage. A partial sum must never look like a final tax.
+    finalModeledTaxCents: completeSourceCoverage ? nationalAfterSelectedDeductionCents! + surtaxes : null,
     limitations: "Simulazione di sole componenti supportate: non è l'IRPEF personale dovuta. Reddito complessivo, reddito imponibile e giorni di lavoro possono differire. Esclusi altre detrazioni, carichi familiari, bonus, crediti, acconti e condizioni speciali.",
   };
 }
