@@ -25,7 +25,7 @@ export { assertCurrentRemoteMain404 } from "./lib/current-remote-main-404";
 import { inspectGoldBinding347, type AuditGoldResult347 } from "./audit-gold-source-binding-347";
 import { publicIndexPaths } from "../src/seo/public-discovery";
 import { groups } from "../src/catalog/groups";
-import { narrowUncataloguedToolPreviews } from "../src/release/preview-boundary";
+import { loadReleasePreviews } from "./lib/load-release-previews";
 
 const execFileAsync = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
@@ -301,18 +301,7 @@ async function main(): Promise<void> {
   // Exclude only exact audited, build-proven experimental routes. Each
   // exception is verified against source, compiled HTML and sitemap. If a
   // guard changes or another unindexed route appears, validation fails closed.
-  const scopedPreviews = narrowUncataloguedToolPreviews({
-    toolPageFiles, staticFiles: distFiles, catalogRoutes: catalog.map((entry) => entry.route),
-    codiceFiscaleSource: await readFile(resolve(root, "src/pages/tools/codice-fiscale.astro"), "utf8").catch(() => ""),
-    codiceFiscaleHtml: await readFile(resolve(distRoot, "tools/codice-fiscale/index.html"), "utf8").catch(() => ""),
-    ocrSource: await readFile(resolve(root, "src/pages/tools/ocr-italiano-locale-246.astro"), "utf8").catch(() => ""),
-    ocrHtml: await readFile(resolve(distRoot, "tools/ocr-italiano-locale-246/index.html"), "utf8").catch(() => ""),
-    pdfOcr247Source: await readFile(resolve(root, "src/pages/tools/pdf-scansionato-ocr-247.astro"), "utf8").catch(() => ""),
-    pdfOcr247Html: await readFile(resolve(distRoot, "tools/pdf-scansionato-ocr-247/index.html"), "utf8").catch(() => ""),
-    redaction237Source: await readFile(resolve(root, "src/pages/tools/pdf-true-redaction-237/[...route].astro"), "utf8").catch(() => ""),
-    signatureSource: await readFile(resolve(root, "src/pages/tools/pdf-visual-signature/[...route].astro"), "utf8").catch(() => ""),
-    sitemapXml: await readFile(resolve(distRoot, "sitemap.xml"), "utf8").catch(() => ""),
-  });
+  const scopedPreviews = await loadReleasePreviews(root, distRoot, toolPageFiles, distFiles, catalog.map((entry) => entry.route));
   const rollbackPath = resolve(receiptDirectory, "rollback.json");
   const existingRollback = await readJson(rollbackPath);
   const rollbackReceipt = isVerifiedRollback(existingRollback) ? existingRollback : createUnprovenRollbackReceipt(revision, sourceFingerprint);
