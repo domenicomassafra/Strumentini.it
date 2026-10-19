@@ -131,6 +131,7 @@
     "read-excel-file": "9.3.10",
     "svgo": "4.1.0",
     "turndown": "7.2.4",
+    "vat-validation": "3.0.0",
     "write-excel-file": "4.1.1"
   },
   "devDependencies": {

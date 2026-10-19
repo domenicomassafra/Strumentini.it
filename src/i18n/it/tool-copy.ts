@@ -611,9 +611,9 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     summary: "Trova una palette di colori rappresentativa da un'immagine direttamente nel browser.",
   },
   "partita-iva-validator": {
-    name: "Verifica Partita IVA italiana",
-    summary: "Normalizza e controlla formato e cifra di controllo di una Partita IVA italiana, interamente in locale, senza verificare l'esistenza nel registro.",
-    searchTerms: ["verifica partita iva", "controlla partita iva", "checksum partita iva", "p iva"],
+    name: "Verifica Partita IVA italiana e UE",
+    summary: "Controlla in locale la P.IVA italiana e UE. Non verifica esistenza nel registro, iscrizione VIES o validità fiscale.",
+    searchTerms: ["verifica partita iva", "controlla partita iva", "checksum partita iva", "p iva", "vat UE", "VAT number"],
   },
   "password-pin-passphrase-generator": {
     name: "Genera password, PIN e passphrase italiane",
