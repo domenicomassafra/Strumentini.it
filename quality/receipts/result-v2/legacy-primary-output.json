@@ -1,12 +1,43 @@
 {
   "schemaVersion": 1,
-  "capturedAt": "2026-10-06T13:33:36.558Z",
+  "capturedAt": "2026-10-19T06:54:54.426Z",
   "mode": "require-zero",
-  "count": 0,
+  "count": 5,
   "counts": {
     "raw-json-component": 0,
     "generic-json-primary": 0,
-    "manual-result-panel": 0
+    "manual-result-panel": 5
   },
-  "findings": []
+  "findings": [
+    {
+      "file": "src/components/tools/CssDesignHelperTool.tsx",
+      "line": 82,
+      "pathClass": "manual-result-panel",
+      "evidence": "{operation.result !== null && <section class=\"result-panel\" data-css-design-result>"
+    },
+    {
+      "file": "src/components/tools/pdf/PdfBookletInterleave251Tool.tsx",
+      "line": 214,
+      "pathClass": "manual-result-panel",
+      "evidence": "{downloadUrl && <section data-251-result class=\"result-panel\" data-state=\"success\">"
+    },
+    {
+      "file": "src/components/tools/pdf/PdfFillOverlays243Tool.tsx",
+      "line": 210,
+      "pathClass": "manual-result-panel",
+      "evidence": "{plan && resultUrl && <section data-243-result class=\"result-panel\" data-state=\"success\">"
+    },
+    {
+      "file": "src/components/tools/pdf/PdfNUpTool.tsx",
+      "line": 187,
+      "pathClass": "manual-result-panel",
+      "evidence": "{downloadUrl ? <section class=\"result-panel\" data-state=\"success\" data-nup-result>"
+    },
+    {
+      "file": "src/components/tools/pdf/PdfVisualSignature241Tool.tsx",
+      "line": 349,
+      "pathClass": "manual-result-panel",
+      "evidence": "{resultVisible && result && <section data-241-result class=\"result-panel\" data-state=\"success\">"
+    }
+  ]
 }
