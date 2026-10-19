@@ -67,7 +67,10 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     let mixed = 0;
     let opaque = 0;
     for (let i = 3; i < rgba.length; i += 4) {
-      rgba[i] = Math.round(rgba[i] * originalPixels[i] / 255);
+      const predictedAlpha = rgba[i];
+      const sourceAlpha = originalPixels[i];
+      if (predictedAlpha === undefined || sourceAlpha === undefined) throw new Error("MASK_INVALID");
+      rgba[i] = Math.round(predictedAlpha * sourceAlpha / 255);
       if (rgba[i] === 0) transparent++;
       else if (rgba[i] === 255) opaque++;
       else mixed++;
