@@ -34,7 +34,11 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13.9'
+      # The runner only exercises CPU paths; ONNX Runtime already ships CPU binaries.
+      # Avoid downloading optional CUDA artifacts from the NuGet feed during npm ci.
       - run: npm ci
+        env:
+          ONNXRUNTIME_NODE_INSTALL: skip
       - name: Install pinned independent consumer dependencies
         run: |
           sudo apt-get update -qq
@@ -78,7 +82,11 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13.9'
+      # The runner only exercises CPU paths; ONNX Runtime already ships CPU binaries.
+      # Avoid downloading optional CUDA artifacts from the NuGet feed during npm ci.
       - run: npm ci
+        env:
+          ONNXRUNTIME_NODE_INSTALL: skip
       - name: Install pinned independent consumer dependencies
         run: |
           sudo apt-get update -qq
