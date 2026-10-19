@@ -702,7 +702,7 @@ export function calculateDiscountImpact(input: DiscountImpactInput): DiscountImp
       ? undefined
       : parseBusinessDecimal(input.discountRate, "INVALID_DISCOUNT_RATE")
     : divide(parseBusinessDecimal(input.discountPercent, "INVALID_DISCOUNT_RATE"), rational(100n, 1n), "INVALID_DISCOUNT_RATE");
-  if (discount === undefined || compareZero(discount) < 0 || compare(discount, rational(1n, 1n)) >= 0) throw new Error("INVALID_DISCOUNT_RATE");
+  if (discount === undefined || compareZero(discount) < 0 || compare(discount, rational(1n, 1n)) > 0) throw new Error("INVALID_DISCOUNT_RATE");
   const units = nonNegative(optional(input.units, "1"), "INVALID_UNITS");
   const discounted = multiply(originalPrice, subtract(rational(1n, 1n), discount));
   const originalRevenue = multiply(originalPrice, units);

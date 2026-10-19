@@ -166,6 +166,31 @@ describe("business/independent-work deterministic engine", () => {
     });
   });
 
+  it("accepts a full discount and rejects out-of-range rates through the UI module", () => {
+    const input = { originalPrice: "100", discountPercent: "100", units: "1" };
+    const fullDiscount = calculateDiscountImpact(input);
+    expect(fullDiscount).toMatchObject({
+      discountPercent: "100.00",
+      discountedUnitPrice: "0.00",
+      amountSavedPerUnit: "100.00",
+      originalRevenue: "100.00",
+      discountedRevenue: "0.00",
+      lostRevenue: "100.00",
+      units: "1",
+    });
+    expect(calculateDiscountImpact({ originalPrice: "100", discountRate: "1" }).discountedUnitPrice).toBe("0.00");
+    expect(run<Record<string, unknown>>(discountImpactModule, input)).toMatchObject({
+      discountedUnitPrice: "0.00", lostRevenue: "100.00", currency: "EUR",
+    });
+    expect(run<Record<string, unknown>>(discountImpactModule, { ...input, discountPercent: "99.99" })).toMatchObject({
+      discountedUnitPrice: "0.01", lostRevenue: "99.99",
+    });
+    for (const discountPercent of ["100.01", "-0.01"]) {
+      expect(() => calculateDiscountImpact({ ...input, discountPercent })).toThrow("INVALID_DISCOUNT_RATE");
+      expect(() => run(discountImpactModule, { ...input, discountPercent })).toThrow("INVALID_DISCOUNT_RATE");
+    }
+  });
+
   it("checks a proposal against its target margin", () => {
     expect(checkProposalBudget({ quotedPrice: "10000", estimatedHours: "80", hourlyRate: "100", directCosts: "500", contingencyPercent: "10", targetMarginPercent: "30" })).toMatchObject({
       totalCost: "9300.00",
