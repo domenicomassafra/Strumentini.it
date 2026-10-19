@@ -163,7 +163,12 @@ export function parseCsvTable(text: string): CsvTable {
 }
 
 export function serializeCsvTable(table: Pick<CsvTable, "header" | "rows" | "delimiter">): string {
-  return Papa.unparse([table.header, ...table.rows], { delimiter: table.delimiter, newline: "\n", escapeFormulae: true });
+  // A bare negative decimal is data, not an executable spreadsheet formula.
+  // Papa's default formula guard also prefixes -2, silently changing numeric
+  // XLSX cells on export. Keep the guard for -CMD(), -2+3 and all other
+  // expression-like prefixes; accept only an exact unsigned decimal after '-'.
+  const dangerousFormula = /^(?:[=+@\t\r]|-(?!\d+(?:\.\d+)?$))/u;
+  return Papa.unparse([table.header, ...table.rows], { delimiter: table.delimiter, newline: "\n", escapeFormulae: dangerousFormula });
 }
 
 function validateColumnIndexes(indexes: readonly number[], columnCount: number, code: string): number[] {
