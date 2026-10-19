@@ -66,7 +66,7 @@ try {
 
     await submit.click();
     await page.locator(".result-panel[data-state='success']").waitFor({ timeout: 30000 });
-    const link = page.getByRole("link", { name: "Scarica three-pages-reordered.pdf" });
+    const link = page.getByRole("link", { name: "Scarica three-pages.pdf-reordered.pdf" });
     if (await link.count() !== 1) {
       const workspace = await page.locator('[data-result-slot="file-workspace"]').allTextContents();
       const alerts = await page.locator('[role="alert"]').allTextContents();
@@ -75,7 +75,7 @@ try {
     }
     const target = await link.getAttribute("href");
     const fileName = await link.getAttribute("download");
-    if (!target?.startsWith("blob:") || fileName !== "three-pages-reordered.pdf") {
+    if (!target?.startsWith("blob:") || fileName !== "three-pages.pdf-reordered.pdf") {
       throw new Error(`Result link is not a verified local download: ${target} (${fileName})`);
     }
     const downloadTask = page.waitForEvent("download", { timeout: 15000 });
