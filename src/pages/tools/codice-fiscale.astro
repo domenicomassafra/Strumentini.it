@@ -19,6 +19,8 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
     <section class="tax396-panel" data-tax396="privati" aria-labelledby="tax396-private-title">
       <h2 id="tax396-private-title">Percorso privati e dipendenti — IRPEF lorda nazionale</h2>
       <p>Simulazione anonima dell'IRPEF <strong>lorda nazionale</strong> su un imponibile che conosci già: non calcola stipendio netto, reddito imponibile, detrazioni, crediti, addizionali regionali/comunali o imposta effettivamente dovuta. Non verifica la tua posizione personale.</p>
+      <p>Per il dettaglio di ogni scaglione e, soltanto dove documentate, le componenti dell'imposta finale, usa il <a href="/tools/irpef-annuale/">percorso IRPEF annuale 2025/2026</a>.</p>
+      <noscript><p data-tax396-private-noscript>Il calcolo richiede JavaScript: senza script il modulo resta disattivato e non invia l'imponibile nell'URL.</p></noscript>
       <form id="tax396-private-form" novalidate>
         <label for="tax396-private-year">Anno d'imposta (non anno della dichiarazione)</label>
         <select id="tax396-private-year" name="taxYear">
@@ -28,7 +30,7 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
         </select>
         <label for="tax396-private-income">Reddito imponibile IRPEF già determinato (€; virgola o punto decimale, senza separatori delle migliaia)</label>
         <input id="tax396-private-income" type="text" name="taxableIncome" inputmode="decimal" maxlength="15" value="" autocomplete="off" placeholder="40000.00" />
-        <button type="submit">Calcola solo IRPEF lorda</button>
+        <button type="submit" disabled>Calcola solo IRPEF lorda</button>
       </form>
       <p role="alert" class="tax396-error" hidden></p>
       <output id="tax396-private-output" aria-live="polite"></output>
@@ -98,6 +100,7 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
         error.hidden = false;
       }
     });
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   }
 </script>
 
