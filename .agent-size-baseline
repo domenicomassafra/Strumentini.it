@@ -120,7 +120,7 @@
   "src/engines/image/advanced-workspace.ts": 31952,
   "src/engines/image/metadata.ts": 23928,
   "src/engines/image/transform-workspace.ts": 20896,
-  "src/engines/image/visual-tools.ts": 45161,
+  "src/engines/image/visual-tools.ts": 44780,
   "src/engines/ooxml/media-compress.ts": 20900,
   "src/engines/ooxml/office-semantics.ts": 40023,
   "src/engines/pdf/index.ts": 63777,
