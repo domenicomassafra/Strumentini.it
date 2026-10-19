@@ -109,19 +109,24 @@ export async function barcodePngBlob(
  * Reads a local image file into RGBA pixels. No platform decoder is involved
  * beyond "draw this image on a canvas", which every supported browser can do.
  */
-export async function imagePixelsFrom(file: File): Promise<{ readonly width: number; readonly height: number; readonly data: Uint8ClampedArray }> {
+export async function imagePixelsFrom(file: File, maxPixels = 4_000_000): Promise<{ readonly width: number; readonly height: number; readonly data: Uint8ClampedArray }> {
   const bitmap = await decodeImageElement(file);
   const width = "width" in bitmap ? bitmap.width : 0;
   const height = "height" in bitmap ? bitmap.height : 0;
-  const source = bitmap as CanvasImageSource;
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  const context = canvas.getContext("2d", { willReadFrequently: true });
-  if (context === null) throw new Error("QR_IMAGE_DECODER_UNAVAILABLE");
-  context.drawImage(source, 0, 0);
-  if ("close" in bitmap && typeof bitmap.close === "function") bitmap.close();
-  return { width, height, data: context.getImageData(0, 0, width, height).data };
+  try {
+    if (!Number.isInteger(width) || !Number.isInteger(height) || width < 21 || height < 21)
+      throw new Error("QR_IMAGE_TOO_SMALL");
+    if (width * height > maxPixels) throw new Error("QR_IMAGE_TOO_LARGE");
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (context === null) throw new Error("QR_IMAGE_DECODER_UNAVAILABLE");
+    context.drawImage(bitmap as CanvasImageSource, 0, 0);
+    return { width, height, data: context.getImageData(0, 0, width, height).data };
+  } finally {
+    if ("close" in bitmap && typeof bitmap.close === "function") bitmap.close();
+  }
 }
 
 async function decodeImageElement(file: File): Promise<ImageBitmap | HTMLImageElement> {
