@@ -7,10 +7,10 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const dependencies = resolve(root, "node_modules");
 const rawWorker = resolve(dependencies, "pdfjs-dist/build/pdf.worker.mjs");
 export default defineConfig({ root, cacheDir: resolve(root, "node_modules/.vite-redaction-237"),
-  // The full monorepo contains a heavy-browser spike with an older nested
-  // pdfjs-dist. Pin this harness to the root installation so its API and its
-  // worker share the same version; a mismatch silently hangs PDF.js startup.
-  resolve: { alias: [{ find: /^pdfjs-dist(?=\/|$)/u, replacement: resolve(dependencies, "pdfjs-dist") }] },
+  // Both the API and the ?url worker must resolve from the root installation.
+  // An absolute-path alias strips Vite's URL import handling for the worker,
+  // leaving GlobalWorkerOptions.workerSrc undefined in the browser harness.
+  resolve: { dedupe: ["pdfjs-dist"] },
   optimizeDeps: { force: true, entries: ["tests/fixtures/pdf-redaction-malicious-237.html"] },
   server: { host: "127.0.0.1", strictPort: true,
   port: 18479, fs: { allow: [root, dependencies] } }, plugins: [{
