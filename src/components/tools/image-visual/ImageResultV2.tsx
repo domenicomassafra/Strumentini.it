@@ -1,5 +1,5 @@
 import { ImageMetadataGps272, metadataRows272 } from "./ImageMetadataDetail272";
-import { formatBytes, displayValue, detailRows, metadataGroupsLabel, collectionRows, copyPayload } from "./image-result-fields";
+import { asRecord, numberField, stringField, formatBytes, displayValue, detailRows, metadataGroupsLabel, collectionRows, copyPayload } from "./image-result-fields";
 import type { ComponentChildren } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { canOfferPngCompressionHandoff337, startPngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
@@ -51,18 +51,6 @@ interface BlobCandidate {
   readonly width?: number;
   readonly height?: number;
   readonly sourceIndex?: number;
-}
-
-function asRecord(value: unknown): ImageResultValue | null {
-  return typeof value === "object" && value !== null ? value as ImageResultValue : null;
-}
-
-function numberField(value: unknown): number | undefined {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : undefined;
-}
-
-function stringField(value: unknown): string | undefined {
-  return typeof value === "string" && value.trim() !== "" ? value : undefined;
 }
 
 function candidateFor(record: ImageResultValue, fallback: ImageResultValue): BlobCandidate | null {

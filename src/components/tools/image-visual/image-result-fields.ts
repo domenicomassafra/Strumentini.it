@@ -1,6 +1,18 @@
 /** Generic scalar result formatting shared by image calculators and viewers. */
 import type { ImageResultValue } from "./ImageResultV2";
 
+export function asRecord(value: unknown): ImageResultValue | null {
+  return typeof value === "object" && value !== null ? value as ImageResultValue : null;
+}
+
+export function numberField(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : undefined;
+}
+
+export function stringField(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() !== "" ? value : undefined;
+}
+
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1).replace(".", ",")} KiB`;
