@@ -180,7 +180,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "user-agent-parser") return userAgentOperation(stringField(value, "userAgent", "ua", "input", "text"));
   if (toolId === "query-string-editor") return queryStringOperation(value);
   if (toolId === "json-path-playground") return jsonPathOperation(stringField(value, "json", "text", "input", "document"), stringField(value, "path", "query", "jsonPath"));
-  if (toolId === "cidr-calculator") return cidrOperation(stringField(value, "cidr", "input", "value"));
+  if (toolId === "cidr-calculator") return cidrOperation(stringField(value, "cidr", "input", "value"), signal);
   if (toolId === "base-converter") return baseConversionOperation(stringField(value, "value", "input"), stringField(value, "fromBase", "sourceBase"), stringField(value, "toBase", "targetBase"));
   if (toolId === "chmod-permission-helper") return chmodPermissionOperation(stringField(value, "permissions", "mode", "input", "value"));
   if (toolId === "json-repair") return jsonRepairOperation(stringField(value, "text", "json", "input"));

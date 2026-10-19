@@ -119,6 +119,7 @@
     "fflate": "0.8.3",
     "he": "2.0.0",
     "heic-to": "^1.6.5",
+    "ipaddr.js": "2.5.0",
     "music-metadata": "12.2.3",
     "node-forge": "1.4.0",
     "parse5": "^8.0.0",
