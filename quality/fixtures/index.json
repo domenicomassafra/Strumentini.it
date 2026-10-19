@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-04",
-  "family_count": 97,
+  "family_count": 98,
   "families": [
     {
       "id": "archive-checksum-manifest",
@@ -2360,6 +2360,29 @@
       "provenance": { "kind": "hand-worked", "license_or_rights": "Synthetic monetary and annual-index values authored for Strumentini.it; no personal or third-party data" },
       "truth_sources": ["legge-297-1982", "istat-foi", "fixture-policy"],
       "coverage": ["Annual reserve revaluation and separate accrual", "Missing FOI fail-closed", "Explicit IVS reduction"]
+    },
+    {
+      "id": "email-mime-msg-421",
+      "candidate_families": [
+        "Browser-only EML and Outlook MSG reader"
+      ],
+      "path": "quality/fixtures/email-mime-msg-421/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "hand-worked",
+        "license_or_rights": "Synthetic emails authored locally, .msg binary is upstream Apache-2.0 sample with original source and SHA recorded in docs/donor-eml-msg-421.md"
+      },
+      "truth_sources": [
+        "rfc5322",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "Nested multipart EML",
+        "HTML script and tracker inertness",
+        "Active and traversing attachment refusal",
+        "Corrupt MIME, invalid MSG and cancellation",
+        "Upstream MSG parser corpus"
+      ]
     }
   ]
 }
