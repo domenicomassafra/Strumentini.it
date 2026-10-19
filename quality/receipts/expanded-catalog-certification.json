@@ -10767,15 +10767,15 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/eml-msg-viewer/manifest.ts",
-          "sha256": "59c7436f8b2b21978f4ec15bab939e12e8cfc2122873e683c3b519fe84fec5fd"
+          "sha256": "24ea7ce1bd029f64c16b3f2c1a9d28870f43b5aff35aad60d17b37a0b42e8738"
         },
         "module": {
           "path": "src/tools/eml-msg-viewer/module.ts",
-          "sha256": "fbda08ceed349b162ca1518220058794dc12651828e5b6cd3adc5fbd8fcdcde7"
+          "sha256": "fc20d00601aba6d948bfd28fa173f799de9e5c8ec62836bae1ed6de4f3f1b256"
         },
         "page": {
           "path": "src/pages/tools/eml-msg-viewer.astro",
-          "sha256": "626f36ab36700605ff65980eafcabfcecc9cc8e6574033b272267d89d2972fd1"
+          "sha256": "83bdc7ade44b7b7d046feed58876f61d2700ee7ea70b7ec34b4fd1175b14704f"
         },
         "testFiles": [
           "tests/file-privacy-engine.test.ts",
