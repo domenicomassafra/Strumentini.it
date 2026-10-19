@@ -15414,7 +15414,7 @@
         },
         "module": {
           "path": "src/tools/image-resize/module.ts",
-          "sha256": "72fd3369cfa0c651ce11972f85583645582b7e846a92ab4ae6b22840df681889"
+          "sha256": "cab8d88c857c6235f09a34f6f40640800ca05f0900c9f61c4b3cc8d2f726827b"
         },
         "page": {
           "path": "src/pages/tools/image-resize.astro",
