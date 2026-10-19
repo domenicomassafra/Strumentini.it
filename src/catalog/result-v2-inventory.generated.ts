@@ -3714,9 +3714,9 @@ export const resultV2Inventory = [
     "toolId": "percentage-helper",
     "engine": "business-math",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "BusinessMathTool",
-      "source": "src/components/tools/business-math/BusinessMathTool.tsx"
+      "kind": "bespoke",
+      "component": "PercentageHelperTool",
+      "source": "src/components/tools/business-math/PercentageHelperTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",
@@ -3727,7 +3727,7 @@ export const resultV2Inventory = [
         "provenance"
       ]
     },
-    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md"
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md"
   },
   {
     "toolId": "perceptual-duplicate-finder",

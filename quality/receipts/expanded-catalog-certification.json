@@ -25370,14 +25370,15 @@
         },
         "module": {
           "path": "src/tools/percentage-helper/module.ts",
-          "sha256": "0a144840bd16197de69894b7e3eed1c97c042e615534ac08aca7607bb809c206"
+          "sha256": "e7a7cc55d3f41ceaae094e330ba34d87b05994ab72ac6267eb3c679bff68e46d"
         },
         "page": {
           "path": "src/pages/tools/percentage-helper.astro",
-          "sha256": "381be6c3949eb5f43aa331500ac9c9e4daef14767bc3c05604714d22f2956a3a"
+          "sha256": "14faa1f192a3c03c804bba0d609a1d2fb8bc5772c5d2fb1673178ea0fa890bbb"
         },
         "testFiles": [
-          "tests/business-tools.test.ts"
+          "tests/business-tools.test.ts",
+          "tests/str-011-percentage.test.ts"
         ]
       },
       "oracle": {

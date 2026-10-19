@@ -232,23 +232,6 @@ export const invoiceMathValidatorConfig = {
   ],
 } as const satisfies BusinessToolConfig;
 
-export const percentageHelperConfig = {
-  id: "percentage-helper",
-  operation: "percentage-helper",
-  title: "Calcolatore percentuali",
-  lede: "Calcola percentuali, variazioni, aumenti, riduzioni e sconti concatenati con aritmetica decimale esatta.",
-  resultLabel: "Risultato percentuale",
-  placeholder: "Il risultato percentuale apparirà qui.",
-  showCurrency: true,
-  fields: [
-    { name: "base", label: "Valore base", defaultValue: "100", kind: "text" },
-    { name: "amount", label: "Secondo valore", defaultValue: "120", kind: "text" },
-    { name: "ratePercent", label: "Percentuale", defaultValue: "20", kind: "text" },
-    { name: "rates", label: "Sconti concatenati", defaultValue: "10; 20", kind: "text", help: "Per più sconti usa il punto e virgola, per esempio 10; 20." },
-    { name: "mode", label: "Calcolo", defaultValue: "of", kind: "select", options: ["of", "what-percent", "increase", "decrease", "variation", "reverse", "reverse-discount", "cascade", "add"] },
-  ],
-} as const satisfies BusinessToolConfig;
-
 export const currencyScenarioConfig = {
   id: "currency-scenario",
   operation: "currency-scenario",

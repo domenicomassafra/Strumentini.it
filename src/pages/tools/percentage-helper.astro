@@ -1,6 +1,7 @@
 ---
 import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { PercentageHelperTool } from "../../components/tools/business-math/PercentageHelperTool";
+import { ANNUAL_VAT_2025_WINDOW_117 } from "../../reference-data/italy/fiscal-annual-vat-117";
 ---
 
 <ItalianToolPage toolId="percentage-helper">
@@ -8,6 +9,12 @@ import { PercentageHelperTool } from "../../components/tools/business-math/Perce
   <section class="vat126-panel" aria-labelledby="vat126-heading" data-vat-calculator>
     <h2 id="vat126-heading">IVA: aggiunta e scorporo</h2>
     <p>Inserisci l'aliquota applicabile alla tua operazione. Il calcolo è locale, con arrotondamento ai centesimi; non determina quale aliquota sia dovuta.</p>
+    <p>L'aliquota qui è scelta dall'utente e non ha un anno di validità verificato.
+      Per le categorie e le condizioni documentate del <strong>13–31 dicembre 2025</strong> consulta
+      <a href="/tools/iva-calcolo/">il calcolo IVA con fonti e data dell'operazione</a>.
+      Fonte normativa di riferimento: <a href={ANNUAL_VAT_2025_WINDOW_117.sources[0].url}>D.P.R. 633/1972, articolo 16 (MEF, versione 2016–2026)</a>;
+      per le categorie agevolate vedi anche la <a href={ANNUAL_VAT_2025_WINDOW_117.sources[1].url}>Tabella A (MEF, versione dal 13/12/2025)</a>.
+      La corrispondenza con una categoria fiscale va verificata per la singola operazione.</p>
     <noscript><p data-vat-noscript>Per calcolare localmente serve JavaScript abilitato; senza JavaScript il modulo resta disattivato e non invia importi.</p></noscript>
     <form data-vat-form novalidate>
       <label>Operazione <select name="operation"><option value="add">Aggiungi IVA al netto</option><option value="scorporo">Scorpora IVA dal lordo</option></select></label>
