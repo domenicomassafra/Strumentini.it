@@ -94,8 +94,10 @@ import { SALARY_13_INPS_2025 } from "../../engines/italy/salary-net-13";
           ? `Voci fiscali non calcolate (non sono zero): ${result.unsupportedTaxComponents.join(" ")}`
           : "2025: detrazione lavoro dipendente e addizionali Puglia/Bari incluse. Altre voci individuali escluse (non equivalgono a zero).";
         output.append(heading, breakdown, monthly, exclusions, limitation);
-      } catch {
-        error.textContent = "Anno, aliquota o profilo non supportati. Aliquota da 0 a 100 con due decimali; profilo INPS agricolo solo 2025 fino a 50.000 € con base confermata.";
+      } catch (failure) {
+        error.textContent = failure instanceof Error && failure.message.startsWith("FRESHNESS158_")
+          ? "Fonti annuali scadute o anno non verificato: stima sospesa fino a nuova revisione ufficiale."
+          : "Anno, aliquota o profilo non supportati. Aliquota da 0 a 100 con due decimali; profilo INPS agricolo solo 2025 fino a 50.000 € con base confermata.";
         error.hidden = false;
       }
     });

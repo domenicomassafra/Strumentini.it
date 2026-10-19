@@ -158,8 +158,10 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
         const limitations = paragraph(result.limitations);
         limitations.className = "result-limits";
         output.append(heading, introduction, tableBox, componentHeading, componentList, summary, unsupported, limitations);
-      } catch {
-        error.textContent = "Anno non supportato o importo non coperto: solo il 2025 e il 2026 sono verificati, fino a 1 miliardo di euro.";
+      } catch (failure) {
+        error.textContent = failure instanceof Error && failure.message.startsWith("FRESHNESS158_")
+          ? "Fonte fiscale annuale scaduta o anno non ancora verificato: calcolo sospeso fino a nuova revisione delle fonti ufficiali. Puoi ancora consultare gli anni storici verificati."
+          : "Anno non supportato o importo non coperto: solo il 2025 e il 2026 sono verificati, fino a 1 miliardo di euro.";
         error.hidden = false;
       }
     });

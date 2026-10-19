@@ -1,4 +1,5 @@
 import { INVOICE_STAMP_REFERENCE_2024_117 } from "../../reference-data/italy/fiscal-annual-117";
+import { assertItalyPinnedAnnualUse158 } from "../../reference-data/italy/freshness-158";
 
 export interface InvoiceStampReferenceInput152 {
   readonly sourceYear: number;
@@ -17,6 +18,7 @@ export function getInvoiceStampReference152(input: InvoiceStampReferenceInput152
     || !pack.supportedNatures.some((nature) => nature === input.nature)) {
     return { ...provenance, state: "OUT_OF_SCOPE" as const, referenceStampCents: null };
   }
+  assertItalyPinnedAnnualUse158("invoice-stamp-reference-2024", pack.year);
   if (!Number.isSafeInteger(input.amountCents) || input.amountCents < 0) {
     throw new Error("STAMP152_INVALID_AMOUNT: nonnegative integer euro cents required");
   }

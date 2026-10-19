@@ -95,8 +95,10 @@ import { ANNUAL_VAT_2025_WINDOW_117 } from "../../reference-data/italy/fiscal-an
           ? "Categoria fiscale dichiarata esplicitamente, fonte annuale MEF 2025, 13–31/12/2025. Verifica autonoma necessaria."
           : "Aliquota personalizzata dall'utente: nessuna validazione fiscale di categoria o periodo.";
         output.append(head, detail, provenance);
-      } catch {
-        error.textContent = "Calcolo non disponibile: verifica importo, aliquota (0–100%, massimo quattro decimali), data verificata e conferme delle condizioni legali.";
+      } catch (failure) {
+        error.textContent = failure instanceof Error && failure.message.startsWith("FRESHNESS158_")
+          ? "Fonte IVA annuale scaduta o anno non verificato: il calcolo fiscale è sospeso fino a nuova revisione ufficiale."
+          : "Calcolo non disponibile: verifica importo, aliquota (0–100%, massimo quattro decimali), data verificata e conferme delle condizioni legali.";
         error.hidden = false;
       }
     });
