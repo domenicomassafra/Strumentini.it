@@ -6,6 +6,7 @@ import {
   preflightAllocation,
   safeOutputStem,
 } from "../../engines/image/policy";
+import { resizeWithPica271 } from "../../engines/image/resize-pica-271";
 import type { ToolModule } from "../../runtime/types";
 import type {
   ImageResizeInput,
@@ -158,17 +159,20 @@ export async function resizeImageLocal(
     }
     context.imageSmoothingEnabled = true;
     context.imageSmoothingQuality = "high";
-    context.drawImage(
-      bitmap,
-      plan.sourceX,
-      plan.sourceY,
-      plan.sourceWidth,
-      plan.sourceHeight,
-      0,
-      0,
-      plan.outputWidth,
-      plan.outputHeight,
-    );
+    const resampling = await resizeWithPica271(bitmap, plan, canvas, allocation.estimatedDecodedBytes, signal);
+    if (resampling.engine === "canvas") {
+      context.drawImage(
+        bitmap,
+        plan.sourceX,
+        plan.sourceY,
+        plan.sourceWidth,
+        plan.sourceHeight,
+        0,
+        0,
+        plan.outputWidth,
+        plan.outputHeight,
+      );
+    }
     abortIfNeeded(signal);
 
     emit(onProgress, "encode", `Encoding ${input.outputMime === "image/jpeg" ? "JPEG" : "WebP"}`);
@@ -214,6 +218,7 @@ export async function resizeImageLocal(
       outputWidth: plan.outputWidth,
       outputHeight: plan.outputHeight,
       estimatedDecodedBytes: allocation.estimatedDecodedBytes,
+      resampling,
       metadataPolicy: METADATA_POLICY,
       orientationPolicy: ORIENTATION_POLICY,
     };
