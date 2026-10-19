@@ -6,6 +6,7 @@ import {
   type ImageVisualFile,
   type ImageVisualProgress,
 } from "./visual";
+import { additionalHeicOrientation } from "./heic-orientation-212";
 
 export type PortableImageKind = "jpeg" | "png" | "webp" | "gif" | "avif" | "heic" | "heif";
 
@@ -114,13 +115,52 @@ async function bitmapFromBlob(blob: Blob, signal?: AbortSignal): Promise<ImageBi
 
 async function decodeHeif(file: ImageVisualFile, signal?: AbortSignal): Promise<ImageBitmap> {
   abortIfNeeded(signal);
+  // heic-to/libheif applies primary HEIF irot/imir item properties, but does
+  // not apply an EXIF-only orientation. Never rotate an already transformed
+  // primary image for a second time.
+  const orientation = await additionalHeicOrientation(file.blob, signal);
   const { heicTo } = await import("heic-to/csp");
   abortIfNeeded(signal);
   try {
     const converted = await heicTo({ blob: file.blob, type: "image/png", quality: 1 });
     abortIfNeeded(signal);
     if (!(converted instanceof Blob) || converted.size < 1) throw new ImageVisualError("DECODE_FAILED", "HEIC/HEIF decoder did not produce a usable frame");
-    return await bitmapFromBlob(converted, signal);
+    const decoded = await bitmapFromBlob(converted, signal);
+    if (orientation === 1) return decoded;
+    const width = decoded.width, height = decoded.height;
+    const swapped = orientation >= 5;
+    const canvas = document.createElement("canvas");
+    canvas.width = swapped ? height : width;
+    canvas.height = swapped ? width : height;
+    const context = canvas.getContext("2d");
+    if (!context) {
+      decoded.close();
+      throw new ImageVisualError("UNSUPPORTED_BROWSER", "Canvas is required to honor HEIC EXIF orientation");
+    }
+    const matrices: Record<number, [number, number, number, number, number, number]> = {
+      2: [-1, 0, 0, 1, width, 0],
+      3: [-1, 0, 0, -1, width, height],
+      4: [1, 0, 0, -1, 0, height],
+      5: [0, 1, 1, 0, 0, 0],
+      6: [0, 1, -1, 0, height, 0],
+      7: [0, -1, -1, 0, height, width],
+      8: [0, -1, 1, 0, 0, width],
+    };
+    let oriented: ImageBitmap | undefined;
+    try {
+      context.setTransform(...matrices[orientation]!);
+      context.drawImage(decoded, 0, 0);
+      abortIfNeeded(signal);
+      oriented = await createImageBitmap(canvas);
+      abortIfNeeded(signal);
+      return oriented;
+    } catch (error) {
+      oriented?.close();
+      throw error;
+    } finally {
+      decoded.close();
+      canvas.width = canvas.height = 1;
+    }
   } catch (error) {
     if (error instanceof ImageVisualError) throw error;
     throw new ImageVisualError("DECODE_FAILED", error instanceof Error ? `HEIC/HEIF decode failed: ${error.message}` : "HEIC/HEIF decode failed locally");
