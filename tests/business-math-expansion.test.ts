@@ -5,6 +5,7 @@ import {
   calculateGeometryEquationMotion,
   calculateMortgageAmortization,
   runBusinessOperation,
+  validateInvoiceMath,
   type BusinessOperation,
   type EverydayCostInput,
   type GeometryEquationMotionInput,
@@ -13,6 +14,7 @@ import {
 import mortgageModule from "../src/tools/mortgage-amortization-calculator/module";
 import geometryModule from "../src/tools/geometry-equation-motion-helper/module";
 import everydayModule from "../src/tools/everyday-cost-calculator/module";
+import invoiceMathValidatorModule from "../src/tools/invoice-math-validator/module";
 import type { ToolExecutionContext } from "../src/runtime/types";
 
 const context: ToolExecutionContext = {
@@ -148,5 +150,30 @@ describe("tickets 16, 144 and 147 — adjacent business-math expansion", () => {
     expect((salary.assumptions as { workingBasis: string }).workingBasis).toContain("40 ore/settimana × 52 settimane/anno");
     expect(() => calculateEverydayCost({ mode: "unit-price", price: "2", quantity: "1", quantityUnit: "kilogram", normalizeUnit: "liter" })).toThrow("CROSS_DIMENSION_CONVERSION");
     expect(() => calculateEverydayCost({ mode: "split-bill", bill: "10", people: "0" })).toThrow("INVALID_PEOPLE");
+  });
+});
+
+describe("ticket 313 — invoice discounts at the inclusive upper bound", () => {
+  const line = { lineItems: [{ quantity: "1", unitPrice: "100", discountPercent: "100" }], taxRatePercent: "22", total: "0" };
+  const order = { subtotal: "100", discountPercent: "100", taxRatePercent: "22", total: "0" };
+
+  it("accepts 100% at line and order level, keeping the cent-rounding contract", () => {
+    expect(validateInvoiceMath(line)).toMatchObject({ subtotal: "0.00", taxableAmount: "0.00", taxAmount: "0.00", expectedTotal: "0.00", difference: "0.00", valid: true, issues: [] });
+    expect(validateInvoiceMath(order)).toMatchObject({ subtotal: "100.00", discountAmount: "100.00", taxableAmount: "0.00", taxAmount: "0.00", expectedTotal: "0.00", valid: true, issues: [] });
+    expect(validateInvoiceMath({ ...order, discountPercent: "99.99", total: "0.01" })).toMatchObject({ taxableAmount: "0.01", expectedTotal: "0.01", valid: true, issues: [] });
+    for (const discountPercent of ["-1", "101"]) {
+      expect(() => validateInvoiceMath({ ...order, discountPercent })).toThrow("INVALID_DISCOUNT_RATE");
+      expect(() => validateInvoiceMath({ ...line, lineItems: [{ ...line.lineItems[0], discountPercent }] })).toThrow("INVALID_DISCOUNT_RATE");
+    }
+  });
+
+  it("exposes those values and typed range failures through the invoice tool module", () => {
+    expect(invoiceMathValidatorModule.run(order, context)).toMatchObject({ expectedTotal: "0.00", valid: true, currency: "EUR" });
+    expect(invoiceMathValidatorModule.run(line, context)).toMatchObject({ expectedTotal: "0.00", valid: true, currency: "EUR" });
+    expect(invoiceMathValidatorModule.run({ ...order, discountPercent: "99.99", total: "0.01" }, context)).toMatchObject({ expectedTotal: "0.01", valid: true });
+    for (const discountPercent of ["-1", "101"]) {
+      expect(() => invoiceMathValidatorModule.run({ ...order, discountPercent }, context)).toThrow("INVALID_DISCOUNT_RATE");
+      expect(() => invoiceMathValidatorModule.run({ ...line, lineItems: [{ ...line.lineItems[0], discountPercent }] }, context)).toThrow("INVALID_DISCOUNT_RATE");
+    }
   });
 });
