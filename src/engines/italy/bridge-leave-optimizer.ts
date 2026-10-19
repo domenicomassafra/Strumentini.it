@@ -1,5 +1,6 @@
 import { DAY_CODES, type DayCode } from "../date-time/business-days";
 import { getItalyReferenceProvenance, ITALY_NATIONAL_HOLIDAYS_2026 } from "../../reference-data/italy";
+import { assertItalyPinnedAnnualUse158 } from "../../reference-data/italy/freshness-158";
 
 export type { DayCode } from "../date-time/business-days";
 
@@ -105,6 +106,7 @@ export function optimizeItalianBridges(input: BridgeOptimizerInput): BridgeOptim
       `Only 2026 is supported by the pinned authoritative Italian holiday source pack; received ${input.year}.`,
     );
   }
+  assertItalyPinnedAnnualUse158("italy-national-holidays", input.year);
   if (!Number.isInteger(input.leaveDayBudget) || input.leaveDayBudget < 0 || input.leaveDayBudget > 60) {
     throw new BridgeOptimizerError("INVALID_LEAVE_BUDGET", "Leave-day budget must be an integer from 0 through 60.");
   }

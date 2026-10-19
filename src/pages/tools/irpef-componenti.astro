@@ -78,8 +78,10 @@ import { IRPEF_128_COVERAGE, IRPEF_128_LIABILITY_SOURCES } from "../../engines/i
         omitted.textContent = result.unsupported.length ? `Componenti NON calcolate: ${result.unsupported.join(" ")}` : "Tutti e tre i componenti selezionati sono calcolati; restano fuori le altre voci fiscali.";
         const limit = document.createElement("p"); limit.textContent = result.limitations;
         output.append(heading, bands, breakdown, title, omitted, limit);
-      } catch {
-        error.textContent = "Anno o importo non coperto: sono supportati 2025 e 2026 per la sola IRPEF nazionale.";
+      } catch (failure) {
+        error.textContent = failure instanceof Error && failure.message.startsWith("FRESHNESS158_")
+          ? "Fonte fiscale annuale scaduta o anno non verificato: ricalcolo bloccato fino a nuova revisione delle fonti ufficiali."
+          : "Anno o importo non coperto: sono supportati 2025 e 2026 per la sola IRPEF nazionale.";
         error.hidden = false;
       }
     });

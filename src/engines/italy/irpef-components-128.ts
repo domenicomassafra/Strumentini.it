@@ -87,6 +87,7 @@ export function calculateIrpefComponents128(input: {
   const components: FiscalComponent128[] = [];
   const unsupported: string[] = [];
   const supportedYear = input.taxYear === 2025;
+  if (supportedYear) assertItalyPinnedAnnualUse158("irpef-components-bari-puglia-2025", input.taxYear);
   if (supportedYear && input.employeeFullYearConfirmed) {
     const cents = employeeDeduction2025(input.taxableIncomeCents);
     components.push({ id: "employee-deduction", cents: Math.min(cents, national.grossNationalTaxCents),
@@ -137,3 +138,4 @@ export function calculateIrpefComponents128(input: {
     limitations: "Simulazione di sole componenti supportate: non è l'IRPEF personale dovuta. Reddito complessivo, reddito imponibile e giorni di lavoro possono differire. Esclusi altre detrazioni, carichi familiari, bonus, crediti, acconti e condizioni speciali.",
   };
 }
+import { assertItalyPinnedAnnualUse158 } from "../../reference-data/italy/freshness-158";

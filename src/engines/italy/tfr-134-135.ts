@@ -1,4 +1,5 @@
 import { calculateNationalGrossIrpef127 } from "./irpef-national-127";
+import { assertItalyPinnedAnnualUse158 } from "../../reference-data/italy/freshness-158";
 
 /** December 2025: 1.5% fixed + 75% of FOI Dec/Dec inflation; published against prior 2024 accruals.
  * Source ISTAT 16/01/2026 and art. 2120 Codice Civile:
@@ -25,6 +26,7 @@ export function calculateTfr134(input: {
     || !Number.isInteger(input.serviceMonthsThisYear) || input.serviceMonthsThisYear < 1 || input.serviceMonthsThisYear > 12) {
     throw new Error("TFR134_UNSUPPORTED_YEAR_OR_INPUT");
   }
+  assertItalyPinnedAnnualUse158("tfr-foi-december-2025", input.referenceYear);
   // User supplies only the remuneration actually accrued during the months worked.
   const annualAccrualCents = Math.round(input.eligibleAnnualSalaryCents / 13.5);
   if (!input.officialDecemberIndexAvailable || input.serviceMonthsThisYear !== 12) {

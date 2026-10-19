@@ -95,8 +95,10 @@ import { CodiceFiscaleTool } from "../../components/tools/codice-fiscale/CodiceF
         output.textContent = "Anno d'imposta " + result.taxYear + " · IRPEF lorda nazionale: " +
           euro(result.grossNationalTaxCents) + ". Imponibile dichiarato: " + euro(result.taxableIncomeCents) +
           ". Solo aliquote nazionali verificate per questo anno; non è il netto in busta paga.";
-      } catch {
-        error.textContent = "Anno o imponibile non coperti dalle fonti locali verificate: nessun risultato.";
+      } catch (failure) {
+        error.textContent = failure instanceof Error && failure.message.startsWith("FRESHNESS158_")
+          ? "Fonte IRPEF annuale scaduta o anno non verificato: simulazione sospesa fino a nuova revisione."
+          : "Anno o imponibile non coperti dalle fonti locali verificate: nessun risultato.";
         error.hidden = false;
       }
     });

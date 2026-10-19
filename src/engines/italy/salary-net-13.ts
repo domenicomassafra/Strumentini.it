@@ -1,5 +1,6 @@
 import { calculateNationalGrossIrpef127 } from "./irpef-national-127";
 import { calculateIrpefComponents128 } from "./irpef-components-128";
+import { assertItalyPinnedAnnualUse158 } from "../../reference-data/italy/freshness-158";
 
 /** INPS, circolare 46 del 20 febbraio 2025, §2: OTD/OTI FPLD ordinari, quota dipendente 8,84%. */
 export const SALARY_13_INPS_2025 = Object.freeze({
@@ -36,6 +37,7 @@ export function estimateSalaryNet13(input: SalaryNet13Input) {
     if (input.taxYear !== 2025 || !input.confirmsContributionBase || input.ralCents > SALARY_13_INPS_2025.maxBaseCents) {
       throw new Error("SALARY13_INPS_SCOPE: solo 2025, base FPLD=RAL confermata, fino a 50.000 €");
     }
+    assertItalyPinnedAnnualUse158("inps-agricultural-fpld-2025", input.taxYear);
     basisPoints = SALARY_13_INPS_2025.workerRateBasisPoints;
   } else if (contributionProfile === "declared-rate") {
     const value = /^(0|[1-9]\d{0,2})(?:[.,](\d{1,2}))?$/u.exec(input.employeeRate.trim());

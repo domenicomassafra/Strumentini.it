@@ -6,6 +6,7 @@ import {
   type InpsContributionSeniority,
   type InpsEmployeeProfile,
 } from "../../reference-data/italy";
+import { assertItalyPinnedAnnualUse158 } from "../../reference-data/italy/freshness-158";
 
 export const INPS_CONTRIBUTION_ENGINE_VERSION = "2026.2";
 
@@ -67,6 +68,7 @@ function assertYear(year: number): void {
       `Only contribution year 2026 is supported by the pinned INPS source pack; received ${year}.`,
     );
   }
+  assertItalyPinnedAnnualUse158("inps-contributions-annual", year);
 }
 
 export const EMPLOYEE_GENERAL_CONTRIBUTION_2026_AVAILABILITY = Object.freeze({

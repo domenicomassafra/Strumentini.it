@@ -14,6 +14,7 @@
  * art.34 special agriculture are not determined by this module.
  */
 import { calculateVat126 } from "../../engines/italy/vat-126";
+import { assertItalyPinnedAnnualUse158 } from "./freshness-158";
 
 export interface AnnualVatOfficialPdfSource117 {
   readonly authority: "Ministero dell'Economia e delle Finanze — Documentazione Economica e Finanziaria";
@@ -106,6 +107,7 @@ export interface AnnualVatWindowInput117 {
 /** Returns only a conditionally applicable source-backed rate, never identity of goods from free text. */
 export function getVerifiedAnnualVatCategory117(input: AnnualVatWindowInput117) {
   if (input.taxYear !== 2025) throw new Error("VAT117_UNSUPPORTED_YEAR: only tax year 2025 partial source has been pinned");
+  assertItalyPinnedAnnualUse158("vat-2025-limited-window", input.taxYear);
   if (typeof input.transactionDate !== "string" || !/^2025-12-(?:1[3-9]|2\d|3[01])$/u.test(input.transactionDate)) {
     throw new Error("VAT117_UNSUPPORTED_DATE: exact Annex A version only proven 13–31 December 2025");
   }

@@ -53,7 +53,9 @@ function ArtigianiCommerciantiCalculator() {
       role: "owner-or-adult-collaborator",
       reduction: "none",
     }, {}, signal),
-    { formatError: (run) => run.message.includes("UNSUPPORTED") ? "La combinazione scelta non è coperta dal source pack INPS 2026." : "Controlla reddito e profilo e riprova." },
+    { formatError: (run) => run.message.includes("FRESHNESS158_")
+      ? "Fonte INPS annuale scaduta o anno non verificato: calcolo sospeso fino a nuova revisione ufficiale."
+      : run.message.includes("UNSUPPORTED") ? "La combinazione scelta non è coperta dal source pack INPS 2026." : "Controlla reddito e profilo e riprova." },
   );
 
   function reset() {
@@ -156,7 +158,9 @@ function GestioneSeparataCalculator() {
   const [copyStatus, setCopyStatus] = useState("");
   const operation = useToolOperation<GestioneSeparataResult>(
     (signal) => toolRuntime.run("gestione-separata-contributi", { year: 2026, profile: form.profile, incomeEur: form.income }, {}, signal),
-    { formatError: (run) => run.message.includes("UNSUPPORTED") ? "Questo profilo non è incluso nel source pack professionisti della Gestione Separata 2026." : "Controlla il reddito e riprova." },
+    { formatError: (run) => run.message.includes("FRESHNESS158_")
+      ? "Fonte INPS annuale scaduta o anno non verificato: calcolo sospeso fino a nuova revisione ufficiale."
+      : run.message.includes("UNSUPPORTED") ? "Questo profilo non è incluso nel source pack professionisti della Gestione Separata 2026." : "Controlla il reddito e riprova." },
   );
   function reset() {
     setForm({ income: "30000", profile: "professional-no-other-mandatory-pension-coverage" });

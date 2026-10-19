@@ -4,6 +4,7 @@
  * not an invented 2025 INPS contribution-rate or eligibility calculation.
  */
 import { getVerifiedForfettarioCoefficients117 } from "../../reference-data/italy/fiscal-annual-117";
+import { assertItalyPinnedAnnualUse158 } from "../../reference-data/italy/freshness-158";
 export interface ForfettarioPreflight133 {
   readonly taxYear: number;
   readonly priorYearReceiptsCents: number;
@@ -73,6 +74,7 @@ const supportedMoney133 = (cents: number, code: string) => {
 /** Reports only verified law scope, never infers regime eligibility from amount alone. */
 export function inspectForfettario133(input: ForfettarioPreflight133) {
   if (input.taxYear !== FORFETTARIO_2025_SOURCE_133.taxYear) throw new Error("FORF133_UNSUPPORTED_YEAR");
+  assertItalyPinnedAnnualUse158("forfettario-ateco2007-coefficients", input.taxYear);
   if (input.atecoVersion !== "ATECO2007" || !/^\d{2}(?:\.\d{1,2}){0,2}$/u.test(input.atecoCode)) {
     throw new Error("FORF133_UNSUPPORTED_ATECO: 2025 law uses ATECO2007; conversion from 2025 codes is not presumed");
   }
@@ -161,6 +163,7 @@ export function calculateForfettarioWithInps133(input: Parameters<typeof calcula
   readonly declaresOrdinaryGsProfessional?: boolean;
 }) {
   const result = calculateForfettario133(input);
+  assertItalyPinnedAnnualUse158("forfettario-inps-gs-2025", input.taxYear);
   if (input.declaresOrdinaryGsProfessional !== true) {
     throw new Error("FORF133_GS_PROFESSIONAL_DECLARATION_REQUIRED");
   }
