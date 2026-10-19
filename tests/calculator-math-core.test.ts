@@ -6,6 +6,7 @@ import {
   calculateScientificExpression,
   calculateStatisticsGrade,
 } from "../src/engines/business-math";
+import interestSavingsModule from "../src/tools/interest-savings-calculator/module";
 
 interface CalculatorMathFixture {
   readonly scientific: readonly { readonly expression: string; readonly expected: number }[];
@@ -131,5 +132,49 @@ describe("ticket 145 — interest and savings goal calculators", () => {
     expect(() => calculateInterestSavings({ mode: "goal", principal: "1000", annualRatePercent: "0", years: "0", compoundsPerYear: "12", target: "2000" })).toThrow("INFEASIBLE_GOAL");
     expect(() => calculateInterestSavings({ mode: "goal", principal: "1000", annualRatePercent: "-1", years: "1", compoundsPerYear: "12", target: "2000" })).toThrow("INVALID_SAVINGS_RATE");
     expect(() => calculateInterestSavings({ mode: "compound", principal: "1000", annualRatePercent: "5", years: "0.1", compoundsPerYear: "12" })).toThrow("INVALID_PERIOD_COUNT");
+  });
+});
+
+describe("ticket 256 — minimum payable savings contribution and tiny rates", () => {
+  const context = { defaults: { currency: { field: "currency", value: "EUR", provenance: "tool-default" } } } as const;
+  const run = async (input: Record<string, string>): Promise<Record<string, unknown>> =>
+    await interestSavingsModule.run(input, context) as Record<string, unknown>;
+
+  it("returns the minimum cent that reaches a non-divisible target through the tool module", async () => {
+    for (const rate of ["0", "5", "0.00000000001", "0.00000000000001"]) {
+      for (const principal of ["0", "25"]) {
+        for (const target of ["100", "100.01", "127.13"]) {
+          const shared = { principal, annualRatePercent: rate, years: "1", compoundsPerYear: "12" };
+          const goal = await run({ ...shared, mode: "goal", target });
+          expect(String(goal.requiredPeriodicContribution), `rate=${rate}, target=${target}`).toMatch(/^\d+\.\d{2}$/u);
+          const cents = Math.round(Number(goal.requiredPeriodicContribution) * 100);
+          const contribution = await run({ ...shared, mode: "contribution", periodicContribution: String(goal.requiredPeriodicContribution) });
+          expect(Number(contribution.result), `rate=${rate}, target=${target}`).toBeGreaterThanOrEqual(Number(target));
+          expect(Number(contribution.futureValue)).toBeGreaterThanOrEqual(Number(target));
+          const oneCentLess = ((Math.round(cents) - 1) / 100).toFixed(2);
+          const lower = await run({ ...shared, mode: "contribution", periodicContribution: oneCentLess });
+          expect(Number(lower.result), `rate=${rate}, target=${target}`).toBeLessThan(Number(target));
+        }
+      }
+    }
+    const exact = await run({ mode: "goal", principal: "0", annualRatePercent: "0", years: "1", compoundsPerYear: "12", target: "100" });
+    expect(exact.requiredPeriodicContribution).toBe("8.34");
+    expect((await run({ mode: "contribution", principal: "0", annualRatePercent: "0", years: "1", compoundsPerYear: "12", periodicContribution: "8.33" })).futureValue).toBe("99.96");
+    expect((await run({ mode: "goal", principal: "100", annualRatePercent: "5", years: "1", compoundsPerYear: "12", target: "100" })).requiredPeriodicContribution).toBe("0.00");
+  });
+
+  it("uses an independently summed annuity factor for near-zero rates in both modes", async () => {
+    for (const rate of ["0", "0.00000000001", "0.00000000000001"]) {
+      const periodicRate = Number(rate) / 100 / 12;
+      const referenceFactor = Array.from({ length: 12 }, (_, index) => (1 + periodicRate) ** index)
+        .reduce((sum, term) => sum + term, 0);
+      const shared = { principal: "0", annualRatePercent: rate, years: "1", compoundsPerYear: "12" };
+      const goal = await run({ ...shared, mode: "goal", target: "100" });
+      expect(Number(goal.result)).toBeCloseTo(100 / referenceFactor, 10);
+      expect(goal.requiredPeriodicContribution).toBe("8.34");
+      const projection = await run({ ...shared, mode: "contribution", periodicContribution: "8.23" });
+      expect(Number(projection.result)).toBeCloseTo(8.23 * referenceFactor, 9);
+      expect(projection.futureValue).toBe("98.76");
+    }
   });
 });

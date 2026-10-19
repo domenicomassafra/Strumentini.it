@@ -1,4 +1,5 @@
 import { convertUnit, resolveUnitDescriptor } from "../unit-conversion";
+import { minimumSavingsCents, savingsAnnuityFactor } from "./interest-savings";
 
 export const BUSINESS_MATH_ENGINE_VERSION = "business-math-v1";
 
@@ -1892,11 +1893,12 @@ export function calculateInterestSavings(input: InterestSavingsInput): Record<st
   }
 
   if (annualRatePercent < 0) throw new Error("INVALID_SAVINGS_RATE");
+  const annuityFactor = savingsAnnuityFactor(periodicRate, periods);
   if (input.mode === "contribution") {
     if (input.periodicContribution === undefined) throw new Error("INVALID_CONTRIBUTION");
     const contributionRational = boundedFinanceDecimal(input.periodicContribution, MAX_FINANCE_AMOUNT, "INVALID_CONTRIBUTION");
     const contribution = financeNumber(contributionRational, "INVALID_CONTRIBUTION");
-    const contributionGrowth = periods === 0 ? 0 : periodicRate === 0 ? contribution * periods : contribution * ((growth - 1) / periodicRate);
+    const contributionGrowth = contribution * annuityFactor;
     const futureValue = principal * growth + contributionGrowth;
     return {
       result: scientificFinite(futureValue, "FINANCE_RESULT_OUT_OF_RANGE"),
@@ -1910,7 +1912,7 @@ export function calculateInterestSavings(input: InterestSavingsInput): Record<st
       totalContributions: finalMoneyNumber(principal + contribution * periods),
       interestEarned: finalMoneyNumber(futureValue - principal - contribution * periods),
       assumptions: { contributionTiming: "end of each compounding period", feesTaxesInflation: "not modeled" },
-      formulas: { futureValue: "principal × growth + contribution × ((growth − 1) / periodicRate); zero-rate uses contribution × periods" },
+      formulas: { futureValue: "principal × growth + contribution × annuityFactor (expm1/log1p; zero rate uses periods)" },
       rounding: BUSINESS_ROUNDING,
     };
   }
@@ -1938,7 +1940,7 @@ export function calculateInterestSavings(input: InterestSavingsInput): Record<st
     }
     const principalFuture = principal * growth;
     const gap = target - principalFuture;
-    const required = gap <= 0 ? 0 : periodicRate === 0 ? gap / periods : gap * periodicRate / (growth - 1);
+    const required = gap <= 0 ? 0 : gap / annuityFactor;
     if (!Number.isFinite(required) || required < 0) throw new Error("INFEASIBLE_GOAL");
     return {
       result: required,
@@ -1949,9 +1951,9 @@ export function calculateInterestSavings(input: InterestSavingsInput): Record<st
       periods,
       target: finalMoneyNumber(target),
       principalFuture: finalMoneyNumber(principalFuture),
-      requiredPeriodicContribution: finalMoneyNumber(required),
+      requiredPeriodicContribution: centsToMoney(minimumSavingsCents(required, principalFuture, target, annuityFactor)),
       assumptions: { contributionTiming: "end of each compounding period", feesTaxesInflation: "not modeled" },
-      formulas: { requiredContribution: "(target − principal × growth) × periodicRate / (growth − 1); zero-rate uses gap / periods" },
+      formulas: { requiredContribution: "gap / annuityFactor, minimum payable cent" },
       rounding: BUSINESS_ROUNDING,
     };
   }
