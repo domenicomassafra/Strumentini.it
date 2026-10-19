@@ -34,7 +34,7 @@ try {
       buffer: Buffer.from(createSimplePdf(["FIRST", "SECOND", "THIRD"])),
     });
     const order = page.getByLabel("Nuovo ordine delle pagine");
-    const submit = page.getByRole("button", { name: "Riordina pagine" });
+    const submit = page.getByRole("button", { name: "Riordina pagine", exact: true });
     const cases = [
       { input: "3,NON_NUMERICO,1,2", reason: "NON_NUMERICO" },
       { input: "3,,1,2", reason: "separatore senza numero" },
