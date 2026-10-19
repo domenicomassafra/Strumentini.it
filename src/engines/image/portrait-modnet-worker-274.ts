@@ -62,7 +62,11 @@ self.onmessage = async (event: MessageEvent<Request>) => {
         for (const url of modelFiles) {
           if (!await modelCache.match(url)) missing.push(url);
         }
-        if (missing.length) await modelCache.addAll(missing);
+        for (const url of missing) {
+          const response = await nativeFetch(url);
+          if (!response.ok) throw new Error("MODEL_NOT_AVAILABLE");
+          await modelCache.put(url, response);
+        }
       } catch {
         // Private browsing or storage quotas may make offline reuse unavailable.
         // Inference still uses only the same-origin local model files.
