@@ -86,15 +86,21 @@ short arrays, where donor output is semantically weaker.
 
 Heap/RSS measurements are coarse process samples at ten-iteration intervals
 and include runtime/import state; they are neither isolated allocation
-profiles nor exact peaks. No actual bundle-size reduction or browser-memory
+profiles nor exact peaks. A second verification on the same host produced
+local/donor elapsed times of **707/617**, **399/396** and **369/388 ms** for
+250 operations each, respectively. The sign of the timing difference changes
+between runs and the donor still omits required differences; these figures
+do not demonstrate a reliable end-to-end benefit for an equivalent operation.
+The repeated donor sampled `heapUsed` maximum was **24.2–26.0 MiB**, versus
+**14.9–15.4 MiB** locally. No actual bundle-size reduction or browser-memory
 saving was established. The test-only npm package is about 32 KiB installed;
 production bundle overhead is **not measured**, since adoption was rejected.
 
 ## Decision, rollback and acceptance boundary
 
 **NO_GO**: eight semantic mismatches, inherited-property safety hazard, lost
-bounded refusal without additional code, and no observed elapsed-time gain in
-the measured workload. The **rollback is already in effect**: the existing
+bounded refusal without additional code, and no reliable measured improvement
+for equivalent behavior. The **rollback is already in effect**: the existing
 `jsonStructuralDiffOperation` is unchanged, with no package, import, lazy
 adapter, feature flag or runtime egress introduced. Existing abort checks,
 typed errors, duplicate-key caveats, CSP behavior and local-only processing
