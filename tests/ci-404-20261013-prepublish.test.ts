@@ -85,6 +85,21 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
     expect(validator?.args).toEqual(expect.arrayContaining(["--no-write-receipt", "--require-ready", `--expected-sha=${SHA}`]));
   });
 
+  it("requires the full deployed scope and a proven staging rollback even after cumulative admission", async () => {
+    const calls: string[] = [];
+    await expect(runPrepublish404({
+      expectedSha: SHA, verifyRevision: async () => {}, snapshotAssets: goodAssets,
+      runStep: async (step) => {
+        calls.push(step.name);
+        if (step.name === "scope-and-staging-rollback-admission") throw new Error("STAGING_CANARY_NOT_RUN");
+      },
+    })).rejects.toThrow("STAGING_CANARY_NOT_RUN");
+    expect(calls).toContain("read-only-required-admission");
+    expect(calls).not.toContain("wrangler-production-deploy");
+    expect(prepublishSteps404(SHA).find((step) => step.name === "scope-and-staging-rollback-admission")?.args)
+      .toEqual(["node_modules/tsx/dist/cli.mjs", "scripts/verify-release-scope-405.ts", "--all"]);
+  });
+
   it("refuses absent SHA, stale revision and any failing cumulative stage before deployment", async () => {
     for (const expectedSha of [undefined, "", "main", SHA.slice(0, 8), "0".repeat(40)]) {
       const run: string[] = [];
