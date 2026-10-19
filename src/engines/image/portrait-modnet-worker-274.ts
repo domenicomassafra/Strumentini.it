@@ -32,6 +32,29 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       }
       return nativeFetch(input, init);
     };
+    // WebKit accepts model downloads but does not retain the donor's relative
+    // CacheStorage keys. An absolute same-origin key works across engines and
+    // lets a new Worker use models downloaded by the previous one.
+    if (typeof caches !== "undefined") {
+      try {
+        const modelCache = await caches.open("portrait-modnet-274");
+        const localCacheKey = (key: string): string => {
+          const url = new URL(key, self.location.origin);
+          if (url.origin !== self.location.origin || !url.pathname.startsWith("/models/portrait-modnet/")) {
+            throw new Error("CACHE_PATH_INVALID");
+          }
+          return url.href;
+        };
+        env.useCustomCache = true;
+        env.customCache = {
+          match: (key) => modelCache.match(localCacheKey(key)),
+          put: (key, response) => modelCache.put(localCacheKey(key), response),
+        };
+      } catch {
+        // Private browsing or storage quotas may make offline reuse unavailable.
+        // Inference still uses only the same-origin local model files.
+      }
+    }
     const wasm = env.backends.onnx.wasm;
     if (!wasm) throw new Error("WASM_UNAVAILABLE");
     wasm.wasmPaths = {
