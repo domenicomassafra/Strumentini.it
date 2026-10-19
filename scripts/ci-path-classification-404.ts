@@ -8,6 +8,11 @@ export const shippedOcrRuntimeAsset = /^public\/ocr-246\/(?:core\/[^/]+\.(?:js|w
  * Keep the shared domain so all existing source checks continue to run. */
 const spreadsheetBoundary = /^(?:src\/engines\/table\/spreadsheet-interchange\.ts|src\/engines\/office-local\/(?:worker|client|worker-protocol)\.ts|tests\/(?:spreadsheet-interchange|donor-spreadsheets-370)\.test\.ts)$/u;
 
+/** Actual Italy fiscal tool routes and their local implementations. Keep this
+ * scoped to tool names; generic business-math and other pages are not taxes. */
+const fiscalToolPath = /^src\/(?:pages\/tools|tools)\/(?:codice-fiscale|partita-iva|iva-|irpef-|forfettario|fatturapa-|stipendio-netto|calcoli-fiscali-italia|tfr-calculator|gestione-separata-contributi|inps-artigiani-commercianti)/u;
+const fiscalToolComponent = /^src\/components\/tools\/(?:ItalyContributionTools\.tsx|TfrCalculator15\.tsx|codice-fiscale\/)/u;
+
 /** Only known documentation roots count as docs; never infer from a .md suffix. */
 export function classifyPath(path: string): readonly ChangeDomain[] {
   if (!path || path.startsWith("/") || path.includes("\\") || /[\u0000-\u001f\u007f\ufffd]/u.test(path) || path.split("/").some((part) => part === "." || part === ".." || part === "")) return ["unknown"];
@@ -69,10 +74,11 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // Match domain-specific code and fixtures before the broad shared/frontend roots.
   if (/^src\/(components\/tools\/(?:pdf\/|Pdf[^/]*|ImagesToPdf[^/]*)|pages\/tools\/(pdf-|ocr-|ooxml-))/u.test(path)) return ["frontend", "pdf"];
   if (/^src\/(components\/tools\/(?:image(?:\/|-)|Image[^/]*|Images[^/]*)|pages\/tools\/(image-|png-|jpg-|jpeg-|svg-|webp-))/u.test(path)) return ["frontend", "image"];
-  if (/^src\/pages\/tools\/(codice-fiscale|partita-iva|iva-|irpef-|forfettario)/u.test(path)) return ["frontend", "italy"];
+  if (fiscalToolComponent.test(path)) return ["frontend", "italy"];
+  if (fiscalToolPath.test(path)) return path.startsWith("src/pages/") ? ["frontend", "italy"] : ["italy"];
   if (/^(src\/engines\/(pdf|ocr|ooxml)\/|src\/(tools|pages\/tools)\/(pdf-|ocr-|ooxml-)|tests\/(pdf-|ocr-|ooxml-|printable-pdf)|quality\/fixtures\/(pdf-|ocr-)|scripts\/[^/]*pdf[-.])/u.test(path)) return ["pdf"];
   if (/^(src\/engines\/image\/|src\/(tools|pages\/tools)\/(image-|png-|jpg-|jpeg-|svg-|webp-)|tests\/(image-|svg-)|quality\/fixtures\/image-|scripts\/[^/]*image[-.])/u.test(path)) return ["image"];
-  if (/^(src\/engines\/italy\/|src\/(tools|pages\/tools)\/(codice-fiscale|partita-iva|iva-|irpef-|forfettario)|tests\/(italy-|italian-|vies-)|quality\/fixtures\/(italy-|italian-)|scripts\/[^/]*(italy|italian)[-.])/u.test(path)) return ["italy"];
+  if (/^(src\/engines\/italy\/|tests\/(italy-|italian-|vies-)|quality\/fixtures\/(italy-|italian-)|scripts\/[^/]*(italy|italian)[-.])/u.test(path)) return ["italy"];
   if (/^(src\/pages\/(accedi|registrati|impostazioni)\.astro|src\/components\/(auth|account)\/)/u.test(path)) return ["frontend", "worker-auth"];
   if (path.startsWith("src/pages/") || path.startsWith("src/components/") || path.startsWith("src/layouts/") ||
       path.startsWith("src/styles/") || path.startsWith("public/")) return ["frontend"];
