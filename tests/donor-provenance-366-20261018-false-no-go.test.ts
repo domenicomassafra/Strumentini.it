@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { auditLockedPackages366, auditVendoredAssets366, parseAssetPins366, VENDORED_DIRS_366 } from "../scripts/donor-provenance-366";
+import { auditLockedPackages366, auditRepository366, auditVendoredAssets366, parseAssetPins366, VENDORED_DIRS_366 } from "../scripts/donor-provenance-366";
 
 const lock = JSON.parse(readFileSync(resolve("package-lock.json"), "utf8"));
 const manifest = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
@@ -16,6 +16,14 @@ const authored = [
 ] as const;
 
 describe("#366 false refusals versus real provenance blockers", () => {
+  it("keeps repository-level NO_GO until build-wide redistribution duties are discharged", () => {
+    const report = auditRepository366(process.cwd());
+    expect(report.assets.status).toBe("VERIFIED_METADATA");
+    expect(report.primary.failures).toEqual([]);
+    expect(report.status).toBe("NO_GO");
+    expect(report.failures).toContain("REDISTRIBUTION_OBLIGATIONS_NOT_CLEARED");
+    expect(report.candidates.every((candidate) => candidate.decision === "NO_ADOPT")).toBe(true);
+  }, 30_000);
   it("audits all seven present devOptional edges rather than treating them as dev-only", () => {
     const report = auditLockedPackages366(lock, manifest);
     expect(report.failures.filter((failure: string) => /DEV_ONLY_(TRANSITIVE|OPTIONAL)/u.test(failure))).toEqual([]);
@@ -52,16 +60,11 @@ describe("#366 false refusals versus real provenance blockers", () => {
       expect(pin.version).toBe("GIT");
       expect(pin.source).toMatch(/^git:[a-f0-9]{40}:[a-f0-9]{40}$/u);
     }
-    expect(report.status).toBe("NO_GO");
-    // The 8 CDN fonts + 4 primary OFL notices and the 7 OCR core binaries/
-    // license now carry exact upstream attestations. The three Italian-model
-    // language assets remain a legal-license refusal, even if bytes match.
+    expect(report.status).toBe("VERIFIED_METADATA");
+    // Local font/OCR byte attribution now includes the original 2018 tessdata
+    // model under Apache-2.0. The repository-level legal review remains NO_GO.
     expect(report.failures.filter((failure) => failure.includes("public/fonts/"))).toEqual([]);
-    expect(report.failures.filter((failure) => failure.includes("public/ocr-246/"))).toEqual([
-      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE",
-      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE",
-      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/ita.traineddata.gz",
-    ]);
+    expect(report.failures.filter((failure) => failure.includes("public/ocr-246/"))).toEqual([]);
   });
 
   // Five negative cases each rehash the entire pinned vendor corpus; under CI

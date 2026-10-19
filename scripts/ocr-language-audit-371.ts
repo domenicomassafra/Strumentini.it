@@ -239,8 +239,9 @@ async function preflightItalian371(root: string, spike: string, requiredUpstream
       && artifact.sha256 === `sha256:${metadata.modelSha256}` && artifact.bytes === metadata.modelBytes)) {
     return { error: "IT_MODEL_LICENSE_UNVERIFIED" };
   }
-  for (const notice of ["public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE",
-    "public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE",
+  // The 2026-10-10 receipt retains the historical MIT template's hash, but
+  // that template had no named rights holder and is no longer shipped.
+  for (const notice of ["public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE",
     "public/ocr-246/vendor/tesseract-js-APACHE-2.0.LICENSE",
     "public/ocr-246/core/tesseract-core-APACHE-2.0.LICENSE"]) {
     const receipt = receipts.artifacts?.find((item) => item.path === notice);
