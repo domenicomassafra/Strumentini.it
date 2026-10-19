@@ -1,5 +1,7 @@
 /** #366: npm v3 devOptional can mean a valid present OPTIONAL runtime peer.
- * Authentic Vite lock metadata; all mutations are hermetic in-memory fixtures.
+ * Authentic Vite peer ranges; devOptional fixtures are synthesized from the
+ * installed peer metadata because a new runtime dependency can make a formerly
+ * devOptional node required and remove that npm lockfile marker.
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";

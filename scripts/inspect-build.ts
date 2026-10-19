@@ -29,6 +29,7 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 const designStudyPath = "prototipi/351/index.html";
 const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
 const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
+const whisper298Path = "laboratorio/trascrizione-audio/index.html";
 const previewOnlyPaths = [
   "tools/codice-fiscale/index.html",
   "tools/iva-calcolo/index.html",
@@ -37,6 +38,7 @@ const previewOnlyPaths = [
   "tools/stipendio-netto/index.html",
   "tools/ocr-italiano-locale-246/index.html",
   pdfOcr247Path,
+  whisper298Path,
   designStudyPath,
   fiscalBoundedPath,
 ] as const;
@@ -47,7 +49,11 @@ for (const previewPath of previewOnlyPaths) {
     throw new Error(`Unreviewed preview route promoted into index/catalog: ${previewPath}`);
   }
   const preview = htmlPages.find(({ path }) => relative(dist, path).replaceAll("\\", "/") === previewPath)?.html;
-  const sourceSafe = previewPath === "tools/codice-fiscale/index.html"
+  const sourceSafe = previewPath === whisper298Path
+    ? preview?.includes('data-whisper298-preview="experimental-local-only"') &&
+      preview.includes("sperimentale") && preview.includes("browser") &&
+      preview.includes("Trascrizione audio italiana")
+    : previewPath === "tools/codice-fiscale/index.html"
     ? preview?.includes('data-cf-canonical-route="/tools/codice-fiscale/"') &&
       preview.includes("ANPR") && preview.includes("Agenzia delle Entrate")
     : previewPath === "tools/iva-calcolo/index.html"

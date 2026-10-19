@@ -20,6 +20,18 @@ export default defineConfig({
   },
   integrations: [preact()],
   vite: {
+    plugins: [{
+      name: "whisper-298-prune-optional-onnx-asyncify",
+      apply: "build",
+      generateBundle(_options, bundle) {
+        // Transformers.js 4.3.1 configures ONNX WASM paths to versioned jsDelivr;
+        // its bundled fallback .asyncify binary is never used by our worker.
+        // The fallback alone exceeds Cloudflare's 25 MiB asset ceiling.
+        for (const path of Object.keys(bundle)) {
+          if (/(?:^|\/)ort-wasm-simd-threaded\.asyncify-[\w-]+\.wasm$/u.test(path)) delete bundle[path];
+        }
+      },
+    }],
     ...(process.env.STRUMENTINI_DEV_LINKED_DEPS ? { server: { fs: { allow: [process.cwd(), process.env.STRUMENTINI_DEV_LINKED_DEPS] } } } : {}),
     build: {
       sourcemap: true

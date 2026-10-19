@@ -2,4 +2,7 @@
 import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { MicrophoneRecorderTool } from "../../components/tools/MicrophoneRecorderTool";
 ---
-<ItalianToolPage toolId="microphone-recorder"><MicrophoneRecorderTool client:load /></ItalianToolPage>
+<ItalianToolPage toolId="microphone-recorder">
+  <MicrophoneRecorderTool client:load />
+  <p><a href="/laboratorio/trascrizione-audio/">Prova la trascrizione italiana locale di un WAV (laboratorio sperimentale, modello da scaricare su richiesta)</a></p>
+</ItalianToolPage>
