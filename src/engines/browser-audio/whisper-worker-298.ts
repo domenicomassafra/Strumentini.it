@@ -7,7 +7,10 @@ let resume: (() => void) | null = null;
 let running = false;
 
 async function waitWhilePaused() {
-  while (paused) await new Promise<void>((resolve) => { resume = resolve; });
+  while (paused) {
+    self.postMessage({ kind: "paused" });
+    await new Promise<void>((resolve) => { resume = resolve; });
+  }
 }
 
 self.onmessage = async (event: MessageEvent<Input>) => {

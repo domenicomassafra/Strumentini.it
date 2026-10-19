@@ -7,7 +7,7 @@ import {
 type Phase = "idle" | "loading" | "working" | "pause-requested" | "paused" | "done" | "failed" | "cancelled";
 type Reply = { kind: "loading"; phase: string; percent: number | null } | { kind: "ready"; loadingMs: number }
   | { kind: "processing"; processedSeconds: number } | { kind: "result"; text: string; elapsedMs: number }
-  | { kind: "error"; code: string } | { kind: "pause-requested" };
+  | { kind: "error"; code: string } | { kind: "pause-requested" } | { kind: "paused" };
 
 function friendly(code: string): string {
   if (code === "AUDIO_SIZE_LIMIT") return "Il file WAV deve contenere da 44 byte a 12 MiB.";
@@ -96,11 +96,14 @@ export function AudioWhisperPanel298() {
           setPhase("working");
           setStatus("Modello caricato. Elaborazione locale in corso…");
         } else if (message.kind === "processing") {
-          setPhase((previous) => previous === "pause-requested" ? "paused" : "working");
+          setPhase((previous) => previous === "pause-requested" ? previous : "working");
           setStatus(`Elaborazione locale: dal secondo ${message.processedSeconds} (blocchi da 15 s).`);
         } else if (message.kind === "pause-requested") {
-          setPhase("paused");
+          setPhase("pause-requested");
           setStatus("Pausa richiesta: la lavorazione in corso termina prima della sospensione.");
+        } else if (message.kind === "paused") {
+          setPhase("paused");
+          setStatus("Elaborazione in pausa. Premi Riprendi per continuare.");
         } else if (message.kind === "result") {
           terminate();
           setText(message.text);

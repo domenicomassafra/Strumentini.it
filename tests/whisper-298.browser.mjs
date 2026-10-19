@@ -40,6 +40,10 @@ try {
     await live.goto(url, { waitUntil: "domcontentloaded" });
     await live.locator('input[type="file"]').setInputFiles(fixture);
     await live.getByRole("button", { name: /Avvia trascrizione/u }).click();
+    await live.getByRole("button", { name: "Pausa", exact: true }).click();
+    await live.waitForFunction(() => /Elaborazione in pausa/.test(document.querySelector('[data-whisper-298] [role="status"]')?.textContent ?? ""), null, { timeout: 180_000 });
+    assert.equal(await live.locator('[data-whisper-298] textarea').count(), 0, "Paused inference must not produce a transcript");
+    await live.getByRole("button", { name: "Riprendi", exact: true }).click();
     await live.waitForFunction(() => /Trascrizione ottenuta|Trascrizione non disponibile|non ha riconosciuto/.test(document.querySelector('[data-whisper-298] [role="status"]')?.textContent ?? ""), null, { timeout: 180_000 });
     const status = await live.locator('[data-whisper-298] [role="status"]').textContent();
     assert.match(status, /Trascrizione ottenuta/u);
@@ -47,7 +51,7 @@ try {
     assert.ok(recognized.trim().length > 10, "Real audio must yield actual recognizer text");
     assert.deepEqual([...new Set(actual.map((x) => x.host))].sort(), ["cdn.jsdelivr.net", "huggingface.co", "us.aws.cdn.hf.co"]);
     assert.ok(actual.every((x) => x.method === "GET"), "No audio may be uploaded");
-    console.log(`PASS real Italian ASR: ${JSON.stringify(recognized)}; origins=${[...new Set(actual.map((x) => x.host))].join(",")}; nonGET=0`);
+    console.log(`PASS real Italian ASR with pause/resume: ${JSON.stringify(recognized)}; origins=${[...new Set(actual.map((x) => x.host))].join(",")}; nonGET=0`);
     const recordedTimings = async () => live.locator('[aria-label="Risultato trascrizione"] p').allTextContents();
     const firstTimings = await recordedTimings();
     console.log(`FIRST_LOAD: ${JSON.stringify(firstTimings)}; externalRequests=${actual.length}`);
