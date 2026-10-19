@@ -16,13 +16,14 @@ const authored = [
 ] as const;
 
 describe("#366 false refusals versus real provenance blockers", () => {
-  it("audits all seven present devOptional edges rather than treating them as dev-only", () => {
+  it("audits installed optional-runtime peers even after a new dependency makes sharp required", () => {
     const report = auditLockedPackages366(lock, manifest);
     expect(report.failures.filter((failure: string) => /DEV_ONLY_(TRANSITIVE|OPTIONAL)/u.test(failure))).toEqual([]);
     expect(report.failures).not.toContain("UNKNOWN_LICENSE node_modules/tslib");
     expect(report.optionalInstalled.map((row) => row.name)).toEqual(expect.arrayContaining([
-      "@napi-rs/wasm-runtime", "@emnapi/runtime", "tslib", "sharp",
+      "@napi-rs/wasm-runtime", "@emnapi/runtime", "tslib",
     ]));
+    expect(lock.packages["node_modules/sharp"].devOptional).toBeUndefined();
     expect(report.optionalInstalled.every((row) => row.scope === "optional-runtime")).toBe(true);
   });
 
