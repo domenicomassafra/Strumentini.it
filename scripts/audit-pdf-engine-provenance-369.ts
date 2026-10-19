@@ -18,23 +18,11 @@ export interface PdfInspection369 {
   readonly licenseNotices: readonly PdfAsset369[];
   readonly limitations: readonly string[];
 }
-export interface PdfComparison369 {
-  readonly engine: "in-house PDF parser/writer" | "Mozilla PDF.js" | "MuPDF" | "macOS PDFKit";
-  readonly installed: boolean;
-  readonly licenseGate: string;
-  readonly source: string;
-  readonly capabilities: readonly string[];
-  readonly browserBundle: string;
-  readonly mobileEvidence: "NOT_RUN";
-}
-export interface PdfAudit369 {
-  readonly inspection: PdfInspection369;
-  readonly probe: { readonly fixturePageCount: number; readonly extractedText: string; readonly fixtureSha256: string };
-  readonly comparison: readonly PdfComparison369[];
-  readonly adoption: "NO_ADOPT_NO_GOLD";
-}
-function refuse(message: string): never { throw Error("PDF369_NO_GO: " + message); }
-function hash(bytes: Uint8Array): string { return createHash("sha256").update(bytes).digest("hex"); }
+import { auditInstalledPdfEngine369 } from "./pdf-engine-comparison-369";
+export { auditInstalledPdfEngine369 } from "./pdf-engine-comparison-369";
+export type { PdfAudit369, PdfComparison369 } from "./pdf-engine-comparison-369";
+export function refuse(message: string): never { throw Error("PDF369_NO_GO: " + message); }
+export function hash(bytes: Uint8Array): string { return createHash("sha256").update(bytes).digest("hex"); }
 function safeFile(root: string, local: string): string {
   let actual: string;
   try { actual = realpathSync(resolve(root, local)); }
@@ -44,7 +32,7 @@ function safeFile(root: string, local: string): string {
   if (!statSync(actual).isFile()) refuse("expected regular file: " + local);
   return actual;
 }
-function readBounded(root: string, local: string, min = 1): Buffer {
+export function readBounded(root: string, local: string, min = 1): Buffer {
   const file = safeFile(root, local);
   const size = statSync(file).size;
   if (size < min || size > 16 * 1024 * 1024) refuse("empty, tampered or oversized artifact: " + local);
@@ -326,59 +314,6 @@ export function inspectPdfEngineProvenance369(projectRoot: string): PdfInspectio
       "Static direct import/fetch audit does NOT prove CSP/remote network silence of every transitive runtime.",
       "Deployed bundle download sizes, physical device RAM, fidelity, mobile/rights/legal owner review NOT_RUN.",
     ],
-  };
-}
-export async function auditInstalledPdfEngine369(projectRoot: string): Promise<PdfAudit369> {
-  const root = realpathSync(projectRoot);
-  const inspection = inspectPdfEngineProvenance369(root);
-  const fixture = readBounded(root, "quality/fixtures/pdf-gold/simple-2page.pdf", 100);
-  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const loader = pdfjs.getDocument({
-    data: Uint8Array.from(fixture), useSystemFonts: false, disableAutoFetch: true, disableStream: true,
-  });
-  let pages = 0;
-  const text: string[] = [];
-  try {
-    const doc = await loader.promise;
-    pages = doc.numPages;
-    if (pages !== 2) refuse("PDF.js independent fixture page count mismatch");
-    for (let i = 1; i <= pages; i++) {
-      const page = await doc.getPage(i);
-      const words = await page.getTextContent();
-      text.push(words.items.map((item) => "str" in item ? item.str : "").join(" ").trim());
-      page.cleanup();
-    }
-  } catch (error) {
-    refuse("PDF.js functional parse refused: " + String(error).slice(0, 150));
-  } finally {
-    await loader.destroy().catch(() => undefined);
-  }
-  const extractedText = text.join(" ").slice(0, 1000);
-  if (!/alpha/iu.test(extractedText) || !/beta/iu.test(extractedText)) {
-    refuse("PDF.js text extraction fixture semantics not independently proved");
-  }
-  const mainBytes = inspection.assets.find((item) => item.path === "build/pdf.mjs")?.bytes ?? 0;
-  const workerBytes = inspection.assets.find((item) => item.path === "build/pdf.worker.mjs")?.bytes ?? 0;
-  return {
-    inspection,
-    probe: { fixturePageCount: pages, extractedText, fixtureSha256: hash(fixture) },
-    comparison: [
-      { engine: "in-house PDF parser/writer", installed: true, licenseGate: "FIRST_PARTY_SOURCE_REVIEW_REQUIRED",
-        source: "src/engines/pdf/parser.ts + writer.ts", capabilities: ["local PDF object parse", "document writing"],
-        browserBundle: "Source only; deployed chunk NOT_MEASURED", mobileEvidence: "NOT_RUN" },
-      { engine: "Mozilla PDF.js", installed: true, licenseGate: "APACHE_2_0_DECLARED_RIGHTS_UNREVIEWED",
-        source: "node_modules/pdfjs-dist@" + inspection.identity.version,
-        capabilities: ["real 2-page PDF fixture parsing", "extract alpha/beta text", "installed worker module"],
-        browserBundle: "PDF.js " + mainBytes + "B + worker " + workerBytes + "B raw disk; NOT deployed download",
-        mobileEvidence: "NOT_RUN" },
-      { engine: "MuPDF", installed: false, licenseGate: "AGPL_OR_COMMERCIAL_UNAPPROVED",
-        source: "NO_VENDOR_ARCHIVE_INSTALLED_OR_EXAMINED", capabilities: [],
-        browserBundle: "NOT_MEASURED", mobileEvidence: "NOT_RUN" },
-      { engine: "macOS PDFKit", installed: process.platform === "darwin", licenseGate: "NATIVE_OS_NOT_BROWSER_VENDOR",
-        source: "macOS native OS framework, not npm donor", capabilities: [],
-        browserBundle: "NOT_APPLICABLE", mobileEvidence: "NOT_RUN" },
-    ],
-    adoption: "NO_ADOPT_NO_GOLD",
   };
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
