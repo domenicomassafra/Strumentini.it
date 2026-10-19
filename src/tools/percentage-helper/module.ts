@@ -10,6 +10,7 @@ const MODES = new Set([
   "decrease",
   "variation",
   "reverse-discount",
+  "reverse-cascade",
   "cascade",
 ]);
 
@@ -36,7 +37,7 @@ const module = createBusinessModule(
     const ratePercent = optionalDecimal(input, "ratePercent") ?? optionalDecimal(input, "percent");
     const mode = input.mode;
     if (mode !== undefined && (typeof mode !== "string" || !MODES.has(mode))) throw new Error("INVALID_MODE");
-    if (ratePercent === undefined && mode !== "what-percent" && mode !== "variation" && mode !== "cascade") throw new Error("INVALID_INPUT");
+    if (ratePercent === undefined && mode !== "what-percent" && mode !== "variation" && mode !== "cascade" && mode !== "reverse-cascade") throw new Error("INVALID_INPUT");
     const rates = discountRates(input);
     return {
       ...(base === undefined ? {} : { base }),

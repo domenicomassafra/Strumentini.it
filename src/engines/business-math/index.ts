@@ -998,6 +998,7 @@ export type PercentageMode =
   | "decrease"
   | "variation"
   | "reverse-discount"
+  | "reverse-cascade"
   | "cascade";
 
 export interface PercentageInput {
@@ -1081,63 +1082,42 @@ export function calculatePercentage(input: PercentageInput): PercentageResult {
     return result(rate, delta, amount, base, rate, "(new − old) ÷ old × 100");
   }
 
-  if (mode === "cascade") {
+  if (mode === "cascade" || mode === "reverse-cascade") {
+    const forward = mode === "cascade";
     const rawRates = input.rates ?? (suppliedRate === undefined ? [] : [suppliedRate]);
     if (rawRates.length === 0) throw new Error("INVALID_RATE");
     const parsedRates = rawRates.map((value) => parseBusinessDecimal(value, "INVALID_RATE"));
-    let total = base;
+    let factor = rational(1n, 1n);
     for (const rate of parsedRates) {
-      const fraction = divide(rate, rational(100n, 1n), "INVALID_RATE");
-      total = multiply(total, subtract(rational(1n, 1n), fraction));
+      if (compare(rate, rational(0n, 1n)) < 0 || compare(rate, rational(100n, 1n)) > 0
+        || (!forward && compare(rate, rational(100n, 1n)) === 0)) throw new Error("INVALID_RATE");
+      factor = multiply(factor, subtract(rational(1n, 1n), divide(rate, rational(100n, 1n))));
     }
-    const delta = subtract(base, total);
-    const effectiveRate = compareZero(base) === 0
-      ? rational(0n, 1n)
-      : multiply(divide(delta, base, "INVALID_BASE"), rational(100n, 1n));
+    const total = forward ? multiply(base, factor) : divide(base, factor, "INVALID_RATE");
+    const effectiveRate = compareZero(base) === 0 ? rational(0n, 1n)
+      : multiply(subtract(rational(1n, 1n), factor), rational(100n, 1n));
     return result(
       total,
-      delta,
-      total,
-      base,
+      forward ? subtract(base, total) : subtract(total, base),
+      forward ? total : base,
+      forward ? base : total,
       effectiveRate,
-      "base × ∏(1 − discount ÷ 100)",
+      forward ? "base × ∏(1 − discount ÷ 100)" : "discounted ÷ ∏(1 − discount ÷ 100)",
       parsedRates.map((rate) => money(rate)),
     );
   }
 
   const { rate, rateFraction } = withRate();
-  if (mode === "add" || mode === "increase") {
-    const percentageAmount = multiply(base, rateFraction);
-    const total = add(base, percentageAmount);
-    if (mode === "increase") {
-      return result(total, percentageAmount, total, base, rate, formulas.add);
-    }
-    return {
-      mode,
-      base: money(base),
-      ratePercent: money(rate),
-      percent: money(rate),
-      percentageAmount: money(percentageAmount),
-      result: money(percentageAmount),
-      total: money(total),
-      net: money(base),
-      formulas: { ...formulas, selected: formulas.add },
-      rounding: BUSINESS_ROUNDING,
-    };
-  }
-
-  if (mode === "of") {
-    const percentageAmount = multiply(base, rateFraction);
-    return result(percentageAmount, percentageAmount, base, base, rate, "base × rate ÷ 100");
-  }
-
-  if (mode === "decrease") {
-    const percentageAmount = multiply(base, rateFraction);
-    const total = subtract(base, percentageAmount);
-    return result(total, percentageAmount, total, base, rate, "base − base × rate ÷ 100");
+  if (mode === "add" || mode === "increase" || mode === "of" || mode === "decrease") {
+    const part = multiply(base, rateFraction);
+    if (mode === "of") return result(part, part, base, base, rate, "base × rate ÷ 100");
+    const total = mode === "decrease" ? subtract(base, part) : add(base, part);
+    return result(mode === "add" ? part : total, part, total, base, rate,
+      mode === "decrease" ? "base − base × rate ÷ 100" : formulas.add);
   }
 
   if (mode === "reverse-discount") {
+    if (compare(rate, rational(0n, 1n)) < 0 || compare(rate, rational(100n, 1n)) >= 0) throw new Error("INVALID_RATE");
     const denominator = subtract(rational(1n, 1n), rateFraction);
     const original = divide(base, denominator, "INVALID_RATE");
     return result(original, subtract(original, base), base, original, rate, "discounted ÷ (1 − rate ÷ 100)");
