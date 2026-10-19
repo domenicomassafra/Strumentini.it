@@ -94,7 +94,6 @@ async function setFile(path) {
   });
   assert(input.nodeId, "compiled editor file control");
   await tab.send("DOM.setFileInputFiles", { nodeId: input.nodeId, files: [path] });
-  await tab.evaluate('document.querySelector(\'[data-pdf-watermark] input[type="file"]\').dispatchEvent(new Event("change",{bubbles:true}))');
 }
 async function fillLabel(label, value) {
   const outcome = await tab.evaluate(`(() => {
@@ -149,6 +148,13 @@ try {
   await tab.send("DOM.enable");
   await tab.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
   await waitFor(editorHydrated, "editor hydration");
+  // DOM.setFileInputFiles already dispatches the native change event.
+  // Count real events to catch a duplicate synthetic dispatch in the harness.
+  await tab.evaluate(`(() => {
+    window.__pdf369FileChanges = 0;
+    document.querySelector('[data-pdf-watermark] input[type=file]')
+      .addEventListener('change', () => { window.__pdf369FileChanges++; }, { capture: true });
+  })()`);
   assert(await tab.evaluate("document.documentElement.scrollWidth <= innerWidth + 2"),
     "PDF editor route must fit 390px");
   temporary = await mkdtemp(join(tmpdir(), "pdf-369-browser-"));
@@ -156,12 +162,16 @@ try {
   await writeFile(invalid, Buffer.from("%PDF-1.7\ninvalid\n%%EOF\n"));
   await setFile(invalid);
   await waitFor(invalidPdfRejected, "invalid PDF rejection");
+  assert.equal(await tab.evaluate('window.__pdf369FileChanges'), 1,
+    "invalid PDF must trigger exactly one native file-change event");
   assert.equal(await tab.evaluate(
     '[...document.querySelectorAll("a")].filter((a)=>a.textContent.includes("Scarica PDF con filigrana")).length'), 0,
     "invalid input must not generate a PDF");
 
   await setFile(join(root, "quality/fixtures/pdf-gold/simple-2page.pdf"));
   await waitFor('Boolean(document.querySelector("[data-watermark-plan]"))', "editor plan");
+  assert.equal(await tab.evaluate('window.__pdf369FileChanges'), 2,
+    "valid PDF must trigger exactly one additional native file-change event");
   await fillLabel("Pagine", "1");
   await fillLabel("Testo filigrana", "STR369_WEB");
   await fillLabel("Rotazione (gradi)", "0");
