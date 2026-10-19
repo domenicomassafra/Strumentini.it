@@ -15139,7 +15139,7 @@
         },
         "module": {
           "path": "src/tools/image-metadata-viewer/module.ts",
-          "sha256": "96bb9871fd679dbfcf9c91c1065e4a6d751b342da59c36dbec1a9199380a9faf"
+          "sha256": "e2fa69bc5f88f52be036ffc261c2dd3ab7e9aabbf0dcbc9b2651ff666d01f49b"
         },
         "page": {
           "path": "src/pages/tools/image-metadata-viewer.astro",
