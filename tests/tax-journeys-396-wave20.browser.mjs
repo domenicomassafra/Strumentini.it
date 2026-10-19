@@ -72,8 +72,8 @@ try {
   const links = await piva.locator('a[href^="https://"]').evaluateAll(as => as.map(a => ({ href: a.href, label: a.textContent })));
   assert(links.some(link => /gazzettaufficiale\.it/u.test(link.href) && /Allegato 2/u.test(link.label)));
   assert(links.some(link => /normattiva\.it/u.test(link.href) && /2025/u.test(link.label)));
-  const employeeLink = piva.locator('a[href="/tools/codice-fiscale/"]');
-  assert.equal(await employeeLink.count(), 1);
+  const annualLink = piva.locator('a[href="/tools/irpef-annuale/"]');
+  assert.equal(await annualLink.count(), 1, "Private taxable-income handoff goes to the canonical tax component engine");
   const salaryLink = piva.locator('a[href="/tools/stipendio-netto/"]');
   assert.equal(await salaryLink.count(), 1, "PIVA handoff must lead directly to the employee salary journey");
 
@@ -159,6 +159,22 @@ try {
   assert.equal(await salary.locator('[name="ral"]').inputValue(), "");
   assert.equal(await salary.locator('[name="rate"]').inputValue(), "");
   assert.deepEqual(await salary.locator('[name="year"] option').evaluateAll(options => options.map(option => option.value)), ["2025", "2026"]);
+  assert.equal(await salary.locator('a[href="/tools/irpef-annuale/"]').count(), 1);
+  // User-declared 9.19% contributions on EUR 40,000 RAL leave EUR 36,324
+  // taxable. Normattiva L. 207/2024 gives 2025 gross EUR 9,353.40;
+  // L. 199/2025 changes the 2026 second band to 33%, EUR 9,186.92.
+  await salary.locator('[name="ral"]').fill("40000");
+  await salary.locator('[name="rate"]').fill("9,19");
+  await salary.locator('[name="year"]').selectOption("2025");
+  await salary.locator('button[type="submit"]').click();
+  assert.match(await salary.locator("output").innerText(), /26\.970,60\s*€/u);
+  await salary.locator('[name="year"]').selectOption("2026");
+  assert.equal((await salary.locator("output").innerText()).trim(), "", "Changing salary year invalidates 2025 result");
+  await salary.locator('button[type="submit"]').click();
+  assert.match(await salary.locator("output").innerText(), /27\.137,08\s*€/u);
+  await salary.locator('[name="rate"]').fill("9,999");
+  await salary.locator('button[type="submit"]').click();
+  assert.equal((await salary.locator("output").innerText()).trim(), "", "Unsupported contribution rate refuses a result");
   const pivaReturn = salary.locator('a[href="/tools/partita-iva-validator/"]');
   assert.equal(await pivaReturn.count(), 1, "Employee handoff must offer a direct return to the PIVA journey");
   await pivaReturn.click();
@@ -166,17 +182,62 @@ try {
   assert.equal(await piva.locator('[name="taxYear"]').inputValue(), "2025");
   assert.equal(await piva.locator('[name="receipts"]').inputValue(), "", "Cross-journey return starts anonymous and empty");
 
-  // The taxable-income route is still available for private taxpayers.
-  await employeeLink.click();
-  await page.waitForURL("**/tools/codice-fiscale/");
-  const employee = page.locator('[data-tax396="privati"]');
-  assert.equal(await employee.count(), 1);
-  assert.match(await employee.innerText(), /IRPEF lorda nazionale/u);
-  assert.match(await employee.innerText(), /2025\/2026/u);
+  // Independent 2025 and 2026 tax results come from the canonical IRPEF
+  // component engine, not a parallel annual tax table on the PIVA route.
+  // Official bands: Normattiva L. 207/2024, updated for 2026 by L. 199/2025.
+  await annualLink.click();
+  await page.waitForURL("**/tools/irpef-annuale/");
+  const annual = page.locator("[data-irpef-annuale]");
+  const annualIncome = annual.locator('[name="income"]');
+  const annualYear = annual.locator('[name="year"]');
+  assert.equal(await annualIncome.inputValue(), "", "No financial input crosses paths");
+  assert.deepEqual(await annualYear.locator("option").evaluateAll(options => options.map(o => o.value)), ["2025", "2026"]);
+  await annualIncome.fill("40000");
+  await annual.locator('[name="region"]').selectOption("puglia");
+  await annual.locator('[name="municipality"]').selectOption("bari");
+  await annual.locator('[name="employee"]').check();
+  await annual.locator('button[type="submit"]').click();
+  assert.match(await annual.locator("output").innerText(), /Imposta finale modellata 2025.*10\.672,90\s*€/su);
+  assert.equal(await annual.locator("tbody tr").count(), 3, "Auditable calculation by bracket");
+  assert.ok(await annual.locator('output a[href*="finanze.gov.it"]').count() >= 2);
+  await annualYear.selectOption("2026");
+  assert.equal(await annualIncome.inputValue(), "", "Tax-year change clears income");
+  assert.equal((await annual.locator("output").innerText()).trim(), "");
+  await annualIncome.fill("40000");
+  await annual.locator('button[type="submit"]').click();
+  const annual2026 = await annual.locator("output").innerText();
+  assert.match(annual2026, /IRPEF lorda nazionale.*10\.400,00\s*€/su);
+  assert.match(annual2026, /Imposta finale modellata: non determinata/iu);
+  assert.doesNotMatch(annual2026, /10\.672,90\s*€/u);
+  await annualYear.evaluate(select => select.add(new Option("2027", "2027")));
+  await annualYear.selectOption("2027");
+  await annualIncome.fill("40000");
+  await annual.locator('button[type="submit"]').click();
+  assert.match(await annual.locator('[role="alert"]').innerText(), /anno.*non supportato/iu);
+  assert.equal((await annual.locator("output").innerText()).trim(), "");
+  await annual.locator('a[href="/tools/partita-iva-validator/"]').click();
+  await page.waitForURL("**/tools/partita-iva-validator/");
+  assert.equal(await piva.locator('[name="receipts"]').inputValue(), "", "Canonical IRPEF return does not copy income into PIVA");
+
+  // Legacy private panel on the codice-fiscale route is also fail-closed
+  // without JavaScript: Enter may not put income into a GET URL.
+  const noJs = await browser.newContext({ javaScriptEnabled: false });
+  const noJsPage = await noJs.newPage();
+  const navigations = [];
+  noJsPage.on("request", request => { if (request.isNavigationRequest()) navigations.push(request.url()); });
+  await noJsPage.goto(origin + "/tools/codice-fiscale/");
+  const privateForm = noJsPage.locator('[data-tax396="privati"] form');
+  assert.equal(await noJsPage.locator('[data-tax396-private-noscript]').isVisible(), true);
+  assert.equal(await privateForm.locator('button[type="submit"]').isDisabled(), true);
+  await privateForm.locator('[name="taxableIncome"]').fill("40000");
+  await privateForm.locator('[name="taxableIncome"]').press("Enter");
+  assert.equal(new URL(noJsPage.url()).search, "");
+  assert.deepEqual(navigations.filter(url => new URL(url).search !== ""), []);
+  await noJs.close();
   assert.deepEqual(errors, []);
   assert.deepEqual(violations, []);
   await context.close();
-  console.log("#396 wave20 PASS static Chromium: 2025 independently reconciled 2865, zero/thresholds, cross-year declarations reset, unsupported 2024/2026, employee link, no upload");
+  console.log("#396 PASS static Chromium: 2025 PIVA 2865, annual IRPEF 2025 modeled 10672.90 and 2026 gross 10400/unknown final, unsupported years, no-JS private income, distinct paths/no uploads");
 } finally {
   await browser?.close();
   await new Promise(resolveClose => server.close(resolveClose));
