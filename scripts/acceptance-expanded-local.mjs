@@ -4,6 +4,7 @@ import { readFile, writeFile, mkdir, mkdtemp, rm } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { resolve, join } from "node:path";
 import { tmpdir } from "node:os";
+import { currentEvidenceSourceFingerprint, currentRevision } from "./lib/current-revision.ts";
 
 const root = resolve(import.meta.dirname, "..");
 const port = Number(process.env.STRUMENTINI_ACCEPTANCE_PORT ?? 18159);
@@ -17,7 +18,11 @@ const pngBytes = await readFile(resolve(root, "quality/fixtures/image-metadata/s
 const textFile = (name = "one.txt", text = "one") => ({ name, mimeType: "text/plain", buffer: Buffer.from(text, "utf8") });
 const pngFile = (name = "fixture.png") => ({ name, mimeType: "image/png", buffer: pngBytes });
 const emptyZip = { name: "empty.zip", mimeType: "application/zip", buffer: Buffer.from("504b0506000000000000000000000000000000000000", "hex") };
-const tempRoot = await mkdtemp(join(tmpdir(), "strumentini-expanded-local-"));
+// CDP directory inputs refer to the browser host: the caller can mirror this
+// fixture-only path on that host before the run (no owner files are uploaded).
+const fixtureOverride = process.env.STRUMENTINI_ACCEPTANCE_FIXTURE_DIR;
+if (fixtureOverride && !/^\/tmp\/strumentini-[a-zA-Z0-9-]+$/u.test(fixtureOverride)) throw new Error("fixture override must be a dedicated /tmp/strumentini-* directory");
+const tempRoot = fixtureOverride ?? await mkdtemp(join(tmpdir(), "strumentini-expanded-local-"));
 const directoryFixture = join(tempRoot, "directory");
 const zeroByteFixture = join(tempRoot, "zero-byte");
 await mkdir(directoryFixture, { recursive: true });
@@ -136,6 +141,7 @@ const isExpectedStaticFailure = (url) => {
 
 async function acceptTool(context, testCase) {
   const page = await context.newPage();
+  await page.setViewportSize({ width: 1280, height: 900 });
   const requests = [];
   const scripts = [];
   const runtimeErrors = [];
@@ -150,7 +156,8 @@ async function acceptTool(context, testCase) {
   try {
     const response = await page.goto(`${origin}/tools/${testCase.id}/`, { waitUntil: "networkidle" });
     if (response?.status() !== 200) throw new Error(`${testCase.id}: HTTP ${response?.status()}`);
-    const form = page.locator("form").last();
+    // Independent experimental forms must not replace the actual tool job.
+    const form = page.locator("[data-tool-operation] form").first();
     await form.waitFor();
     await testCase.setup(page, form);
     const submit = form.locator("button[type='submit']");
@@ -192,8 +199,11 @@ async function acceptTool(context, testCase) {
 
 try {
   await waitForServer();
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const cdpEndpoint = process.env.STRUMENTINI_ACCEPTANCE_CDP;
+  const browser = cdpEndpoint ? await chromium.connectOverCDP(cdpEndpoint) : await chromium.launch({ headless: true });
+  // A CDP run uses the authorized shared profile, never a new browser context.
+  const context = cdpEndpoint ? browser.contexts()[0] : await browser.newContext();
+  if (!context) throw new Error("CDP browser has no authorized context");
   const results = [];
   try {
     for (const testCase of selectedCases) {
@@ -201,13 +211,18 @@ try {
       results.push(await acceptTool(context, testCase));
     }
   } finally {
-    await context.close();
+    if (!cdpEndpoint) await context.close();
     await browser.close();
   }
   const scriptText = await readFile(new URL(import.meta.url), "utf8");
   const receipt = {
     schemaVersion: 1,
     status: "PASS",
+    generatedAt: new Date().toISOString(),
+    revision: await currentRevision(root),
+    sourceFingerprint: await currentEvidenceSourceFingerprint(root),
+    browser: browser.version(),
+    browserConnection: cdpEndpoint ? "existing-CDP-profile" : "headless",
     tools: selectedCases.map(({ id }) => id),
     routesChecked: results.length,
     keyboard: "every submit action exercised with Enter",
@@ -223,7 +238,7 @@ try {
     scriptSha256: sha256(scriptText),
     results,
   };
-  const receiptRoot = resolve(root, "quality/receipts/expanded-local");
+  const receiptRoot = resolve(root, process.env.STRUMENTINI_ACCEPTANCE_RECEIPT_DIR ?? "quality/receipts/expanded-local");
   await mkdir(receiptRoot, { recursive: true });
   const receiptFilename = requestedIds.length === 0 ? "browser-acceptance.json" : "browser-acceptance-subset.json";
   await writeFile(resolve(receiptRoot, receiptFilename), `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
