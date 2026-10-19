@@ -11,14 +11,21 @@ const engines = [
 ];
 const selectedEngines = process.env.PASSWORD_DONOR_ENGINES?.split(",") ?? null;
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
+function withDeadline(operation, label, milliseconds = 30000) {
+  let timeout;
+  return Promise.race([
+    operation,
+    new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error(`${label} exceeded ${milliseconds} ms`)), milliseconds); }),
+  ]).finally(() => clearTimeout(timeout));
+}
 
 try {
   for (const [name, engine, options] of engines) {
     if (selectedEngines !== null && !selectedEngines.includes(name)) continue;
     let browser;
     try {
-      browser = await engine.launch({ headless: true, timeout: 30000, ...options });
-      const page = await browser.newPage();
+      browser = await withDeadline(engine.launch({ headless: true, timeout: 30000, ...options }), `${name} launch`);
+      const page = await withDeadline(browser.newPage(), `${name} newPage`);
       let externalRequests = 0;
       let workers = 0;
       page.on("request", (request) => {

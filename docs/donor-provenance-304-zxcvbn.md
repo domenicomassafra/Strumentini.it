@@ -39,3 +39,15 @@ The second variant is adopted to keep the detector practical and avoid the ODC-B
 **Peak sample** (`node --expose-gc --import tsx`, same seven public synthetic vectors): prior heuristic mean 9.3 ms, maximum 34.8 ms, observed peak `heapUsed` 12.1 MiB and RSS 90.7 MiB; selected donor mean 53.4 ms, maximum 211.2 ms, observed peak `heapUsed` 15.4 MiB and RSS 102.9 MiB. These are process-level observations (Node with tooling loaded), not isolation of the package or a hardware-wide memory guarantee. The browser Worker keeps this computation off the UI thread.
 
 **Static build footprint** (`npm run build`): `donor-worker-*.js` 462,085 bytes raw / 236,901 bytes gzip; `donor-core.*.js` 460,795 bytes raw / 236,169 bytes gzip (only the Node/no-Worker dynamic path imports this chunk); page `PasswordStrengthEstimatorTool.*.js` 2,700 bytes raw / 1,429 bytes gzip. These values exclude ordinary shared framework chunks. No third-party request is needed; both lazy chunks are emitted under `dist/_astro/`.
+
+## Browser acceptance evidence
+
+The production-equivalent static `dist` was served locally with Python's HTTP server; all runs used the synthetic Italian four-word example and a 1,024-code-point Unicode cancel case. Browser checks asserted a same-origin module Worker, rendered donor factor, reset/cancel with no stale result, identical `localStorage`/`sessionStorage`, and **zero cross-origin requests**:
+
+| Engine | Browser host | Result |
+| --- | --- | --- |
+| Chromium (installed Google Chrome) | macOS Apple Silicon, `node scripts/acceptance-password-strength-donor-304.mjs` | PASS |
+| Firefox (installed Playwright browser) | macOS Apple Silicon, same script | PASS |
+| WebKit 26.6 (`playwright-core@1.63.0`, engine `webkit-2359`) | Linux x86_64 `minipc`, Playwright page via SSH localhost port-forward to same built route | PASS |
+
+The macOS WebKit headless runtime on both Mac Studio and MacBook Air successfully launched but failed to create a page (`browser.newPage` hung or closed); this occurred **before navigation or tool execution**. Linux WebKit was used for actual functional coverage. This is an environment limitation for the macOS Playwright harness, not evidence of a failing Safari end-user experience. The reusable acceptance script now bounds launch/page creation and supports selecting an engine via `PASSWORD_DONOR_ENGINES`.
