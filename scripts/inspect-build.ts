@@ -73,7 +73,8 @@ for (const previewPath of previewOnlyPaths) {
     : previewPath === fiscalBoundedPath
       ? preview?.includes('data-fiscal-t1') &&
         preview.includes("Stipendio netto annuo") &&
-        preview.includes("Regime forfettario 2025") &&
+        preview.includes("Regime forfettario annuale") &&
+        preview.includes("2025 — fonti verificate") &&
         preview.includes("TFR maturato e rivalutazione") &&
         preview.includes("Bollo in fattura") &&
         preview.includes("Le fonti valgono per gli anni")

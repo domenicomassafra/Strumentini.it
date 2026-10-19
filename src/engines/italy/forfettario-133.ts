@@ -140,20 +140,36 @@ export function calculateForfettario133(input: ForfettarioPreflight133 & {
   };
 }
 
-/** Limited 2025 INPS Gestione Separata professional path from INPS circular 27/2025.
- * Contributions due are a forecast; only contributions the user actually paid
- * in 2025 may be deducted from the substitute-tax base above.
+/** Annual INPS rates apply only to user-declared ordinary GS professionals.
+ * INPS circular 27/2025, section 2 (rates) and section 6 (income ceiling).
  * https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf
+ */
+export const FORFETTARIO_INPS_2025_SOURCE_133 = Object.freeze({
+  year: 2025,
+  publishedAt: "2025-01-30",
+  circular: "INPS 27/2025",
+  url: "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf",
+  incomeMaximumCents: 12_060_700,
+  rateBasisPoints: { "gs-2025-exclusive": 2607, "gs-2025-other-coverage": 2400 },
+} as const);
+
+/** Contributions due are a forecast, whereas tax deductions use only contributions
+ * already paid during the selected year and verified by the person calculating.
  */
 export function calculateForfettarioWithInps133(input: Parameters<typeof calculateForfettario133>[0] & {
   readonly inpsProfile: "gs-2025-exclusive" | "gs-2025-other-coverage";
+  readonly declaresOrdinaryGsProfessional?: boolean;
 }) {
   const result = calculateForfettario133(input);
-  if (input.inpsProfile !== "gs-2025-exclusive" && input.inpsProfile !== "gs-2025-other-coverage") {
+  if (input.declaresOrdinaryGsProfessional !== true) {
+    throw new Error("FORF133_GS_PROFESSIONAL_DECLARATION_REQUIRED");
+  }
+  if (!Object.hasOwn(FORFETTARIO_INPS_2025_SOURCE_133.rateBasisPoints, input.inpsProfile)) {
     throw new Error("FORF133_UNSUPPORTED_INPS_PROFILE");
   }
-  const rateBasisPoints = input.inpsProfile === "gs-2025-exclusive" ? 2607 : 2400;
-  // 2025 INPS maximum base €120607; supported ATECO income is below that ceiling.
+  const rateBasisPoints = FORFETTARIO_INPS_2025_SOURCE_133.rateBasisPoints[input.inpsProfile];
+  // The 2025 INPS maximum base is €120,607: the supported tax model caps
+  // receipts at €85,000, so gross forfettario income cannot reach that ceiling.
   const forecastContributionsCents = Number(
     (BigInt(result.grossForfettarioIncomeCents) * BigInt(rateBasisPoints) + 5000n) / 10000n);
   return {
@@ -162,7 +178,7 @@ export function calculateForfettarioWithInps133(input: Parameters<typeof calcula
     forecastContributionRatePercent: rateBasisPoints / 100,
     forecastContributionsCents,
     forecastNetAfterTaxAndInpsCents: result.yearReceiptsCents - forecastContributionsCents - result.substituteTaxCents,
-    inpsSource: "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2025/01/Circolare_14807/Allegati/15871_Circolare-numero-27-del-30-01-2025.pdf",
+    inpsSource: FORFETTARIO_INPS_2025_SOURCE_133,
     inpsLimitations: "Solo professionisti ordinari Gestione Separata 2025 (26,07% esclusiva; 24% pensionato/altra copertura). La quota INPS è una previsione su reddito forfettario, non prova di avvenuto versamento o saldo/acconto; 2025 niente casistiche speciali o altre casse. Ai fini dell'imposta si sottraggono SOLO i contributi già pagati dichiarati dall'utente.",
   };
 }

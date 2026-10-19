@@ -19,6 +19,7 @@ try {
   for (const scenario of [
     { path: "/tools/stipendio-netto/", selector: "[data-salary-estimate-13] form", warning: "[data-salary-noscript]", field: "ral", value: "40000" },
     { path: "/tools/partita-iva-validator/", selector: '[data-tax396="piva"] form', warning: "[data-forf-noscript]", field: "receipts", value: "30000" },
+    { path: "/tools/calcoli-fiscali-italia/", selector: '[data-calculator="forf133"]', warning: "[data-forf133-noscript]", field: "revenue", value: "30000" },
   ]) {
     const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
     const page = await noJs.newPage();
@@ -41,7 +42,7 @@ try {
     await active.waitForFunction((selector) => document.querySelector(selector)?.disabled === false, `${scenario.selector} button[type="submit"]`);
     await withJs.close();
   }
-  console.log("PASS STR-013/014 actual Chrome: no-JS disabled submit/no query leakage, JS hydration enables both forms");
+  console.log("PASS STR-013/014 actual Chrome: no-JS disabled submit/no query leakage, JS hydration enables all three forms");
 } finally {
   await browser?.close();
   server.kill("SIGTERM");
