@@ -16,7 +16,8 @@ import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
-import { unzipSync } from "fflate";
+import { OUTPUT_408_MAX_ZIP_PARTS, zipParts408 } from "./output-consumers-408-zip";
+export { OUTPUT_408_MAX_ZIP_PARTS, OUTPUT_408_MAX_EXPANDED_BYTES } from "./output-consumers-408-zip";
 import sharp from "sharp";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import readXlsxFile from "read-excel-file/universal";
@@ -29,8 +30,6 @@ import { renderAudioTimelineDsp231 } from "../src/engines/browser-audio/timeline
 import { audioDspCorpus231 } from "../tests/fixtures/audio-dsp-231-corpus";
 
 export const OUTPUT_408_MAX_BYTES = 4 * 1024 * 1024;
-export const OUTPUT_408_MAX_ZIP_PARTS = 128;
-export const OUTPUT_408_MAX_EXPANDED_BYTES = 8 * 1024 * 1024;
 const UTF8 = new TextDecoder("utf-8", { fatal: true });
 const encoder = new TextEncoder();
 
@@ -126,72 +125,6 @@ function readCsv408(bytes: Uint8Array): string[][] {
   if (!atCellStart || row.length > 0) { row.push(cell); rows.push(row); }
   verify(rows.length > 1 && rows.every((r) => r.length === rows[0]?.length), "CSV_EMPTY_OR_RAGGED");
   return rows;
-}
-
-function crc32408(bytes: Uint8Array): number {
-  let crc = 0xffffffff;
-  for (const byte of bytes) {
-    crc ^= byte;
-    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) === 1 ? 0xedb88320 : 0);
-  }
-  return (crc ^ 0xffffffff) >>> 0;
-}
-
-/** Inspect ZIP central directory BEFORE decompression to enforce cumulative
- * expansion bounds and forbid hidden members/overlapping range tricks.
- * Uses only the canonical bounded no-comment ZIP32 produced by the app. */
-function zipCentral408(bytes: Uint8Array): Map<string, { size: number; crc: number }> {
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const end = bytes.length - 22;
-  verify(end >= 0 && view.getUint32(end, true) === 0x06054b50, "ZIP_EOCD_INVALID");
-  const entries = view.getUint16(end + 10, true);
-  const centralSize = view.getUint32(end + 12, true);
-  const centralOffset = view.getUint32(end + 16, true);
-  verify(view.getUint16(end + 8, true) === entries && entries > 0 && entries <= OUTPUT_408_MAX_ZIP_PARTS, "ZIP_MEMBER_COUNT_INVALID");
-  verify(view.getUint16(end + 4, true) === 0 && view.getUint16(end + 6, true) === 0, "ZIP_MULTI_DISK_REFUSED");
-  verify(centralOffset + centralSize === end && centralOffset >= 30, "ZIP_CENTRAL_DIRECTORY_RANGE_INVALID");
-  const inventory = new Map<string, { size: number; crc: number }>();
-  let uncompressedTotal = 0;
-  let offset = centralOffset;
-  for (let i = 0; i < entries; i++) {
-    verify(offset + 46 <= end && view.getUint32(offset, true) === 0x02014b50, "ZIP_BAD_CENTRAL_HEADER");
-    const flags = view.getUint16(offset + 8, true);
-    const method = view.getUint16(offset + 10, true);
-    const size = view.getUint32(offset + 24, true);
-    const compressed = view.getUint32(offset + 20, true);
-    const nameLen = view.getUint16(offset + 28, true);
-    const extraLen = view.getUint16(offset + 30, true);
-    const commentLen = view.getUint16(offset + 32, true);
-    const localOffset = view.getUint32(offset + 42, true);
-    verify((flags & 0x0001) === 0 && (method === 0 || method === 8), "ZIP_ENCRYPTION_OR_COMPRESSION_REFUSED");
-    verify(size > 0 && size <= OUTPUT_408_MAX_EXPANDED_BYTES && compressed <= OUTPUT_408_MAX_BYTES, "ZIP_MEMBER_RESOURCE_LIMIT");
-    uncompressedTotal += size;
-    verify(uncompressedTotal <= OUTPUT_408_MAX_EXPANDED_BYTES, "ZIP_CUMULATIVE_EXPANSION_LIMIT");
-    verify(nameLen > 0 && nameLen <= 240 && offset + 46 + nameLen + extraLen + commentLen <= end, "ZIP_BAD_CENTRAL_NAME_RANGE");
-    const name = UTF8.decode(bytes.subarray(offset + 46, offset + 46 + nameLen));
-    verify(!name.startsWith("/") && !name.includes("..") && !name.includes("\\") && !inventory.has(name), "ZIP_UNSAFE_OR_DUPLICATE_PART");
-    verify(localOffset + 30 < centralOffset && view.getUint32(localOffset, true) === 0x04034b50, "ZIP_LOCAL_HEADER_RANGE_INVALID");
-    inventory.set(name, { size, crc: view.getUint32(offset + 16, true) });
-    offset += 46 + nameLen + extraLen + commentLen;
-  }
-  verify(offset === end, "ZIP_CENTRAL_DIRECTORY_TRAILING_GARBAGE");
-  return inventory;
-}
-
-function zipParts408(bytes: Uint8Array): Record<string, Uint8Array> {
-  const declared = zipCentral408(bytes);
-  const input = unzipSync(bytes, { filter: (file) => {
-    verify(file.originalSize <= OUTPUT_408_MAX_EXPANDED_BYTES, "ZIP_BOMB_ENTRY");
-    return true;
-  } });
-  const entries = Object.entries(input);
-  verify(entries.length === declared.size, "ZIP_MEMBER_SET_MISMATCH");
-  verify(entries.reduce((sum, [, value]) => sum + value.length, 0) <= OUTPUT_408_MAX_EXPANDED_BYTES, "ZIP_EXPANSION_BUDGET");
-  for (const [name, decoded] of entries) {
-    const wanted = declared.get(name);
-    verify(wanted && wanted.size === decoded.length && wanted.crc === crc32408(decoded), "ZIP_CRC_OR_UNCOMPRESSED_LENGTH_MISMATCH");
-  }
-  return input;
 }
 
 /** sax is a transitive dependency pinned by package-lock, not the producer's

@@ -35,8 +35,11 @@ function graph() {
   };
   for (const name of peers) {
     const from = source.packages["node_modules/" + name];
+    // An independently installed production donor can promote a previously
+    // devOptional peer (for example @types/node used by docx) to production.
+    // Reconstruct the Vite-only optional graph without depending on npm hoisting.
     if (!from?.version || !from.license || !from.integrity || !from.resolved ||
-      from.devOptional !== true || from.dev === true ||
+      from.dev === true ||
       vite.peerDependenciesMeta?.[name]?.optional !== true || !vite.peerDependencies?.[name]) {
       throw new Error("Expected actual compatible optional Vite peer: " + name);
     }

@@ -153,10 +153,6 @@ function decodeXml(bytes: Uint8Array, path: string): string {
   return xml;
 }
 
-function escapeXml(value: string): string {
-  return value.replace(/&/gu, "&amp;").replace(/</gu, "&lt;").replace(/>/gu, "&gt;").replace(/"/gu, "&quot;").replace(/'/gu, "&apos;");
-}
-
 function escapeHtml(value: string): string {
   return value.replace(/&/gu, "&amp;").replace(/</gu, "&lt;").replace(/>/gu, "&gt;").replace(/"/gu, "&quot;").replace(/'/gu, "&#39;");
 }
@@ -565,62 +561,48 @@ async function parseHtmlBlocks(input: string, unsupported: Set<string>): Promise
   return blocks;
 }
 
-function paragraphXml(text: string, options: { readonly style?: string; readonly numberingId?: number; readonly links?: readonly DocxLink[]; readonly linkStart?: number } = {}): { xml: string; relationships: DocxLink[] } {
-  const relationships = [...(options.links ?? [])];
-  const plain = stripMarkdownInline(text);
-  const runXml = (value: string): string => `<w:r><w:t xml:space="preserve">${escapeXml(value)}</w:t></w:r>`;
-  const pieces: string[] = [];
-  let cursor = 0;
-  for (let index = 0; index < relationships.length; index += 1) {
-    const link = relationships[index]!;
-    const found = plain.indexOf(link.text, cursor);
-    if (found < 0) continue;
-    if (found > cursor) pieces.push(runXml(plain.slice(cursor, found)));
-    pieces.push(`<w:hyperlink r:id="rIdLink${(options.linkStart ?? 0) + index + 1}"><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t xml:space="preserve">${escapeXml(link.text)}</w:t></w:r></w:hyperlink>`);
-    cursor = found + link.text.length;
-  }
-  if (cursor < plain.length) pieces.push(runXml(plain.slice(cursor)));
-  if (pieces.length === 0) pieces.push(runXml(plain));
-  const props = `${options.style === undefined ? "" : `<w:pStyle w:val="${escapeXml(options.style)}"/>`}${options.numberingId === undefined ? "" : `<w:numPr><w:ilvl w:val="0"/><w:numId w:val="${options.numberingId}"/></w:numPr>`}`;
-  return { xml: `<w:p>${props === "" ? "" : `<w:pPr>${props}</w:pPr>`}${pieces.join("")}</w:p>`, relationships };
-}
-
-function tableXml(rows: readonly (readonly string[])[]): string {
-  return `<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/></w:tblPr>${rows.map((row) => `<w:tr>${row.map((cell) => `<w:tc><w:p><w:r><w:t xml:space="preserve">${escapeXml(cell)}</w:t></w:r></w:p></w:tc>`).join("")}</w:tr>`).join("")}</w:tbl>`;
-}
-
 export async function generateDocxFromSemanticText(input: string, sourceFormat: "text" | "markdown" | "html"): Promise<DocxGenerationResult> {
   if (XML_ENCODER.encode(input).byteLength > 2 * 1024 * 1024) throw new OoxmlPackageError("PACKAGE_TOO_LARGE", "DOCX semantic source exceeds the 2 MiB bounded input limit.");
   const unsupported = new Set<string>();
   const blocks = sourceFormat === "text" ? parseTextBlocks(input) : sourceFormat === "markdown" ? parseMarkdownBlocks(input, unsupported) : await parseHtmlBlocks(input, unsupported);
-  const relationships: DocxLink[] = [];
-  const body = blocks.map((block) => {
-    if (block.type === "table") return tableXml(block.rows ?? []);
-    const links = block.links ?? [];
-    const offset = relationships.length;
-    relationships.push(...links);
-    if (block.type === "heading") return paragraphXml(block.text ?? "", { style: `Heading${block.level ?? 1}`, links, linkStart: offset }).xml;
-    if (block.type === "list-item") return paragraphXml(block.text ?? "", { numberingId: block.ordered ? 2 : 1, links, linkStart: offset }).xml;
-    if (block.type === "code") return paragraphXml(block.text ?? "", { style: "CodeBlock" }).xml;
-    if (block.type === "image-placeholder") return paragraphXml(block.text ?? "").xml;
-    return paragraphXml(block.text ?? "", { links, linkStart: offset }).xml;
-  }).join("");
-  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>`;
-  const contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/></Types>';
-  const rootRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
-  const documentRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relationships.map((link, index) => `<Relationship Id="rIdLink${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="${escapeXml(link.target)}" TargetMode="External"/>`).join("")}</Relationships>`;
-  const styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="character" w:styleId="Hyperlink"><w:name w:val="Hyperlink"/><w:rPr><w:color w:val="0563C1"/><w:u w:val="single"/></w:rPr></w:style>' + [1,2,3,4,5,6].map((level) => `<w:style w:type="paragraph" w:styleId="Heading${level}"><w:name w:val="heading ${level}"/><w:basedOn w:val="Normal"/><w:qFormat/></w:style>`).join("") + '<w:style w:type="paragraph" w:styleId="CodeBlock"><w:name w:val="Code Block"/><w:basedOn w:val="Normal"/><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/></w:rPr></w:style></w:styles>';
-  const numbering = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:abstractNum w:abstractNumId="0"><w:lvl w:ilvl="0"><w:numFmt w:val="bullet"/><w:lvlText w:val="•"/></w:lvl></w:abstractNum><w:abstractNum w:abstractNumId="1"><w:lvl w:ilvl="0"><w:numFmt w:val="decimal"/><w:lvlText w:val="%1."/></w:lvl></w:abstractNum><w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num><w:num w:numId="2"><w:abstractNumId w:val="1"/></w:num></w:numbering>';
-  const entries: Zippable = {
-    "[Content_Types].xml": [XML_ENCODER.encode(contentTypes), { level: 9 }],
-    "_rels/.rels": [XML_ENCODER.encode(rootRels), { level: 9 }],
-    "word/document.xml": [XML_ENCODER.encode(documentXml), { level: 9 }],
-    "word/_rels/document.xml.rels": [XML_ENCODER.encode(documentRels), { level: 9 }],
-    "word/styles.xml": [XML_ENCODER.encode(styles), { level: 9 }],
-    "word/numbering.xml": [XML_ENCODER.encode(numbering), { level: 9 }],
+  // The established HTML/Markdown preflight remains the only source of blocks:
+  // docx never parses HTML, downloads images or resolves links.
+  const { Document, ExternalHyperlink, HeadingLevel, LevelFormat, Packer, Paragraph, Table, TableCell, TableRow, TextRun } = await import("docx");
+  const runs = (value: string, style?: string) => value.split("\n").map((piece, index) =>
+    new TextRun({ text: piece, ...(index > 0 ? { break: 1 } : {}), ...(style === undefined ? {} : { style }) }));
+  const paragraph = (block: GeneratedBlock) => {
+    const plain = stripMarkdownInline(block.text ?? "");
+    const children: (InstanceType<typeof TextRun> | InstanceType<typeof ExternalHyperlink>)[] = [];
+    let cursor = 0;
+    for (const link of block.links ?? []) {
+      if (!/^(?:https?:\/\/|mailto:|tel:)/iu.test(link.target) || !link.text) continue;
+      const index = plain.indexOf(link.text, cursor);
+      if (index < 0) continue;
+      if (index > cursor) children.push(...runs(plain.slice(cursor, index)));
+      children.push(new ExternalHyperlink({ link: link.target, children: runs(link.text, "Hyperlink") }));
+      cursor = index + link.text.length;
+    }
+    if (cursor < plain.length || children.length === 0) children.push(...runs(plain.slice(cursor)));
+    return new Paragraph({
+      children,
+      ...(block.type === "heading" ? { heading: HeadingLevel[`HEADING_${block.level ?? 1}` as keyof typeof HeadingLevel] } : {}),
+      ...(block.type === "code" ? { style: "CodeBlock" } : {}),
+      ...(block.type === "list-item" ? block.ordered ? { numbering: { reference: "ordered", level: 0 } } : { bullet: { level: 0 } } : {}),
+    });
   };
-  const { zipSync } = await import("fflate");
-  const bytes = zipSync(entries, { level: 9 });
+  const children = blocks.map((block) => block.type === "table"
+    ? new Table({ rows: (block.rows ?? []).map((row) => new TableRow({ children: row.map((cell) =>
+      new TableCell({ children: [new Paragraph({ children: runs(cell) })] })) })) })
+    : paragraph(block));
+  const document = new Document({
+    creator: "", lastModifiedBy: "",
+    styles: { paragraphStyles: [{ id: "CodeBlock", name: "Code Block", basedOn: "Normal", run: { font: "Courier New" } }] },
+    numbering: { config: [{ reference: "ordered", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: "start" }] }] },
+    sections: [{ properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } } }, children }],
+  });
+  // JSZip's nodebuffer output is unavailable inside a real browser Worker.
+  const bytes = new Uint8Array(await Packer.toArrayBuffer(document));
+  if (bytes.byteLength > OOXML_PACKAGE_LIMITS.maxInputBytes) throw new OoxmlPackageError("OUTPUT_TOO_LARGE", "Generated DOCX exceeds the bounded OOXML output limit.");
   const output = analyzeOoxmlPackage(bytes);
   const reopened = await extractDocxSemantics(bytes);
   return { bytes: exactArrayBuffer(bytes), byteLength: bytes.byteLength, sourceFormat, unsupportedConstructs: [...unsupported], output, reopened, verification: { reopened: true, memberSetValidated: true, deterministicSimpleStyleTemplate: true } };
