@@ -103,7 +103,7 @@
   "src/components/tools/image-visual/ImageTransformWorkspaceTool.tsx": 33083,
   "src/components/tools/image-visual/ImageVisualTool.tsx": 30788,
   "src/components/tools/pdf/PdfResultV2.tsx": 38913,
-  "src/components/tools/pdf/PdfTool.tsx": 74647,
+  "src/components/tools/pdf/PdfTool.tsx": 74616,
   "src/components/tools/pdf/PdfVisualSignature241Tool.tsx": 22572,
   "src/components/tools/research-knowledge/ResearchResultV2.tsx": 24520,
   "src/components/tools/table/TableWorkbench.tsx": 48358,
