@@ -37,7 +37,7 @@ try {
   await page.goto(`${origin}/scripts/fixtures/office-interchange-browser/index.html`, { waitUntil: "networkidle" });
   const before = await page.evaluate(() => performance.getEntriesByType("resource").map((entry) => entry.name));
   if (before.some((url) => /office-local|read-excel-file|write-excel-file|fflate/iu.test(url))) throw new Error("Office implementation loaded before explicit user action.");
-  await page.getByRole("button", { name: "Run bounded office acceptance" }).press("Enter");
+  await page.getByRole("button", { name: "Run bounded office acceptance" }).click();
   await page.waitForFunction(() => (document.querySelector("#result")?.textContent?.trim().length ?? 0) > 0, undefined, { timeout: 60_000 });
   const raw = await page.locator("#result").innerText();
   if (raw.startsWith("ERROR:")) throw new Error(raw);
