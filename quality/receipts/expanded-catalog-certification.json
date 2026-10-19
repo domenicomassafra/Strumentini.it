@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 12
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 19,
-    "releaseBlockedCount": 252,
+    "releaseEligibleGoldCount": 255,
+    "releaseBlockedCount": 16,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 271,
     "fixtureBoundCount": 271,
@@ -139,8 +139,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/add-subtract-days.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/add-subtract-days/manifest.ts",
@@ -265,9 +265,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -279,8 +277,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/age-date-anniversary.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/age-date-anniversary/manifest.ts",
@@ -405,9 +403,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -419,8 +415,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/ai-code-fence-bundle.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/ai-code-fence-bundle/manifest.ts",
@@ -539,9 +535,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -553,8 +547,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/archive-checksum-manifest.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/archive-checksum-manifest/manifest.ts",
@@ -677,9 +671,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -691,8 +683,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/aspect-ratio-calculator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/aspect-ratio-calculator/manifest.ts",
@@ -815,9 +807,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -952,8 +942,7 @@
         }
       ],
       "blockers": [
-        "RECEIPT_MANIFEST_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
       ],
       "coverageGaps": []
     },
@@ -966,8 +955,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/barcode-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/barcode-generator/manifest.ts",
@@ -1085,9 +1074,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -1099,8 +1086,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/base-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/base-converter/manifest.ts",
@@ -1220,9 +1207,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -1234,8 +1219,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/base64-codec.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/base64-codec/manifest.ts",
@@ -1354,9 +1339,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -1490,8 +1473,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/batch-checksum-manifest.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/batch-checksum-manifest/manifest.ts",
@@ -1602,9 +1585,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -1616,8 +1597,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/batch-rename-preview.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/batch-rename-preview/manifest.ts",
@@ -1737,9 +1718,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -1873,8 +1852,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/bibtex-deduplicator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/bibtex-deduplicator/manifest.ts",
@@ -1987,9 +1966,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2001,8 +1978,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/bibtex-formatter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/bibtex-formatter/manifest.ts",
@@ -2116,9 +2093,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2130,8 +2105,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/break-even.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/break-even/manifest.ts",
@@ -2241,9 +2216,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2255,8 +2228,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/browser-text-to-speech.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/browser-text-to-speech/manifest.ts",
@@ -2373,9 +2346,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2387,8 +2358,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/bulk-domain-extractor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/bulk-domain-extractor/manifest.ts",
@@ -2507,9 +2478,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2521,8 +2490,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-day.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/business-day/manifest.ts",
@@ -2658,9 +2627,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2672,8 +2639,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/calendar-date-list-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/calendar-date-list-generator/manifest.ts",
@@ -2798,9 +2765,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2812,8 +2777,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/campaign-url/campaign-name.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/campaign-name/manifest.ts",
@@ -2927,9 +2892,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -2941,8 +2904,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/canonical-url-helper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/canonical-url-helper/manifest.ts",
@@ -3061,9 +3024,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3075,8 +3036,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/capacity-planner.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/capacity-planner/manifest.ts",
@@ -3186,9 +3147,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3200,8 +3159,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/case-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/case-converter/manifest.ts",
@@ -3322,9 +3281,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3336,8 +3293,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/checksum-verifier.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/checksum-verifier/manifest.ts",
@@ -3448,9 +3405,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3462,8 +3417,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/chmod-permission-helper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/chmod-permission-helper/manifest.ts",
@@ -3583,9 +3538,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3597,8 +3550,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/cidr-calculator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/cidr-calculator/manifest.ts",
@@ -3718,9 +3671,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3732,8 +3683,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/citation-deduplicator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/citation-deduplicator/manifest.ts",
@@ -3847,9 +3798,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -3861,8 +3810,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/citation-key-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/citation-key-generator/manifest.ts",
@@ -3997,9 +3946,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4011,8 +3958,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/clean-zip-creator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/clean-zip-creator/manifest.ts",
@@ -4123,9 +4070,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4137,8 +4082,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/client-handoff-index-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/client-handoff-index-generator/manifest.ts",
@@ -4258,9 +4203,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4272,8 +4215,8 @@
       "maintenanceClass": "R",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/color-blindness-image-simulation.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/color-blindness-image-simulation/manifest.ts",
@@ -4398,9 +4341,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4412,8 +4353,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/color-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/color-converter/manifest.ts",
@@ -4536,9 +4477,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4550,8 +4489,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/color-picker.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/color-picker/manifest.ts",
@@ -4674,9 +4613,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4688,8 +4625,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/column-type-profiler.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/column-type-profiler/manifest.ts",
@@ -4815,9 +4752,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4829,8 +4764,8 @@
       "maintenanceClass": "D",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/connection-device-info.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/connection-device-info/manifest.ts",
@@ -4947,9 +4882,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -4961,8 +4894,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/contact-sheet-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/contact-sheet-generator/manifest.ts",
@@ -5090,9 +5023,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5104,8 +5035,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/contrast-checker.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/contrast-checker/manifest.ts",
@@ -5229,9 +5160,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5243,8 +5172,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/conversion-rate-scenario.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/conversion-rate-scenario/manifest.ts",
@@ -5353,9 +5282,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5367,8 +5294,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/cpa-cpc-cpm-calculator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/cpa-cpc-cpm-calculator/manifest.ts",
@@ -5477,9 +5404,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5491,8 +5416,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/cron-explainer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/cron-explainer/manifest.ts",
@@ -5612,9 +5537,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5626,8 +5549,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/cron-next-run.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/cron-next-run/manifest.ts",
@@ -5747,9 +5670,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5761,8 +5682,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/css-design-helper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/css-design-helper/manifest.ts",
@@ -5871,9 +5792,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -5885,8 +5804,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/css-minifier.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/css-minifier/manifest.ts",
@@ -6008,9 +5927,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -6165,8 +6082,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/table-ops/csv-column-map.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-column-map/manifest.ts",
@@ -6293,9 +6210,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -6307,8 +6222,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-column-selector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-column-selector/manifest.ts",
@@ -6444,9 +6359,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -6458,8 +6371,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/csv-column-to-list.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-column-to-list/manifest.ts",
@@ -6580,9 +6493,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -6594,8 +6505,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/table-ops/csv-dedupe.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-dedupe/manifest.ts",
@@ -6724,9 +6635,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -6738,8 +6647,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-delimiter-detector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-delimiter-detector/manifest.ts",
@@ -6875,9 +6784,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -6889,8 +6796,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-encoding-fixer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-encoding-fixer/manifest.ts",
@@ -7026,9 +6933,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7040,8 +6945,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-filter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-filter/manifest.ts",
@@ -7177,9 +7082,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7191,8 +7094,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-group-count.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-group-count/manifest.ts",
@@ -7328,9 +7231,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7342,8 +7243,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-join.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-join/manifest.ts",
@@ -7479,9 +7380,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7493,8 +7392,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-pivot-lite.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-pivot-lite/manifest.ts",
@@ -7630,9 +7529,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7644,8 +7541,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-sort.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-sort/manifest.ts",
@@ -7781,9 +7678,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7795,8 +7690,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/csv-splitter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-splitter/manifest.ts",
@@ -7920,9 +7815,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -7934,8 +7827,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-to-json.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-to-json/manifest.ts",
@@ -8072,9 +7965,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -8086,8 +7977,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/csv-to-sql.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-to-sql/manifest.ts",
@@ -8211,9 +8102,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -8225,8 +8114,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/csv-viewer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/csv-viewer/manifest.ts",
@@ -8351,9 +8240,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -8365,8 +8252,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/currency-scenario.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/currency-scenario/manifest.ts",
@@ -8476,9 +8363,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -8490,8 +8375,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/date-difference.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/date-difference/manifest.ts",
@@ -8616,9 +8501,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -8630,8 +8513,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/date-source-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/date-source-normalizer/manifest.ts",
@@ -8743,9 +8626,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -8757,8 +8638,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/deadline-countdown.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/deadline-countdown/manifest.ts",
@@ -8883,9 +8764,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -8897,8 +8776,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/decimal-hours-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/decimal-hours-converter/manifest.ts",
@@ -9022,9 +8901,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9036,8 +8913,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/discount-impact.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/discount-impact/manifest.ts",
@@ -9146,9 +9023,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9160,8 +9035,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/document-handoff-manifest.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/document-handoff-manifest/manifest.ts",
@@ -9285,9 +9160,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9299,8 +9172,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-research/doi-isbn-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/doi-isbn-normalizer/manifest.ts",
@@ -9428,9 +9301,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9442,8 +9313,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/doi-link-builder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/doi-link-builder/manifest.ts",
@@ -9555,9 +9426,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9569,8 +9438,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/doi-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/doi-normalizer/manifest.ts",
@@ -9682,9 +9551,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9696,8 +9563,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/domain-frequency-counter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/domain-frequency-counter/manifest.ts",
@@ -9809,9 +9676,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9823,8 +9688,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/domain-subdomain-grouper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/domain-subdomain-grouper/manifest.ts",
@@ -9943,9 +9808,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -9957,8 +9820,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/dominant-color-extractor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/dominant-color-extractor/manifest.ts",
@@ -10082,9 +9945,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -10096,8 +9957,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/duplicate-file-finder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/duplicate-file-finder/manifest.ts",
@@ -10207,9 +10068,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -10221,8 +10080,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/duplicate-row-profiler.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/duplicate-row-profiler/manifest.ts",
@@ -10348,9 +10207,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -10362,8 +10219,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/duration-calculator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/duration-calculator/manifest.ts",
@@ -10488,9 +10345,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -10502,8 +10357,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/effective-hourly-rate.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/effective-hourly-rate/manifest.ts",
@@ -10613,9 +10468,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -10627,8 +10480,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/email-domain-extractor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/email-domain-extractor/manifest.ts",
@@ -10748,9 +10601,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -10983,8 +10834,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/epoch-batch-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/epoch-batch-converter/manifest.ts",
@@ -11109,9 +10960,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -11246,8 +11095,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/evidence-table-builder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/evidence-table-builder/manifest.ts",
@@ -11359,9 +11208,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -11373,8 +11220,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/exif-remover.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/exif-remover/manifest.ts",
@@ -11516,9 +11363,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -11530,8 +11375,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/fact-sensitive-text-diff.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/fact-sensitive-text-diff/manifest.ts",
@@ -11643,9 +11488,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -11657,8 +11500,8 @@
       "maintenanceClass": "R",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/fatturapa-batch-csv.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/fatturapa-batch-csv/manifest.ts",
@@ -11773,9 +11616,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -11787,8 +11628,8 @@
       "maintenanceClass": "R",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/fatturapa-reader.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/fatturapa-reader/manifest.ts",
@@ -11908,9 +11749,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -11922,8 +11761,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/favicon-app-icon-size-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/favicon-app-icon-size-generator/manifest.ts",
@@ -12051,9 +11890,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -12065,8 +11902,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/file-hash/gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/file-hash/manifest.ts",
@@ -12186,9 +12023,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -12200,8 +12035,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/file-list-diff.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/file-list-diff/manifest.ts",
@@ -12321,9 +12156,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -12335,8 +12168,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/file-signature-detector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/file-signature-detector/manifest.ts",
@@ -12453,9 +12286,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -12467,8 +12298,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/file-size-analyzer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/file-size-analyzer/manifest.ts",
@@ -12596,9 +12427,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -12610,8 +12439,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/filename-sanitizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/filename-sanitizer/manifest.ts",
@@ -12721,9 +12550,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -12735,8 +12562,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/find-replace-preview.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/find-replace-preview/manifest.ts",
@@ -12857,9 +12684,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -12871,8 +12696,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/folder-compare.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/folder-compare/manifest.ts",
@@ -13003,9 +12828,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -13017,8 +12840,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/folder-inventory.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/folder-inventory/manifest.ts",
@@ -13128,9 +12951,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -13142,8 +12963,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/folder-size-type-summary.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/folder-size-type-summary/manifest.ts",
@@ -13256,9 +13077,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -13640,8 +13459,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/hash-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/hash-generator/manifest.ts",
@@ -13761,9 +13580,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -13775,8 +13592,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/hmac-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/hmac-generator/manifest.ts",
@@ -13898,9 +13715,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -13912,8 +13727,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/html-entity-codec.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/html-entity-codec/manifest.ts",
@@ -14034,9 +13849,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -14048,8 +13861,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/html-minifier.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/html-minifier/manifest.ts",
@@ -14171,9 +13984,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -14185,8 +13996,8 @@
       "maintenanceClass": "D",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/http-status-reference.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/http-status-reference/manifest.ts",
@@ -14305,9 +14116,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -14446,8 +14255,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/ics-event-builder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/ics-event-builder/manifest.ts",
@@ -14572,9 +14381,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -14586,8 +14393,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/ics-viewer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/ics-viewer/manifest.ts",
@@ -14712,9 +14519,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -14726,8 +14531,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-compare-slider.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-compare-slider/manifest.ts",
@@ -14855,9 +14660,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -14869,8 +14672,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-compression.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-compression/manifest.ts",
@@ -14995,9 +14798,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -15009,8 +14810,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-crop.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-crop/manifest.ts",
@@ -15137,9 +14938,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -15151,8 +14950,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-dimensions-batch-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-dimensions-batch-inspector/manifest.ts",
@@ -15276,9 +15075,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -15290,8 +15087,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-format-conversion.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-format-conversion/manifest.ts",
@@ -15420,9 +15217,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -15434,8 +15229,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-metadata-viewer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-metadata-viewer/manifest.ts",
@@ -15560,9 +15355,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -15574,8 +15367,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-rename-batch-preview.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-rename-batch-preview/manifest.ts",
@@ -15699,9 +15492,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -15896,8 +15687,7 @@
       "blockers": [
         "CERTIFICATION_RECEIPT_NOT_GOLD",
         "PHYSICAL_DEVICE_EVIDENCE_MISSING",
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
+        "RECEIPT_FIXTURE_IDENTITY_STALE"
       ],
       "coverageGaps": []
     },
@@ -15910,8 +15700,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/images-to-pdf.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/images-to-pdf/manifest.ts",
@@ -16050,9 +15840,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -16312,8 +16100,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/invisible-character-detector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/invisible-character-detector/manifest.ts",
@@ -16435,9 +16223,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -16449,8 +16235,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/invoice-math-validator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/invoice-math-validator/manifest.ts",
@@ -16560,9 +16346,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -16574,8 +16358,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/invoice-number-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/invoice-number-generator/manifest.ts",
@@ -16685,9 +16469,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -16699,8 +16481,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/isbn-validator-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/isbn-validator-converter/manifest.ts",
@@ -16810,9 +16592,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -16950,8 +16730,8 @@
       "maintenanceClass": "R",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/italian-gulpease-readability.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/italian-gulpease-readability/manifest.ts",
@@ -17064,9 +16844,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17078,8 +16856,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/json-formatter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-formatter/manifest.ts",
@@ -17198,9 +16976,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17212,8 +16988,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/json-path-playground.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-path-playground/manifest.ts",
@@ -17333,9 +17109,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17347,8 +17121,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/json-repair.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-repair/manifest.ts",
@@ -17477,9 +17251,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17491,8 +17263,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/json-structural-diff.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-structural-diff/manifest.ts",
@@ -17621,9 +17393,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17635,8 +17405,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/json-to-csv.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-to-csv/manifest.ts",
@@ -17773,9 +17543,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17787,8 +17555,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/json-type-schema-inference.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-type-schema-inference/manifest.ts",
@@ -17917,9 +17685,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -17931,8 +17697,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/json-yaml-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/json-yaml-converter/manifest.ts",
@@ -18062,9 +17828,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18076,8 +17840,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/jwt-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/jwt-inspector/manifest.ts",
@@ -18197,9 +17961,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18211,8 +17973,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/keyboard-event-diagnostic.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/keyboard-event-diagnostic/manifest.ts",
@@ -18326,9 +18088,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18340,8 +18100,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/language-aware-text-statistics.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/language-aware-text-statistics/manifest.ts",
@@ -18464,9 +18224,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18478,8 +18236,8 @@
       "maintenanceClass": "R",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/late-payment-interest.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/late-payment-interest/manifest.ts",
@@ -18589,9 +18347,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18603,8 +18359,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/line-deduplicator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/line-deduplicator/manifest.ts",
@@ -18734,9 +18490,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18748,8 +18502,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/line-sorter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/line-sorter/manifest.ts",
@@ -18870,9 +18624,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -18884,8 +18636,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-research/list-compare.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/list-compare/manifest.ts",
@@ -19021,9 +18773,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19035,8 +18785,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/list-difference.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/list-difference/manifest.ts",
@@ -19157,9 +18907,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19171,8 +18919,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/list-intersection.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/list-intersection/manifest.ts",
@@ -19293,9 +19041,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19307,8 +19053,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/lorem-sample-data-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/lorem-sample-data-generator/manifest.ts",
@@ -19431,9 +19177,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19445,8 +19189,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/client-time-math/margin-markup.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/margin-markup/manifest.ts",
@@ -19565,9 +19309,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19579,8 +19321,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/markdown-preview.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/markdown-preview/manifest.ts",
@@ -19705,9 +19447,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19719,8 +19459,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/markdown-table-formatter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/markdown-table-formatter/manifest.ts",
@@ -19842,9 +19582,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19856,8 +19594,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/meeting-time-planner.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/meeting-time-planner/manifest.ts",
@@ -19982,9 +19720,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -19996,8 +19732,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/meta-preview.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/meta-preview/manifest.ts",
@@ -20117,9 +19853,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -20131,8 +19865,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/metadata-risk-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/metadata-risk-inspector/manifest.ts",
@@ -20255,9 +19989,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -20392,8 +20124,7 @@
       "blockers": [
         "CERTIFICATION_RECEIPT_NOT_GOLD",
         "PHYSICAL_DEVICE_EVIDENCE_MISSING",
-        "RECEIPT_FIXTURE_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
+        "RECEIPT_FIXTURE_IDENTITY_STALE"
       ],
       "coverageGaps": []
     },
@@ -20406,8 +20137,8 @@
       "maintenanceClass": "D",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/mime-type-lookup.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/mime-type-lookup/manifest.ts",
@@ -20530,9 +20261,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -20544,8 +20273,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/missing-value-profiler.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/missing-value-profiler/manifest.ts",
@@ -20671,9 +20400,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -20685,8 +20412,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/mojibake-repair.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/mojibake-repair/manifest.ts",
@@ -20799,9 +20526,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -20936,8 +20661,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/notes-deduplicator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/notes-deduplicator/manifest.ts",
@@ -21049,9 +20774,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -21171,8 +20894,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/open-graph-preview.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/open-graph-preview/manifest.ts",
@@ -21292,9 +21015,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -21306,8 +21027,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/palette-extractor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/palette-extractor/manifest.ts",
@@ -21431,9 +21152,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -21570,8 +21289,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/password-pin-passphrase-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/password-pin-passphrase-generator/manifest.ts",
@@ -21686,9 +21405,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -21700,8 +21417,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/password-strength-estimator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/password-strength-estimator/manifest.ts",
@@ -21812,9 +21529,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -21826,8 +21541,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/payment-fee-gross-up/manifest.ts",
@@ -21937,9 +21652,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -22059,8 +21772,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-compare-lite.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-compare-lite/manifest.ts",
@@ -22183,9 +21896,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -22197,8 +21908,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-compression-lite.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-compression-lite/manifest.ts",
@@ -22323,9 +22034,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -22337,8 +22046,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/pdf-copy-text-reflow.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-copy-text-reflow/manifest.ts",
@@ -22450,9 +22159,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -22680,8 +22387,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-flatten.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-flatten/manifest.ts",
@@ -22807,9 +22514,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -22821,8 +22526,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-form-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-form-inspector/manifest.ts",
@@ -22946,9 +22651,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -22960,8 +22663,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-image-extractor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-image-extractor/manifest.ts",
@@ -23099,9 +22802,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -23113,8 +22814,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-link-extractor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-link-extractor/manifest.ts",
@@ -23237,9 +22938,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -23251,8 +22950,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-merge.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-merge/manifest.ts",
@@ -23381,9 +23080,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -23395,8 +23092,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-metadata-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-metadata-inspector/manifest.ts",
@@ -23519,9 +23216,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -23533,8 +23228,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-metadata-remover.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-metadata-remover/manifest.ts",
@@ -23659,9 +23354,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -23673,8 +23366,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/pdf-multi-text-search.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-multi-text-search/manifest.ts",
@@ -23804,9 +23497,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -23926,8 +23617,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/pdf-page-citation-helper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-citation-helper/manifest.ts",
@@ -24038,9 +23729,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -24052,8 +23741,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-page-count-verifier.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-count-verifier/manifest.ts",
@@ -24176,9 +23865,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -24190,8 +23877,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-page-delete-extract.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-delete-extract/manifest.ts",
@@ -24316,9 +24003,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -24438,8 +24123,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-page-reorder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-reorder/manifest.ts",
@@ -24563,9 +24248,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -24577,8 +24260,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-page-size-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-page-size-inspector/manifest.ts",
@@ -24701,9 +24384,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -24842,8 +24523,7 @@
         }
       ],
       "blockers": [
-        "RECEIPT_MANIFEST_IDENTITY_STALE",
-        "RECEIPT_ORACLE_IDENTITY_STALE"
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
       ],
       "coverageGaps": []
     },
@@ -24856,8 +24536,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-rotate.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-rotate/manifest.ts",
@@ -24984,9 +24664,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -24998,8 +24676,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-split.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-split/manifest.ts",
@@ -25124,9 +24802,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -25246,8 +24922,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-text-extraction.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-text-extraction/manifest.ts",
@@ -25370,9 +25046,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -25384,8 +25058,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-to-images.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-to-images/manifest.ts",
@@ -25526,9 +25200,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -25540,8 +25212,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/pdf-to-markdown.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-to-markdown/manifest.ts",
@@ -25672,9 +25344,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -25795,8 +25465,8 @@
       "maintenanceClass": "R",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/percentage-helper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/percentage-helper/manifest.ts",
@@ -25906,9 +25576,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -25920,8 +25588,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/perceptual-duplicate-finder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/perceptual-duplicate-finder/manifest.ts",
@@ -26045,9 +25713,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -26059,8 +25725,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/phone-link-hashtag-mention-extractor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/phone-link-hashtag-mention-extractor/manifest.ts",
@@ -26174,9 +25840,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -26188,8 +25852,8 @@
       "maintenanceClass": "D",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/platform-size-presets.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/platform-size-presets/manifest.ts",
@@ -26306,9 +25970,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -26554,8 +26216,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/project-profitability.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/project-profitability/manifest.ts",
@@ -26665,9 +26327,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -26679,8 +26339,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/proposal-budget-checker.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/proposal-budget-checker/manifest.ts",
@@ -26790,9 +26450,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -26804,8 +26462,8 @@
       "maintenanceClass": "D",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/public-holiday-lookup.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/public-holiday-lookup/manifest.ts",
@@ -26929,9 +26587,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -26943,8 +26599,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/qr-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/qr-generator/manifest.ts",
@@ -27055,9 +26711,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27069,8 +26723,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/qr-reader.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/qr-reader/manifest.ts",
@@ -27181,9 +26835,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27195,8 +26847,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/quarter-date-mapper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/quarter-date-mapper/manifest.ts",
@@ -27321,9 +26973,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27335,8 +26985,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/query-string-editor.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/query-string-editor/manifest.ts",
@@ -27455,9 +27105,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27469,8 +27117,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/quick-chart.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/quick-chart/manifest.ts",
@@ -27596,9 +27244,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27610,8 +27256,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/quote-counter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/quote-counter/manifest.ts",
@@ -27721,9 +27367,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27735,8 +27379,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/random-picker-team-coupon-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/random-picker-team-coupon-generator/manifest.ts",
@@ -27850,9 +27494,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27864,8 +27506,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/client-time-math/rate-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/rate-converter/manifest.ts",
@@ -27984,9 +27626,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -27998,8 +27638,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/reading-list-deduplicator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/reading-list-deduplicator/manifest.ts",
@@ -28112,9 +27752,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -28126,8 +27764,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/reading-time-estimator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/reading-time-estimator/manifest.ts",
@@ -28250,9 +27888,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -28264,8 +27900,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/recurring-date-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/recurring-date-generator/manifest.ts",
@@ -28390,9 +28026,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -28404,8 +28038,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/redirect-chain-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/redirect-chain-inspector/manifest.ts",
@@ -28529,9 +28163,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -28543,8 +28175,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/reference-list-sorter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/reference-list-sorter/manifest.ts",
@@ -28657,9 +28289,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -28793,8 +28423,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/regex-tester.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/regex-tester/manifest.ts",
@@ -28915,9 +28545,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -28929,8 +28557,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/research-pack-manifest.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/research-pack-manifest/manifest.ts",
@@ -29052,9 +28680,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -29066,8 +28692,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/research-url-cleaner.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/research-url-cleaner/manifest.ts",
@@ -29186,9 +28812,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -29200,8 +28824,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/retainer-capacity.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/retainer-capacity/manifest.ts",
@@ -29311,9 +28935,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -29325,8 +28947,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/ris-bibtex-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/ris-bibtex-converter/manifest.ts",
@@ -29455,9 +29077,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -29469,8 +29089,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/roas-calculator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/roas-calculator/manifest.ts",
@@ -29579,9 +29199,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -29593,8 +29211,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/robots-directive-helper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/robots-directive-helper/manifest.ts",
@@ -29714,9 +29332,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -29728,8 +29344,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/safe-share-checklist.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/safe-share-checklist/manifest.ts",
@@ -29852,9 +29468,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -29988,8 +29602,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/scope-creep-cost.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/scope-creep-cost/manifest.ts",
@@ -30099,9 +29713,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -30113,8 +29725,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/screenshot-border-background-helper.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/screenshot-border-background-helper/manifest.ts",
@@ -30241,9 +29853,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -30255,8 +29865,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/secret-token-pattern-scanner.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/secret-token-pattern-scanner/manifest.ts",
@@ -30376,9 +29986,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -30390,8 +29998,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/semantic-text-chunker.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/semantic-text-chunker/manifest.ts",
@@ -30504,9 +30112,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -30518,8 +30124,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/sitemap-xml-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/sitemap-xml-generator/manifest.ts",
@@ -30633,9 +30239,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -30647,8 +30251,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/slug-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/slug-generator/manifest.ts",
@@ -30771,9 +30375,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -30785,8 +30387,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/local-jobs/smart-quote-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/smart-quote-normalizer/manifest.ts",
@@ -30909,9 +30511,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -30923,8 +30523,8 @@
       "maintenanceClass": "D",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/social-character-limit.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/social-character-limit/manifest.ts",
@@ -31034,9 +30634,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -31048,8 +30646,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/stable-placeholder-anonymizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/stable-placeholder-anonymizer/manifest.ts",
@@ -31161,9 +30759,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -31419,8 +31015,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/certification-frontier/subtitle-srt-vtt-transform.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/subtitle-srt-vtt-transform/manifest.ts",
@@ -31541,9 +31137,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -31555,8 +31149,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/table-compare.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/table-compare/manifest.ts",
@@ -31680,9 +31274,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -31694,8 +31286,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/table-transpose.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/table-transpose/manifest.ts",
@@ -31830,9 +31422,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -31844,8 +31434,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/target-income-rate.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/target-income-rate/manifest.ts",
@@ -31955,9 +31545,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -31969,8 +31557,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-research/text-diff.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/text-diff/manifest.ts",
@@ -32100,9 +31688,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -32114,8 +31700,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/text-markup-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/text-markup-converter/manifest.ts",
@@ -32229,9 +31815,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -32243,8 +31827,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/text-to-csv-rows.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/text-to-csv-rows/manifest.ts",
@@ -32365,9 +31949,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -32475,8 +32057,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/timeline-sorter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/timeline-sorter/manifest.ts",
@@ -32587,9 +32169,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -32601,8 +32181,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/timesheet-totaler.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/timesheet-totaler/manifest.ts",
@@ -32726,9 +32306,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -32740,8 +32318,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/timezone-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/timezone-converter/manifest.ts",
@@ -32866,9 +32444,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -32880,8 +32456,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/client-time-math/timezone-overlap.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/timezone-overlap/manifest.ts",
@@ -33003,9 +32579,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33017,8 +32591,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/toml-formatter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/toml-formatter/manifest.ts",
@@ -33137,9 +32711,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33151,8 +32723,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/campaign-url/tracking-cleaner.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/tracking-cleaner/manifest.ts",
@@ -33275,9 +32847,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33289,8 +32859,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/data-table/tsv-to-csv.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/tsv-to-csv/manifest.ts",
@@ -33415,9 +32985,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33429,8 +32997,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/unicode-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/unicode-normalizer/manifest.ts",
@@ -33551,9 +33119,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33565,8 +33131,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/unix-timestamp.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/unix-timestamp/manifest.ts",
@@ -33686,9 +33252,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33700,8 +33264,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/url-bulk-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/url-bulk-normalizer/manifest.ts",
@@ -33821,9 +33385,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33835,8 +33397,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/url-codec.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/url-codec/manifest.ts",
@@ -33955,9 +33517,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -33969,8 +33529,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/marketing-media/url-comparison.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/url-comparison/manifest.ts",
@@ -34089,9 +33649,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -34103,8 +33661,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/user-agent-parser.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/user-agent-parser/manifest.ts",
@@ -34223,9 +33781,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -34237,8 +33793,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/business-math/utilization-calculator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/utilization-calculator/manifest.ts",
@@ -34348,9 +33904,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -34362,8 +33916,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/campaign-url/utm-builder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/utm-builder/manifest.ts",
@@ -34489,9 +34043,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -34503,8 +34055,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/utm-parser.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/utm-parser/manifest.ts",
@@ -34623,9 +34175,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -34637,8 +34187,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/uuid-generator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/uuid-generator/manifest.ts",
@@ -34757,9 +34307,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -34771,8 +34319,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-data-certification/vcf-viewer-csv-export.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/vcf-viewer-csv-export/manifest.ts",
@@ -34887,9 +34435,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -34999,8 +34545,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/research-knowledge/vocabulary-frequency-analyzer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/vocabulary-frequency-analyzer/manifest.ts",
@@ -35122,9 +34668,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -35136,8 +34680,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/week-number-converter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/week-number-converter/manifest.ts",
@@ -35262,9 +34806,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -35276,8 +34818,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/whitespace-normalizer.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/whitespace-normalizer/manifest.ts",
@@ -35399,9 +34941,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -35413,8 +34953,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/text-writing/word-character-line-counter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/word-character-line-counter/manifest.ts",
@@ -35535,9 +35075,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -35549,8 +35087,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/date-time/working-hours.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/working-hours/manifest.ts",
@@ -35675,9 +35213,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -35689,8 +35225,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/x509-csr-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/x509-csr-inspector/manifest.ts",
@@ -35808,9 +35344,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -35822,8 +35356,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web-operations/xml-formatter-validator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/xml-formatter-validator/manifest.ts",
@@ -35943,9 +35477,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -35957,8 +35489,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/developer-web/yaml-formatter.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/yaml-formatter/manifest.ts",
@@ -36078,9 +35610,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -36092,8 +35622,8 @@
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/zero-byte-orphan-finder.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/zero-byte-orphan-finder/manifest.ts",
@@ -36216,9 +35746,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -36230,8 +35758,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/zip-contents-inspector.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/zip-contents-inspector/manifest.ts",
@@ -36342,9 +35870,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     },
     {
@@ -36356,8 +35882,8 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/zip-creator.gold.json",
-      "releaseGate": "BLOCKED",
-      "goldEligible": false,
+      "releaseGate": "PASS",
+      "goldEligible": true,
       "implementation": {
         "manifest": {
           "path": "src/tools/zip-creator/manifest.ts",
@@ -36469,9 +35995,7 @@
           "status": "PASS"
         }
       ],
-      "blockers": [
-        "RECEIPT_ORACLE_IDENTITY_STALE"
-      ],
+      "blockers": [],
       "coverageGaps": []
     }
   ]

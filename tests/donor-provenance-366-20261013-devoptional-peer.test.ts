@@ -7,6 +7,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { auditLockedPackages366 } from "../scripts/donor-provenance-366";
+import { knownSpdx366 } from "../scripts/donor-spdx-366";
 
 type Entry = {
   version?: string; license?: string; integrity?: string; resolved?: string;
@@ -54,6 +55,11 @@ function graph() {
 }
 
 describe("#366 actual npm devOptional + Vite optional peer semantics", () => {
+  it("recognizes postal-mime MIT-0 SPDX metadata, without granting rights clearance", () => {
+    expect(source.packages["node_modules/postal-mime"]?.license).toBe("MIT-0");
+    expect(knownSpdx366("MIT-0")).toBe(true);
+    expect(knownSpdx366("MIT-0 OR NOASSERTION")).toBe(false);
+  });
   it("accepts version-compatible, properly attributed present optional peers", () => {
     const { lock, manifest } = graph();
     const result = auditLockedPackages366(lock, manifest);
