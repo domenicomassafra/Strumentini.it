@@ -27,6 +27,7 @@
     "gold:business-day": "npm run catalog:build && tsx scripts/gold-certify.ts",
     "gold:sabotage": "npm run catalog:build && node scripts/verify-gold-sabotage.mjs",
     "acceptance:browser": "node scripts/browser-acceptance.mjs",
+    "acceptance:android-heavy:simulated": "node scripts/acceptance-android-heavy.mjs",
     "acceptance:result-accessibility": "npm run build && node scripts/acceptance-result-accessibility.mjs",
     "result-v2:conformance": "tsx scripts/check-result-v2-conformance.ts",
     "result-v2:legacy-audit": "tsx scripts/audit-legacy-result-primary.ts",
