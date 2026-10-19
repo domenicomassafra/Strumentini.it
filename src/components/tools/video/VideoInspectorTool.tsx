@@ -13,6 +13,7 @@ import {
 } from "./video-presentation";
 import "./video-inspector.css";
 import { VideoFramesAndCamera305 } from "./VideoFramesAndCamera305";
+import { AudioMetadataPanel297 } from "../audio/AudioMetadataPanel297";
 
 type InspectionStatus = "idle" | "running" | "success" | "error" | "cancelled";
 type AudioChoice = "unknown" | "zero" | "estimate";
@@ -260,6 +261,7 @@ export function VideoInspectorTool() {
           {!inspection && !plan && <p class="video-tool-muted">{inspectionStatus === "running" ? "Lettura dei soli metadati in corso…" : "I dati non disponibili saranno indicati come sconosciuti."}</p>}
         </ToolResultPanel>
       </ToolOperation>
+      <AudioMetadataPanel297 />
       <VideoFramesAndCamera305 />
     </div>
   );
