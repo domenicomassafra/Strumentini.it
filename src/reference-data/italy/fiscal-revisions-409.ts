@@ -49,7 +49,9 @@ export function selectFiscalRevision409<T extends FiscalRevision409>(
     if (row.amendmentKind === "RETROACTIVE_AMENDMENT") {
       const previous = row.supersedesRevisionId ? seen.get(row.supersedesRevisionId) : undefined;
       if (!previous || previous.taxYear !== row.taxYear || row.checkedAt <= previous.checkedAt
-        || row.effectiveFrom < previous.effectiveFrom || row.effectiveTo > previous.effectiveTo) {
+        || row.effectiveFrom < previous.effectiveFrom || row.effectiveTo > previous.effectiveTo
+        || !row.reviewOwner?.trim()
+        || row.sources.every((source) => previous.sources.some((old) => old.sha256 === source.sha256))) {
         throw new Error("FISCAL409_INVALID_AMENDMENT");
       }
     } else if (row.amendmentKind !== "YEAR_BASELINE" || row.supersedesRevisionId !== null

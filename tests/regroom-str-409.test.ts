@@ -11,6 +11,7 @@ describe("STR-409 immutable fiscal versions and dated amendments", () => {
     checkedAt: "2026-10-19",
     amendmentKind: "RETROACTIVE_AMENDMENT" as const,
     supersedesRevisionId: "IRPEF-2025-117-v1",
+    reviewOwner: "TEST-REVIEWER-ONLY",
     bands: [{ upToCents: 2_800_000, rateBasisPoints: 2300 }, { upToCents: 5_000_000, rateBasisPoints: 3400 },
       { upToCents: null, rateBasisPoints: 4300 }],
     sources: [{ authority: "Normattiva" as const, url: "https://example.invalid/test-amendment", artifactPath: "test-only",
@@ -80,6 +81,10 @@ describe("STR-409 immutable fiscal versions and dated amendments", () => {
       .toThrow(/FISCAL409_INVALID_DATE/u);
     expect(() => selectFiscalRevision409([v1, { ...next, sources: [] }], 2025, v1.revisionId))
       .toThrow(/FISCAL409_INVALID_SOURCE/u);
+    expect(() => selectFiscalRevision409([v1, { ...next, reviewOwner: null }], 2025, v1.revisionId))
+      .toThrow(/FISCAL409_INVALID_AMENDMENT/u);
+    expect(() => selectFiscalRevision409([v1, { ...next, sources: v1.sources }], 2025, v1.revisionId))
+      .toThrow(/FISCAL409_INVALID_AMENDMENT/u);
     expect(() => selectFiscalRevision409([v1, { ...next, effectiveFrom: "2026-01-01" }], 2025, v1.revisionId))
       .toThrow(/FISCAL409_INVALID_DATE/u);
     expect(() => selectFiscalRevision409(Array.from({ length: 65 }, () => v1), 2025))
