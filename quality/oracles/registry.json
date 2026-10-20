@@ -12144,50 +12144,50 @@
       ]
     },
     {
-    "id": "cand-273",
-    "candidate": "Bounded PDF classic xref pointer recovery with byte-preserving independently verified pages",
-    "tool_family": "pdf",
-    "maintenance_class": "H",
-    "truth_sources": [
-      "iso-pdf2",
-      "fixture-policy"
-    ],
-    "standard_or_official_example": "Synthetic one-page ISO PDF generated with pdf-lib: only final startxref numeric offset is corrupted, all objects and streams remain byte-identical.",
-    "invariants": [
-      "original input byte array remains unchanged",
-      "only the numeric final startxref pointer changes",
-      "independent PDF.js page text, page dimensions and annotations agree before/after",
-      "repaired bytes independently reopen with pdf-lib",
-      "zero silently dropped pages or loss claims"
-    ],
-    "adversarial_cases": [
-      "bad signature, ambiguous trailer or multiple xref",
-      "encrypted, incremental, signed and ObjStm/XRef stream refused",
-      "shadowed, misindexed and unindexed objects refused",
-      "above 4 MiB or 40 pages refused",
-      "pre-aborted and malformed inputs refused"
-    ],
-    "expected_output_strategy": "tests/regroom-str-418.test.ts generates its own positive PDF and negative corruption cases; independent pdfjs-dist and pdf-lib reopen; Poppler and real browser download acceptance required before closing STR-418.",
-    "security_privacy_edges": [
-      "all processing local within 4 MiB input and output budget",
-      "20-second disposable Worker timeout and abort",
-      "raw PDF text never sent in Worker failure details",
-      "only classic unencrypted single-table documents supported"
-    ],
-    "portability_browser_edges": [
-      "browser Worker required for bounded execution",
-      "physical iOS and Android tests not certified"
-    ],
-    "cross_check": {
-      "usable": true,
-      "implementation": "pdfjs-dist readback and pdf-lib parse, plus Poppler pdfinfo/pdftotext acceptance",
-      "role": "independent syntactic and visible-content verification of a narrow recovery profile"
-    },
-    "confidence": "medium",
-    "unresolved_gaps": [
-      "This is not general PDF repair; wider corrupted/hostile corpus not verified",
-      "No Gold receipt or production deployment admission"
-    ]
+      "id": "cand-273",
+      "candidate": "Bounded PDF classic xref pointer recovery with byte-preserving independently verified pages",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": [
+        "iso-pdf2",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic one-page ISO PDF generated with pdf-lib: only final startxref numeric offset is corrupted, all objects and streams remain byte-identical.",
+      "invariants": [
+        "original input byte array remains unchanged",
+        "only the numeric final startxref pointer changes",
+        "independent PDF.js page text, page dimensions and annotations agree before/after",
+        "repaired bytes independently reopen with pdf-lib",
+        "zero silently dropped pages or loss claims"
+      ],
+      "adversarial_cases": [
+        "bad signature, ambiguous trailer or multiple xref",
+        "encrypted, incremental, signed and ObjStm/XRef stream refused",
+        "shadowed, misindexed and unindexed objects refused",
+        "above 4 MiB or 40 pages refused",
+        "pre-aborted and malformed inputs refused"
+      ],
+      "expected_output_strategy": "tests/regroom-str-418.test.ts generates its own positive PDF and negative corruption cases; independent pdfjs-dist and pdf-lib reopen; Poppler and real browser download acceptance required before closing STR-418.",
+      "security_privacy_edges": [
+        "all processing local within 4 MiB input and output budget",
+        "20-second disposable Worker timeout and abort",
+        "raw PDF text never sent in Worker failure details",
+        "only classic unencrypted single-table documents supported"
+      ],
+      "portability_browser_edges": [
+        "browser Worker required for bounded execution",
+        "physical iOS and Android tests not certified"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "pdfjs-dist readback and pdf-lib parse, plus Poppler pdfinfo/pdftotext acceptance",
+        "role": "independent syntactic and visible-content verification of a narrow recovery profile"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "This is not general PDF repair; wider corrupted/hostile corpus not verified",
+        "No Gold receipt or production deployment admission"
+      ]
     }
   ]
 }
