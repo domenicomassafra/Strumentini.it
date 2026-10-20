@@ -66,7 +66,7 @@ describe("#335 manifest-grounded home file suggestions", () => {
 
   it("restricts GIF and ZIP to manifest-declared, local operations", () => {
     expect(ids("gif")).toEqual(["image-format-conversion", "images-to-pdf"]);
-    expect(ids("zip")).toEqual(["zip-contents-inspector", "archive-checksum-manifest"]);
+    expect(ids("zip")).toEqual(["zip-contents-inspector", "archive-checksum-manifest", "zip-creator"]);
   });
 
   it("recommends published local CSV operations only for structurally inspected CSV", () => {
