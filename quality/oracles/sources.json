@@ -1088,6 +1088,18 @@
       "locator": "Pinned legal set L.260/1949 art.2, L.54/1977, DPR 792/1985, L.336/2000 and L.151/2025",
       "supports": ["2026 Italian national non-working holidays", "Easter Monday", "4 October national holiday from 2026", "local/historical exclusions"],
       "checked_at": "2026-10-06"
+    },
+    {
+      "id": "epub-3.3",
+      "source_class": "official-primary",
+      "authority": "W3C",
+      "url": "https://www.w3.org/TR/epub-33/",
+      "locator": "EPUB 3.3 package document, manifest/spine and navigation structures",
+      "supports": [
+        "EPUB 3.3 publication container, OPF spine and XHTML navigation",
+        "EPUB3 media type and package metadata"
+      ],
+      "checked_at": "2026-10-19"
     }
   ]
 }

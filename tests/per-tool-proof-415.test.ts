@@ -11,18 +11,18 @@ const fingerprint = "a".repeat(64);
 const revision = "b".repeat(40);
 
 describe("#415 auditable claim/limit/proof map", () => {
-  it("covers every one of the 271 live catalog routes with actual jobs and independent-proof pending statuses", async () => {
+  it("covers every one of the 272 live catalog routes with actual jobs and independent-proof pending statuses", async () => {
     const current = await auditCurrentProofMap415(resolve(import.meta.dirname, ".."));
-    expect(current.entries).toHaveLength(271);
-    expect(new Set(current.entries.map(row => row.route)).size).toBe(271);
+    expect(current.entries).toHaveLength(272);
+    expect(new Set(current.entries.map(row => row.route)).size).toBe(272);
     expect(current.entries.map(row => row.toolId).toSorted()).toEqual(catalog.map(tool => tool.id).toSorted());
     expect(current.entries.every(row => row.jobs.length > 0 && row.inputs.length > 0 && row.source.manifestPresent && row.source.pagePresent)).toBe(true);
     expect(current.entries.every(row => row.currentProof !== "VERIFIED" || row.currentReceipt?.startsWith("quality/receipts/"))).toBe(true);
-    expect(current.summary.verified + current.summary.pending).toBe(271);
+    expect(current.summary.verified + current.summary.pending).toBe(272);
     expect(current.summary.sourceErrors).toBe(0);
     // Historical Gold is explicitly NOT a current source-bound receipt.
     expect(current.summary.verified).toBe(0);
-    expect(current.summary.pending).toBe(271);
+    expect(current.summary.pending).toBe(272);
     const csv = current.entries.find(row=>row.toolId === "csv-dedupe")!;
     expect(csv.limits).toContainEqual({kind:"handoff-accepts",maxBytes:10*1024*1024,format:"csv"});
     expect(csv.historicalIndexReceipt).toBe("quality/receipts/table-ops/csv-dedupe.gold.json");

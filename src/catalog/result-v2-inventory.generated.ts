@@ -1609,6 +1609,26 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
   },
   {
+    "toolId": "epub-reader",
+    "engine": "file-privacy",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "EpubReaderTool",
+      "source": "src/components/tools/EpubReaderTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "copy",
+        "download",
+        "reset",
+        "provenance"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "everyday-cost-calculator",
     "engine": "business-math",
     "rendererSeam": {

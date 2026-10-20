@@ -7,10 +7,10 @@ const registry = readFileSync(new URL("../quality/oracles/registry.json", import
 const oldReceiptHash = "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7";
 
 describe("append-only oracle authority rebind", () => {
-  it("reconstructs the original 259-entry registry's byte-identical preimage from the current appended 271-entry authority", () => {
+  it("reconstructs the original 259-entry registry's byte-identical preimage from the current appended 272-entry authority", () => {
     const identities = oracleAppendOnlyIdentities(registry);
     expect(identities.get(oldReceiptHash)?.size).toBe(259);
-    expect(identities.get(createHash("sha256").update(registry).digest("hex"))?.size).toBe(271);
+    expect(identities.get(createHash("sha256").update(registry).digest("hex"))?.size).toBe(272);
     expect(oracleIdentityIsCompatible(registry, oldReceiptHash, ["cand-001", "cand-259"])).toBe(true);
     expect(oracleIdentityIsCompatible(registry, oldReceiptHash, ["cand-260"])).toBe(false);
     const currentHash = createHash("sha256").update(registry).digest("hex");

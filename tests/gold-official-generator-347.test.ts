@@ -86,10 +86,10 @@ describe("#347 actual official catalog generator — synthetic isolated reissue"
 
       const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
       expect(sourceFingerprint).toMatch(/^[a-f0-9]{64}$/u);
-      expect(await officialGenerator(root)).toMatch(/271 tool\(s\), Gold receipts 0/u);
+      expect(await officialGenerator(root)).toMatch(/272 tool\(s\), Gold receipts 0/u);
       const baseline = await generatedGold(root);
       expect(baseline.quality.tools).toEqual([]);
-      expect(baseline.search).toHaveLength(271);
+      expect(baseline.search).toHaveLength(272);
       expect(baseline.search.every((tool) => tool.quality === "checking")).toBe(true);
       expect(await currentEvidenceSourceFingerprint(root)).toBe(sourceFingerprint);
 
@@ -109,21 +109,21 @@ describe("#347 actual official catalog generator — synthetic isolated reissue"
       const receiptHash = createHash("sha256").update(receiptBytes).digest("hex");
       expect(await currentEvidenceSourceFingerprint(root)).toBe(sourceFingerprint);
 
-      expect(await officialGenerator(root)).toMatch(/271 tool\(s\), Gold receipts 1/u);
+      expect(await officialGenerator(root)).toMatch(/272 tool\(s\), Gold receipts 1/u);
       const positive = await generatedGold(root);
       expect(positive.quality.tools).toEqual([{
         toolId: "pdf-rotate", status: "GOLD", receiptPath: syntheticReceiptPath,
         oracleEntryIds: ["cand-124"], fixtureFamilies: ["pdf-signature", "pdf-gold"],
         sourceFingerprint, receiptSha256: receiptHash,
       }]);
-      expect(positive.search).toHaveLength(271);
+      expect(positive.search).toHaveLength(272);
       expect(positive.search.filter((tool) => tool.quality === "verified").map((tool) => tool.id)).toEqual(["pdf-rotate"]);
       expect(positive.search.find((tool) => tool.id === "pdf-rotate")?.keywords)
         .toEqual(baseline.search.find((tool) => tool.id === "pdf-rotate")?.keywords);
       expect(await currentEvidenceSourceFingerprint(root)).toBe(sourceFingerprint);
       const positiveOutputs = await sourceOutputs(root);
-      expect(await officialGenerator(root, true)).toMatch(/271 tool\(s\), Gold receipts 1, outputs current/u);
-      expect(await officialGenerator(root)).toMatch(/271 tool\(s\), Gold receipts 1/u);
+      expect(await officialGenerator(root, true)).toMatch(/272 tool\(s\), Gold receipts 1, outputs current/u);
+      expect(await officialGenerator(root)).toMatch(/272 tool\(s\), Gold receipts 1/u);
       expect(await sourceOutputs(root)).toEqual(positiveOutputs);
       expect(await readFile(resolve(root, syntheticReceiptPath), "utf8")).toBe(receiptBytes);
 
@@ -136,12 +136,12 @@ describe("#347 actual official catalog generator — synthetic isolated reissue"
       // Checking previously generated Gold must reject the stale output
       // rather than silently presenting yesterday's verified badge.
       await expect(officialGenerator(root, true)).rejects.toThrow(/stale/u);
-      expect(await officialGenerator(root)).toMatch(/271 tool\(s\), Gold receipts 0/u);
+      expect(await officialGenerator(root)).toMatch(/272 tool\(s\), Gold receipts 0/u);
       const tampered = await generatedGold(root);
       expect(tampered.quality.tools).toEqual([]);
       expect(tampered.search.every((tool) => tool.quality === "checking")).toBe(true);
       expect(await currentEvidenceSourceFingerprint(root)).toBe(alteredFingerprint);
-      expect(await officialGenerator(root, true)).toMatch(/271 tool\(s\), Gold receipts 0, outputs current/u);
+      expect(await officialGenerator(root, true)).toMatch(/272 tool\(s\), Gold receipts 0, outputs current/u);
       expect(await readFile(resolve(root, syntheticReceiptPath), "utf8")).toBe(receiptBytes);
       // Adding a migration is already enough; a Worker entrypoint edit must
       // independently invalidate the same global identity as well.
@@ -149,7 +149,7 @@ describe("#347 actual official catalog generator — synthetic isolated reissue"
       expect(await currentEvidenceSourceFingerprint(root)).toBe(sourceFingerprint);
       await writeFile(resolve(root, "worker/index.ts"), "export const changedWorker347 = true;\n");
       expect(await currentEvidenceSourceFingerprint(root)).not.toBe(sourceFingerprint);
-      expect(await officialGenerator(root)).toMatch(/271 tool\(s\), Gold receipts 0/u);
+      expect(await officialGenerator(root)).toMatch(/272 tool\(s\), Gold receipts 0/u);
       expect((await generatedGold(root)).quality.tools).toEqual([]);
     });
   }, 180_000);
