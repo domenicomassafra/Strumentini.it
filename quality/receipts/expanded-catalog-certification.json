@@ -26834,7 +26834,8 @@
           "sha256": "36182771a90159b65130710488019ebb9bc3304728a92875770aee802bb09133"
         },
         "testFiles": [
-          "tests/qr-local-engine.test.ts"
+          "tests/qr-local-engine.test.ts",
+          "tests/qr-svg-runs-340.test.ts"
         ]
       },
       "oracle": {

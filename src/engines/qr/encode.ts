@@ -179,15 +179,28 @@ export function rasterPlan(matrixRowsInput: readonly string[], scale: number): Q
 export function renderQrSvg(rows: readonly string[], options: { readonly scale?: number } = {}): string {
   const scale = options.scale ?? 8;
   const plan = rasterPlan(rows, scale);
-  const paths = plan.dark
-    .map(({ x, y }) => `M${(x + plan.quietZone) * scale} ${(y + plan.quietZone) * scale}h${scale}v${scale}h-${scale}z`)
-    .join("");
+  const paths: string[] = [];
+  for (let y = 0; y < rows.length; y += 1) {
+    const row = rows[y]!;
+    for (let x = 0; x < row.length;) {
+      if (row[x] !== "1") {
+        x += 1;
+        continue;
+      }
+      const start = x;
+      while (row[x] === "1") x += 1;
+      const left = (start + plan.quietZone) * scale;
+      const center = (y + plan.quietZone + 0.5) * scale;
+      const width = (x - start) * scale;
+      paths.push(`M${left} ${center}h${width}`);
+    }
+  }
   const { width, height } = plan;
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}"`,
     ` shape-rendering="crispEdges" role="img" aria-label="Codice QR" data-matrix="${rows.join(";")}">`,
     `<rect width="${width}" height="${height}" fill="#ffffff"/>`,
-    `<path fill="#000000" d="${paths}"/>`,
+    `<path fill="none" stroke="#000000" stroke-width="${scale}" stroke-linecap="butt" d="${paths.join("")}"/>`,
     `</svg>`,
   ].join("");
 }
