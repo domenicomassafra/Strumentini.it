@@ -275,6 +275,7 @@ function writeTag(bytes: Uint8Array, at: number, tag: string): void {
 export function renderAudioTimelineDsp231(
   sources: readonly Uint8Array[], edits: readonly AudioTimelineEdit231[],
   settings: AudioDspSettings231, signal?: AbortSignal,
+  onProgress?: (renderedFrames: number, totalFrames: number) => void,
 ): AudioDspRender231 {
   const { preview, input } = analyze(sources, edits, settings, signal);
   checkAbort(signal);
@@ -295,6 +296,7 @@ export function renderAudioTimelineDsp231(
   forEachVarispeedSample231(sourceData, channels, preview.retainedFrames,
     preview.silenceRemoved, preview.outputFrames, preview.speedRatio, signal,
     (frame, channel, original) => {
+      if (channel === 0 && (frame & 8191) === 0) onProgress?.(frame, preview.outputFrames);
       const scaled = Math.sign(original) * Math.round(Math.abs(original) * preview.appliedGain);
       if (!Number.isFinite(scaled) || scaled < -32768 || scaled > 32767) {
         fail("AUDIO_231_NORMALIZE_CLIP", "DSP sample would saturate PCM16; refused");
@@ -305,5 +307,6 @@ export function renderAudioTimelineDsp231(
   if (actualPeak !== preview.outputPeakSample) {
     fail("AUDIO_231_DSP_RECONCILE", "Rendered frame count or peak differs from preview");
   }
+  onProgress?.(preview.outputFrames, preview.outputFrames);
   return { wav: output, preview };
 }
