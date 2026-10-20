@@ -92,6 +92,8 @@ describe("STR-389 XLSX workbook formula graph and faithful export", () => {
     expect(computeFormula389("=-(2+3)*4", read)).toBe(-20);
     expect(computeFormula389("=SUM(A1:B2)*2", read)).toBe(28);
     expect(() => computeFormula389("=SUM(A1:A99999)", read)).toThrow(WorkbookError389);
+    expect(() => computeFormula389("=1234567890123456789+1", read)).toThrow(/INVALID_FORMULA/u);
+    expect(computeFormula389("=.5+1", read)).toBe(1.5);
   });
 
   it("preserves explicitly typed formula-looking strings as inert XML text", async () => {

@@ -84,8 +84,8 @@ export function computeFormula389(formula: string, read: NumericReader): number 
     }
     if (token && /^\$?[A-Z]/u.test(token)) { cellIndex389(token); return read(token.replaceAll("$", "")); }
     if (token && /^(?:\d|\.)/u.test(token)) {
-      const value = Number(token);
-      if (Number.isFinite(value)) return value;
+      try { return strictWorkbookNumber389(token.startsWith(".") ? "0" + token : token); }
+      catch { throw new WorkbookError389("INVALID_FORMULA", `Costante numerica oltre la precisione Excel: ${token}`); }
     }
     throw new WorkbookError389("INVALID_FORMULA", "Espressione Excel non supportata.");
   }
