@@ -44,7 +44,8 @@ function makeKeyTable(table: CsvTable, columns: readonly number[], policy: KeyPo
   if (columns.length === 0 || new Set(columns).size !== columns.length || columns.some((column) => !Number.isInteger(column) || column < 0 || column >= table.header.length)) {
     throw new Error(`INVALID_${side}_KEY_COLUMNS`);
   }
-  return { ...table, rows: table.rows.map((row) => row.map((value, index) => columns.includes(index) && !isNull(value, policy) ? decimalKey(value, policy) : value)) };
+  const keys = new Set(columns);
+  return { ...table, rows: table.rows.map((row) => row.map((value, index) => keys.has(index) && !isNull(value, policy) ? decimalKey(value, policy) : value)) };
 }
 
 function keyedDuplicates(table: CsvTable, columns: readonly number[], policy: KeyPolicy390, nullKeyPolicy: "match" | "never-match") {
@@ -129,10 +130,19 @@ export function compareTables390(left: CsvTable, right: CsvTable, options: Compa
   const rows = result.table.rows.map((row) => {
     const leftRow = Number((row[3] ?? "").split("|")[0] ?? 0);
     const rightRow = Number((row[4] ?? "").split("|")[0] ?? 0);
-    return [row[0] ?? "", JSON.stringify(originalKey(leftRow, rightRow)), ...row.slice(2)];
+    const leftValue = row[0] === "removed" ? JSON.stringify(left.rows[leftRow - 2] ?? []) : row[5] ?? "";
+    const rightValue = row[0] === "added" ? JSON.stringify(right.rows[rightRow - 2] ?? []) : row[6] ?? "";
+    return [row[0] ?? "", JSON.stringify(originalKey(leftRow, rightRow)), ...row.slice(2, 5), leftValue, rightValue];
   });
-  const table = { ...result.table, rows };
-  return { ...result, changedCells, ambiguousKeys, table, output: serializeCsvTable(table), keyPrecision: options.keyPrecision };
+  const warnings = result.warnings.map((warning, index) => {
+    const before = result.ambiguousKeys[index];
+    const after = ambiguousKeys[index];
+    return before === undefined || after === undefined ? warning : {
+      ...warning, message: warning.message.replace(JSON.stringify(before.key), JSON.stringify(after.key)),
+    };
+  });
+  const table = { ...result.table, rows, warnings };
+  return { ...result, changedCells, ambiguousKeys, warnings, table, output: serializeCsvTable(table), keyPrecision: options.keyPrecision };
 }
 
 export function mergeCsvParts390(parts: readonly CsvTable[]) {

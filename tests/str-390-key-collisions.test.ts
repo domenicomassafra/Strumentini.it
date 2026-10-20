@@ -62,6 +62,22 @@ describe("STR-390 golden key collisions", () => {
     expect(explicitlyMatched.changedRows).toBe(1);
   });
 
+  it("retains exact original keys within added, removed and ambiguous export evidence", () => {
+    const options = {
+      leftKeyColumns: [0], rightKeyColumns: [0], leftCompareColumns: [1], rightCompareColumns: [1],
+      keyPrecision: "decimal-exact" as const,
+    };
+    const diff = compareTables390(parseCsvTable("id,value\n001,old"), parseCsvTable("id,value\n002,new"), options);
+    expect(diff.table.rows).toEqual([
+      ["removed", '["001"]', "", "2", "", '["001","old"]', ""],
+      ["added", '["002"]', "", "", "2", "", '["002","new"]'],
+    ]);
+    const duplicates = compareTables390(parseCsvTable("id,value\n01,a\n1,b"), parseCsvTable("id,value\n1,c"), options);
+    expect(duplicates.ambiguousKeys[0]?.key).toEqual(["01"]);
+    expect(duplicates.warnings[0]?.message).toContain('["01"]');
+    expect(duplicates.output).not.toContain('["1","a"]');
+  });
+
   it("reassembles split parts without removing duplicate rows, but refuses schema drift", () => {
     const merged = mergeCsvParts390(fixture.splitMerge.parts.map((part) => parseCsvTable(part)));
     expect(merged.output).toBe(fixture.splitMerge.expected);
