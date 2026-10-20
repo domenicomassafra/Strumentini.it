@@ -40,9 +40,18 @@ try {
   assert.deepEqual(svg.match(/data-matrix="([^"]+)"/)?.[1]?.split(";"),rows);
   const after = requests.filter(r=>r.url.includes("/_astro/") && r.url.endsWith(".js")).length;
   assert.ok(after>before,"runtime modules must load lazily after submit");
-  const d = page.waitForEvent("download");
-  await page.getByRole("button",{name:/Scarica SVG/}).click();
-  const download = await d;
+  let download;
+  try {
+    [download] = await Promise.all([
+      page.waitForEvent("download", { timeout: 12000 }),
+      page.getByRole("button", { name: /Scarica risultato SVG/ }).click({ noWaitAfter: true, timeout: 12000 }),
+    ]);
+  } catch (error) {
+    console.error("STR278_DOWNLOAD_DIAGNOSTIC", JSON.stringify({
+      errors, url: page.url(), controls: await page.getByRole("button").allTextContents(),
+    }));
+    throw error;
+  }
   assert.match(await readFile(await download.path(),"utf8"),/data-matrix=/);
   assert.match(download.suggestedFilename(),/\.svg$/);
   await page.getByLabel("Contenuto da codificare").fill("x".repeat(79));
