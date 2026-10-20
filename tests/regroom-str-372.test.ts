@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { runPdfPageWorkspace372 } from "../src/engines/pdf/workspace-372";
+import { runPasswordCodec417 } from "../src/engines/pdf/password-417";
 
 async function fixture(pages: number): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
@@ -57,12 +58,14 @@ describe("STR-372 bounded PDF page workspace", () => {
     await expect(runPdfPageWorkspace372(source, [1, 2], [], "selected", "source.pdf")).rejects.toThrow();
   });
 
-  it("refuses malformed, encrypted-marker and huge files before generating output", async () => {
+  it("refuses malformed, genuinely encrypted AES-256 and huge files without changing the input", async () => {
     const source = await fixture(1);
     const malformed = new TextEncoder().encode("not a PDF");
     await expect(runPdfPageWorkspace372(malformed, [1], [], "reorder", "invalid.pdf")).rejects.toThrow();
-    const hostile = new TextEncoder().encode(new TextDecoder("latin1").decode(source).replace("trailer\n<<", "trailer\n<< /Encrypt 9 0 R"));
-    await expect(runPdfPageWorkspace372(hostile, [1], [], "reorder", "encrypted.pdf")).rejects.toThrow();
+    const locked = await runPasswordCodec417(source, "protect", "STR372-proof");
+    const lockedCopy = locked.slice();
+    await expect(runPdfPageWorkspace372(locked, [1], [], "reorder", "encrypted.pdf")).rejects.toThrow(/encrypt|password|cifrat/iu);
+    expect(locked).toEqual(lockedCopy);
     await expect(runPdfPageWorkspace372(new Uint8Array(25 * 1024 * 1024 + 1), [1], [], "reorder", "large.pdf")).rejects.toThrow(/PDF_LIMIT/);
   });
 

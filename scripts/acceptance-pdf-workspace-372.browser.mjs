@@ -91,6 +91,12 @@ try {
   const extracted = readFileSync(await (await extractEvent).path());
   poppler(extracted, "selected.pdf", 2, "PAGE_NUMBER_100", "PAGE_NUMBER_99");
 
+  const { encryptPDF } = await import("@pdfsmaller/pdf-encrypt");
+  const encrypted = await encryptPDF(await source(1), "STR372-proof", { algorithm: "AES-256" });
+  await file.setInputFiles({ name: "encrypted.pdf", mimeType: "application/pdf", buffer: Buffer.from(encrypted) });
+  await page.getByRole("alert").first().waitFor({ timeout: 25_000 });
+  assert.equal(await page.getByRole("button", { name: "Crea PDF e verifica" }).count(), 0);
+
   await file.setInputFiles({ name: "broken.pdf", mimeType: "application/pdf", buffer: Buffer.from("not a PDF") });
   await page.getByRole("alert").first().waitFor({ timeout: 25_000 });
   assert.equal(await page.getByRole("button", { name: "Crea PDF e verifica" }).count(), 0);
@@ -101,7 +107,7 @@ try {
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ test: "STR-372 compiled 390px", result: "PASS", pages: [1, 100],
     independent: "pdf-lib + Poppler pdfinfo/pdftotext", oneBytes: one, hundredBytes: hundred,
-    extractedPages: 2, malformedRefused: true, hugeRefused: true, horizontalOverflow: false,
+    extractedPages: 2, encryptedRefused: true, malformedRefused: true, hugeRefused: true, horizontalOverflow: false,
     offsiteRequests: offsite.length, jsErrors: errors.length, physicalDevice: "NOT_RUN" }));
   await context.close();
 } finally {
