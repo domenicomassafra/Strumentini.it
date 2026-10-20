@@ -72,13 +72,13 @@ describe("STR-390 golden key collisions", () => {
   });
 
   it("routes merge and precision through the real tool modules", async () => {
-    const result = await joinModule.run({ operation: "merge-parts", partsTexts: fixture.splitMerge.parts }, {});
+    const result = await joinModule.run({ operation: "merge-parts", partsTexts: fixture.splitMerge.parts }, { defaults: {} });
     expect((result as { output: string }).output).toBe(fixture.splitMerge.expected);
     const compared = await compareModule.run({
       leftText: "id,value\n01,before", rightText: "id,value\n1,after",
       leftKeyColumns: [0], rightKeyColumns: [0], leftCompareColumns: [1], rightCompareColumns: [1],
       keyPrecision: "decimal-exact",
-    }, {});
+    }, { defaults: {} });
     expect((compared as { changedCells: { key: string[] }[] }).changedCells[0]?.key).toEqual(["01"]);
     expect((compared as { output: string }).output).toContain("before");
   });

@@ -12,7 +12,7 @@ const module = tableModule((value): CsvJoinOutput => {
   if (raw.operation === "merge-parts") {
     if (!Array.isArray(raw.partsTexts) || raw.partsTexts.some((part) => typeof part !== "string")) throw new Error("INVALID_MERGE_PARTS");
     const merged = mergeCsvParts390(raw.partsTexts.map((part) => parseCsvTable(part as string)));
-    return { ...merged, handoff: makeTableHandoff(merged.output, merged.table) } as CsvJoinOutput;
+    return { ...merged, handoff: makeTableHandoff(merged.output, merged.table) };
   }
   if (raw.operation !== undefined && raw.operation !== "join") throw new Error("INVALID_TABLE_OPERATION");
   const left = assertBoundedTable(parseCsvTable(requiredText(value, "leftText")));
