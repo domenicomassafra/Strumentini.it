@@ -1,2 +1,2 @@
 import { PdfTool } from "./pdf/PdfTool";
-export function PdfPasswordCheckRemoveTool() { return <PdfTool toolId="pdf-password-check-remove" title="PDF file" description="Verifica la cifratura del PDF sul dispositivo. Puoi creare una copia solo se il PDF è già non cifrato." actionLabel="Controlla PDF" optionMode="password" />; }
+export function PdfPasswordCheckRemoveTool() { return <PdfTool toolId="pdf-password-check-remove" title="PDF file" description="Proteggi o sblocca un PDF in locale con una password legittima." actionLabel="Proteggi o sblocca" optionMode="password" />; }

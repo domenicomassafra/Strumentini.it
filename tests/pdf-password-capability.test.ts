@@ -8,7 +8,7 @@ const markerOnly = new Uint8Array(readFileSync(new URL("../quality/fixtures/pdf-
 const plain = createSimplePdf(["public copy"]);
 const asBlob = (bytes: Uint8Array) => new Blob([Uint8Array.from(bytes).buffer], { type: "application/pdf" });
 
-describe("#126 option B: PDF password codec retired", () => {
+describe("#126 historical refusal and #417 legitimate password scope", () => {
   it("still detects encryption without attempting decryption", async () => {
     expect((await checkPdfPassword(asBlob(markerOnly))).encrypted).toBe(true);
     const checked = await passwordModule.run({ file: asBlob(markerOnly), mode: "check" }, { defaults: {} });
@@ -16,11 +16,11 @@ describe("#126 option B: PDF password codec retired", () => {
     expect(checked).not.toHaveProperty("artifact");
   });
 
-  it("rejects both encryption and password-assisted decryption without shipping qpdf", async () => {
-    await expect(passwordModule.run({ file: asBlob(plain), mode: "protect", password: "example-passphrase" }, { defaults: {} }))
-      .rejects.toThrow(/PDF_PASSWORD_CODEC_REMOVED_126/u);
+  it("rejects absent passwords and malformed encrypted marker inputs", async () => {
+    await expect(passwordModule.run({ file: asBlob(plain), mode: "protect" }, { defaults: {} }))
+      .rejects.toThrow(/PDF_PASSWORD_REQUIRED/u);
     await expect(passwordModule.run({ file: asBlob(markerOnly), mode: "remove", password: "example-passphrase" }, { defaults: {} }))
-      .rejects.toThrow(/PDF_PASSWORD_CODEC_REMOVED_126/u);
+      .rejects.toThrow(/PDF_NOT_ENCRYPTED/u);
     await expect(passwordModule.run({ file: asBlob(markerOnly), mode: "remove" }, { defaults: {} }))
       .rejects.toMatchObject({ code: "UNSUPPORTED_CAPABILITY" });
   });

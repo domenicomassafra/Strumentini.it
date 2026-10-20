@@ -20,6 +20,7 @@ import type { PdfCompareResult } from "../../../engines/pdf";
 import { PdfVisualCompare } from "./PdfVisualCompare";
 import { PDF_ACTION_IT } from "./PdfActionLabels";
 import { PdfFormAuditDetails } from "./PdfFormAuditDetails";
+import { PdfPasswordOptions417, passwordActionLabel417 } from "./PdfPasswordOptions417";
 import type { PdfFormAnnotationAudit, PdfFlattenVerification } from "../../../engines/pdf";
 import { PdfTextExportDownloads53 } from "./PdfTextExportDownloads53";
 import type { PdfTextExportMode53, ScopedPdfTextExport53 } from "../../../engines/pdf/text-export-53";
@@ -65,7 +66,8 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [pdfSplitMaxKiB, setPdfSplitMaxKiB] = useState("1024");
   const [rotation, setRotation] = useState("90");
   const [deleteMode, setDeleteMode] = useState<"delete" | "extract">("extract");
-  const [passwordMode, setPasswordMode] = useState<"check" | "remove">("check");
+  const [passwordMode, setPasswordMode] = useState<"check" | "remove" | "protect">("check");
+  const [pdfPassword417, setPdfPassword417] = useState("");
   const [textExtractionMode, setTextExtractionMode] = useState<PdfTextExportMode53>("content-order");
   const [textExports, setTextExports] = useState<{ file: File; pageExpression: string; mode: PdfTextExportMode53; exported: ScopedPdfTextExport53 } | null>(null);
   const [imageDedupe, setImageDedupe] = useState(true);
@@ -268,7 +270,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       : { file: files[0], groups };
     if (optionMode === "rotation") return { file: files[0], pages, rotation: Number(rotation) };
     if (optionMode === "delete-extract") return { file: files[0], pages, mode: deleteMode };
-    if (optionMode === "password") return { file: files[0], mode: passwordMode };
+    if (optionMode === "password") return { file: files[0], mode: passwordMode, password: pdfPassword417 };
     if (optionMode === "text-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), mode: textExtractionMode };
     if (optionMode === "image-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), dedupe: imageDedupe };
     if (optionMode === "pdf-to-markdown") return { file: files[0] };
@@ -431,6 +433,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setRotation("90");
     setDeleteMode("extract");
     setPasswordMode("check");
+    setPdfPassword417("");
     setTextExtractionMode("content-order");
     setTextExports(null);
     setImageDedupe(true);
@@ -543,8 +546,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const publicCopy = TOOL_COPY_IT[toolId];
   const publicTitle = publicCopy?.name ?? toolId;
   const publicDescription = publicCopy?.summary ?? "";
-  const actionLabel = optionMode === "password" && passwordMode === "remove" ? "Crea PDF senza cifratura"
-    : PDF_ACTION_IT[toolId];
+  const actionLabel = optionMode === "password" ? passwordActionLabel417(passwordMode) : PDF_ACTION_IT[toolId];
   const comparison = result !== null && toolId === "pdf-compare-lite" && result.raw.comparison !== null
     && typeof result.raw.comparison === "object" && "alignment" in result.raw.comparison
     ? result.raw.comparison as unknown as PdfCompareResult : null;
@@ -747,10 +749,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             )}
           </section>
         )}
-        {optionMode === "password" && <>
-          <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => { setPasswordMode(event.currentTarget.value as "check" | "remove"); setResult(null); }} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="remove">Copia un PDF già non cifrato</option></select></label>
-          <p class="file-note">La protezione AES-256 e lo sblocco con password sono stati ritirati per rimuovere il codec QPDF. I documenti cifrati non vengono modificati.</p>
-        </>}
+        {optionMode === "password" && <PdfPasswordOptions417 file={files[0]} mode={passwordMode} password={pdfPassword417} disabled={isWorking}
+          onMode={(next) => { setPasswordMode(next); setPdfPassword417(""); setResult(null); }}
+          onPassword={(next) => { setPdfPassword417(next); setResult(null); }} />}
         {(optionMode === "order" || optionMode === "rotation") && files[0] !== undefined && (
           <div class="field" data-pdf-preview-toggle>
             <button type="button" onClick={() => setShowThumbnails((current) => !current)} disabled={isWorking}>{showThumbnails ? "Chiudi miniature pagine" : "Apri miniature pagine (facoltativo)"}</button>

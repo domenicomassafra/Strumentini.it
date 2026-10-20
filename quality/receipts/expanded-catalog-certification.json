@@ -24394,7 +24394,7 @@
     {
       "id": "pdf-password-check-remove",
       "route": "/tools/pdf-password-check-remove",
-      "name": "Controlla cifratura PDF",
+      "name": "Proteggi o sblocca PDF",
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
@@ -24405,11 +24405,11 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-password-check-remove/manifest.ts",
-          "sha256": "f19fcc7149c9de0fc75f212bf08913a265bf67d0e283c72dd844035f7a19eded"
+          "sha256": "2699c79447b579881274dc9b9dacb07c2a8b66ff8e7d755d591fd732a8e5c323"
         },
         "module": {
           "path": "src/tools/pdf-password-check-remove/module.ts",
-          "sha256": "08551d32bf504a5ef9d0518f5be0f9b60222554b634f8982fa14fce89d4238ba"
+          "sha256": "75ae6fdeee9a70cf77d509b8da1b3161d539d5f69dd2113994f4e6000f12c790"
         },
         "page": {
           "path": "src/pages/tools/pdf-password-check-remove.astro",
@@ -24418,7 +24418,8 @@
         "testFiles": [
           "tests/pdf-catalog.test.ts",
           "tests/pdf-document-tools.test.ts",
-          "tests/pdf-password-capability.test.ts"
+          "tests/pdf-password-capability.test.ts",
+          "tests/regroom-str-417.test.ts"
         ]
       },
       "oracle": {
