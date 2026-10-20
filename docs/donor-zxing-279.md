@@ -1,6 +1,7 @@
 # STR-REUSE-55.5 / #279 — QR foto con ZXing
 
-Valutazione del 19 ottobre 2026. Base `origin/main` f8c5b19a.
+Valutazione del 19-20 ottobre 2026. La branch è stata riallineata
+a `origin/main` `0120bdbd98c875f84e8c8f8cd76c8a2c01d4b778`.
 **Decisione di distribuzione: BLOCKED / NO_GO fino al gate #126 (STR-366).**
 La branch prepara un fallback locale dietro import dinamico e conserva il decoder
 attuale. Questa prova non promuove alcun tool a Gold e non certifica la release.
@@ -34,13 +35,16 @@ attuale. Questa prova non promuove alcun tool a Gold e non certifica la release.
   provano diritti per l'intero prodotto o l'attestazione indipendente di ogni
   asset di #126.
 
-`@zxing/library@0.23.0` dichiara Node `>=24`; l'uso prodotto è browser
-e la prova Node è stata eseguita con Node 24. Il gate
-`tsx scripts/donor-provenance-366.ts --check` fallisce ancora con
-`UNKNOWN_LICENSE node_modules/@zxing/text-encoding`: il checker non
-riconosce l'espressione SPDX duale benché entrambi i testi siano presenti.
-Sono inoltre segnalati tre campi asset OCR preesistenti. La classificazione
-richiede una correzione verificata del gate #126 prima di un merge.
+`@zxing/library@0.23.0` dichiara Node `>=24`; l'uso prodotto è browser.
+Il 20 ottobre, su MiniPC Node **26.12.0**, i 39 test QR mirati passano.
+Il gate `tsx scripts/donor-provenance-366.ts --check`, dopo il merge di main,
+riporta un solo errore: `UNKNOWN_LICENSE node_modules/@zxing/text-encoding`.
+Il pacchetto dichiara realmente `(Unlicense OR Apache-2.0)`, espressione SPDX
+valida, ma il parser #366 non riconosce l'identificatore `Unlicense`.
+Il confronto byte per byte tra i quattro file `public/licenses/zxing-279-*`
+e i file LICENSE dei pacchetti npm installati è **4/4 identico**.
+La classificazione e i diritti di distribuzione richiedono comunque la
+verifica indipendente del gate #126 prima di un merge.
 
 ## Confronto dei decoder
 
@@ -94,25 +98,28 @@ DOM su browser principale. Il percorso senza DOM rifiuta esplicitamente
 `QR_IMAGE_DECODER_UNAVAILABLE`. Nessuna parità Safari mobile fisica
 viene dichiarata senza un consumer Safari reale.
 
-**Verifica browser reale:** Playwright Chromium in viewport 390×844
-e 1280×844 ha caricato l'URL locale di un QR indipendente EC M,
-mostrato l'avviso ZXing e le informazioni sconosciute, senza
-richieste offsite, POST, errori JS o overflow. Il nuovo chunk
-`zxing-adapter` è stato richiesto dopo il submit. Il sito usa
+**Verifica browser reale:** il 20 ottobre, Chrome `automation-browser`
+esistente sul MiniPC via CDP ha letto un QR indipendente EC M a 390×844
+e la fotografia upstream `photo-1.png` (SHA-256 indicato sopra) a
+390×844 e 1280×844. In tutti e tre i casi il contenuto atteso è apparso,
+con avviso ZXing e metadati non determinati, senza richieste offsite,
+POST, errori JS o overflow. Il nuovo chunk `zxing-adapter` è stato
+richiesto dopo il submit. Il sito usa
 solo import dinamici di script ospitati su `self`, senza `eval`,
 camera, worker o chiamate di rete del donor.
 
-Una seconda esecuzione Chromium con CSP `script-src 'self'` più hash
-degli script inline Astro e `connect-src 'none'` ha letto correttamente
-il QR in entrambe le viewport; il probe `/api/auth/session` dell'app,
+La verifica del 20 ottobre con CSP `script-src 'self'` più hash degli
+script inline Astro e `connect-src 'none'` ha letto correttamente tutti
+e tre gli input; il probe `/api/auth/session` dell'app,
 separato dal decoder, è stato bloccato dalla CSP di prova. La CSP senza
 gli hash blocca l'idratazione Astro esistente. L'avvio di Playwright
 WebKit è scaduto due volte senza produrre un risultato;
 **Safari mobile NON_VERIFICATO** (manca una prova reale).
 
 **Gate di ammissione:** [issue #126](https://github.com/domenicomassafra/strumentini-it/issues/126)
-rimane aperta; l'ultimo [rapporto STR-366](donor-provenance-366-active-2026-10-18.md)
-riporta `NO_GO` per 41 campi di provenienza asset non ancora attestati.
+rimane aperta. Il merge `0120bdbd` ha eliminato i tre errori OCR
+preesistenti visti sul branch prima del riallineamento; il gate su #279
+rimane `NO_GO` per il solo SPDX opzionale citato sopra.
 Niente merge/deploy/GOLD finché il gate non risulta verificato. Rollback:
 rimuovere l'import e l'adapter `zxing-adapter.ts`, le due dipendenze dirette
 e i loro testi legali; `decodeQrFromRaster` è preservato.
