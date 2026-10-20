@@ -26826,14 +26826,15 @@
         },
         "module": {
           "path": "src/tools/qr-generator/module.ts",
-          "sha256": "c968506524449e92a7c6a0486f19be6ffdbb5ca918875869b1e2ebd8bc0c2ec4"
+          "sha256": "68e7796758932d234f43e7505c71465a4548231966732d31502aa926bb2f3e37"
         },
         "page": {
           "path": "src/pages/tools/qr-generator.astro",
           "sha256": "36182771a90159b65130710488019ebb9bc3304728a92875770aee802bb09133"
         },
         "testFiles": [
-          "tests/qr-local-engine.test.ts"
+          "tests/qr-local-engine.test.ts",
+          "tests/qr-qrcode-278.test.ts"
         ]
       },
       "oracle": {
