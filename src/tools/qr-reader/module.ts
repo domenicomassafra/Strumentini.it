@@ -1,4 +1,4 @@
-import { readQrImage, readQrMatrix, readQrPixels, type RasterPixels } from "../../engines/qr";
+import { pixelsFor, readQrMatrix, readQrPixels, type RasterPixels } from "../../engines/qr";
 import type { ToolModule } from "../../runtime/types";
 
 function pixelsOrInvalid(value: unknown): RasterPixels {
@@ -19,8 +19,21 @@ const module: ToolModule = {
     if (typeof value === "string") return readQrMatrix(value);
     if (typeof value !== "object" || value === null) throw new Error("QR_INVALID_INPUT");
     const record = value as Record<string, unknown>;
-    if (record.pixels !== undefined) return readQrPixels(pixelsOrInvalid(record.pixels));
-    if (record.image !== undefined) return readQrImage(record.image as Parameters<typeof readQrImage>[0]);
+    if (record.pixels !== undefined || record.image !== undefined) {
+      const pixels = record.pixels !== undefined
+        ? pixelsOrInvalid(record.pixels)
+        : await pixelsFor(record.image as Parameters<typeof pixelsFor>[0]);
+      // The native decoder remains authoritative for its supported symbols.
+      // Load ZXing only after the native path returns QR_DECODE_FAILED.
+      try {
+        return readQrPixels(pixels);
+      } catch (error) {
+        if (!(error instanceof Error) || error.message !== "QR_DECODE_FAILED") throw error;
+      }
+      if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+      const { readQrPixelsWithZxing } = await import("../../engines/qr/zxing-adapter");
+      return readQrPixelsWithZxing(pixels, signal);
+    }
     if (record.matrix !== undefined) return readQrMatrix(record.matrix);
     if (typeof record.svg === "string") return readQrMatrix(record.svg);
     if (typeof record.rows === "string") return readQrMatrix(record.rows);
