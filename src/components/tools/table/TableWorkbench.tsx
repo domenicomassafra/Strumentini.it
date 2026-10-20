@@ -36,7 +36,6 @@ import {
 } from "./table-result-v2";
 
 export type { TableWorkbenchMode } from "./table-result-v2";
-
 export interface TableWorkbenchProps {
   toolId: string;
   title: string;
@@ -502,7 +501,7 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
           </ul>}
         </div>
         <div data-result-slot="table-preview"><BoundedTableResultPreview preview={resultModel.preview} /></div>
-        {(mode === "sort" || mode === "filter") && <><TableTransformDiff388 source={submittedText} output={resultModel.exportPayload} delimiter={(result?.table as { delimiter?: string } | undefined)?.delimiter ?? ","} summary={summary} /><button type="button" data-str388-apply onClick={reuseResult}>Applica alla tabella (annullabile)</button></>
+        {(mode === "sort" || mode === "filter") && <><TableTransformDiff388 source={submittedText} output={resultModel.exportPayload} delimiter={(result?.table as { delimiter?: string } | undefined)?.delimiter ?? ","} summary={summary} /><button type="button" data-str388-apply onClick={reuseResult}>Applica alla tabella (annullabile)</button></>}
         <div data-result-secondary-raw>
           {mode === "missing-profile" && profileColumns.length > 0 && <div class="table-preview-scroll"><table class="table-preview"><caption>Valori mancanti per colonna</caption><thead><tr><th scope="col">Colonna</th><th scope="col">Mancanti</th><th scope="col">Presenti</th><th scope="col">Percentuale mancante</th></tr></thead><tbody>{profileColumns.map((column) => <tr key={column.name}><th scope="row">{column.name}</th><td>{String(column.missing ?? 0)}</td><td>{String(column.present ?? 0)}</td><td>{typeof column.missingRate === "number" ? `${(column.missingRate * 100).toFixed(1)}%` : "—"}</td></tr>)}</tbody></table></div>}
           {mode === "type-profile" && profileColumns.length > 0 && <div class="table-preview-scroll"><table class="table-preview"><caption>Tipi rilevati per colonna</caption><thead><tr><th scope="col">Colonna</th><th scope="col">Tipo</th><th scope="col">Numeri</th><th scope="col">Booleani</th><th scope="col">Date</th><th scope="col">Testo</th><th scope="col">Vuoti</th></tr></thead><tbody>{profileColumns.map((column) => <tr key={column.name}><th scope="row">{column.name}</th><td>{TYPE_LABELS[String(column.dominantType ?? "")] ?? String(column.dominantType ?? "—")}</td><td>{String(column.number ?? 0)}</td><td>{String(column.boolean ?? 0)}</td><td>{String(column.date ?? 0)}</td><td>{String(column.string ?? 0)}</td><td>{String(column.empty ?? 0)}</td></tr>)}</tbody></table></div>}
