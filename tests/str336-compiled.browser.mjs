@@ -24,7 +24,19 @@ async function chooseNative(page, selector, fixture) {
 
 async function output(page, label) {
   const btn = page.locator('[data-result-action="download"]').first();
-  await btn.waitFor({ state: 'visible', timeout: 45000 });
+  try {
+    await btn.waitFor({ state: 'visible', timeout: 15000 });
+  } catch (error) {
+    const diagnostic = {
+      label, url: page.url(),
+      hydrated: await page.locator('astro-island').evaluateAll(nodes => nodes.map(n => ({ component: n.getAttribute('component-url'), ssr: n.hasAttribute('ssr') }))),
+      formText: (await page.locator('form').first().innerText()).slice(0, 600),
+      resultText: (await page.locator('body').innerText()).slice(-1300),
+      fileInputValue: await page.locator('form input[type=file]').first().inputValue(),
+    };
+    console.error('STR336_COMPILED_DIAGNOSTIC', JSON.stringify(diagnostic));
+    throw error;
+  }
   const event = page.waitForEvent('download', { timeout: 20000 });
   await btn.click();
   const download = await event;
@@ -82,9 +94,27 @@ for (const [engineName, engine, deviceName] of [
     await chooseNative(page, '[data-home-photos-picker]', photo);
     await page.getByText(/PNG riconosciuto localmente/u).waitFor();
 
-    await page.locator('a[href="/tools/image-resize/"]:visible').first().click();
-    await page.waitForURL(/\/tools\/image-resize\//u);
-    await page.locator('form input[type="file"]').first().setInputFiles(photo);
+    // Deterministically reproduce an actual native pick before the hydration
+    // listener is loaded. The selected File must survive when the module resumes.
+    let releaseHydration;
+    const hydrationHeld = new Promise(resolve => { releaseHydration = resolve; });
+    let intercepted = false;
+    await page.route('**/ImageResizeTool.*.js', async route => {
+      intercepted = true;
+      await hydrationHeld;
+      await route.continue();
+    });
+    try {
+      await page.locator('a[href="/tools/image-resize/"]:visible').first().click({ noWaitAfter: true });
+      await page.waitForURL(/\/tools\/image-resize\//u, { waitUntil: "commit" });
+      await page.locator('form input[type="file"]').first().setInputFiles(photo);
+      assert.equal(await page.locator('astro-island[ssr]').count(), 1, 'picked during SSR before hydration');
+    } finally {
+      releaseHydration();
+    }
+    await page.locator('astro-island[ssr]').waitFor({ state: 'detached', timeout: 30000 });
+    await page.unroute('**/ImageResizeTool.*.js');
+    assert(intercepted, 'compiled hydration module must have been delayed');
     await page.locator('form button[type="submit"]').first().click();
     const photoOutput = await output(page, 'Photos');
     const meta = await sharp(photoOutput.bytes).metadata();
@@ -100,14 +130,32 @@ for (const [engineName, engine, deviceName] of [
     await page.goto(origin + '/', { waitUntil: 'domcontentloaded' });
     await chooseNative(page, '[data-home-file-picker]', file);
     await page.getByText(/PDF riconosciuto localmente/u).waitFor({ timeout: 30000 });
-    await page.locator('a[href="/tools/pdf-compression-lite/"]:visible').first().click();
-    await page.waitForURL(/\/tools\/pdf-compression-lite\//u);
-    await page.locator('form input[type="file"]').first().setInputFiles(file);
+    let releasePdfHydration;
+    const pdfHydrationHeld = new Promise(resolve => { releasePdfHydration = resolve; });
+    let pdfModuleIntercepted = false;
+    await page.route('**/PdfCompressionLiteTool.*.js', async route => {
+      pdfModuleIntercepted = true;
+      await pdfHydrationHeld;
+      await route.continue();
+    });
+    try {
+      await page.locator('a[href="/tools/pdf-compression-lite/"]:visible').first().click({ noWaitAfter: true });
+      await page.waitForURL(/\/tools\/pdf-compression-lite\//u, { waitUntil: 'commit' });
+      await page.locator('form input[type="file"]').first().setInputFiles(file);
+      assert.equal(await page.locator('astro-island[ssr]').count(), 1, 'PDF chosen before hydration');
+    } finally {
+      releasePdfHydration();
+    }
+    await page.locator('astro-island[ssr]').waitFor({ state: 'detached', timeout: 30000 });
+    await page.unroute('**/PdfCompressionLiteTool.*.js');
+    assert(pdfModuleIntercepted, 'compiled PDF hydration module must have been delayed');
+    await page.locator('form').getByText(/documento-local\.pdf/u).waitFor({ timeout: 20000 });
     await page.locator('form button[type="submit"]').first().click();
     const pdfOutput = await output(page, 'Files');
-    const parsed = await getDocument({ data: new Uint8Array(pdfOutput.bytes), disableWorker: true }).promise;
+    const pdfLoadingTask = getDocument({ data: new Uint8Array(pdfOutput.bytes), disableWorker: true });
+    const parsed = await pdfLoadingTask.promise;
     assert.equal(parsed.numPages, 2, 'PDF output independently parseable with expected pages');
-    await parsed.destroy();
+    await pdfLoadingTask.destroy();
     assert.deepEqual(errors, [], 'No browser page errors');
     assert.deepEqual(uploads, [], 'No file upload or mutation request');
     console.log(JSON.stringify({ result: 'PASS_DESKTOP_BROWSER_MOBILE_EMULATION', engine: engineName,
