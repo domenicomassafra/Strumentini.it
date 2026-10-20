@@ -1,4 +1,6 @@
 import { inspectMp4Local, type Mp4Inspection } from "./mp4-inspection";
+import { readMediaFile411 } from "../media/read-file-411";
+import { awaitMediaTask411 } from "../media/await-task-411";
 
 /** Bounded AAC MP4 audio extraction using the browser's decoder and a disposable PCM16 worker.
  * Video frames are never encoded, compressed, modified or trimmed by this operation.
@@ -26,6 +28,7 @@ const MAX_INPUT_BYTES = 12 * 1024 * 1024;
 const MAX_OUTPUT_BYTES = 16 * 1024 * 1024;
 const MAX_DURATION = 60;
 const MAX_RATE = 96_000;
+type ExtractionProgress411 = { readonly phase: "read" | "encode"; readonly completed: number; readonly total: number };
 
 function cancelled(signal?: AbortSignal) {
   if (signal?.aborted) throw new DOMException("Estrazione audio annullata", "AbortError");
@@ -80,15 +83,20 @@ export function verifyWav234(bytes: ArrayBuffer, sampleRate: number, channels: n
   }
 }
 
-function writeDecodedWav234(audio: AudioBuffer, begin: number, end: number, signal?: AbortSignal): Promise<ArrayBuffer> {
+function writeDecodedWav234(audio: AudioBuffer, begin: number, end: number,
+  signal?: AbortSignal, onProgress?: (completed: number, total: number) => void): Promise<ArrayBuffer> {
   cancelled(signal);
   if (typeof Worker === "undefined") throw new Error("VIDEO_AUDIO_WORKER_UNSUPPORTED: Worker non disponibili in questo browser.");
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL("./wav-worker-234.ts", import.meta.url), { type: "module" });
     let settled = false;
+    const watchdog = setTimeout(() => finish(new Error(
+      "VIDEO_AUDIO_WORKER_TIMEOUT: Scrittura WAV bloccata; annulla e riprova.",
+    )), 60_000);
     const finish = (error?: Error, bytes?: ArrayBuffer) => {
       if (settled) return;
       settled = true;
+      clearTimeout(watchdog);
       worker.terminate();
       signal?.removeEventListener("abort", onAbort);
       if (error) reject(error);
@@ -97,8 +105,15 @@ function writeDecodedWav234(audio: AudioBuffer, begin: number, end: number, sign
     };
     const onAbort = () => finish(new DOMException("Estrazione audio annullata", "AbortError"));
     signal?.addEventListener("abort", onAbort, { once: true });
-    worker.onmessage = (event: MessageEvent<{ kind: string; bytes?: ArrayBuffer; message?: string }>) => {
-      if (event.data.kind === "done" && event.data.bytes instanceof ArrayBuffer) finish(undefined, event.data.bytes);
+    worker.onmessage = (event: MessageEvent<{ kind: string; bytes?: ArrayBuffer; message?: string; completed?: number; total?: number }>) => {
+      if (settled) return;
+      if (event.data.kind === "progress") {
+        const { completed, total } = event.data;
+        if (!Number.isSafeInteger(completed) || !Number.isSafeInteger(total) || total! < 1 ||
+          completed! < 0 || completed! > total!) {
+          finish(new Error("VIDEO_AUDIO_PROGRESS_INVALID"));
+        } else onProgress?.(completed!, total!);
+      } else if (event.data.kind === "done" && event.data.bytes instanceof ArrayBuffer) finish(undefined, event.data.bytes);
       else finish(new Error(event.data.message || "VIDEO_AUDIO_WORKER_FAILED"));
     };
     worker.onerror = () => finish(new Error("VIDEO_AUDIO_WORKER_FAILED: Errore codifica PCM."));
@@ -111,7 +126,8 @@ function writeDecodedWav234(audio: AudioBuffer, begin: number, end: number, sign
   });
 }
 
-export async function extractAudioWav234(source: File, range: VideoAudioRange234, signal?: AbortSignal): Promise<VideoAudioResult234> {
+export async function extractAudioWav234(source: File, range: VideoAudioRange234,
+  signal?: AbortSignal, onProgress?: (progress: ExtractionProgress411) => void): Promise<VideoAudioResult234> {
   cancelled(signal);
   if (typeof AudioContext === "undefined" || typeof Worker === "undefined") {
     throw new Error("VIDEO_AUDIO_BROWSER_UNSUPPORTED: Decoder audio o Worker assenti.");
@@ -137,13 +153,21 @@ export async function extractAudioWav234(source: File, range: VideoAudioRange234
   const onAbort = () => { void closeContext(); };
   signal?.addEventListener("abort", onAbort, { once: true });
   try {
-    const bytes = await source.arrayBuffer();
+    const bytes = await readMediaFile411(source, {
+      maxBytes: MAX_INPUT_BYTES, signal,
+      onProgress: (completed, total) => onProgress?.({ phase: "read", completed, total }),
+    });
     cancelled(signal);
     let audio: AudioBuffer;
-    try { audio = await context.decodeAudioData(bytes); }
-    catch {
+    try { audio = await awaitMediaTask411(context.decodeAudioData(bytes), signal, {
+      timeoutMs: 45_000,
+      abortMessage: "Decodifica annullata",
+      timeoutMessage: "VIDEO_AUDIO_DECODE_TIMEOUT: Decoder bloccato o scheda sospesa; torna in primo piano e riprova con un MP4 compatibile.",
+    }); }
+    catch (error) {
       cancelled(signal);
-      throw new Error("VIDEO_AUDIO_DECODE_UNSUPPORTED: Il browser non decodifica la traccia AAC selezionata.");
+      if (error instanceof Error && error.message.startsWith("VIDEO_AUDIO_DECODE_TIMEOUT")) throw error;
+      throw new Error("VIDEO_AUDIO_DECODE_UNSUPPORTED: Decoder AAC incompatibile, bloccato o sospeso; torna in primo piano e prova un MP4/H.264+AAC compatibile oppure un file più piccolo.");
     }
     cancelled(signal);
     if (Math.abs(audio.duration - inspected.durationSeconds!) > 0.15 || audio.length !== Math.round(audio.duration * audio.sampleRate)) {
@@ -151,7 +175,8 @@ export async function extractAudioWav234(source: File, range: VideoAudioRange234
     }
     const bounded = validateAudioRange234(range, audio.duration, audio.sampleRate, audio.numberOfChannels);
     if (bounded.endFrame > audio.length) throw new Error("VIDEO_AUDIO_RANGE: Fine oltre campioni disponibili.");
-    const output = await writeDecodedWav234(audio, bounded.startFrame, bounded.endFrame, signal);
+    const output = await writeDecodedWav234(audio, bounded.startFrame, bounded.endFrame, signal,
+      (completed, total) => onProgress?.({ phase: "encode", completed, total }));
     cancelled(signal);
     verifyWav234(output, audio.sampleRate, audio.numberOfChannels, bounded.frames);
     return {
@@ -162,6 +187,9 @@ export async function extractAudioWav234(source: File, range: VideoAudioRange234
     };
   } finally {
     signal?.removeEventListener("abort", onAbort);
-    await closeContext();
+    // Some browsers cannot immediately interrupt decodeAudioData even after close().
+    // Always discard its late result; never stall cancellation on close().
+    if (signal?.aborted) void closeContext();
+    else await Promise.race([closeContext(), new Promise<void>((resolve) => setTimeout(resolve, 2000))]);
   }
 }

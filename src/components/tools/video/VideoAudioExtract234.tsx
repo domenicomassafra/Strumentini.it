@@ -9,6 +9,7 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
   const [end, setEnd] = useState("");
   const [status, setStatus] = useState("Estrazione audio mp4a→WAV disponibile in locale.");
   const [busy, setBusy] = useState(false);
+  const [progress411, setProgress411] = useState<{ phase: "read" | "encode"; completed: number; total: number } | null>(null);
   const [output, setOutput] = useState<VideoAudioResult234 | null>(null);
   const [outputUrl, setOutputUrl] = useState("");
   const pending = useRef<AbortController | null>(null);
@@ -27,6 +28,7 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
     pending.current?.abort();
     pending.current = null;
     setBusy(false);
+    setProgress411(null);
     clearOutput();
     setBegin("0");
     setEnd("");
@@ -38,12 +40,22 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
     };
   }, [file]);
 
+  useEffect(() => {
+    const reportVisibility = () => {
+      if (document.hidden && pending.current) setStatus("VIDEO_AUDIO_SUSPENDED: La scheda in background può sospendere il decoder. Torna in primo piano o annulla e riprova.");
+      else if (pending.current) setStatus("VIDEO_AUDIO_RESUMED: Scheda attiva; controlla il progresso o annulla se il decoder resta fermo.");
+    };
+    document.addEventListener("visibilitychange", reportVisibility);
+    return () => document.removeEventListener("visibilitychange", reportVisibility);
+  }, []);
+
   function cancel() {
     generation.current++;
     pending.current?.abort();
     pending.current = null;
     clearOutput();
     setBusy(false);
+    setProgress411(null);
     setStatus("VIDEO_AUDIO_CANCELLED: Operazione interrotta; nessun WAV parziale scaricabile.");
   }
 
@@ -54,12 +66,19 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
     pending.current = controller;
     const operation = ++generation.current;
     setBusy(true);
+    setProgress411(null);
     setStatus("Verifica struttura MP4, decodifica mp4a e scrittura PCM16 nel Worker locale…");
     try {
       const { extractAudioWav234 } = await import("../../../engines/video/audio-extract-234");
       const result = await extractAudioWav234(file, {
         startSeconds: begin.trim() === "" ? Number.NaN : Number(begin), endSeconds: end.trim() === "" ? null : Number(end),
-      }, controller.signal);
+      }, controller.signal, ({ phase, completed, total }) => {
+        if (!controller.signal.aborted && generation.current === operation) {
+          setProgress411({ phase, completed, total });
+          if (phase === "read" && completed === total) setStatus("MP4 letto interamente: decodifica AAC del browser in corso (durata non misurabile)...");
+          else if (phase === "encode") setStatus("Codifica WAV PCM16 su campioni realmente elaborati...");
+        }
+      });
       if (controller.signal.aborted || generation.current !== operation) return;
       const url = URL.createObjectURL(result.blob);
       currentUrl.current = url;
@@ -72,6 +91,7 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
         setStatus(error instanceof Error ? error.message : "VIDEO_AUDIO_UNSUPPORTED: Non è possibile verificare l'estrazione.");
       }
     } finally {
+      if (generation.current === operation) setProgress411(null);
       if (pending.current === controller) pending.current = null;
       if (generation.current === operation) setBusy(false);
     }
@@ -89,6 +109,11 @@ export function VideoAudioExtract234({ file }: { readonly file: File | null }) {
       <button type="button" disabled={!file || busy} onClick={() => void extract()}>Estrai WAV dal video</button>
       <button type="button" disabled={!busy} onClick={cancel}>Annulla estrazione WAV</button>
     </div>
+    {busy && progress411 && <p class="file-note" data-media-progress411>
+      <progress max={progress411.total} value={progress411.completed}
+        aria-label={progress411.phase === "read" ? "Byte MP4 letti" : "Frame audio codificati"} />
+      {progress411.completed} / {progress411.total} {progress411.phase === "read" ? "byte MP4 letti" : "frame PCM scritti"}
+    </p>}
     <p role="status" data-video-audio-status aria-live="polite">{status}</p>
     {output && outputUrl && <section data-video-audio-result aria-label="Audio WAV estratto">
       <p class="file-note">mp4a decodificato → PCM16 WAV; {output.channels} canale/i; {output.sampleRate} Hz; intervallo decodificato {output.startSeconds.toFixed(3)}–{output.endSeconds.toFixed(3)} s; durata {output.durationSeconds.toFixed(3)} s; {output.sourceBytes} byte origine → {output.outputBytes} byte WAV. Nessun nuovo video generato.</p>

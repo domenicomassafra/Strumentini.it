@@ -1,3 +1,5 @@
+import { readMediaFile411 } from "../media/read-file-411";
+
 /**
  * Bounded ISO BMFF/MP4 container inspection. No transcoder, decoder, network,
  * codec probing or inferred frame-rate claims. Unknown data stays unknown.
@@ -46,10 +48,6 @@ export interface Mp4Inspection {
 
 function fail(message: string): never {
   throw new Error(`UNSUPPORTED_VIDEO_CONTAINER: ${message}`);
-}
-
-function checkAbort(signal?: AbortSignal): void {
-  if (signal?.aborted) throw new DOMException("Video inspection cancelled", "AbortError");
 }
 
 function view(bytes: Uint8Array): DataView {
@@ -382,12 +380,8 @@ function trackData(
 
 export async function inspectMp4Local(input: Blob, signal?: AbortSignal): Promise<Mp4Inspection> {
   if (!(input instanceof Blob) || !Number.isSafeInteger(input.size) || input.size < 16) fail("Choose a valid local MP4 file");
-  const readSlice = async (from: number, length: number): Promise<Uint8Array> => {
-    checkAbort(signal);
-    const part = new Uint8Array(await input.slice(from, from + length).arrayBuffer());
-    checkAbort(signal);
-    return part;
-  };
+  const readSlice = async (from: number, length: number) =>
+    new Uint8Array(await readMediaFile411(input.slice(from, from + length), { maxBytes: MAX_MOOV_BYTES, signal }));
   let cursor = 0;
   let brand: string | null = null;
   let movie: Uint8Array | null = null;
