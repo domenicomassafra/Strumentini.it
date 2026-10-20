@@ -17,7 +17,7 @@ export const pdfRepairManifest = {
   profileFields: [],
   result: PDF_RESULT_DECLARATIONS["pdf-repair"],
   handoff: { emits: [{ type: "file", format: "pdf" }] },
-  gold: { maintenanceClass: "H", oracleEntryId: "cand-272", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
+  gold: { maintenanceClass: "H", oracleEntryId: "cand-273", fixtureFamilies: ["pdf-signature", "pdf-gold"] },
 } as const satisfies ToolManifest;
 
 export default pdfRepairManifest;

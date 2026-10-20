@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { PdfRepair418Error, repairPdf418 } from "../src/engines/pdf/repair-418";
+import { readFileSync } from "node:fs";
+import { pdfRepairManifest } from "../src/tools/pdf-repair/manifest";
 
 async function pdf(): Promise<Uint8Array> {
   const document = await PDFDocument.create();
@@ -28,6 +30,18 @@ function replace(bytes: Uint8Array, pattern: RegExp, replacement: string): Uint8
 }
 
 describe("STR-418 bounded classic-xref pointer recovery", () => {
+  it("binds the repair manifest to its PDF oracle rather than an unrelated EPUB oracle", () => {
+    const registry = JSON.parse(readFileSync(new URL("../quality/oracles/registry.json", import.meta.url), "utf8")) as {
+      entries: Array<{ id: string; candidate: string; tool_family: string }>;
+    };
+    const entry = registry.entries.find((item) => item.id === pdfRepairManifest.gold.oracleEntryId);
+    expect(entry).toMatchObject({
+      id: "cand-273",
+      tool_family: "pdf",
+      candidate: expect.stringMatching(/PDF classic xref pointer recovery/i),
+    });
+  });
+
   it("repairs exactly a corrupt startxref pointer with an independent PDF.js readback", async () => {
     const good = await pdf();
     const broken = replace(good, /startxref\s+\d+\s+%%EOF/, "startxref\n99999999\n%%EOF");
