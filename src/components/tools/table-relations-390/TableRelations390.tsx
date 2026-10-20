@@ -67,7 +67,7 @@ export function TableRelations390({ kind, manifest }: { readonly kind: RelationK
 
   const operation = useToolOperation<Result390>((signal) => {
     if (mergeMode) {
-      const chunks = partTexts.length >= 2 ? partTexts : [leftText, rightText];
+      const chunks = partTexts.length > 0 ? partTexts : [leftText, rightText];
       return toolRuntime.run(manifest.id, { operation: "merge-parts", partsTexts: chunks }, {}, signal);
     }
     return toolRuntime.run(manifest.id, {
@@ -110,6 +110,8 @@ export function TableRelations390({ kind, manifest }: { readonly kind: RelationK
     if (files === null || files.length === 0) return;
     setFileError("");
     invalidate();
+    setPartTexts([]);
+    setPartNames([]);
     try {
       const selected = Array.from(files);
       if (selected.length > 500) throw new Error("Unisci al massimo 500 parti.");

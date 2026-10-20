@@ -1,6 +1,6 @@
 import { compareCsvTables, type TableCompareOptions } from "./advanced";
 import { parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
-import { assertBoundedTable, joinCsvTables, type TableJoinOptions } from "./operations";
+import { assertBoundedTable, joinCsvTables, TABLE_MAX_CELLS, TABLE_MAX_ROWS, type TableJoinOptions } from "./operations";
 
 /** No binary floats, locale-dependent collation or implicit rounding of identifiers. */
 export type KeyPrecision390 = "text" | "decimal-exact" | "decimal-scale";
@@ -151,6 +151,12 @@ export function mergeCsvParts390(parts: readonly CsvTable[]) {
   const header = parts[0]!.header;
   if (parts.some((part) => part.header.length !== header.length || part.header.some((name, index) => name !== header[index]))) {
     throw new Error("MERGE_SCHEMA_MISMATCH: every part must have identical ordered headers; no column mapping is assumed");
+  }
+  let totalRows = 0;
+  for (const part of parts) {
+    totalRows += part.rows.length;
+    if (totalRows > TABLE_MAX_ROWS) throw new Error("TABLE_TOO_MANY_ROWS: sum of all parts exceeds the supported output");
+    if (header.length * (totalRows + 1) > TABLE_MAX_CELLS) throw new Error("TABLE_TOO_MANY_CELLS: sum of all parts exceeds the supported output");
   }
   const table = assertBoundedTable({ header: [...header], delimiter: parts[0]!.delimiter,
     rows: parts.flatMap((part) => part.rows), warnings: parts.flatMap((part) => part.warnings) });

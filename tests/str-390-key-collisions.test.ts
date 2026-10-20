@@ -85,6 +85,8 @@ describe("STR-390 golden key collisions", () => {
     expect(merged.preservedDuplicates).toBe(true);
     expect(() => mergeCsvParts390([parseCsvTable("a,b\n1,2"), parseCsvTable("b,a\n2,1")])).toThrow(/MERGE_SCHEMA_MISMATCH/u);
     expect(() => mergeCsvParts390([parseCsvTable("a,b\n1,2"), parseCsvTable("a,b\n1")])).toThrow(/RAGGED_PART_2_ROWS/u);
+    const largePart = parseCsvTable("id\n" + Array.from({ length: 50_001 }, () => "same").join("\n"));
+    expect(() => mergeCsvParts390([largePart, largePart])).toThrow(/TABLE_TOO_MANY_ROWS/u);
   });
 
   it("routes merge and precision through the real tool modules", async () => {
