@@ -5,6 +5,7 @@ import { PDF_LIMITS } from "../../../engines/pdf/types";
 import type { PdfWorkspaceMode372 } from "../../../engines/pdf/workspace-372";
 import { runPdfWorkspaceWorker372 } from "../../../engines/pdf/workspace-worker-client-372";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
+import { PdfImagePlacement375 } from "./PdfImagePlacement375";
 
 interface Thumbnail { page: number; url?: string; error?: string }
 
@@ -235,6 +236,10 @@ export function PdfPageWorkspace372() {
               })}
             </ol>
           </section>
+          <details class="field" data-workspace-image-editor>
+            <summary>Inserisci, sposta e ridimensiona un’immagine sul PDF</summary>
+            <PdfImagePlacement375 file={file!} session={session!} />
+          </details>
           <fieldset class="field">
             <legend>Risultato da creare</legend>
             <label><input type="radio" name="workspace-mode-372" checked={mode === "reorder"} disabled={busy} onChange={() => { setMode("reorder"); setResult(null); setError(""); }} /> Riordina tutte le pagine</label>
