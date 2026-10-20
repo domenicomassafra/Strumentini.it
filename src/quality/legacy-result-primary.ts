@@ -30,9 +30,18 @@ function evidenceAt(source: string, index: number): string {
 }
 
 function secondaryRawContext(source: string, index: number): boolean {
-  const start = Math.max(0, index - 500);
-  const end = Math.min(source.length, index + 500);
-  return source.slice(start, end).includes("data-result-secondary-raw");
+  const ancestors: Array<{ tag: string; secondaryRaw: boolean }> = [];
+  for (const match of source.matchAll(/<\/?([A-Za-z][\w.-]*)\b[^>]*>/gu)) {
+    if (match.index >= index) break;
+    const tag = match[1]?.toLowerCase() ?? "";
+    if (match[0].startsWith("</")) {
+      const parentIndex = ancestors.findLastIndex((ancestor) => ancestor.tag === tag);
+      if (parentIndex >= 0) ancestors.length = parentIndex;
+    } else if (!match[0].endsWith("/>")) {
+      ancestors.push({ tag, secondaryRaw: /\bdata-result-secondary-raw\b/u.test(match[0]) });
+    }
+  }
+  return ancestors.some((ancestor) => ancestor.secondaryRaw);
 }
 
 function pushRegexFindings(
