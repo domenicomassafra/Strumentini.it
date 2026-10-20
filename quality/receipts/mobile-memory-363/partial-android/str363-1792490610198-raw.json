@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "ANDROID_EMULATOR_PARTIAL_RAW_UNATTESTED",
+  "ticket": "STR-363",
+  "physicalDeviceObserved": false,
+  "sourceRevision": "0be8efe745bb567dd9216afe80a4bab4fe2e8760",
+  "route": "/tools/image-resize/",
+  "routeSha256": "ca2d0b91b119433259e9e5d3ff13fc3f5ff2f4a5272d56e3367a92ec37c62e76",
+  "runId": "str363-1792490610198",
+  "capturedAt": "2026-10-20T10:03:30.199Z",
+  "simulator": {
+    "id": "emulator-5554",
+    "avd": "str277-api35",
+    "fingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.036/12592187:user/release-keys",
+    "api": "35"
+  },
+  "browser": {
+    "package": "com.android.chrome",
+    "version": "124.0.6367.219",
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+  },
+  "collection": {
+    "method": "ADB_DEVICE_TRACE + Chrome CDP",
+    "inputSelection": "CDP setInputFiles (Android Chrome executes real resize; native picker not asserted)",
+    "processMemoryCaveat": "dumpsys meminfo com.android.chrome PSS measures Chrome MAIN PROCESS only; excludes renderer processes; do not treat as total browser memory",
+    "frameCaveat": "rAF sampled on current page; max interval includes compositor scheduling and CDP automation impact",
+    "heapCaveat": "CDP Performance.getMetrics JSHeapUsedSize for attached renderer, not total process RSS/PSS"
+  },
+  "observations": [
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "S",
+      "phase": "cold",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "input": {
+        "filename": "str363-1792490610198-image-S-cold.png",
+        "bytes": 96901,
+        "sha256": "cae9e5443ea729540c1b2db513b5de32c1eb78a769cb09228f8e7b00596c25cd",
+        "dimensions": [
+          320,
+          240
+        ]
+      },
+      "output": {
+        "filename": "str363-1792490610198-image-S-cold-160x120.jpg",
+        "path": "/home/udodo/Code/.worktrees/strumentini-it-124-audit/.tmp-str363-android/str363-1792490610198-S-cold-download.jpg",
+        "bytes": 7701,
+        "sha256": "a37b4422242f664a240b53df3418083a8ef84c02978d07a6a2f9fa488b6a3437",
+        "mime": "image/jpeg",
+        "dimensions": [
+          160,
+          120
+        ],
+        "decodedPixelBytes": 76800,
+        "reopenedWith": "sharp/libvips"
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 5915268,
+        "after": 5267592,
+        "observedPeak": 6864856,
+        "samples": 19
+      },
+      "chromeMainProcessPssKB": {
+        "before": 115305,
+        "after": 112636
+      },
+      "timing": {
+        "frameSamples": 119,
+        "frameMaxIntervalMs": 150,
+        "pointerToNextFrameMs": 13.999999999255124,
+        "operationElapsedMs": 2481.7000000001863
+      },
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "pageErrors": [],
+      "offsiteRequests": [],
+      "observedAt": "2026-10-20T10:03:37.979Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "S",
+      "phase": "warm",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "input": {
+        "filename": "str363-1792490610198-image-S-warm.png",
+        "bytes": 96901,
+        "sha256": "cae9e5443ea729540c1b2db513b5de32c1eb78a769cb09228f8e7b00596c25cd",
+        "dimensions": [
+          320,
+          240
+        ]
+      },
+      "output": {
+        "filename": "str363-1792490610198-image-S-warm-160x120.jpg",
+        "path": "/home/udodo/Code/.worktrees/strumentini-it-124-audit/.tmp-str363-android/str363-1792490610198-S-warm-download.jpg",
+        "bytes": 7701,
+        "sha256": "a37b4422242f664a240b53df3418083a8ef84c02978d07a6a2f9fa488b6a3437",
+        "mime": "image/jpeg",
+        "dimensions": [
+          160,
+          120
+        ],
+        "decodedPixelBytes": 76800,
+        "reopenedWith": "sharp/libvips"
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 7417848,
+        "after": 5901044,
+        "observedPeak": 7961172,
+        "samples": 16
+      },
+      "chromeMainProcessPssKB": {
+        "before": 114009,
+        "after": 113052
+      },
+      "timing": {
+        "frameSamples": 97,
+        "frameMaxIntervalMs": 100,
+        "pointerToNextFrameMs": 0,
+        "operationElapsedMs": 1982.5999999996275
+      },
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "pageErrors": [],
+      "offsiteRequests": [],
+      "observedAt": "2026-10-20T10:03:42.218Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "M",
+      "phase": "cold",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "input": {
+        "filename": "str363-1792490610198-image-M-cold.png",
+        "bytes": 1522241,
+        "sha256": "b9659632941a4e020dbff6801cfbe13b2ea2b78dd6e5d55540f19b8b23fe5e03",
+        "dimensions": [
+          1280,
+          960
+        ]
+      },
+      "output": {
+        "filename": "str363-1792490610198-image-M-cold-640x480.jpg",
+        "path": "/home/udodo/Code/.worktrees/strumentini-it-124-audit/.tmp-str363-android/str363-1792490610198-M-cold-download.jpg",
+        "bytes": 143686,
+        "sha256": "85d98d68b5a5e9735562cb26eef431713435446a55a8dfb87d301a983ac84c9e",
+        "mime": "image/jpeg",
+        "dimensions": [
+          640,
+          480
+        ],
+        "decodedPixelBytes": 1228800,
+        "reopenedWith": "sharp/libvips"
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 27244144,
+        "after": 6485032,
+        "observedPeak": 27616740,
+        "samples": 18
+      },
+      "chromeMainProcessPssKB": {
+        "before": 115236,
+        "after": 113812
+      },
+      "timing": {
+        "frameSamples": 111,
+        "frameMaxIntervalMs": 133.19999999999982,
+        "pointerToNextFrameMs": 15.400000000186083,
+        "operationElapsedMs": 2287.5999999996275
+      },
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "pageErrors": [],
+      "offsiteRequests": [],
+      "observedAt": "2026-10-20T10:03:48.257Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "M",
+      "phase": "warm",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "input": {
+        "filename": "str363-1792490610198-image-M-warm.png",
+        "bytes": 1522241,
+        "sha256": "b9659632941a4e020dbff6801cfbe13b2ea2b78dd6e5d55540f19b8b23fe5e03",
+        "dimensions": [
+          1280,
+          960
+        ]
+      },
+      "output": {
+        "filename": "str363-1792490610198-image-M-warm-640x480.jpg",
+        "path": "/home/udodo/Code/.worktrees/strumentini-it-124-audit/.tmp-str363-android/str363-1792490610198-M-warm-download.jpg",
+        "bytes": 143686,
+        "sha256": "85d98d68b5a5e9735562cb26eef431713435446a55a8dfb87d301a983ac84c9e",
+        "mime": "image/jpeg",
+        "dimensions": [
+          640,
+          480
+        ],
+        "decodedPixelBytes": 1228800,
+        "reopenedWith": "sharp/libvips"
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 8225848,
+        "after": 8103824,
+        "observedPeak": 8748304,
+        "samples": 16
+      },
+      "chromeMainProcessPssKB": {
+        "before": 116592,
+        "after": 116724
+      },
+      "timing": {
+        "frameSamples": 94,
+        "frameMaxIntervalMs": 100,
+        "pointerToNextFrameMs": 2.1999999998133717,
+        "operationElapsedMs": 2009.3999999994412
+      },
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "pageErrors": [],
+      "offsiteRequests": [],
+      "observedAt": "2026-10-20T10:03:53.344Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "L",
+      "phase": "cold",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "input": {
+        "filename": "str363-1792490610198-image-L-cold.png",
+        "bytes": 4934140,
+        "sha256": "560824ca5933a8a1f58f3319e72132c302de3e7475d15f188c626861bed8e09f",
+        "dimensions": [
+          2400,
+          1800
+        ]
+      },
+      "output": {
+        "filename": "str363-1792490610198-image-L-cold-1200x900.jpg",
+        "path": "/home/udodo/Code/.worktrees/strumentini-it-124-audit/.tmp-str363-android/str363-1792490610198-L-cold-download.jpg",
+        "bytes": 433923,
+        "sha256": "9d734f8ee36de291aede9e0fc0afb98aaac47aca1ab786db0a59f3633f271ee4",
+        "mime": "image/jpeg",
+        "dimensions": [
+          1200,
+          900
+        ],
+        "decodedPixelBytes": 4320000,
+        "reopenedWith": "sharp/libvips"
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 60800888,
+        "after": 3325280,
+        "observedPeak": 61365868,
+        "samples": 21
+      },
+      "chromeMainProcessPssKB": {
+        "before": 124008,
+        "after": 121360
+      },
+      "timing": {
+        "frameSamples": 144,
+        "frameMaxIntervalMs": 183.39999999999964,
+        "pointerToNextFrameMs": 9.999999999813554,
+        "operationElapsedMs": 2788.5
+      },
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "pageErrors": [],
+      "offsiteRequests": [],
+      "observedAt": "2026-10-20T10:04:00.853Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "L",
+      "phase": "warm",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "input": {
+        "filename": "str363-1792490610198-image-L-warm.png",
+        "bytes": 4934140,
+        "sha256": "560824ca5933a8a1f58f3319e72132c302de3e7475d15f188c626861bed8e09f",
+        "dimensions": [
+          2400,
+          1800
+        ]
+      },
+      "output": {
+        "filename": "str363-1792490610198-image-L-warm-1200x900.jpg",
+        "path": "/home/udodo/Code/.worktrees/strumentini-it-124-audit/.tmp-str363-android/str363-1792490610198-L-warm-download.jpg",
+        "bytes": 433923,
+        "sha256": "9d734f8ee36de291aede9e0fc0afb98aaac47aca1ab786db0a59f3633f271ee4",
+        "mime": "image/jpeg",
+        "dimensions": [
+          1200,
+          900
+        ],
+        "decodedPixelBytes": 4320000,
+        "reopenedWith": "sharp/libvips"
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 9713204,
+        "after": 3362164,
+        "observedPeak": 10229800,
+        "samples": 23
+      },
+      "chromeMainProcessPssKB": {
+        "before": 125432,
+        "after": 123512
+      },
+      "timing": {
+        "frameSamples": 121,
+        "frameMaxIntervalMs": 366.7000000000007,
+        "pointerToNextFrameMs": 21.499999999627107,
+        "operationElapsedMs": 3032.7000000001863
+      },
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "pageErrors": [],
+      "offsiteRequests": [],
+      "observedAt": "2026-10-20T10:04:07.547Z"
+    }
+  ],
+  "unresolved": [
+    "iOS Simulator #106 occupied",
+    "PDF/CSV measurements pending",
+    "cancel/background/retry/controlled OOM and reopen across matrix not established",
+    "independent human review of AVD trace required"
+  ]
+}
