@@ -1,3 +1,5 @@
+import { ImageMetadataGps272, metadataRows272 } from "./ImageMetadataDetail272";
+import { asRecord, numberField, stringField, formatBytes, displayValue, detailRows, metadataGroupsLabel, collectionRows, copyPayload } from "./image-result-fields";
 import type { ComponentChildren } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { canOfferPngCompressionHandoff337, startPngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
@@ -49,18 +51,6 @@ interface BlobCandidate {
   readonly width?: number;
   readonly height?: number;
   readonly sourceIndex?: number;
-}
-
-function asRecord(value: unknown): ImageResultValue | null {
-  return typeof value === "object" && value !== null ? value as ImageResultValue : null;
-}
-
-function numberField(value: unknown): number | undefined {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : undefined;
-}
-
-function stringField(value: unknown): string | undefined {
-  return typeof value === "string" && value.trim() !== "" ? value : undefined;
 }
 
 function candidateFor(record: ImageResultValue, fallback: ImageResultValue): BlobCandidate | null {
@@ -132,57 +122,6 @@ export async function prepareImageResult(value: unknown): Promise<PreparedImageR
     if (verification.success) zip = { blob: raw.zipBlob, artifact: verification.artifact };
   }
   return { raw, artifacts, ...(zip === undefined ? {} : { zip }) };
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1).replace(".", ",")} KiB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1).replace(".", ",")} MiB`;
-}
-
-function displayValue(value: unknown): string {
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value);
-  if (Array.isArray(value)) return value.map((item) => displayValue(item)).join(", ");
-  if (typeof value === "object" && value !== null) return JSON.stringify(value);
-  return "—";
-}
-
-function detailRows(raw: ImageResultValue): readonly { label: string; value: string }[] {
-  const ignored = new Set(["blob", "items", "palette", "dominant", "metadataGroups", "fidelity", "zipBlob"]);
-  return Object.entries(raw)
-    .filter(([key]) => !ignored.has(key))
-    .slice(0, 10)
-    .map(([key, value]) => ({ label: key, value: displayValue(value) }));
-}
-
-function metadataGroupsLabel(value: unknown): string {
-  if (!Array.isArray(value) || value.length === 0) return "nessuno";
-  return value.map((entry) => {
-    const group = asRecord(entry);
-    const carrier = stringField(group?.carrier) ?? "metadata";
-    const count = numberField(group?.count) ?? 0;
-    const bytes = numberField(group?.bytes) ?? 0;
-    return `${carrier} ×${count} · ${formatBytes(bytes)}`;
-  }).join("; ");
-}
-
-function collectionRows(raw: ImageResultValue): readonly { label: string; value: string }[] {
-  const rows: Array<{ label: string; value: string }> = [];
-  if (Array.isArray(raw.items)) {
-    raw.items.slice(0, 20).forEach((item, index) => rows.push({ label: `Elemento ${index + 1}`, value: displayValue(item) }));
-  }
-  if (Array.isArray(raw.palette)) {
-    raw.palette.slice(0, 12).forEach((item, index) => rows.push({ label: `Colore ${index + 1}`, value: displayValue(item) }));
-  }
-  if (raw.dominant !== undefined && raw.dominant !== null) {
-    rows.push({ label: "Colore dominante", value: displayValue(raw.dominant) });
-  }
-  return rows;
-}
-
-function copyPayload(raw: ImageResultValue): string {
-  const serializable = Object.fromEntries(Object.entries(raw).filter(([key]) => key !== "blob"));
-  return JSON.stringify(serializable, (_key, value) => value instanceof Blob ? `[file ${value.type || "binario"} · ${value.size} byte]` : value, 2);
 }
 
 function calculatorHeadline(toolId: ImageResultToolId, raw: ImageResultValue): string {
@@ -564,7 +503,9 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
     );
   }
 
-  const rows = [...detailRows(result.raw), ...collectionRows(result.raw)].slice(0, 24);
+  const rows = toolId === "image-metadata-viewer"
+    ? metadataRows272(result.raw)
+    : [...detailRows(result.raw), ...collectionRows(result.raw)].slice(0, 24);
   const actions = resolveResultActions({
     declaration,
     primary: "copy",
@@ -592,11 +533,12 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
     <div data-result-class="calculator">
       <ResultExplanation
         primary={<div data-result-slot="primary"><ResultPrimaryAnswer>{calculatorHeadline(toolId, result.raw)}</ResultPrimaryAnswer></div>}
-        interpretation={<div data-result-slot="interpretation"><ResultInterpretation state="success">Risultato calcolato localmente sul contratto corrente dello strumento.</ResultInterpretation></div>}
+        interpretation={<div data-result-slot="interpretation"><ResultInterpretation state={toolId === "image-metadata-viewer" && result.raw.metadataStatus === "unavailable" ? "warning" : "success"}>{toolId === "image-metadata-viewer" ? String(result.raw.metadataNote ?? "Solo header verificato.") : "Risultato calcolato localmente sul contratto corrente dello strumento."}</ResultInterpretation></div>}
         breakdown={<div data-result-slot="breakdown"><ResultBreakdown rows={rows} /></div>}
         assumptions={<div data-result-slot="assumptions"><ResultAssumptions items={[{ label: "Esecuzione", value: "Locale nel browser, senza upload del contenuto" }]} /></div>}
         provenance={<div data-result-slot="provenance"><ResultProvenance>Output dell'engine image/image-visual corrente; nessuna nuova semantica codec introdotta dalla UI.</ResultProvenance></div>}
       />
+      {toolId === "image-metadata-viewer" && result.raw.gpsPresent === true && <ImageMetadataGps272 result={result} />}
       <ResultActions actions={actions} onAction={{ copy: copyResult, reset: onReset }} />
       {actionStatus !== "" && <p role="status" class="success">{actionStatus}</p>}
     </div>

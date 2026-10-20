@@ -64,4 +64,8 @@ Implementation: `src/engines/image/resize-pica-271.ts`, called by `src/tools/ima
 
 Reproducible independent quality comparison: `python3 scripts/generate-pica-fixtures-271.py && node scripts/benchmark-pica-271.mjs`, compared against Pillow 12.1.1 `LANCZOS` oracle (1200×800 → 300×200, deterministic RGB pattern). Chromium: RGB RMSE Canvas 21.3046, Pica 5.2504; warm Pica 33–37 ms vs Canvas below 1 ms; cold Pica 156.7 ms. Firefox: RGB RMSE 21.3046 → 5.2504, warm Pica 41–46 ms vs Canvas below 2 ms, cold 622 ms. WebKit: RGB RMSE 21.3001 → 5.2504, warm Pica 47–50 ms vs Canvas below 1 ms, cold 720 ms. These are one MiniPC run, not cross-device performance guarantees. Pica's extra worst-case tile/surface headroom is guarded at 16 MiB plus its destination surface; above the 96 MiB policy the existing Canvas path remains in use. Browser test `node tests/image-pica-271.browser.mjs` checks pixel alpha, JPEG whitening, EXIF orientation, abort and worker/WASM absence.
 
-Provenance clearance remains **NO_GO**: `npx tsx scripts/donor-provenance-366.ts --check` reports three still-unknown OCR language/model license fields (and upstream #126 has wider rights/notice concerns). This addition does not certify unrelated font/OCR/codec assets or permit a production release. #105/#106 physical-device receipts likewise remain separate.
+Provenance clearance remains **NO_GO**: `npx tsx scripts/donor-provenance-366.ts --check` reported three unknown OCR license fields *before PR #342* (since repaired by that PR; see #272 update below). This addition does not certify unrelated font/OCR/codec assets or permit a production release. #105/#106 physical-device receipts likewise remain separate.
+
+## #272 — exifr 7.1.3, metadati immagine locali (2026-10-19)
+
+Dettagli del donor MIT, tarball/SRI/commit, gate, fixture positive ICC/IPTC e privacy GPS: [donor-exifr-272.md](donor-exifr-272.md). Nessun deploy o ammissione release da questo ticket.
