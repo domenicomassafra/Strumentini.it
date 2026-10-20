@@ -1,4 +1,5 @@
 import { parseXmlDocument, type XmlDocumentModel, type XmlElement, type XmlNode } from "../developer-web/structured-repair";
+import { parseTabularXmlRoot, unexpectedXmlNamespace } from "./xml-parser-adapter";
 import { serializeCsvTable, type CsvTable } from "./csv";
 import {
   SPREADSHEET_INTERCHANGE_LIMITS,
@@ -135,6 +136,15 @@ function rejectUnmappedDocumentEnvelope(document: XmlDocumentModel): void {
   }
 }
 
+function parseInterchangeDocument(input: string): XmlDocumentModel {
+  // Keep all existing length/depth/node/entity/DTD validation and diagnostics.
+  const validated = parseXmlDocument(input);
+  rejectUnmappedDocumentEnvelope(validated);
+  const unexpectedNamespace = unexpectedXmlNamespace(validated.root);
+  if (unexpectedNamespace !== undefined) fail("AMBIGUOUS_XML_MAPPING", unexpectedNamespace);
+  return { ...validated, root: parseTabularXmlRoot(input, validated.root) };
+}
+
 function unsupportedChildren(element: XmlElement): XmlNode[] {
   return element.children.filter((node) => node.kind === "comment" || node.kind === "pi");
 }
@@ -191,8 +201,7 @@ function mapElementToJson(element: XmlElement, path: string): XmlJsonValue {
 
 export function xmlToJson(input: string, indent = 2): XmlJsonMappingResult {
   if (!Number.isInteger(indent) || indent < 0 || indent > 10) fail("AMBIGUOUS_XML_MAPPING", "JSON indent must be an integer from 0 through 10.");
-  const document = parseXmlDocument(input);
-  rejectUnmappedDocumentEnvelope(document);
+  const document = parseInterchangeDocument(input);
   const rootValue = mapElementToJson(document.root, `/${document.root.name}`);
   const root = Object.create(null) as Record<string, XmlJsonValue>;
   root[document.root.name] = rootValue;
@@ -344,8 +353,7 @@ function assertTabularBounds(rows: number, columns: number): void {
 }
 
 export function xmlToTabularTable(input: string, options: { readonly rowPath?: string } = {}): XmlTabularMappingResult {
-  const document = parseXmlDocument(input);
-  rejectUnmappedDocumentEnvelope(document);
+  const document = parseInterchangeDocument(input);
   const resolved = resolveTabularRows(document.root, options.rowPath);
   const parsedRows = resolved.rows.map((row, index) => parseTabularRow(row, index + 1, resolved.rowPath));
   if (parsedRows.some(({ usesText }) => usesText) && parsedRows.some(({ usesElements }) => usesElements)) {

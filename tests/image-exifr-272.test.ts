@@ -91,6 +91,21 @@ describe("STR #272 exifr: local, bounded reader", () => {
     }
   });
 
+  it("extracts real positive ICC profile and Photoshop IPTC title, independently encoded", async () => {
+    // Generated with Pillow/littleCMS sRGB and a Photoshop 8BIM IIM 2:5
+    // record by scripts/generate-exifr-272-fixture.py. This asserts metadata
+    // read by the product viewer, not just metadata written into a buffer.
+    const image = new File(
+      [readFileSync(new URL("./fixtures/image-exifr-272/jpeg-icc-iptc.jpg", import.meta.url))],
+      "jpeg-icc-iptc.jpg", { type: "image/jpeg" },
+    );
+    const result = await inspectImageMetadataViewer272Local(image);
+    expect(result).toMatchObject({
+      signature: "jpeg", metadataStatus: "read", iccProfile: "sRGB built-in",
+      iptcTitle: "EXIFR 272 IPTC Title", gpsPresent: false,
+    });
+  });
+
   it("keeps WebP dimensions and documents exifr 7.1.3 refusal to read WebP EXIF", async () => {
     const result = await inspectImageMetadataViewer272Local(webpWithExif());
     expect(result).toMatchObject({
