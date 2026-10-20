@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "ticket": "STR-277",
+  "evidenceKind": "ANDROID_EMULATOR_CHROME_SIMULATED",
+  "physicalDeviceObserved": false,
+  "observedAt": "2026-10-20T09:32:35.340Z",
+  "emulator": {
+    "serial": "emulator-5554",
+    "avd": "str277-api35",
+    "api": 35,
+    "fingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.036/12592187:user/release-keys"
+  },
+  "browser": {
+    "package": "com.android.chrome",
+    "version": "124.0.6367.219",
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+  },
+  "build": {
+    "revision": "625fdbe5aa2dd10449e9f4aeec2ec30fde49a17c",
+    "compiled": true,
+    "route": "/tools/image-resize/",
+    "htmlSha256": "74b6cd997d448f4295421726f9929ddf60fc18618aa29b3ed2040a1ec72c4255"
+  },
+  "input": {
+    "filename": "str277-source.png",
+    "mime": "image/png",
+    "bytes": 1676,
+    "sha256": "999bd8e7db55f82f6b3285437a900ac86575aef7d26f041e92d45d2c439e3e70",
+    "width": 320,
+    "height": 240
+  },
+  "operation": {
+    "androidPickerOpened": true,
+    "fileSelected": true,
+    "resizedInChrome": true,
+    "androidDownloadSaved": true
+  },
+  "negative": {
+    "pickerCancelledWithoutSelection": true,
+    "corruptJpegRefused": true,
+    "offsiteRequests": 0
+  },
+  "screenshot": {
+    "file": "quality/receipts/android-chrome-avd-277-simulated.jpg",
+    "kind": "ANDROID_EMULATOR_SCREENSHOT_SIMULATED",
+    "bytes": 15053,
+    "sha256": "351917ff9fc277c3db7e82f051fe1931a4b48f49b2c0e1979d16d87e18705711"
+  },
+  "output": {
+    "filename": "str277-source-160x120.jpg",
+    "mime": "image/jpeg",
+    "bytes": 882,
+    "sha256": "1218ee2df0a4b270b15d929f3fb50f7c48c5cf21acf9ba28ab04ac1621c9561f",
+    "width": 160,
+    "height": 120,
+    "decoder": "sharp/libvips",
+    "reopened": true
+  }
+}
