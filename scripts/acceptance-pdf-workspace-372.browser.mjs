@@ -47,7 +47,13 @@ try {
   const errors = [];
   const offsite = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  page.on("requestfailed", (request) => errors.push(`failed ${request.url()}`));
+  page.on("requestfailed", (request) => {
+    // The bounded thumbnail window revokes image blob URLs on file/window
+    // changes, intentionally cancelling an in-flight preview image fetch.
+    // Download blobs are separately read back and independently parsed below.
+    if (request.url().startsWith("blob:") && request.resourceType() === "image") return;
+    errors.push(`failed ${request.url()} (${request.resourceType()})`);
+  });
   page.on("request", (request) => {
     const target = request.url();
     if (!target.startsWith(url) && !target.startsWith("blob:") && !target.startsWith("data:")) offsite.push(target);
