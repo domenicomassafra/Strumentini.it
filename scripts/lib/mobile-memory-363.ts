@@ -3,6 +3,11 @@ export const MOBILE_363_PLATFORMS = ["IOS_SIMULATOR", "ANDROID_EMULATOR"] as con
 export const MOBILE_363_FORMATS = ["pdf", "image", "csv"] as const;
 export const MOBILE_363_SIZES = ["S", "M", "L"] as const;
 export const MOBILE_363_PHASES = ["cold", "warm"] as const;
+export const MOBILE_363_ROUTES = {
+  pdf: "/tools/pdf-rotate/",
+  image: "/tools/image-resize/",
+  csv: "/tools/csv-cleaner/",
+} as const;
 
 type Dict = Record<string, unknown>;
 const obj = (value: unknown): Dict => value !== null && typeof value === "object" && !Array.isArray(value)
@@ -11,6 +16,55 @@ const nonnegative = (value: unknown) => typeof value === "number" && Number.isFi
 const positive = (value: unknown) => nonnegative(value) && Number(value) > 0;
 const sha = (value: unknown) => typeof value === "string" && /^[a-f\d]{64}$/u.test(value);
 const identity = (value: unknown) => typeof value === "string" && value.trim().length >= 2;
+const fabricated = (value: unknown) => /(?:^|[^a-z])(?:unit|test|fixture|synthetic|mock|fake|dummy|placeholder|example)(?:[^a-z]|$)/iu
+  .test(String(value ?? ""));
+const caseSlug = (row: Dict) => `${String(row.platform).toLowerCase()}-${row.format}-${String(row.size).toLowerCase()}-${row.phase}`;
+export const MOBILE_363_EVIDENCE_DIR = "quality/receipts/mobile-memory-363/observed" as const;
+
+/** Claims for a simulated *device* must have plausible, coherent identities.
+ * This is an anti-misclassification guard, never an authenticity guarantee.
+ */
+export function validateMobile363PromotionIdentity(value: unknown): string[] {
+  const errors: string[] = [];
+  const root = obj(value);
+  if (!Array.isArray(root.cases)) return ["promotion cases missing"];
+  if (fabricated(root.sourceRevision) || !/^[a-f\d]{40}$/u.test(String(root.sourceRevision ?? "")))
+    errors.push("promotion source revision is not a SHA");
+  for (const [index, candidate] of root.cases.entries()) {
+    const row = obj(candidate);
+    if (row.status !== "PASS") continue;
+    const prefix = `cases[${index}]`;
+    const device = obj(row.device);
+    const input = obj(row.input);
+    const output = obj(row.output);
+    const claimedNames = [device.model, device.osVersion, device.browser, device.browserVersion,
+      row.evidenceSource, output.reopenedWith, output.verifiedContent];
+    if (claimedNames.some(fabricated)) errors.push(prefix + " synthetic/unit/test marker cannot be device proof");
+    if (row.platform === "IOS_SIMULATOR") {
+      if (!/^(?:iPhone|iPad)\s+[\w .-]+$/u.test(String(device.model ?? "")) ||
+          !/^(?:iOS|iPadOS)\s+\d+(?:\.\d+){0,2}$/u.test(String(device.osVersion ?? "")) ||
+          !/^Safari$/u.test(String(device.browser ?? "")) ||
+          !/^\d+(?:\.\d+){1,3}$/u.test(String(device.browserVersion ?? ""))) {
+        errors.push(prefix + " iOS simulator/browser identity inconsistent");
+      }
+    } else if (row.platform === "ANDROID_EMULATOR") {
+      if (!/(?:Pixel|sdk_gphone|Android Emulator)/iu.test(String(device.model ?? "")) ||
+          !/^Android\s+\d+(?:\.\d+){0,2}$/u.test(String(device.osVersion ?? "")) ||
+          !/^Chrome$/u.test(String(device.browser ?? "")) ||
+          !/^\d+(?:\.\d+){1,3}$/u.test(String(device.browserVersion ?? ""))) {
+        errors.push(prefix + " Android emulator/browser identity inconsistent");
+      }
+    }
+    if (row.route !== MOBILE_363_ROUTES[row.format as keyof typeof MOBILE_363_ROUTES] ||
+        !sha(row.routeSha256)) errors.push(prefix + " representative compiled route mismatch");
+    if (!positive(input.bytes) || !sha(input.sha256) || !positive(output.bytes) || !sha(output.sha256))
+      errors.push(prefix + " input/output fingerprint missing");
+    const requiredEvidencePath = `${MOBILE_363_EVIDENCE_DIR}/${caseSlug(row)}.json`;
+    if (row.evidenceSource !== requiredEvidencePath || !sha(row.evidenceSha256))
+      errors.push(prefix + " independently hashed local device trace missing");
+  }
+  return errors;
+}
 
 export function validateMobileMemory363(value: unknown): string[] {
   const root = obj(value);
@@ -69,8 +123,8 @@ export function validateMobileMemory363(value: unknown): string[] {
   return errors;
 }
 
-export function assessMobileMemory363(value: unknown): { status: "SIMULATED_PASS" | "BLOCKED"; reasons: string[] } {
-  const reasons = validateMobileMemory363(value);
+export function assessMobileMemory363(value: unknown): { status: "BLOCKED"; reasons: string[] } {
+  const reasons = [...validateMobileMemory363(value), ...validateMobile363PromotionIdentity(value)];
   const cases = Array.isArray(obj(value).cases) ? obj(value).cases as unknown[] : [];
   for (const platform of MOBILE_363_PLATFORMS) {
     for (const format of MOBILE_363_FORMATS) {
@@ -85,5 +139,9 @@ export function assessMobileMemory363(value: unknown): { status: "SIMULATED_PASS
       }
     }
   }
-  return { status: reasons.length === 0 ? "SIMULATED_PASS" : "BLOCKED", reasons };
+  // A self-declared JSON object cannot attest a running simulator, actual
+  // memory metrics, or the bytes of the compiled route. Even 36 syntactically
+  // complete rows are only candidate evidence.
+  reasons.push("schema-only receipt has no verified compiled build or device logs");
+  return { status: "BLOCKED", reasons };
 }

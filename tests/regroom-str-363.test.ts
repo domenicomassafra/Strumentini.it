@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -8,7 +9,8 @@ import { preflightAllocation, ImageResizeError } from "../src/engines/image/poli
 import { mutatePdf } from "../src/engines/pdf";
 import { cleanCsvText, readBlobText } from "../src/engines/table/csv";
 import { preflightHeavyLocalJob } from "../src/runtime/heavy-preflight";
-import { assessMobileMemory363, MOBILE_363_FORMATS, MOBILE_363_PHASES, MOBILE_363_PLATFORMS, MOBILE_363_SIZES, validateMobileMemory363 } from "../scripts/lib/mobile-memory-363";
+import { assessMobileMemory363Compiled } from "../scripts/lib/mobile-memory-363-compiled";
+import { assessMobileMemory363, MOBILE_363_EVIDENCE_DIR, MOBILE_363_FORMATS, MOBILE_363_PHASES, MOBILE_363_PLATFORMS, MOBILE_363_ROUTES, MOBILE_363_SIZES, validateMobile363PromotionIdentity, validateMobileMemory363 } from "../scripts/lib/mobile-memory-363";
 
 const hash = (data: string) => createHash("sha256").update(data).digest("hex");
 const revision = "a".repeat(40);
@@ -34,12 +36,58 @@ function fixtureReceipt() {
   };
 }
 
+function plausibleButUnobserved() {
+  const receipt = fixtureReceipt();
+  receipt.cases.forEach((row) => {
+    const ios = row.platform === "IOS_SIMULATOR";
+    row.device = ios
+      ? { model: "iPhone 18 Pro", osVersion: "iOS 27.0", browser: "Safari", browserVersion: "27.0" }
+      : { model: "Pixel 7", osVersion: "Android 15", browser: "Chrome", browserVersion: "155.0.0" };
+    row.route = MOBILE_363_ROUTES[row.format];
+    Object.assign(row, {
+      evidenceSource: `${MOBILE_363_EVIDENCE_DIR}/${row.platform.toLowerCase()}-${row.format}-${row.size.toLowerCase()}-${row.phase}.json`,
+      evidenceSha256: fixtureHash,
+    });
+    row.output.reopenedWith = ios ? "PDF.js" : "sharp decoder";
+    row.output.verifiedContent = "checksum and content checked";
+  });
+  return receipt;
+}
+
 describe("STR-363 mobile S/M/L memory/recovery evidence", () => {
-  it("accepts the complete 2 × 3 × 3 × 2 UNIT matrix without promoting physical hardware", () => {
+  it("parses the complete 2 × 3 × 3 × 2 UNIT matrix but never promotes synthetic evidence", () => {
     const fixture = fixtureReceipt();
     expect(fixture.cases).toHaveLength(36);
     expect(validateMobileMemory363(fixture)).toEqual([]);
-    expect(assessMobileMemory363(fixture).status).toBe("SIMULATED_PASS");
+    expect(assessMobileMemory363(fixture).status).toBe("BLOCKED");
+    expect(assessMobileMemory363(fixture).reasons).toContain("schema-only receipt has no verified compiled build or device logs");
+    expect(validateMobile363PromotionIdentity(fixture)).toContain("cases[0] synthetic/unit/test marker cannot be device proof");
+  });
+
+  it("refuses fabricated and cross-platform identities even when every receipt field looks valid", () => {
+    const plausible = plausibleButUnobserved();
+    expect(validateMobileMemory363(plausible)).toEqual([]);
+    expect(validateMobile363PromotionIdentity(plausible)).toEqual([]);
+    expect(assessMobileMemory363(plausible).status).toBe("BLOCKED");
+    plausible.cases[0]!.device.browser = "Chrome";
+    expect(validateMobile363PromotionIdentity(plausible)).toContain("cases[0] iOS simulator/browser identity inconsistent");
+    plausible.cases[0]!.device.browser = "Safari";
+    Object.assign(plausible.cases[0]!, { evidenceSource: "unit_test_fake.json" });
+    expect(validateMobile363PromotionIdentity(plausible)).toContain("cases[0] independently hashed local device trace missing");
+  });
+
+  it("binds candidate evidence to git HEAD, compiled route bytes and hashed trace files, never self-attests", async () => {
+    const root = resolve(import.meta.dirname, "..");
+    const plausible = plausibleButUnobserved();
+    const wrongRevision = await assessMobileMemory363Compiled(plausible, root);
+    expect(wrongRevision.status).toBe("BLOCKED");
+    expect(wrongRevision.reasons).toContain("source revision does not match checked-out git HEAD");
+    const actualRevision = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+    plausible.sourceRevision = actualRevision;
+    const missingProof = await assessMobileMemory363Compiled(plausible, root);
+    expect(missingProof.status).toBe("BLOCKED");
+    expect(missingProof.reasons.some((reason) => reason.includes("route SHA differs from compiled consumer"))).toBe(true);
+    expect(missingProof.reasons.some((reason) => reason.includes("device trace unavailable/invalid"))).toBe(true);
   });
 
   it("fails closed for missing or forged simulator measurements", () => {
@@ -128,6 +176,9 @@ describe("STR-363 mobile S/M/L memory/recovery evidence", () => {
 
   it("checks the committed NOT_RUN receipt and keeps incomplete device acceptance blocked", () => {
     const receipt = JSON.parse(readFileSync(resolve(import.meta.dirname, "../quality/receipts/mobile-memory-363-simulated.json"), "utf8"));
+    expect(receipt.cases).toHaveLength(36);
+    expect(receipt.cases.every((entry: { status: string }) => entry.status === "NOT_RUN")).toBe(true);
+    expect(receipt.physicalDeviceObserved).toBe(false);
     expect(validateMobileMemory363(receipt)).toEqual([]);
     expect(assessMobileMemory363(receipt).status).toBe("BLOCKED");
   });
