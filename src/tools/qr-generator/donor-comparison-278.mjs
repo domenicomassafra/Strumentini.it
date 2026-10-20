@@ -31,7 +31,7 @@ const corpus = [
 
 function donorRows(qr) {
   return Array.from({ length: qr.modules.size }, (_, y) =>
-    Array.from({ length: qr.modules.size }, (_, x) => qr.modules.get(x, y) ? "1" : "0").join(""));
+    Array.from({ length: qr.modules.size }, (_, x) => qr.modules.get(y, x) ? "1" : "0").join(""));
 }
 
 let maskEqualWithIsoRule3 = 0;
