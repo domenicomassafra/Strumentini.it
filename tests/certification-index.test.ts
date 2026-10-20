@@ -73,8 +73,12 @@ describe("expanded catalog certification index", () => {
     // implementations. Historical receipts remain auditable but release gates
     // must fail closed until those changed implementations are recertified.
     // #126 also changes the previously Gold image-format HEIC decoder contract.
-    // Preserve its historical receipt, but deny new release eligibility until recertified.
-    expect(index.summary.releaseEligibleGoldCount).toBe(254);
+    // #169 expands the existing ZIP creator to verified ZIP/GZIP handling:
+    // preserve its historical receipt but fail the prior manifest identity.
+    expect(index.summary.releaseEligibleGoldCount).toBe(253);
+    const zipCreator = index.tools.find((tool) => tool.id === "zip-creator");
+    expect(zipCreator).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
+    expect(zipCreator?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
     const passwordPdf = index.tools.find((tool) => tool.id === "pdf-password-check-remove");
     expect(passwordPdf).toMatchObject({
       status: "GOLD",
