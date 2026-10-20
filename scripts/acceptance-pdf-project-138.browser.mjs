@@ -59,7 +59,7 @@ try {
   context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   let page = await context.newPage();
   const offsite = [];
-  page.on("request", (request) => {
+  context.on("request", (request) => {
     const target = request.url();
     if (!target.startsWith(origin) && !target.startsWith("blob:") && !target.startsWith("data:")) offsite.push(target);
   });
