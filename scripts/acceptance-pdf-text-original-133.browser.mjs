@@ -125,6 +125,22 @@ try {
   assert.deepEqual(before, after, "Layout changed outside the expected glyph pixels");
   const editedPixels = await compareRenderedPixels(before);
   assert.deepEqual(readFileSync(join(temp, "input.pdf")), input);
+  // Hold the real browser File read long enough to exercise an actual user cancellation.
+  // This changes only the test page; the product still reads the complete original File.
+  await page.evaluate(() => {
+    const originalRead = File.prototype.arrayBuffer;
+    File.prototype.arrayBuffer = async function (...args) {
+      if (this.name === "long.pdf") await new Promise((resolve) => setTimeout(resolve, 1200));
+      return originalRead.apply(this, args);
+    };
+  });
+  const slowInput = Buffer.concat([input, Buffer.alloc(20 * 1024 * 1024, 32)]);
+  await form.locator('input[type="file"]').setInputFiles({ name: "long.pdf", mimeType: "application/pdf", buffer: slowInput });
+  await form.getByRole("button", { name: "Modifica e verifica PDF" }).click();
+  await form.getByRole("button", { name: "Annulla" }).click({ timeout: 8000 });
+  assert.match(await form.getByRole("alert").innerText(), /annullata/i);
+  await page.waitForTimeout(1500);
+  assert.equal(await form.getByRole("link", { name: "Scarica PDF modificato" }).count(), 0);
   await form.locator('input[type="file"]').setInputFiles({ name: "invalid.pdf", mimeType: "application/pdf", buffer: Buffer.from("not pdf") });
   await form.getByRole("button", { name: "Modifica e verifica PDF" }).click();
   assert.match(await form.getByRole("alert").innerText(), /PDF|INVALID|MALFORMED/i);

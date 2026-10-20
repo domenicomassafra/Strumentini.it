@@ -28,12 +28,15 @@ di testo BT ... Tf ... Td (testo) Tj ET in stream indiretto non compresso,
 il contenuto testuale originale può essere sostituito con ASCII stampabile, stessa lunghezza,
 font Courier Type1 standard e identica metrica di avanzamento. L'operazione cambia lo
 stream originale ed esporta una nuova copia; non inserisce overlay. La sorgente rimane immutata.
+Il calcolo gira in un Web Worker locale: Annulla interrompe il worker e impedisce
+che un risultato tardivo venga scaricato; il timeout è 60 secondi.
 
 Sono esplicitamente **UNSUPPORTED_CAPABILITY / NO_GO**: font proporzionali o incorporati,
 glifi Unicode/non mappati, stringhe di lunghezza differente, kerning/TJ, più operatori
 di testo per pagina, reflow, testo in immagini, contenuti condivisi o compressi,
 pagine ruotate, layout ambiguo, annotazioni (anche vuote), AcroForm, firme,
-PDF cifrati/linearizzati, object stream e strutture non riconosciute. Non si deduce
+PDF cifrati/linearizzati, object stream e strutture non riconosciute (anche cataloghi
+con Outlines, PageLabels o altre chiavi oltre Type/Pages). Non si deduce
 dai casi verificati un editor universale, una garanzia su PDF esterni, Gold,
 supporto fisico mobile o un deploy di produzione.
 

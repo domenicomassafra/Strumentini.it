@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { editPdfOriginalText133 } from "../../../engines/pdf/edit-original-text-133";
+import { editPdfOriginalTextInWorker133 } from "../../../engines/pdf/edit-original-text-worker-client-133";
 import { PDF_LIMITS } from "../../../engines/pdf/types";
 import { DownloadLink } from "../marketing-media/DownloadLink";
 
@@ -47,9 +47,7 @@ export function PdfOriginalText133Tool() {
     setResult(null);
     try {
       if (file.size > PDF_LIMITS.maxBytes) throw new Error("PDF oltre 25 MiB.");
-      const bytes = new Uint8Array(await file.arrayBuffer());
-      if (controller.signal.aborted) return;
-      const edited = editPdfOriginalText133(bytes, { page: Number(page), before, after }, controller.signal);
+      const edited = await editPdfOriginalTextInWorker133(file, { page: Number(page), before, after }, controller.signal);
       if (controller.signal.aborted || active.current !== controller) return;
       setResult({
         blob: new Blob([Uint8Array.from(edited.bytes)], { type: "application/pdf" }),

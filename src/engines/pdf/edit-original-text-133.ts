@@ -26,7 +26,7 @@ const UNSUPPORTED = "UNSUPPORTED_CAPABILITY";
 const CANDIDATE = /^\s*BT\s+\/([A-Za-z][A-Za-z0-9]*)\s+(\d+(?:\.\d+)?)\s+Tf\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+Td\s+\(([\x20-\x7e]*)\)\s+Tj\s+ET\s*$/u;
 const SIMPLE_TEXT = /^[\x20-\x27\x2a-\x5b\x5d-\x7e]{1,128}$/u;
 const COURIER = new Set(["Courier", "Courier-Bold", "Courier-Oblique", "Courier-BoldOblique"]);
-const UNSAFE_CATALOG = ["AcroForm", "Perms", "Names", "OpenAction", "AA", "StructTreeRoot", "OCProperties"];
+const SAFE_CATALOG_KEYS = new Set(["Type", "Pages"]);
 const SAFE_PAGE_KEYS = new Set(["Type", "Parent", "MediaBox", "CropBox", "Resources", "Contents", "Rotate", "UserUnit"]);
 
 function check(signal?: AbortSignal): void {
@@ -79,8 +79,9 @@ function validateSafety(model: PdfDocumentModel): void {
   if (!model.root || model.pages.length < 1) refuse("catalogo PDF incompleto");
   const root = dictionaryOrNull(model, model.root);
   if (!root) refuse("catalogo PDF non leggibile");
-  if (UNSAFE_CATALOG.some((key) => root.entries.has(key))) {
-    refuse("moduli, firme, JavaScript, allegati o struttura documento non supportati");
+  if (nameValue(root.entries.get("Type")) !== "Catalog" ||
+      [...root.entries.keys()].some((key) => !SAFE_CATALOG_KEYS.has(key))) {
+    refuse("LAYOUT: catalogo con navigazione, moduli, firme o struttura non verificata");
   }
   const seenStreams = new Set<number>();
   for (const page of model.pages) {

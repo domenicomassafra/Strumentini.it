@@ -80,6 +80,22 @@ describe("STR-373 original PDF text edit (not overlay)", () => {
     expect(() => editPdfOriginalText133(signedBytes, { page: 1, before: "ALFA", after: "BETA" })).toThrow(/SIGN|UNSUPPORTED/i);
   });
 
+  it("refuses a catalog navigation graph that would rebind old page references on export", () => {
+    const doc = parsePdf(courierPdf());
+    if (!doc.root) throw new Error("missing root");
+    const root = doc.objects.get(doc.root.id)!;
+    if (root.value.kind !== "dict") throw new Error("missing catalog");
+    const objects = new Map(doc.objects);
+    const next = Math.max(...objects.keys()) + 1;
+    objects.set(next, { id: next, generation: 0, value: pdfDict({ Type: pdfName("Outlines"), Count: { kind: "literal", value: "0" } }) });
+    objects.set(root.id, { ...root, value: { kind: "dict", entries: new Map([...root.value.entries,
+      ["Outlines", pdfReference(next)]]) } });
+    const withOutline = { ...doc, objects };
+    const bytes = buildPdfFromPages(withOutline.pages.map((page) => ({ document: withOutline, page })), { flatten: false });
+    expect(() => editPdfOriginalText133(bytes, { page: 1, before: "ALFA", after: "BETA" }))
+      .toThrow(/UNSUPPORTED_CAPABILITY.*(LAYOUT|catalogo|struttura)/i);
+  });
+
   it("refuses annotations, malformed input and aborted processing without touching source", async () => {
     const source = courierPdf();
     const doc = parsePdf(source);
