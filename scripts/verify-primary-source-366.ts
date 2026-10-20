@@ -11,6 +11,7 @@ import { createHash } from "node:crypto";
 import { lstatSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
 export const PRIMARY_SOURCE_366_MANIFEST = "quality/reference-data/primary-source-366-2026-10-18.json";
 
@@ -26,6 +27,8 @@ type Asset = {
   archivePath?: string;
   packageId?: string;
   additionalUpstreamUrl?: string;
+  originalUncompressedSourceUrl?: string;
+  originalUncompressedSha256?: string;
 };
 export type PrimarySource366Manifest = {
   schemaVersion: number;
@@ -38,12 +41,15 @@ export type PrimarySource366Manifest = {
 };
 
 const SHA256 = /^[a-f0-9]{64}$/u;
-const EXPECTED_COUNT = 27; // 8 WOFF2 + 4 OFL + 15 OCR assets
+const EXPECTED_COUNT = 26; // 8 WOFF2 + 4 OFL + 14 OCR assets; no fake MIT template
 // Independently reviewed pin for the manifest *content*. Prevent changing only
 // manifest URLs/hashes/claims while continuing to get a green offline result.
 // This is an integrity check on the recorded evidence, not an upstream signature.
-export const MANIFEST_SHA256_366 = "ca0d2a7278a9ae88513eb287dbe825338eac64eb1c48d25b95f731158c773bde";
+export const MANIFEST_SHA256_366 = "e3e05ab3220abbf57a6bb8c1583a2b4d0c5886cb835a19a267a186e66698629b";
 const TESSDATA_COMMIT_366 = "806cd9adc8c6e8abc11c782db1818c990576bebc";
+const ORIGINAL_TESSDATA_COMMIT_366 = "c2b2e0df86272ce11be323f23f96cf656565ed41";
+const ORIGINAL_ITA_SHA256_366 = "795032c2e1eebdce34216acaa849e07c0583dfc0ea309dc4f2bfcb7b1cddd9e3";
+const ORIGINAL_ITA_BYTES_366 = 15_951_701; // Original 2018 revision, not current main revision
 const FONT_FAMILIES: Readonly<Record<string, string>> = {
   archivo: "archivo",
   inter: "inter",
@@ -212,27 +218,38 @@ export function verifyPrimarySource366(
         failures.push(`INVALID_OFFICIAL_OFL ${asset.path}`);
       }
     }
+    // The npm MIT field is metadata, not a grant from the model authors.
+    // This locally copied template must never re-enter the distributed set.
     if (asset.path === "public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE") {
-      if (asset.evidence !== "UNVERIFIED_LICENSE_AUTHORITY" ||
-          asset.sourceUrl !== null || asset.obligation !== "ocr-ita" ||
-          !bytes.includes(Buffer.from("<year> <copyright holders>"))) {
-        failures.push("MIT_TEMPLATE_FALSE_CERTIFICATION");
-      }
+      failures.push("UNATTRIBUTED_MIT_TEMPLATE_DISTRIBUTED");
     }
     if (asset.path === "public/ocr-246/lang/ita.traineddata.gz") {
       if (asset.sourceKind !== "npm-tarball-sri-validated-and-git-immutable" ||
           asset.additionalUpstreamUrl !==
-            `https://raw.githubusercontent.com/naptha/tessdata/${TESSDATA_COMMIT_366}/4.0.0/ita.traineddata.gz`) {
+            `https://raw.githubusercontent.com/naptha/tessdata/${TESSDATA_COMMIT_366}/4.0.0/ita.traineddata.gz` ||
+          asset.originalUncompressedSourceUrl !==
+            `https://raw.githubusercontent.com/tesseract-ocr/tessdata/${ORIGINAL_TESSDATA_COMMIT_366}/ita.traineddata` ||
+          asset.originalUncompressedSha256 !== ORIGINAL_ITA_SHA256_366) {
         failures.push("ITALIAN_MODEL_GIT_SOURCE_NOT_PINNED");
+      }
+      try {
+        // Cap untrusted inflation before hashing: a replaced gzip must not
+        // exhaust memory even when its compressed-byte pin already failed.
+        const original = gunzipSync(bytes, { maxOutputLength: ORIGINAL_ITA_BYTES_366 });
+        if (original.byteLength !== ORIGINAL_ITA_BYTES_366 || sha256(original) !== ORIGINAL_ITA_SHA256_366) {
+          failures.push("ITALIAN_MODEL_ORIGINAL_BYTES_MISMATCH");
+        }
+      } catch {
+        failures.push("ITALIAN_MODEL_INVALID_GZIP");
       }
     }
   }
   for (const path of actualPaths) if (!paths.has(path)) failures.push(`UNPINNED_DISTRIBUTED_ASSET ${path}`);
   for (const path of paths) if (!actualPaths.has(path)) failures.push(`PINNED_ASSET_NOT_DISTRIBUTED ${path}`);
-  if (paths.size !== EXPECTED_COUNT || exactUpstream !== 26 || unresolved !== 1) {
+  if (paths.size !== EXPECTED_COUNT || exactUpstream !== EXPECTED_COUNT || unresolved !== 0) {
     failures.push(`UNEXPECTED_COVERAGE ${paths.size}/${exactUpstream}/${unresolved}`);
   }
-  if (!manifest.obligations["ocr-ita"]?.includes("NO_GO")) failures.push("MISSING_OCR_LICENSE_BLOCKER");
+  if (!manifest.obligations["ocr-ita"]?.includes("NO_GO")) failures.push("MISSING_REDISRIBUTION_REVIEW_BOUNDARY");
   return { decision: "NO_GO", files: paths.size, exactUpstream, unresolved, failures };
 }
 

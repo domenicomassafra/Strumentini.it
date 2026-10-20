@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "provenance": "Synthetic, independently specified behavior expectations; no real user credentials or breach-list samples",
+  "vectors": [
+    { "id": "predictable-common", "password": "password12345", "expected_max_score": 1 },
+    { "id": "keyboard-sequence", "password": "qwerty123", "expected_max_score": 1 },
+    { "id": "common-italian-prefix", "password": "benvenuto2026", "expected_max_score": 1 },
+    { "id": "repeated-italian-block", "password": "Gatto77Gatto77Gatto77", "expected_max_score": 2 },
+    { "id": "italian-curated-passphrase", "password": "gatto-menta-fiume-torre", "expected_min_score": 3, "expected_factor_code": "donor-dictionary" },
+    { "id": "italian-words", "password": "casa-mare-sole-luna", "expected_min_score": 2, "expected_factor_code": "donor-dictionary" },
+    { "id": "unicode-diacritics", "password": "Caffè!Pioggia7Fiume?Sole", "expected_min_score": 2 },
+    { "id": "mixed-pseudorandom", "password": "Q7!mR2@zV4#tN6$pK9&x", "expected_min_score": 3 }
+  ]
+}

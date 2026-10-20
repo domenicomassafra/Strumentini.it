@@ -13,7 +13,7 @@ export interface PortableImageIdentification {
   readonly kind: PortableImageKind;
   readonly mime: string;
   readonly framePolicy: "single-image" | "first-frame-only";
-  readonly decoder: "browser" | "libheif-wasm";
+  readonly decoder: "browser";
 }
 
 export interface PortableDecodedImage extends PortableImageIdentification {
@@ -78,7 +78,9 @@ export function identifyPortableImage(bytes: Uint8Array, file?: Pick<ImageVisual
   const heicDeclared = declared === "image/heic" || declared === "image/heif" || extension === "heic" || extension === "heif";
   if (heifBrand || heicDeclared) {
     const heif = declared === "image/heif" || extension === "heif";
-    return { kind: heif ? "heif" : "heic", mime: heif ? "image/heif" : "image/heic", framePolicy: "single-image", decoder: "libheif-wasm" };
+    // Native decoding is only available in browsers that implement HEIF.
+    // Do not bundle an LGPL libheif decoder or imply universal support.
+    return { kind: heif ? "heif" : "heic", mime: heif ? "image/heif" : "image/heic", framePolicy: "single-image", decoder: "browser" };
   }
   throw new ImageVisualError("UNSUPPORTED_TYPE", "Supported inputs are JPEG/JPG, PNG, WebP, AVIF, HEIC/HEIF and GIF (first frame only)");
 }
@@ -112,21 +114,6 @@ async function bitmapFromBlob(blob: Blob, signal?: AbortSignal): Promise<ImageBi
   }
 }
 
-async function decodeHeif(file: ImageVisualFile, signal?: AbortSignal): Promise<ImageBitmap> {
-  abortIfNeeded(signal);
-  const { heicTo } = await import("heic-to/csp");
-  abortIfNeeded(signal);
-  try {
-    const converted = await heicTo({ blob: file.blob, type: "image/png", quality: 1 });
-    abortIfNeeded(signal);
-    if (!(converted instanceof Blob) || converted.size < 1) throw new ImageVisualError("DECODE_FAILED", "HEIC/HEIF decoder did not produce a usable frame");
-    return await bitmapFromBlob(converted, signal);
-  } catch (error) {
-    if (error instanceof ImageVisualError) throw error;
-    throw new ImageVisualError("DECODE_FAILED", error instanceof Error ? `HEIC/HEIF decode failed: ${error.message}` : "HEIC/HEIF decode failed locally");
-  }
-}
-
 export async function decodePortableImage(
   file: ImageVisualFile,
   signal?: AbortSignal,
@@ -134,9 +121,7 @@ export async function decodePortableImage(
 ): Promise<PortableDecodedImage> {
   if (file.size > IMAGE_VISUAL_LIMITS.maxFileBytes) throw new ImageVisualError("FILE_TOO_LARGE", `The selected file exceeds ${IMAGE_VISUAL_LIMITS.maxFileBytes} bytes`);
   const identification = await readIdentification(file, signal);
-  progress?.({ phase: "decode", label: identification.decoder === "libheif-wasm" ? "Decoding HEIC/HEIF locally" : `Decoding ${identification.kind.toUpperCase()} locally` });
-  const bitmap = identification.decoder === "libheif-wasm"
-    ? await decodeHeif(file, signal)
-    : await bitmapFromBlob(file.blob, signal);
+  progress?.({ phase: "decode", label: `Decoding ${identification.kind.toUpperCase()} in the browser` });
+  const bitmap = await bitmapFromBlob(file.blob, signal);
   return { ...identification, bitmap, width: bitmap.width, height: bitmap.height };
 }

@@ -29,6 +29,14 @@ button.addEventListener("click", async () => {
     if (cleaned.kind !== "office-clean-metadata") throw new Error("Unexpected Office metadata cleanup result.");
     const generated = await runOfficeLocalJob({ kind: "docx-generate", sourceFormat: "markdown", text: "# Browser DOCX\n\n- voce\n\n| id | valore |\n| --- | --- |\n| 007 | Bond |" });
     if (generated.kind !== "docx-generate") throw new Error("Unexpected DOCX generation result.");
+    const download = document.createElement("a");
+    download.id = "download-docx";
+    download.textContent = "Download DOCX";
+    download.download = "browser-office.docx";
+    download.href = URL.createObjectURL(new Blob([new Uint8Array(generated.result.bytes)], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    }));
+    document.body.append(download);
     const pptxResponse = await fetch("/spikes/heavy-local-feasibility/public/corpus/sample.pptx");
     if (!pptxResponse.ok) throw new Error(`PPTX fixture fetch failed: ${pptxResponse.status}`);
     const pptx = await pptxResponse.arrayBuffer();

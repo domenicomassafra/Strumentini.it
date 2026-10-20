@@ -1,5 +1,6 @@
-import { normalizePartitaIva, RESEARCH_REFERENCE_ENGINE_VERSION } from "../../engines/research-reference";
+import { RESEARCH_REFERENCE_ENGINE_VERSION } from "../../engines/research-reference";
 import type { ToolModule } from "../../runtime/types";
+import { validateEuVat } from "./eu-validation";
 
 function inputValue(rawInput: unknown): string {
   if (typeof rawInput !== "object" || rawInput === null) throw new Error("INVALID_INPUT");
@@ -12,7 +13,7 @@ const module: ToolModule = {
   run(rawInput, _context, signal) {
     if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
     return {
-      ...normalizePartitaIva(inputValue(rawInput)),
+      ...validateEuVat(inputValue(rawInput)),
       engineVersion: RESEARCH_REFERENCE_ENGINE_VERSION,
     };
   },

@@ -1,4 +1,5 @@
 import type { ToolModule } from "../../runtime/types";
+import type { DonorSummary } from "./donor-core";
 
 export const PASSWORD_STRENGTH_MAX_LENGTH = 1024;
 
@@ -96,12 +97,88 @@ export function estimatePasswordStrength(password: string): PasswordStrengthResu
   return { score: bounded, label: labelFor(bounded), length, characterClasses: classes, factors, limitations };
 }
 
+function abortIfNeeded(signal?: AbortSignal) {
+  if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+}
+
+function estimateInWorker(password: string, signal?: AbortSignal): Promise<DonorSummary> {
+  return new Promise((resolve, reject) => {
+    let worker: Worker;
+    try {
+      worker = new Worker(new URL("./donor-worker.ts", import.meta.url), { type: "module" });
+    } catch (cause) {
+      reject(cause);
+      return;
+    }
+    const finish = () => {
+      signal?.removeEventListener("abort", onAbort);
+      worker.terminate();
+    };
+    const onAbort = () => {
+      finish();
+      reject(new DOMException("Operation cancelled", "AbortError"));
+    };
+    signal?.addEventListener("abort", onAbort, { once: true });
+    worker.onmessage = (event: MessageEvent<{ result?: DonorSummary; error?: string }>) => {
+      finish();
+      if (event.data.result) resolve(event.data.result);
+      else reject(new Error("DONOR_UNAVAILABLE"));
+    };
+    worker.onerror = () => {
+      finish();
+      reject(new Error("DONOR_UNAVAILABLE"));
+    };
+    if (signal?.aborted) onAbort();
+    else worker.postMessage({ password });
+  });
+}
+
+/** Lazily evaluate the donor, keeping the original estimator as a reversible fallback. */
+export async function estimatePasswordStrengthWithDonor(password: string, signal?: AbortSignal): Promise<PasswordStrengthResult> {
+  abortIfNeeded(signal);
+  // Validate before loading any assets or giving work to a worker.
+  const previous = estimatePasswordStrength(password);
+  let donor: DonorSummary;
+  try {
+    donor = typeof Worker !== "undefined"
+      ? await estimateInWorker(password, signal)
+      : (await import("./donor-core")).estimateDonor(password);
+  } catch (cause) {
+    abortIfNeeded(signal);
+    // CSP, unsupported workers or a missing chunk must not break local usage.
+    return previous;
+  }
+  abortIfNeeded(signal);
+  const score = Math.min(previous.score, donor.score) as PasswordStrengthResult["score"];
+  const factors: StrengthFactor[] = [...previous.factors];
+  if (donor.patterns.includes("dictionary") || donor.patterns.includes("wordSequence")) {
+    factors.push({ kind: "warning", code: "donor-dictionary", detail: "Sono riconoscibili parole o schemi di dizionario, anche italiano; l'analisi locale ne tiene conto senza mostrare le parole trovate." });
+  }
+  if (donor.patterns.includes("spatial") || donor.patterns.includes("date")) {
+    factors.push({ kind: "warning", code: "donor-pattern", detail: "L'analisi locale riconosce anche sequenze di tastiera o date prevedibili." });
+  }
+  factors.push({
+    kind: "limit", code: "donor-model",
+    detail: "Stima di zxcvbn-ts combinata in modo prudente con il modello precedente; il donor analizza al massimo le prime 256 unità UTF-16.",
+  });
+  return {
+    ...previous,
+    score,
+    label: (["molto debole", "debole", "discreta", "buona", "molto buona"] as const)[score],
+    factors,
+    limitations: [
+      "Stima locale da lunghezza, pattern e dizionari generici, senza garanzie di sicurezza.",
+      ...previous.limitations.slice(1),
+    ],
+  };
+}
+
 const module: ToolModule = {
-  run(input) {
+  run(input, _context, signal) {
     if (typeof input !== "object" || input === null || typeof (input as { password?: unknown }).password !== "string") {
       throw new Error("PASSWORD_REQUIRED");
     }
-    return estimatePasswordStrength((input as { password: string }).password);
+    return estimatePasswordStrengthWithDonor((input as { password: string }).password, signal);
   },
 };
 

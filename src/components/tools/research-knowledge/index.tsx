@@ -21,7 +21,7 @@ const doiConfig = makeConfig("doi-normalizer", "Normalizza DOI", [field("value",
 const linkConfig = makeConfig("doi-link-builder", "Crea link DOI", [field("value", "DOI", { placeholder: "10.1000/182" })]);
 const isbnConfig = makeConfig("isbn-validator-converter", "Valida ISBN", [field("value", "ISBN", { placeholder: "978-0-306-40615-7" })]);
 const ibanConfig = makeConfig("iban-validator", "Verifica IBAN", [field("value", "IBAN", { placeholder: "IT60 X054 2811 1010 0000 0123 456" })]);
-const partitaIvaConfig = makeConfig("partita-iva-validator", "Verifica Partita IVA", [field("value", "Partita IVA", { placeholder: "IT 12345678903" })]);
+const partitaIvaConfig = makeConfig("partita-iva-validator", "Verifica Partita IVA", [field("value", "Partita IVA italiana o UE", { placeholder: "IT 12345678903 oppure BE 0411905847" })]);
 const citationDedupeConfig = makeConfig("citation-deduplicator", "Rimuovi citazioni duplicate", [field("records", "Citazioni (array JSON oppure un oggetto per riga)", { kind: "textarea", rows: 10, placeholder: '[{"title":"Uno studio","doi":"10.1000/182"}]' }), field("mode", "Regola di identità", { kind: "select", options: ["identifier", "title-author-year", "exact"], defaultValue: "identifier" })]);
 const bibtexFormatConfig = makeConfig("bibtex-formatter", "Formatta BibTeX", [field("text", "BibTeX", { kind: "textarea", rows: 14, placeholder: "@article{chiave, title={Un titolo}, year={2026}}" })]);
 const bibtexDedupeConfig = makeConfig("bibtex-deduplicator", "Rimuovi duplicati BibTeX", [field("text", "BibTeX", { kind: "textarea", rows: 14 })]);

@@ -124,7 +124,10 @@ async function acceptTool(context: BrowserContext, testCase: BrowserCase) {
     const response = await page.goto(`${origin}/tools/${testCase.id}/`, { waitUntil: "networkidle" });
     if (response?.status() !== 200) throw new Error(`${testCase.id}: HTTP ${String(response?.status())}`);
     await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
-    const form = page.locator("article[data-tool-page] form").last();
+    // The P.IVA page also contains a separate tax simulation form after the validator.
+    const form = testCase.id === "partita-iva-validator"
+      ? page.locator("article[data-tool-page] form:has(#partita-iva-validator-value)")
+      : page.locator("article[data-tool-page] form").last();
     await form.waitFor();
     if (testCase.setup !== undefined) await testCase.setup(page, form);
     const submit = form.locator("button[type='submit']").first();

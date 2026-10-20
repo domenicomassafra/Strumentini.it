@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import {
@@ -15,9 +15,9 @@ describe("STR-366 primary source assets: offline fail-closed evidence", () => {
   it("pins every shipped OCR/font asset, includes all OFL copyrights and preserves NO_GO", () => {
     expect(verifyPrimarySource366(root)).toEqual({
       decision: "NO_GO",
-      files: 27,
+      files: 26,
       exactUpstream: 26,
-      unresolved: 1,
+      unresolved: 0,
       failures: [],
     });
   });
@@ -42,12 +42,24 @@ describe("STR-366 primary source assets: offline fail-closed evidence", () => {
       .toContain("LOCAL_BYTE_MISMATCH public/fonts/inter-latin.woff2");
   });
 
-  it("refuses to promote the unattributed MIT license template", () => {
+  it("refuses to restore the fake MIT template as a shipped asset", () => {
+    expect(existsSync(resolve(root, "public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE"))).toBe(false);
     const altered = structuredClone(original);
-    const languageLicense = altered.assets.find((entry) => entry.path.endsWith("/NPM-PACKAGE-MIT.LICENSE"));
-    expect(languageLicense).toBeDefined();
-    languageLicense!.evidence = "EXACT_UPSTREAM_BYTES";
-    expect(verifyPrimarySource366(root, altered).failures).toContain("MIT_TEMPLATE_FALSE_CERTIFICATION");
+    altered.assets.push({
+      path: "public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE", bytes: 1078,
+      sha256: "b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5",
+      evidence: "EXACT_UPSTREAM_BYTES", sourceKind: "local-unattributed-mit-template",
+      sourceUrl: null, obligation: "ocr-ita",
+    });
+    expect(verifyPrimarySource366(root, altered).failures)
+      .toContain("PINNED_ASSET_NOT_DISTRIBUTED public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE");
+  });
+  it("rejects a changed historical model attribution even when the compressed bytes still match", () => {
+    const altered = structuredClone(original);
+    const model = altered.assets.find((entry) => entry.path.endsWith("/ita.traineddata.gz"))!;
+    model.originalUncompressedSha256 = "0".repeat(64);
+    expect(verifyPrimarySource366(root, altered).failures)
+      .toContain("ITALIAN_MODEL_GIT_SOURCE_NOT_PINNED");
   });
 
   it("fails when an upstream URL is forged even if local SHA-256 remains correct", () => {

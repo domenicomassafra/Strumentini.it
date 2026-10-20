@@ -948,7 +948,7 @@ export function validateInvoiceMath(input: InvoiceMathInput): InvoiceMathResult 
       const itemDiscount = item.discountPercent === undefined
         ? rational(0n, 1n)
         : divide(parseBusinessDecimal(item.discountPercent, "INVALID_DISCOUNT_RATE"), rational(100n, 1n), "INVALID_DISCOUNT_RATE");
-      if (compareZero(itemDiscount) < 0 || compare(itemDiscount, rational(1n, 1n)) >= 0) throw new Error("INVALID_DISCOUNT_RATE");
+      if (compareZero(itemDiscount) < 0 || compare(itemDiscount, rational(1n, 1n)) > 0) throw new Error("INVALID_DISCOUNT_RATE");
       subtotal = add(subtotal, multiply(multiply(quantity, unitPrice), subtract(rational(1n, 1n), itemDiscount)));
     }
   } else {
@@ -957,7 +957,7 @@ export function validateInvoiceMath(input: InvoiceMathInput): InvoiceMathResult 
   const orderDiscount = input.discountPercent === undefined
     ? rational(0n, 1n)
     : divide(parseBusinessDecimal(input.discountPercent, "INVALID_DISCOUNT_RATE"), rational(100n, 1n), "INVALID_DISCOUNT_RATE");
-  if (compareZero(orderDiscount) < 0 || compare(orderDiscount, rational(1n, 1n)) >= 0) throw new Error("INVALID_DISCOUNT_RATE");
+  if (compareZero(orderDiscount) < 0 || compare(orderDiscount, rational(1n, 1n)) > 0) throw new Error("INVALID_DISCOUNT_RATE");
   const taxableAmount = multiply(subtotal, subtract(rational(1n, 1n), orderDiscount));
   const taxRate = input.taxRatePercent === undefined
     ? rational(0n, 1n)

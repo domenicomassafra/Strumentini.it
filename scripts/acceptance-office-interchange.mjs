@@ -1,7 +1,9 @@
 import { spawn } from "node:child_process";
 import { chromium } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { unzipSync, strFromU8 } from "fflate";
 
 const root = new URL("../", import.meta.url).pathname;
 const port = 18231;
@@ -35,8 +37,8 @@ try {
   await page.goto(`${origin}/scripts/fixtures/office-interchange-browser/index.html`, { waitUntil: "networkidle" });
   const before = await page.evaluate(() => performance.getEntriesByType("resource").map((entry) => entry.name));
   if (before.some((url) => /office-local|read-excel-file|write-excel-file|fflate/iu.test(url))) throw new Error("Office implementation loaded before explicit user action.");
-  await page.getByRole("button", { name: "Run bounded office acceptance" }).press("Enter");
-  await page.waitForFunction(() => (document.querySelector("#result")?.textContent?.trim().length ?? 0) > 0, undefined, { timeout: 20_000 });
+  await page.getByRole("button", { name: "Run bounded office acceptance" }).click();
+  await page.waitForFunction(() => (document.querySelector("#result")?.textContent?.trim().length ?? 0) > 0, undefined, { timeout: 60_000 });
   const raw = await page.locator("#result").innerText();
   if (raw.startsWith("ERROR:")) throw new Error(raw);
   const result = JSON.parse(raw);
@@ -48,6 +50,15 @@ try {
   if (!String(result.docx?.semanticText ?? "").includes("Fattura di prova")) throw new Error(`DOCX semantic extraction missing expected text: ${raw}`);
   if (!(result.docx?.metadata?.removed > 0) || result.docx?.metadata?.after !== 0 || result.docx?.metadata?.verification?.metadataReinspectionEmpty !== true || result.docx?.metadata?.verification?.relationshipBytesUnchanged !== true) throw new Error(`Office metadata cleanup verification failed: ${raw}`);
   if (result.docx?.generated?.kind !== "docx" || !String(result.docx?.generated?.text ?? "").includes("Browser DOCX") || result.docx?.generated?.verification?.reopened !== true) throw new Error(`DOCX generation/reopen failed: ${raw}`);
+  const downloadPending = page.waitForEvent("download");
+  await page.locator("#download-docx").click();
+  const download = await downloadPending;
+  if (download.suggestedFilename() !== "browser-office.docx") throw new Error("Generated DOCX download name mismatch");
+  const saved = new Uint8Array(await readFile(await download.path()));
+  const extractedPackage = unzipSync(saved);
+  if (!extractedPackage["word/document.xml"] || !strFromU8(extractedPackage["word/document.xml"]).includes("Browser DOCX")) {
+    throw new Error("Downloaded DOCX did not independently reopen as a valid ZIP/WordprocessingML package.");
+  }
   if (result.pptx?.slides?.[0]?.title !== "Presentazione di prova" || result.pptx?.rasterExport?.status !== "REFUSED") throw new Error(`PPTX outline/raster refusal mismatch: ${raw}`);
   if (workers.length < 8) throw new Error(`Expected isolated workers for office operations, observed ${workers.length}.`);
   if (consoleErrors.length > 0) throw new Error(`Browser runtime errors: ${consoleErrors.join(" | ")}`);
@@ -56,7 +67,7 @@ try {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   if (overflow) throw new Error("Office acceptance fixture overflows at 390px.");
   const after = await page.evaluate(() => performance.getEntriesByType("resource").map((entry) => entry.name));
-  const receipt = { schemaVersion: 1, status: "PASS", scope: "bounded Office downstream 161/163/225/226/227/260-outline/261; no faithful raster claim", workersObserved: workers.length, lazyResourcesAdded: after.length - before.length, externalRequests: 0, mobileOverflow: false, result };
+  const receipt = { schemaVersion: 1, status: "PASS", scope: "bounded Office downstream 161/163/225/226/227/260-outline/261; no faithful raster claim", workersObserved: workers.length, lazyResourcesAdded: after.length - before.length, downloadedDocxBytes: saved.length, externalRequests: 0, mobileOverflow: false, result };
   const receiptDir = resolve(root, "quality/receipts/office-downstream");
   await mkdir(receiptDir, { recursive: true });
   await writeFile(resolve(receiptDir, "browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`);

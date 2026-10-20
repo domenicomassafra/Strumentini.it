@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/interest-savings-calculator.gold.json",
-  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
-  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
+  "revision": "367e7161386a4a3d03da94359b3a1919e5c2d142",
+  "sourceFingerprint": "10bc57577d2b40dddaf730a8a9c921d3257925f762baace61007de8b500d763d",
   "toolId": "interest-savings-calculator",
   "runtime": {
     "location": "LOCAL",
@@ -38,11 +38,11 @@
   "identities": {
     "manifestSha256": "e8a0357c569bedf4a5a26be8de55f042c8951288dcdb2dcd299ba7df7ad39828",
     "moduleSha256": "75292dab583c330f9566de6778d6ba55a8bbe260ae93194bd7017d399665b904",
-    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
-    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
-    "browserAcceptanceSha256": "03f08068a32f3ae06c42c8b1bfe61fa7c23cf4bff8edb70de65376e01b0d6720",
-    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
-    "focusedTestsSha256": "3906506956e6f2b38118a2d26f4b497286e004d7465c740d30dc0862b3c42fc1",
+    "oracleRegistrySha256": "0a3e59022e6a65068c21cee44122f579f1c061a1325cbd5af22c52b6c1acbbf8",
+    "fixtureIndexSha256": "f0db027f15fa0beaf7574b160f01e5d7473883a9a5b2c801c58d2a6cc025e876",
+    "browserAcceptanceSha256": "5e42fd069fbbc2e8faab4f9254285329041942f8ce62a0b2c7eb3aaf838434bf",
+    "browserAcceptanceSourceFingerprint": "10bc57577d2b40dddaf730a8a9c921d3257925f762baace61007de8b500d763d",
+    "focusedTestsSha256": "d2013f6460003bcd7ce1797de8f0ea26669358edac1efe70fc36401211ac78f4",
     "fixture:calculator-math-core:sha256": "e9f53d8825ea53f273dd0aa6e9567fd5b58f715da32c523ace07ce2ab8030e86"
   }
 }

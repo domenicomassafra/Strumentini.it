@@ -47,6 +47,8 @@ function looksLikeMachineError(value: string): boolean {
 
 export function friendlyToolErrorIt(value: unknown): string {
   const raw = normalizedErrorText(value);
+  // Keep the page token and boundary reported by the shared strict PDF parser.
+  if (raw.startsWith("Selezione pagine: token ")) return raw;
   // Preserve the measured, actionable single-page impossibility instead of
   // hiding its exact page/byte evidence behind a generic machine-error label.
   const singlePage = /^PDF_SINGLE_PAGE_TOO_LARGE: Page ([1-9]\d*) needs ([1-9]\d*) bytes; requested ceiling ([1-9]\d*)\./u.exec(raw);

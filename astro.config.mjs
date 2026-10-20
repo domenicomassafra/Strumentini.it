@@ -1,6 +1,9 @@
 import { defineConfig } from "astro/config";
 import preact from "@astrojs/preact";
+import sitemap from "@astrojs/sitemap";
+import { copyFile } from "node:fs/promises";
 import { loadEnv } from "vite";
+import { isPublicSitemapUrl } from "./src/seo/sitemap-routes.ts";
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 const site = env.SITE_URL ?? env.PUBLIC_SITE_URL ?? process.env.SITE_URL ?? process.env.PUBLIC_SITE_URL ?? "https://strumentini.it";
@@ -18,8 +21,36 @@ export default defineConfig({
   redirects: {
     "/library": "/strumenti",
   },
-  integrations: [preact()],
+  integrations: [
+    preact(),
+    sitemap({ filter: (url) => isPublicSitemapUrl(url, site) }),
+    {
+      name: "sitemap-283-legacy-url",
+      hooks: {
+        // The official integration writes sitemap-0.xml. Existing robots,
+        // metadata links and release gates require this single URL set at
+        // /sitemap.xml too. Run after the sitemap integration's build hook.
+        "astro:build:done": async ({ dir }) => {
+          await copyFile(new URL("sitemap-0.xml", dir), new URL("sitemap.xml", dir));
+        },
+      },
+    },
+  ],
   vite: {
+    // iconv-lite (MSG donor) relies on Node buffer; map it to a browser-safe polyfill.
+    resolve: { alias: { buffer: "buffer/" } },
+    plugins: [{
+      name: "whisper-298-prune-optional-onnx-asyncify",
+      apply: "build",
+      generateBundle(_options, bundle) {
+        // Transformers.js 4.3.1 configures ONNX WASM paths to versioned jsDelivr;
+        // its bundled fallback .asyncify binary is never used by our worker.
+        // The fallback alone exceeds Cloudflare's 25 MiB asset ceiling.
+        for (const path of Object.keys(bundle)) {
+          if (/(?:^|\/)ort-wasm-simd-threaded\.asyncify-[\w-]+\.wasm$/u.test(path)) delete bundle[path];
+        }
+      },
+    }],
     ...(process.env.STRUMENTINI_DEV_LINKED_DEPS ? { server: { fs: { allow: [process.cwd(), process.env.STRUMENTINI_DEV_LINKED_DEPS] } } } : {}),
     build: {
       sourcemap: true

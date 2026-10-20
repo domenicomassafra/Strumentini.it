@@ -114,7 +114,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "toml-formatter") return tomlFormatterOperation(stringField(value, "text", "input", "toml"));
   if (toolId === "json-yaml-converter") return jsonYamlConverterOperation(stringField(value, "text", "input", "source"), requireDirection(value), optionalNumberField(value, "indent", "spaces") ?? 2);
   if (toolId === "url-codec") return urlCodecOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", optionalStringField(value, "set", "encodingSet") ?? "component");
-  if (toolId === "html-entity-codec") return htmlEntityOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", booleanField(value, false, "numeric"));
+  if (toolId === "html-entity-codec") return htmlEntityOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", booleanField(value, false, "numeric"), signal);
   if (toolId === "base64-codec") {
     const urlSafeValue = optionalStringField(value, "urlSafe", "base64url");
     const urlSafe = urlSafeValue === "url-safe" || urlSafeValue === "base64url" || urlSafeValue === "true";
@@ -180,7 +180,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
   if (toolId === "user-agent-parser") return userAgentOperation(stringField(value, "userAgent", "ua", "input", "text"));
   if (toolId === "query-string-editor") return queryStringOperation(value);
   if (toolId === "json-path-playground") return jsonPathOperation(stringField(value, "json", "text", "input", "document"), stringField(value, "path", "query", "jsonPath"));
-  if (toolId === "cidr-calculator") return cidrOperation(stringField(value, "cidr", "input", "value"));
+  if (toolId === "cidr-calculator") return cidrOperation(stringField(value, "cidr", "input", "value"), signal);
   if (toolId === "base-converter") return baseConversionOperation(stringField(value, "value", "input"), stringField(value, "fromBase", "sourceBase"), stringField(value, "toBase", "targetBase"));
   if (toolId === "chmod-permission-helper") return chmodPermissionOperation(stringField(value, "permissions", "mode", "input", "value"));
   if (toolId === "json-repair") return jsonRepairOperation(stringField(value, "text", "json", "input"));

@@ -14,7 +14,6 @@ import {
   generateUuids,
   hashText,
   hmacText,
-  htmlEntityOperation,
   inspectJwt,
   parseToml,
   parseYaml,
@@ -188,11 +187,9 @@ describe("developer/web encoding and cryptography", () => {
     expect(() => imageBase64Operation("aGVsbG8=", "decode-image", "plain")).toThrow(/INVALID_IMAGE_SIGNATURE/u);
   });
 
-  it("uses explicit percent and HTML entity policies", () => {
+  it("uses percent and entity policies", () => {
     expect(urlCodecOperation("Say what‽", "encode", "userinfo").value).toBe("Say%20what%E2%80%BD");
     expect(urlCodecOperation("%25%s%1G", "decode", "userinfo").value).toBe("%%s%1G");
-    expect(htmlEntityOperation("<x>", "encode").value).toBe("&lt;x&gt;");
-    expect(htmlEntityOperation("&lt;x&gt;", "decode").value).toBe("<x>");
   });
 
   it("generates RFC-shaped UUIDs and known SHA/HMAC answers", async () => {

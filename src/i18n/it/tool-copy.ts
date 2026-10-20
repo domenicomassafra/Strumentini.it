@@ -1,15 +1,7 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
+import { STR421_TOOL_COPY_IT } from "./tool-copy-str421";
 
-/**
- * Copy pubblica canonica di Strumentini.it.
- *
- * Gli identificatori, i token di protocollo e i termini tecnici standard
- * (JSON, CSV, PDF, SHA-256, MIME, UUID...) restano invariati. Nome,
- * descrizione e attività esposte all'utente sono invece sempre in italiano.
- *
- * Le vecchie parole chiave inglesi dei manifest vengono conservate soltanto
- * nell'indice tecnico di ricerca: non sono renderizzate nell'interfaccia.
- */
+/** Copy pubblica: nomi e descrizioni in italiano; identificatori tecnici invariati. */
 export interface ItalianToolCopy {
   readonly name: string;
   readonly summary: string;
@@ -17,6 +9,7 @@ export interface ItalianToolCopy {
 }
 
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
+  ...STR421_TOOL_COPY_IT,
   "tfr-calculator": {
     name: "Calcola TFR lordo e rivalutazione",
     summary: "Stima per anno la quota TFR e la rivalutazione FOI del fondo, distinguendo gli importi con ipotesi esplicite.",
@@ -611,9 +604,9 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     summary: "Trova una palette di colori rappresentativa da un'immagine direttamente nel browser.",
   },
   "partita-iva-validator": {
-    name: "Verifica Partita IVA italiana",
-    summary: "Normalizza e controlla formato e cifra di controllo di una Partita IVA italiana, interamente in locale, senza verificare l'esistenza nel registro.",
-    searchTerms: ["verifica partita iva", "controlla partita iva", "checksum partita iva", "p iva"],
+    name: "Verifica Partita IVA italiana e UE",
+    summary: "Controlla in locale la P.IVA italiana e UE. Non verifica esistenza nel registro, iscrizione VIES o validità fiscale.",
+    searchTerms: ["verifica partita iva", "controlla partita iva", "checksum partita iva", "p iva", "vat UE", "VAT number"],
   },
   "password-pin-passphrase-generator": {
     name: "Genera password, PIN e passphrase italiane",
@@ -737,8 +730,8 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     searchTerms: ["testo in pdf", "markdown in pdf", "html in pdf", "csv in pdf", "crea pdf da testo"],
   },
   "pdf-password-check-remove": {
-    name: "Controlla e sblocca PDF con password",
-    summary: "Controlla la cifratura e crea una copia senza protezione solo con una password valida autorizzata, in locale e senza tentare di indovinarla.",
+    name: "Controlla cifratura PDF",
+    summary: "Verifica se un PDF è cifrato e copia soltanto file già non protetti. Protezione e sblocco con password non sono disponibili.",
   },
   "pdf-rotate": {
     name: "Ruota PDF",
