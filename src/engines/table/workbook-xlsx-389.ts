@@ -8,7 +8,6 @@ import {
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder("utf-8", { fatal: true });
-const namespace = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 const blank = (): WorkbookCell389 => ({ kind: "blank", input: "", value: "" });
 
 function refuse(message: string): never { throw new WorkbookError389("UNSUPPORTED_WORKBOOK", message); }
@@ -83,7 +82,7 @@ function inspectPackage(bytes: ArrayBuffer) {
   if (Object.keys(entries).some((name) => /(?:externalLinks|vbaProject|embeddings|drawings|charts|pivot|tables|comments|connections|queryTables|customXml|metadata)\//iu.test(name) || /(?:^|\/)calcChain\.xml$/iu.test(name))) {
     refuse("Collegamenti esterni, oggetti e strutture avanzate non sono modificabili.");
   }
-  for (const [path, entry] of Object.entries(entries)) {
+  for (const path of Object.keys(entries)) {
     if (path.endsWith(".rels")) {
       const rels = parsePart(entries, path);
       if (localName(rels) !== "Relationships" || children(rels, "Relationship").some((relation) =>
