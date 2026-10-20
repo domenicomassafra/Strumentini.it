@@ -64,6 +64,15 @@ try {
             !request.url().startsWith("data:")) external.push(request.url());
           if (!["GET", "HEAD"].includes(request.method())) uploads.push(request.url());
         });
+        await page.route("**/tools/pdf-page-reorder/", async (route) => {
+          const response = await route.fetch();
+          await route.fulfill({ response, headers: {
+            ...response.headers(),
+            "content-security-policy": "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; " +
+              "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; " +
+              "img-src 'self' blob: data:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:"
+          } });
+        });
         const response = await page.goto(origin + "/tools/pdf-page-reorder/", { waitUntil: "networkidle" });
         assert.equal(response?.status(), 200);
         await page.locator("[data-pdf-workspace-372]").waitFor({ timeout: 20_000 });
@@ -124,7 +133,23 @@ try {
         assert.deepEqual(cspErrors, [], "no blocked CSP attempts");
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
         assert.equal(overflow, false, "no horizontal overflow on mobile simulation");
-        console.log(engine.name() + " viewport=" + viewport.width + " PASS: drag, resize, PDF result, Poppler diff pixels=" + changed + ", form and annotations, local requests");
+        if (viewport.width === 390) {
+          await context.setOffline(true);
+          await page.getByRole("button", { name: "Salva PDF con immagine" }).click();
+          await page.locator("[data-pdf-image-375]").getByRole("link", { name: /Scarica/iu }).first().waitFor({ timeout: 12_000 })
+            .catch(async (reason) => {
+              console.error("OFFLINE_DEBUG", (await page.locator("[data-pdf-image-375]").innerText()).slice(-1800));
+              console.error("OFFLINE_PAGE_ERRORS", pageErrors);
+              throw reason;
+            });
+          const offlineDownload = page.waitForEvent("download");
+          await page.locator("[data-pdf-image-375]").getByRole("link", { name: /Scarica/iu }).first().click();
+          const offlineBytes = readFileSync(await (await offlineDownload).path());
+          assert.equal((await PDFDocument.load(offlineBytes)).getPageCount(), 1, "offline saved PDF must independently reopen");
+          await context.setOffline(false);
+        }
+        assert.deepEqual(cspErrors, [], "strict CSP must not block the editor");
+        console.log(engine.name() + " viewport=" + viewport.width + " PASS: drag, resize, PDF result, Poppler diff pixels=" + changed + ", form and annotations, local requests, CSP" + (viewport.width === 390 ? ", offline re-save" : ""));
         await context.close();
       }
     } finally { await browser.close(); }

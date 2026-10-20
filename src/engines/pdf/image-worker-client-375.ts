@@ -1,5 +1,6 @@
 import { PDF_LIMITS, type PdfArtifact } from "./types";
 import type { PdfImagePlacement375 } from "./image-placement-375";
+import InlinePdfImageWorker375 from "./image-worker-375?worker&inline";
 
 type Reply = { kind: "STR375_IMAGE"; ok: true; bytes: Uint8Array; pageCount: number; filename: string }
   | { kind: "STR375_IMAGE"; ok: false; reason: string };
@@ -13,7 +14,7 @@ export async function runPdfImageWorker375(source: File, image: File, placement:
   if (typeof Worker === "undefined") throw new Error("Web Worker non disponibile: nessun PDF generato");
   return new Promise((resolve, reject) => {
     let worker: Worker;
-    try { worker = new Worker(new URL("./image-worker-375.ts", import.meta.url), { type: "module" }); }
+    try { worker = new InlinePdfImageWorker375(); }
     catch { reject(new Error("Web Worker PDF non disponibile")); return; }
     let settled = false;
     const finish = (error?: Error, artifact?: PdfArtifact) => {
