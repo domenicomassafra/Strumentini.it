@@ -104,7 +104,8 @@
     "fixtures:metadata-segments": "tsx scripts/generate-metadata-segment-fixtures.ts",
     "acceptance:marketing-media": "npm run build && node scripts/acceptance-marketing-media.mjs",
     "acceptance:barcode": "npm run build && node scripts/acceptance-barcode.mjs",
-    "gold:marketing-media": "npm run catalog:build && tsx scripts/gold/marketing-media-certify.ts"
+    "gold:marketing-media": "npm run catalog:build && tsx scripts/gold/marketing-media-certify.ts",
+    "test:workerd": "vitest run --config vitest.workerd.config.ts"
   },
   "dependencies": {
     "@astrojs/preact": "6.0.5",
@@ -121,6 +122,7 @@
     "buffer": "6.0.3",
     "css-tree": "^3.2.1",
     "docx": "9.12.0",
+    "fast-xml-parser": "5.11.2",
     "fflate": "0.8.3",
     "gifuct-js": "2.1.2",
     "he": "2.0.0",
@@ -143,6 +145,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@astrojs/sitemap": "3.7.4",
+    "@cloudflare/vitest-plugin": "1.4.4",
     "@playwright/test": "1.63.0",
     "@types/css-tree": "^3.2.0",
     "@types/he": "1.2.3",
