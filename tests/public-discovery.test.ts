@@ -4,7 +4,6 @@ import { catalog } from "../src/generated/catalog";
 import {
   buildDirectoryStructuredData,
   buildRobotsTxt,
-  buildSitemapXml,
   buildToolStructuredData,
   formatPageTitle,
   publicIndexPaths,
@@ -12,6 +11,8 @@ import {
   selectPageDescription,
   serializeJsonLd,
 } from "../src/seo/public-discovery";
+import { isPublicSitemapUrl } from "../src/seo/sitemap-routes";
+import { groups } from "../src/catalog/groups";
 
 const genericCopy = "runs locally in your browser with bounded inputs and explicit results.";
 
@@ -31,17 +32,23 @@ describe("public discovery surfaces", () => {
     expect(pages.some((page) => spamPhrases.some((phrase) => page.includes(phrase)))).toBe(false);
   });
 
-  it("builds one canonical sitemap entry for every public route", () => {
-    const xml = buildSitemapXml(catalog, "https://example.test", ["/categorie/immagini"]);
-    const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((match) => match[1]);
-    const expected = publicIndexPaths.length + 1 + catalog.length;
-    expect(locations).toHaveLength(expected);
-    expect(new Set(locations).size).toBe(expected);
-    for (const path of publicIndexPaths) expect(locations).toContain(resolveDiscoveryUrl(path, "https://example.test"));
-    expect(locations).toContain("https://example.test/categorie/immagini/");
-    // A redirect is not a destination: it must never be advertised.
-    expect(locations).not.toContain("https://example.test/library/");
-    for (const tool of catalog) expect(locations).toContain(`https://example.test${tool.route}/`);
+  it("allows precisely the canonical public paths in the sitemap integration", () => {
+    const site = "https://example.test";
+    const routes = [...publicIndexPaths, ...groups.map((group) => `/categorie/${group.slug}`), ...catalog.map((tool) => tool.route)];
+    const locations = routes.map((route) => resolveDiscoveryUrl(route, site));
+    expect(new Set(locations).size).toBe(locations.length);
+    expect(locations.every((url) => isPublicSitemapUrl(url, site))).toBe(true);
+    for (const unexpected of [
+      "/library/", "/cerca/", "/accedi/", "/api/health/", "/strumenti/preview/",
+      "/laboratorio/trascrizione-audio/", "/tools/codice-fiscale/", "/tools/irpef-annuale/",
+      "/tools/pdf-scansionato-ocr-247/", "/prototipi/351/", "/404/", "/unknown/",
+    ]) {
+      expect(isPublicSitemapUrl(new URL(unexpected, site).href, site), unexpected).toBe(false);
+    }
+    expect(isPublicSitemapUrl("http://example.test/", site)).toBe(false);
+    expect(isPublicSitemapUrl("https://preview.test/", site)).toBe(false);
+    expect(isPublicSitemapUrl(`${site}/?preview=1`, site)).toBe(false);
+    expect(isPublicSitemapUrl(`${site}/strumenti`, site)).toBe(false);
   });
 
   it("advertises the sitemap without blocking public tool pages", () => {

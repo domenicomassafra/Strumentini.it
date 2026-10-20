@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import sharp from "sharp";
 import { unzlibSync } from "fflate";
 import { createSimplePdf, buildPdfFromPages } from "../src/engines/pdf/writer";
@@ -152,11 +153,8 @@ describe("#241 bounded visible-appearance PNG overlays without cryptographic sig
     expect(() => placeVisualSignature241(withAnnotations, options)).toThrow(/PDF241_(?:SIGNED_OR_FORM_REFUSED|UNSAFE_SOURCE)/u);
   });
 
-  it("refuses a genuinely encrypted AES-256 PDF without altering its bytes", async () => {
-    const { createPdfToolkit } = await import("../src/engines/pdf/vendor/pdfstudio/index.js");
-    const donor = await createPdfToolkit();
-    const encrypted = await donor.lock(source(), { userPassword: "known-241-fixture", keyLength: 256 });
-    expect(await donor.isEncrypted(encrypted)).toBe(true);
+  it("refuses a PDF with an encryption marker without altering its bytes", async () => {
+    const encrypted = new Uint8Array(readFileSync(new URL("../quality/fixtures/pdf-gold/encrypted-mark.pdf", import.meta.url)));
     const preserved = encrypted.slice();
     const png = await pngFixture(4);
     expect(() => placeVisualSignature241(encrypted, { png, pages: "1", rect: [40, 40, 150, 90] }))

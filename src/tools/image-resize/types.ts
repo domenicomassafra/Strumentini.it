@@ -1,3 +1,4 @@
+import type { ImageResampling } from "../../engines/image/resize-pica-271";
 import type { SupportedImageMime } from "../../engines/image/format";
 
 export type ImageResizeOutputMime = "image/jpeg" | "image/webp";
@@ -35,6 +36,7 @@ export interface ImageResizeOutput {
   outputWidth: number;
   outputHeight: number;
   estimatedDecodedBytes: number;
+  resampling: ImageResampling;
   metadataPolicy: string;
   orientationPolicy: string;
 }

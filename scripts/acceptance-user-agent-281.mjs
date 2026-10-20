@@ -26,7 +26,10 @@ async function waitForServer() {
 
 async function inspectBrowser(browserType) {
   console.log(`STR-281: launching ${browserType.name()}`);
-  const browser = await browserType.launch({ headless: true, timeout: 45000 });
+  const existingChrome = browserType === chromium && process.argv.includes("--cdp-existing");
+  const browser = existingChrome
+    ? await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 45000 })
+    : await browserType.launch({ headless: true, timeout: 45000 });
   try {
     const context = await browser.newContext({
       viewport: { width: 390, height: 844 }, isMobile: true,
@@ -36,6 +39,8 @@ async function inspectBrowser(browserType) {
     console.log(`STR-281: ${browserType.name()} navigates`);
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
+    const requests = [];
+    page.on("request", (request) => requests.push({ url: request.url(), method: request.method(), kind: request.resourceType() }));
     page.on("console", (message) => {
       if (/content security policy|unsafe-eval|refused to (?:execute|load)/iu.test(message.text())) errors.push(message.text());
     });
@@ -44,8 +49,7 @@ async function inspectBrowser(browserType) {
     const submit = page.locator('[data-tool-run-control="true"]');
     await submit.waitFor();
     console.log(`STR-281: ${browserType.name()} submits`);
-    const requests = [];
-    page.on("request", (request) => requests.push({ url: request.url(), method: request.method(), kind: request.resourceType() }));
+    const scriptsBeforeSubmit = requests.filter((item) => item.kind === "script").length;
     await submit.click();
     await page.locator(".gutter[data-state='success']").waitFor({ timeout: 10000 });
     const output = await page.locator(".bounded-result-preview pre").textContent();
@@ -54,13 +58,13 @@ async function inspectBrowser(browserType) {
     }
     const unexpected = requests.filter((item) => !item.url.startsWith(origin) || item.method !== "GET");
     if (unexpected.length || errors.length) throw new Error(JSON.stringify({ unexpected, errors }));
-    const lazyJs = requests.filter((item) => item.kind === "script").length;
+    const lazyJs = requests.filter((item) => item.kind === "script").length - scriptsBeforeSubmit;
     if (lazyJs === 0) throw new Error("No lazy parser script loaded on submit");
     const result = { browser: browserType.name(), iOSViewport: "390x844", output: "Safari / iOS / WebKit", lazyJs, offsiteRequests: 0, cspErrors: 0 };
     await context.close();
     return result;
   } finally {
-    await browser.close();
+    if (!existingChrome) await browser.close();
   }
 }
 

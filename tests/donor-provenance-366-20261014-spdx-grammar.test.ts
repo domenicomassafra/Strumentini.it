@@ -51,11 +51,15 @@ describe("#366 original npm SPDX expression grammar (no adoption authorization)"
     const { lock, path } = mit;
     lock.packages[path]!.license = "(MIT OR Apache-2.0) AND ISC";
     expect(auditLockedPackages366(lock, {}).status).toBe("VERIFIED_METADATA");
+    // ZXing's optional text-encoding dependency publishes a real dual SPDX
+    // expression. Its supported alternatives remain separate from rights review.
+    lock.packages[path]!.license = "(Unlicense OR Apache-2.0)";
+    expect(auditLockedPackages366(lock, {}).status).toBe("VERIFIED_METADATA");
   });
 
   it.each([
     "MIT(", "(MIT", "MIT)", "MIT()", "MIT(Apache-2.0)",
-    "MIT OR (Apache-2.0", "MIT AND Apache-2.0)",
+    "MIT OR (Apache-2.0", "MIT AND Apache-2.0)", "(Unlicense OR)",
   ])("refuses structurally invalid recorded SPDX license: %s", license => {
     const { path, lock } = installedPackageGraph("fflate");
     lock.packages[path]!.license = license;
