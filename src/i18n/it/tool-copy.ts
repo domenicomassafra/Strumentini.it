@@ -1,15 +1,7 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
+import { STR421_TOOL_COPY_IT } from "./tool-copy-str421";
 
-/**
- * Copy pubblica canonica di Strumentini.it.
- *
- * Gli identificatori, i token di protocollo e i termini tecnici standard
- * (JSON, CSV, PDF, SHA-256, MIME, UUID...) restano invariati. Nome,
- * descrizione e attività esposte all'utente sono invece sempre in italiano.
- *
- * Le vecchie parole chiave inglesi dei manifest vengono conservate soltanto
- * nell'indice tecnico di ricerca: non sono renderizzate nell'interfaccia.
- */
+/** Copy pubblica: nomi e descrizioni in italiano; identificatori tecnici invariati. */
 export interface ItalianToolCopy {
   readonly name: string;
   readonly summary: string;
@@ -17,6 +9,7 @@ export interface ItalianToolCopy {
 }
 
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
+  ...STR421_TOOL_COPY_IT,
   "tfr-calculator": {
     name: "Calcola TFR lordo e rivalutazione",
     summary: "Stima per anno la quota TFR e la rivalutazione FOI del fondo, distinguendo gli importi con ipotesi esplicite.",

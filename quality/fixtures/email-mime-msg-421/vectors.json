@@ -1,0 +1,11 @@
+{
+  "vectors": [
+    {
+      "id": "nested-guarded",
+      "eml": "From: Sender <sender@example.test>\r\nTo: Recipient <recipient@example.test>\r\nSubject: Sicurezza MIME\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"outer\"\r\n\r\n--outer\r\nContent-Type: multipart/alternative; boundary=\"inner\"\r\n\r\n--inner\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nBuongiorno dal corpo interno.\r\n--inner\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<img src=\"https://tracker.example.test/open.gif\"><script>alert(1)</script>\r\n--inner--\r\n--outer\r\nContent-Type: application/octet-stream; name=\"../../run.js\"\r\nContent-Disposition: attachment; filename=\"../../run.js\"\r\nContent-Transfer-Encoding: base64\r\n\r\nY29uc29sZS5sb2coMSk=\r\n--outer--\r\n",
+      "subject": "Sicurezza MIME",
+      "body_contains": "Buongiorno dal corpo interno.",
+      "attachment_name": "run.js"
+    }
+  ]
+}

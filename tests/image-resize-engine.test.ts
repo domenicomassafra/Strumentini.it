@@ -13,6 +13,7 @@ import {
   safeOutputStem,
   scaleDimensionsByPercent,
 } from "../src/engines/image/policy";
+import { resizeWithPica271 } from "../src/engines/image/resize-pica-271";
 import { resizeImageLocal } from "../src/tools/image-resize/module";
 
 const root = resolve(import.meta.dirname, "..");
@@ -124,5 +125,21 @@ describe("image resize cancellation", () => {
     await expect(resizeImageLocal({}, controller.signal)).rejects.toMatchObject({
       name: "AbortError",
     });
+  });
+});
+
+describe("Pica #271 memory safety and geometry fallback", () => {
+  it("refuses Pica before allocation when its additional working set would exceed 96 MiB", async () => {
+    const bitmap = { width: 4000, height: 3000 } as ImageBitmap;
+    const plan = computeResizePlan(4000, 3000, 2000, 1500, "contain");
+    await expect(resizeWithPica271(bitmap, plan, {} as HTMLCanvasElement, 90 * 1024 * 1024))
+      .resolves.toEqual({ engine: "canvas", reason: "MEMORY_BUDGET" });
+  });
+  it("keeps crop geometry and no-upscale on the existing Canvas path", async () => {
+    const bitmap = { width: 600, height: 400 } as ImageBitmap;
+    await expect(resizeWithPica271(bitmap, computeResizePlan(600, 400, 150, 150, "cover"), {} as HTMLCanvasElement, 1000))
+      .resolves.toEqual({ engine: "canvas", reason: "COVER_CROP" });
+    await expect(resizeWithPica271(bitmap, computeResizePlan(600, 400, 1000, 1000, "contain", true), {} as HTMLCanvasElement, 1000))
+      .resolves.toEqual({ engine: "canvas", reason: "NOT_DOWNSCALE" });
   });
 });
