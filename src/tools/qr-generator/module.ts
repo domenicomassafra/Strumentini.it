@@ -1,4 +1,5 @@
-import { generateQr, QR_MAX_BYTES, QR_MAX_VERSION } from "../../engines/qr";
+import { QR_MAX_BYTES, QR_MAX_VERSION } from "../../engines/qr";
+import { generateQrDonor278 } from "../../engines/qr/qrcode-adapter-278";
 import type { ToolModule } from "../../runtime/types";
 
 export type WifiQrSecurity = "WPA" | "WEP" | "nopass";
@@ -46,7 +47,7 @@ const module: ToolModule = {
       : typeof record.payload === "string"
         ? record.payload
         : (() => { throw new Error("QR_INPUT_REQUIRED"); })();
-    const result = generateQr(payload, record.mask === undefined ? {} : { mask: record.mask });
+    const result = generateQrDonor278(payload, record.mask === undefined ? {} : { mask: record.mask });
     return {
       ...result,
       preset,
