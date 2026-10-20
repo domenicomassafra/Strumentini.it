@@ -117,10 +117,12 @@ export function previewAudioJob036(job: AudioPreviewJob036, signal?: AbortSignal
   return { kind: "preview", preview: previewAudioTimelineDsp231(sources, edits, job.dsp, signal), sourceFormats };
 }
 
-export function renderAudioJob231(job: AudioJob231, signal?: AbortSignal): AudioJobResult231 {
+export function renderAudioJob231(
+  job: AudioJob231, signal?: AbortSignal, onProgress?: (frames: number, total: number) => void,
+): AudioJobResult231 {
   if (job?.kind !== "render") fail("AUDIO_231_WORKER_REQUEST", "Render mode required");
   const { sources, edits, sourceFormats } = prepareAudioJob036(job, signal);
-  const result = renderAudioTimelineDsp231(sources, edits, job.dsp, signal);
+  const result = renderAudioTimelineDsp231(sources, edits, job.dsp, signal, onProgress);
   const wav = result.wav.buffer.slice(result.wav.byteOffset, result.wav.byteOffset + result.wav.byteLength) as ArrayBuffer;
   return { kind: "done", wav, preview: result.preview, peaks: waveformPeaks231(result.wav), sourceFormats };
 }
@@ -131,7 +133,8 @@ if (typeof self !== "undefined" && typeof document === "undefined") {
       if (event.data?.kind === "preview") {
         self.postMessage(previewAudioJob036(event.data));
       } else {
-        const result = renderAudioJob231(event.data);
+        const result = renderAudioJob231(event.data, undefined, (frames, total) =>
+          self.postMessage({ kind: "progress", phase: "output-frames", completed: frames, total }));
         self.postMessage(result, { transfer: [result.wav] });
       }
     } catch (error) {
