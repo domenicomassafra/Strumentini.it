@@ -49,6 +49,21 @@ describe("STR-375 image worker: limit, cancel, and failure isolation", () => {
     await expect(runPdfImageWorker375(pdf(), raster(), placement)).rejects.toThrow(/PDF_VERIFY/);
     expect(state.terminated).toBe(1);
   });
+  it("reuses bytes already read on a second save when local file reads become unavailable", async () => {
+    const inputPdf = pdf(), inputImage = raster();
+    const pdfRead = vi.spyOn(inputPdf, "arrayBuffer");
+    const imageRead = vi.spyOn(inputImage, "arrayBuffer");
+    workerStub({ kind: "STR375_IMAGE", ok: true, bytes: new Uint8Array(32),
+      pageCount: 1, filename: "resaved.pdf" });
+    await runPdfImageWorker375(inputPdf, inputImage, placement);
+    pdfRead.mockRejectedValue(new Error("offline file read unavailable"));
+    imageRead.mockRejectedValue(new Error("offline file read unavailable"));
+    await expect(runPdfImageWorker375(inputPdf, inputImage, placement))
+      .resolves.toMatchObject({ filename: "resaved.pdf", pageCount: 1 });
+    expect(pdfRead).toHaveBeenCalledTimes(1);
+    expect(imageRead).toHaveBeenCalledTimes(1);
+  });
+
   it("terminates after the 60-second timeout", async () => {
     vi.useFakeTimers();
     const state = workerStub();

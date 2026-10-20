@@ -6,6 +6,20 @@ type Reply = { kind: "STR375_IMAGE"; ok: true; bytes: Uint8Array; pageCount: num
   | { kind: "STR375_IMAGE"; ok: false; reason: string };
 const TIMEOUT_MS = 60_000;
 
+// WebKit can refuse to reopen an already selected File when connectivity changes.
+// Cache bounded original bytes for the life of each selected File, and send fresh
+// transferable copies so a save never detaches the reusable source.
+const localBytes = new WeakMap<File, Promise<Uint8Array>>();
+function readLocalFile(file: File): Promise<Uint8Array> {
+  const previous = localBytes.get(file);
+  if (previous) return previous;
+  const bytes = file.arrayBuffer().then((buffer) => new Uint8Array(buffer));
+  localBytes.set(file, bytes);
+  void bytes.catch(() => localBytes.delete(file));
+  return bytes;
+}
+
+
 export async function runPdfImageWorker375(source: File, image: File, placement: PdfImagePlacement375,
   signal?: AbortSignal): Promise<PdfArtifact> {
   if (signal?.aborted) throw new DOMException("Annullato", "AbortError");
@@ -46,10 +60,11 @@ export async function runPdfImageWorker375(source: File, image: File, placement:
         blob: new Blob([Uint8Array.from(reply.bytes)], { type: "application/pdf" }),
         filename: reply.filename, mime: "application/pdf", pageCount: reply.pageCount });
     };
-    void Promise.all([source.arrayBuffer(), image.arrayBuffer()]).then(([pdfBytes, rasterBytes]) => {
+    void Promise.all([readLocalFile(source), readLocalFile(image)]).then(([pdfBytes, rasterBytes]) => {
       if (settled || signal?.aborted) return;
-      worker.postMessage({ source: new Uint8Array(pdfBytes), image: new Uint8Array(rasterBytes),
-        placement, filename: source.name }, [pdfBytes, rasterBytes]);
+      const pdfCopy = pdfBytes.slice(), rasterCopy = rasterBytes.slice();
+      worker.postMessage({ source: pdfCopy, image: rasterCopy,
+        placement, filename: source.name }, [pdfCopy.buffer, rasterCopy.buffer]);
     }).catch(() => finish(new Error("Impossibile leggere i file locali")));
   });
 }
