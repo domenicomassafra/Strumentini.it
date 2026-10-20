@@ -98,8 +98,25 @@ export function penalty(matrix: readonly (readonly boolean[])[]): number {
     if (run >= 5) total += run - 2;
     return total;
   };
-  for (let y = 0; y < size; y += 1) score += runPenalty(matrix[y]!);
-  for (let x = 0; x < size; x += 1) score += runPenalty(matrix.map((row) => row[x]!));
+  // ISO/IEC 18004 N3: 1:1:3:1:1 with four light modules on either side.
+  // Matching each 11-module window also counts both sides when both qualify.
+  const finderPenalty = (values: readonly boolean[]): number => {
+    let window = 0;
+    let total = 0;
+    for (let index = 0; index < values.length; index += 1) {
+      window = ((window << 1) | Number(values[index])) & 0x7ff;
+      if (index >= 10 && (window === 0b00001011101 || window === 0b10111010000)) total += 40;
+    }
+    return total;
+  };
+  for (let y = 0; y < size; y += 1) {
+    const row = matrix[y]!;
+    score += runPenalty(row) + finderPenalty(row);
+  }
+  for (let x = 0; x < size; x += 1) {
+    const column = matrix.map((row) => row[x]!);
+    score += runPenalty(column) + finderPenalty(column);
+  }
   for (let y = 0; y < size - 1; y += 1) {
     for (let x = 0; x < size - 1; x += 1) {
       const value = matrix[y]![x];
