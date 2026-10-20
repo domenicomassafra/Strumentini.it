@@ -26,6 +26,8 @@ import {
   useToolOperation,
 } from "../shared";
 import { CONTROL, it } from "../shared/controlLabels";
+import { TableTransformDiff388 } from "./TableTransformDiff388";
+import { resultSummary } from "./TableSummary388";
 import {
   acceptsCsvTable,
   buildTableResultV2Model,
@@ -203,47 +205,6 @@ function inputFor(mode: TableWorkbenchMode, text: string, secondaryText: string,
   }
 }
 
-function resultSummary(result: WorkbenchResult | null): string {
-  if (result === null) return "";
-  const parts: string[] = [];
-  const add = (label: string, value: unknown) => { if (value !== undefined && value !== null) parts.push(`${label}: ${String(value)}`); };
-  add("righe", result.rowCount);
-  add("righe input", result.inputRows);
-  add("righe output", result.outputRows);
-  add("righe sinistra", result.leftRows);
-  add("righe destra", result.rightRows);
-  if (typeof result.inputRows === "number" && typeof result.outputRows === "number") add("variazione righe", result.outputRows - result.inputRows);
-  add("colonne", result.columnCount);
-  add("gruppi", result.groups);
-  add("righe corrispondenti", result.matchedRows);
-  add("righe escluse", result.rejectedRows);
-  add("righe duplicate", result.duplicateRows);
-  add("valori mancanti", result.totalMissing);
-  add("parti", Array.isArray(result.chunks) ? result.chunks.length : undefined);
-  add("righe aggiunte", result.addedRows);
-  add("righe rimosse", result.removedRows);
-  add("righe cambiate", result.changedRows);
-  add("righe interessate", result.affectedRows);
-  add("celle interessate", result.affectedCells);
-  if (typeof result.textChanges === "object" && result.textChanges !== null) {
-    const changes = result.textChanges as Record<string, unknown>;
-    add("BOM rimosso", changes.bomRemoved === true ? "sì" : changes.bomRemoved === false ? "no" : undefined);
-    add("interruzioni riga normalizzate", changes.normalizedLineEndings);
-    add("caratteri sostitutivi", changes.replacementCharacters);
-  }
-  add("chiavi ambigue", result.ambiguousKeyCount);
-  if (Array.isArray(result.selectedColumnDisclosure)) add("colonne scelte", result.selectedColumnDisclosure.map((column) => typeof column === "object" && column !== null && "name" in column ? String((column as { name: unknown }).name) : "").filter(Boolean).join(", "));
-  if (typeof result.selectedColumn === "object" && result.selectedColumn !== null && "name" in result.selectedColumn) add("colonna", (result.selectedColumn as { name: unknown }).name);
-  if (Array.isArray(result.groupColumnDisclosure)) add("chiavi gruppo", result.groupColumnDisclosure.map((column) => typeof column === "object" && column !== null && "name" in column ? String((column as { name: unknown }).name) : "").filter(Boolean).join(", "));
-  if (Array.isArray(result.leftKeyDisclosure)) add("chiavi sinistra", result.leftKeyDisclosure.map((column) => typeof column === "object" && column !== null && "name" in column ? String((column as { name: unknown }).name) : "").filter(Boolean).join(", "));
-  if (Array.isArray(result.rightKeyDisclosure)) add("chiavi destra", result.rightKeyDisclosure.map((column) => typeof column === "object" && column !== null && "name" in column ? String((column as { name: unknown }).name) : "").filter(Boolean).join(", "));
-  add("stima join", typeof result.estimate === "object" && result.estimate !== null && "estimatedOutputRows" in result.estimate ? (result.estimate as { estimatedOutputRows: unknown }).estimatedOutputRows : undefined);
-  add("policy", result.policySummary);
-  add("delimitatore", result.delimiter);
-  add("codifica rilevata", result.detectedEncoding);
-  add("affidabilità", result.confidence);
-  return parts.join(" · ");
-}
 
 function isPoints(value: unknown): value is Array<{ label: string; value: number }> {
   return Array.isArray(value) && value.every((point) => typeof point === "object" && point !== null && typeof (point as { label?: unknown }).label === "string" && typeof (point as { value?: unknown }).value === "number");
@@ -296,6 +257,7 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
   const [fileName, setFileName] = useState("");
   const [fileError, setFileError] = useState("");
   const [actionStatus, setActionStatus] = useState("");
+  const [undoText388, setUndoText388] = useState<string | null>(null);
   const [options, setOptions] = useState<Record<string, OptionValue>>(() => defaultOptions(mode));
   const initialOptions = useMemo(() => defaultOptions(mode), [mode]);
   const operation = useToolOperation<WorkbenchResult>((signal) => toolRuntime.run(toolId, inputFor(mode, text, secondaryText, bytes, sourceBlob, options), {}, signal));
@@ -312,17 +274,20 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     setBytes(null);
     setSourceBlob(null);
     setFileName(`Tabella ricevuta · ${envelope.descriptor.rowCount} righe`);
+    setUndoText388(null);
     invalidate();
   }), [manifest, operation]);
 
   function setOption(key: string, value: OptionValue) {
     setOptions((current) => ({ ...current, [key]: value }));
+    setUndoText388(null);
     invalidate();
   }
 
   async function loadFile(file: File | undefined) {
     if (file === undefined) return;
     setFileError("");
+    setUndoText388(null);
     invalidate();
     try {
       if (mode === "split") {
@@ -354,6 +319,7 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     setSourceBlob(null);
     setFileName("");
     setFileError("");
+    setUndoText388(null);
     invalidate();
     setOptions(initialOptions);
   }
@@ -451,6 +417,7 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
 
   function reuseResult() {
     if (resultModel?.reusePayload === null || resultModel === null) return;
+    if (mode === "sort" || mode === "filter") setUndoText388(text);
     setText(resultModel.reusePayload);
     setSubmittedText(resultModel.reusePayload);
     setSecondaryText("");
@@ -458,6 +425,15 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     setSourceBlob(null);
     invalidate();
     setFileName("Risultato completo riutilizzato come nuovo input locale.");
+  }
+
+  function undo388() {
+    if (undoText388 === null) return;
+    setText(undoText388);
+    setSubmittedText(undoText388);
+    setUndoText388(null);
+    invalidate();
+    setFileName("Ripristinato il CSV originale, senza perdita dei valori.");
   }
 
   function handoffResult(proposal = preferredHandoffTargets[0]) {
@@ -476,10 +452,11 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
     <ToolFormCard>
       <form onSubmit={submit}>
         <p class="file-note">{publicDescription}</p>
-        <label class="field"><span>{primaryInputLabel}</span><textarea rows={8} value={text} onInput={(e) => { setText(e.currentTarget.value); setBytes(null); setSourceBlob(null); invalidate(); }} placeholder="Incolla un testo tabellare oppure scegli un file." /></label>
+        <label class="field"><span>{primaryInputLabel}</span><textarea rows={8} value={text} onInput={(e) => { setText(e.currentTarget.value); setBytes(null); setSourceBlob(null); setUndoText388(null); invalidate(); }} placeholder="Incolla un testo tabellare oppure scegli un file." /></label>
         {(mode === "join" || mode === "compare") && <label class="field"><span>Seconda tabella CSV</span><textarea rows={8} value={secondaryText} onInput={(e) => { setSecondaryText(e.currentTarget.value); invalidate(); }} placeholder="Incolla la seconda tabella CSV." /></label>}
         <label class="field"><span>File · facoltativo</span><input type="file" accept={mode === "encoding" ? ".csv,.txt,.tsv,text/plain" : mode === "from-json" ? ".json,application/json" : ".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain,application/json"} onChange={(event) => void loadFile(event.currentTarget.files?.[0])} /></label>
         {fileName && <p class="file-note" role="status">{fileName}</p>}
+        {(mode === "sort" || mode === "filter") && undoText388 !== null && <button type="button" data-str388-undo onClick={undo388}>Annulla ultima applicazione</button>}
         {mode === "selector" && <label class="field"><span>Posizioni colonne (da zero, separate da virgola)</span><input value={String(options.columns ?? "")} onInput={(event) => setOption("columns", event.currentTarget.value)} /></label>}
         {mode === "filter" && <div class="table-control-grid"><label class="field"><span>Posizione colonna</span><input type="number" min="0" value={String(options.column ?? "0")} onInput={(event) => setOption("column", event.currentTarget.value)} /></label><label class="field"><span>Operatore</span><select value={String(options.operator ?? "contains")} onChange={(event) => setOption("operator", event.currentTarget.value)}>{OPERATORS.map((operator) => <option value={operator}>{OPERATOR_LABELS[operator]}</option>)}</select></label><label class="field"><span>Valore</span><input value={String(options.value ?? "")} onInput={(event) => setOption("value", event.currentTarget.value)} /></label><label class="field"><span>Token NULL · separati da virgola</span><input value={String(options.nullTokens ?? "NULL")} onInput={(event) => setOption("nullTokens", event.currentTarget.value)} /></label><label class="choice-line"><input type="checkbox" checked={options.emptyAsNull === true} onChange={(event) => setOption("emptyAsNull", event.currentTarget.checked)} /> Celle vuote trattate come NULL</label><label class="choice-line"><input type="checkbox" checked={options.caseSensitive === true} onChange={(event) => setOption("caseSensitive", event.currentTarget.checked)} /> Distingui maiuscole e minuscole</label></div>}
         {mode === "sort" && <div class="table-control-grid"><label class="field"><span>Posizione colonna</span><input type="number" min="0" value={String(options.column ?? "0")} onInput={(event) => setOption("column", event.currentTarget.value)} /></label><label class="field"><span>Direzione</span><select value={String(options.direction ?? "asc")} onChange={(event) => setOption("direction", event.currentTarget.value)}><option value="asc">Crescente</option><option value="desc">Decrescente</option></select></label><label class="field"><span>Confronto / tipo</span><select value={String(options.comparator ?? "lexical")} onChange={(event) => setOption("comparator", event.currentTarget.value)}>{COMPARATORS.map((comparator) => <option value={comparator}>{COMPARATOR_LABELS[comparator]}</option>)}</select></label><label class="field"><span>NULL e valori non validi</span><select value={String(options.nulls ?? "last")} onChange={(event) => setOption("nulls", event.currentTarget.value)}><option value="first">Prima</option><option value="last">Dopo</option></select></label><label class="field"><span>Token NULL · separati da virgola</span><input value={String(options.nullTokens ?? "NULL")} onInput={(event) => setOption("nullTokens", event.currentTarget.value)} /></label><label class="choice-line"><input type="checkbox" checked={options.emptyAsNull === true} onChange={(event) => setOption("emptyAsNull", event.currentTarget.checked)} /> Celle vuote trattate come NULL</label><label class="choice-line"><input type="checkbox" checked={options.caseSensitive === true} onChange={(event) => setOption("caseSensitive", event.currentTarget.checked)} /> Distingui maiuscole e minuscole</label></div>}
@@ -525,6 +502,7 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
           </ul>}
         </div>
         <div data-result-slot="table-preview"><BoundedTableResultPreview preview={resultModel.preview} /></div>
+        {(mode === "sort" || mode === "filter") && <><TableTransformDiff388 source={submittedText} output={resultModel.exportPayload} delimiter={(result?.table as { delimiter?: string } | undefined)?.delimiter ?? ","} summary={summary} /><button type="button" data-str388-apply onClick={reuseResult}>Applica alla tabella (annullabile)</button></>
         <div data-result-secondary-raw>
           {mode === "missing-profile" && profileColumns.length > 0 && <div class="table-preview-scroll"><table class="table-preview"><caption>Valori mancanti per colonna</caption><thead><tr><th scope="col">Colonna</th><th scope="col">Mancanti</th><th scope="col">Presenti</th><th scope="col">Percentuale mancante</th></tr></thead><tbody>{profileColumns.map((column) => <tr key={column.name}><th scope="row">{column.name}</th><td>{String(column.missing ?? 0)}</td><td>{String(column.present ?? 0)}</td><td>{typeof column.missingRate === "number" ? `${(column.missingRate * 100).toFixed(1)}%` : "—"}</td></tr>)}</tbody></table></div>}
           {mode === "type-profile" && profileColumns.length > 0 && <div class="table-preview-scroll"><table class="table-preview"><caption>Tipi rilevati per colonna</caption><thead><tr><th scope="col">Colonna</th><th scope="col">Tipo</th><th scope="col">Numeri</th><th scope="col">Booleani</th><th scope="col">Date</th><th scope="col">Testo</th><th scope="col">Vuoti</th></tr></thead><tbody>{profileColumns.map((column) => <tr key={column.name}><th scope="row">{column.name}</th><td>{TYPE_LABELS[String(column.dominantType ?? "")] ?? String(column.dominantType ?? "—")}</td><td>{String(column.number ?? 0)}</td><td>{String(column.boolean ?? 0)}</td><td>{String(column.date ?? 0)}</td><td>{String(column.string ?? 0)}</td><td>{String(column.empty ?? 0)}</td></tr>)}</tbody></table></div>}
