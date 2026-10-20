@@ -28,7 +28,9 @@ function paintedModules(svg: string, size: number, scale: number): { rows: strin
   const visited = Array.from({ length: size }, () => Array<number>(size).fill(0));
   let runCount = 0;
   for (const match of d!.matchAll(RUN)) {
-    const [, left, center, width] = match.map(Number);
+    const left = Number(match[1]!);
+    const center = Number(match[2]!);
+    const width = Number(match[3]!);
     expect(left % scale).toBe(0);
     expect(width % scale).toBe(0);
     const y = center / scale - 4.5;
@@ -40,7 +42,7 @@ function paintedModules(svg: string, size: number, scale: number): { rows: strin
     expect(x).toBeGreaterThanOrEqual(0);
     expect(x + length).toBeLessThanOrEqual(size);
     for (let column = x; column < x + length; column += 1) {
-      visited[y]![column] += 1;
+      visited[y]![column] = (visited[y]![column] ?? 0) + 1;
     }
     runCount += 1;
   }
