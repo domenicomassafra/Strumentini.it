@@ -59,14 +59,21 @@ try {
   assert.equal(response?.status(), 200);
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), "390px horizontal overflow");
   const file = page.locator('[data-pdf-workspace-372] input[type="file"]');
+  async function resultReady() {
+    try {
+      await page.locator('[data-pdf-workspace-372] [data-result-class="pdf"] [data-result-slot="file-workspace"]').waitFor({ timeout: 30_000 });
+    } catch (error) {
+      throw new Error("No independently verified PDF result: " +
+        (await page.getByRole("alert").allInnerTexts()).join(" | ") + " / " + errors.join(" | "), { cause: error });
+    }
+  }
 
   async function run(pages, expectedCount, firstText, lastText, filename) {
     await file.setInputFiles({ name: filename, mimeType: "application/pdf", buffer: await source(pages) });
     await page.locator('[data-pdf-workspace-372] [data-workspace-page]').first().waitFor({ timeout: 25_000 });
     await page.getByRole("button", { name: "Inverti ordine" }).click();
     await page.getByRole("button", { name: "Crea PDF e verifica" }).click();
-    const panel = page.locator('.result-panel[data-state="success"]');
-    await panel.waitFor({ timeout: 90_000 });
+    await resultReady();
     const downloadEvent = page.waitForEvent("download", { timeout: 20_000 });
     await page.getByRole("link", { name: /Scarica.*\.pdf/u }).first().click();
     const download = await downloadEvent;
@@ -85,7 +92,7 @@ try {
   await page.getByRole("button", { name: "Seleziona pagina originale 99" }).click();
   await page.locator('input[name="workspace-mode-372"]').last().check();
   await page.getByRole("button", { name: "Crea PDF e verifica" }).click();
-  await page.locator('.result-panel[data-state="success"]').waitFor({ timeout: 90_000 });
+  await resultReady();
   const extractEvent = page.waitForEvent("download", { timeout: 20_000 });
   await page.getByRole("link", { name: /Scarica.*\.pdf/u }).first().click();
   const extracted = readFileSync(await (await extractEvent).path());

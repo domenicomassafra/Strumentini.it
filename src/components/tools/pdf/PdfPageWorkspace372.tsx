@@ -170,8 +170,11 @@ export function PdfPageWorkspace372() {
     } catch (reason) {
       if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "PDF non elaborabile, originale intatto.");
     } finally {
-      if (active.current === controller) active.current = null;
-      setBusy(false);
+      // A cancelled job cannot clear the busy flag owned by a newer file/job.
+      if (active.current === controller) {
+        active.current = null;
+        setBusy(false);
+      }
     }
   }
 
