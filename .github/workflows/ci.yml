@@ -96,6 +96,7 @@ jobs:
       # timeouts caused by unrelated tests competing for the same runner CPU;
       # all existing acceptance assertions and timeouts remain unchanged.
       - run: npm test -- --maxWorkers=1
+      - run: npm run test:workerd
       - run: npm run tickets:test
       - run: npm run check
       - run: npm run build
