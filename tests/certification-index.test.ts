@@ -196,7 +196,7 @@ describe("expanded catalog certification index", () => {
       oracle: { status: "VERIFIED" },
     });
     expect(risConverter?.certificationReceipt).toBe("quality/receipts/research-knowledge/ris-bibtex-converter.gold.json");
-    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["eml-msg-viewer", "epub-reader", "ooxml-media-compression", "pdf-booklet-interleave", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "pdf-page-numbers", "pdf-tables-to-xlsx", "pdf-watermark", "printable-pdf-from-text", "tfr-calculator", "video-inspector"]);
+    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["eml-msg-viewer", "epub-reader", "ooxml-media-compression", "pdf-booklet-interleave", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "pdf-page-numbers", "pdf-repair", "pdf-tables-to-xlsx", "pdf-watermark", "printable-pdf-from-text", "tfr-calculator", "video-inspector"]);
     expect(index.tools.filter((tool) => tool.status === "PARTIAL").map((tool) => tool.id)).toEqual(["image-resize", "microphone-recorder"]);
     for (const tool of index.tools.filter((entry) => entry.status === "GOLD")) {
       expect(tool.certificationReceipt).not.toBeNull();
