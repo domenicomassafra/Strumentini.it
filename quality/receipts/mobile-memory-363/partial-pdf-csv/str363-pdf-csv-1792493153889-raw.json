@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 1,
+  "ticket": "STR-363",
+  "evidenceKind": "ANDROID_EMULATOR_PARTIAL_RAW_UNATTESTED",
+  "physicalDeviceObserved": false,
+  "status": "INCOMPLETE_REVIEW_REQUIRED",
+  "sourceRevision": "4031b58258d56aef6a9392ba9ca2da6efe8bb7d9",
+  "routeSha": {
+    "pdf": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+    "csv": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0"
+  },
+  "runId": "str363-pdf-csv-1792493153889",
+  "observedAt": "2026-10-20T10:45:53.901Z",
+  "emulator": {
+    "id": "emulator-5554",
+    "fingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.036/12592187:user/release-keys",
+    "androidVersion": "15",
+    "chromeVersion": "124.0.6367.219"
+  },
+  "scope": "Real installed Android Chrome CDP setInputFiles, input selection is scripted and not native picker",
+  "memoryScope": "Renderer JS heap sampled via CDP and Chrome MAIN PROCESS sampled PSS/RSS only, not total browser memory",
+  "timingScope": "rAF and pointer-to-next-frame includes automation/scheduling; no device-universal frame claim",
+  "observations": [
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "S",
+      "phase": "cold",
+      "route": "/tools/csv-cleaner/",
+      "routeSha256": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792493153889-csv-S-cold.csv",
+        "bytes": 2684,
+        "sha256": "4cdaa1b4aa1a54e195ed2cd90385e73708a48823ef2401c91078f51e0a59ab22",
+        "expectedCount": 100
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792493153889-csv-S-cold.clean.csv",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792493153889-csv-S-cold-download.csv",
+        "bytes": 2684,
+        "sha256": "4cdaa1b4aa1a54e195ed2cd90385e73708a48823ef2401c91078f51e0a59ab22",
+        "independentlyReopened": true,
+        "rows": 100
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 4793696,
+        "after": 5541880,
+        "sampledPeak": 6127636,
+        "samples": 5
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 135346,
+          "rssKb": 310836,
+          "rawSha256": "f59bbdbc6f673249ee9d7b445cef3d8ff71e61ab04bb49ae7c06ae3ea7767e69"
+        },
+        "after": {
+          "pssKb": 133341,
+          "rssKb": 308856,
+          "rawSha256": "a42123aad5e224abc2e0c16c0b92f907a550ce04c6e78881e382862ba39eaef3"
+        }
+      },
+      "timing": {
+        "samples": 11,
+        "maxIntervalMs": 16.799999999999955,
+        "inputLatencyMs": 2.5,
+        "elapsedMs": 323.5
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:45:58.282Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "S",
+      "phase": "warm",
+      "route": "/tools/csv-cleaner/",
+      "routeSha256": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792493153889-csv-S-warm.csv",
+        "bytes": 2684,
+        "sha256": "4cdaa1b4aa1a54e195ed2cd90385e73708a48823ef2401c91078f51e0a59ab22",
+        "expectedCount": 100
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792493153889-csv-S-warm.clean.csv",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792493153889-csv-S-warm-download.csv",
+        "bytes": 2684,
+        "sha256": "4cdaa1b4aa1a54e195ed2cd90385e73708a48823ef2401c91078f51e0a59ab22",
+        "independentlyReopened": true,
+        "rows": 100
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 5872072,
+        "after": 5774440,
+        "sampledPeak": 5873752,
+        "samples": 5
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 133429,
+          "rssKb": 308944,
+          "rawSha256": "0372217aae33924ce49446700408b7f43385713ba49b9d3c72cfdf7e5f309c7a"
+        },
+        "after": {
+          "pssKb": 133506,
+          "rssKb": 309028,
+          "rawSha256": "9e37461da60d7a712c53d5fd27364c9ffdaca37b49113918b99ee5f4f237575b"
+        }
+      },
+      "timing": {
+        "samples": 8,
+        "maxIntervalMs": 50,
+        "inputLatencyMs": 26.80000000037262,
+        "elapsedMs": 269.6000000005588
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:46:00.254Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "M",
+      "phase": "cold",
+      "route": "/tools/csv-cleaner/",
+      "routeSha256": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792493153889-csv-M-cold.csv",
+        "bytes": 152343,
+        "sha256": "3b95b3f171e52a101f5e501e954046f57901a8bd52c448d7c512856ed36c80fa",
+        "expectedCount": 5000
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792493153889-csv-M-cold.clean.csv",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792493153889-csv-M-cold-download.csv",
+        "bytes": 152343,
+        "sha256": "3b95b3f171e52a101f5e501e954046f57901a8bd52c448d7c512856ed36c80fa",
+        "independentlyReopened": true,
+        "rows": 5000
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 9590452,
+        "after": 4809704,
+        "sampledPeak": 12725820,
+        "samples": 5
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 136802,
+          "rssKb": 312324,
+          "rawSha256": "d7f04a9150ec16f237b0a440eb2ecb9e73268a65a9a6ade6e400a2e8cb689003"
+        },
+        "after": {
+          "pssKb": 133986,
+          "rssKb": 309508,
+          "rawSha256": "0dcc34b16a391431349b43a9ea17daac540e134a10c5b12c3a41700597cffc63"
+        }
+      },
+      "timing": {
+        "samples": 13,
+        "maxIntervalMs": 83.39999999999986,
+        "inputLatencyMs": 12.900000000558748,
+        "elapsedMs": 341.20000000018626
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:46:03.418Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "M",
+      "phase": "warm",
+      "route": "/tools/csv-cleaner/",
+      "routeSha256": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792493153889-csv-M-warm.csv",
+        "bytes": 152343,
+        "sha256": "3b95b3f171e52a101f5e501e954046f57901a8bd52c448d7c512856ed36c80fa",
+        "expectedCount": 5000
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792493153889-csv-M-warm.clean.csv",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792493153889-csv-M-warm-download.csv",
+        "bytes": 152343,
+        "sha256": "3b95b3f171e52a101f5e501e954046f57901a8bd52c448d7c512856ed36c80fa",
+        "independentlyReopened": true,
+        "rows": 5000
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 8161768,
+        "after": 13005908,
+        "sampledPeak": 13005908,
+        "samples": 6
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 136310,
+          "rssKb": 311832,
+          "rawSha256": "b8f41feaa5611ee66619b416bb7349a392b55f9eaca4241497149aab0367b3e7"
+        },
+        "after": {
+          "pssKb": 135062,
+          "rssKb": 310584,
+          "rawSha256": "5536740d97bb1fe232a09e40d5a02dbd2f1c1a6b2b2e7243e5ad54effba53585"
+        }
+      },
+      "timing": {
+        "samples": 23,
+        "maxIntervalMs": 83.40000000000055,
+        "inputLatencyMs": 0.40000000055897544,
+        "elapsedMs": 536.4000000003725
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:46:05.621Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "L",
+      "phase": "cold",
+      "route": "/tools/csv-cleaner/",
+      "routeSha256": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792493153889-csv-L-cold.csv",
+        "bytes": 965118,
+        "sha256": "5e01dc6a666674af86c4b66a6f8cc62b3ec4100d41731a93e188f80568391431",
+        "expectedCount": 30000
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792493153889-csv-L-cold.clean.csv",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792493153889-csv-L-cold-download.csv",
+        "bytes": 965118,
+        "sha256": "5e01dc6a666674af86c4b66a6f8cc62b3ec4100d41731a93e188f80568391431",
+        "independentlyReopened": true,
+        "rows": 30000
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 25045860,
+        "after": 37273096,
+        "sampledPeak": 37273096,
+        "samples": 6
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 136834,
+          "rssKb": 312356,
+          "rawSha256": "5aea67ccf9abf911d7bc56b8bac3fc71ef8695406519ad71f8f50b150f6fd8b2"
+        },
+        "after": {
+          "pssKb": 135086,
+          "rssKb": 310452,
+          "rawSha256": "1ede6b47d34db6ba1f50713561449389446c4f5df6552441ea71302a61e84021"
+        }
+      },
+      "timing": {
+        "samples": 13,
+        "maxIntervalMs": 416.60000000000014,
+        "inputLatencyMs": 12.599999999255033,
+        "elapsedMs": 684.7000000001863
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:46:08.837Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "L",
+      "phase": "warm",
+      "route": "/tools/csv-cleaner/",
+      "routeSha256": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792493153889-csv-L-warm.csv",
+        "bytes": 965118,
+        "sha256": "5e01dc6a666674af86c4b66a6f8cc62b3ec4100d41731a93e188f80568391431",
+        "expectedCount": 30000
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792493153889-csv-L-warm.clean.csv",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792493153889-csv-L-warm-download.csv",
+        "bytes": 965118,
+        "sha256": "5e01dc6a666674af86c4b66a6f8cc62b3ec4100d41731a93e188f80568391431",
+        "independentlyReopened": true,
+        "rows": 30000
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 50134596,
+        "after": 32277668,
+        "sampledPeak": 50134596,
+        "samples": 7
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 117490,
+          "rssKb": 292652,
+          "rawSha256": "cdd508b3d01aa89aaf4f5b99e7a5e6e02061bbdadd257478aa90e6ccb8ee7b7a"
+        },
+        "after": {
+          "pssKb": 117454,
+          "rssKb": 292616,
+          "rawSha256": "a298bf11b80bdaa2398b3756175e36f54646b35d9dee62c548a8592496182b5b"
+        }
+      },
+      "timing": {
+        "samples": 8,
+        "maxIntervalMs": 416.59999999999945,
+        "inputLatencyMs": 6.299999999627289,
+        "elapsedMs": 685.7000000001863
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:46:11.812Z"
+    }
+  ],
+  "unresolved": [
+    "iOS #106 exclusive",
+    "cancel/background/retry/OOM/reopen post-background incomplete",
+    "Independent review of recorded device session and provenance required"
+  ]
+}

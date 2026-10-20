@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "ticket": "STR-363",
+  "evidenceKind": "ANDROID_EMULATOR_PARTIAL_RAW_UNATTESTED",
+  "physicalDeviceObserved": false,
+  "status": "INCOMPLETE_REVIEW_REQUIRED",
+  "sourceRevision": "4031b58258d56aef6a9392ba9ca2da6efe8bb7d9",
+  "routeSha": {
+    "pdf": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+    "csv": "b246457e568077a29e08ce6dbe3751d39eec23db1c1e45fef1a980baba220ba0"
+  },
+  "runId": "str363-pdf-csv-1792492909619",
+  "observedAt": "2026-10-20T10:41:49.633Z",
+  "emulator": {
+    "id": "emulator-5554",
+    "fingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.036/12592187:user/release-keys",
+    "androidVersion": "15",
+    "chromeVersion": "124.0.6367.219"
+  },
+  "scope": "Real installed Android Chrome CDP setInputFiles, input selection is scripted and not native picker",
+  "memoryScope": "Renderer JS heap sampled via CDP and Chrome MAIN PROCESS sampled PSS/RSS only, not total browser memory",
+  "timingScope": "rAF and pointer-to-next-frame includes automation/scheduling; no device-universal frame claim",
+  "observations": [
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "S",
+      "phase": "cold",
+      "route": "/tools/pdf-rotate/",
+      "routeSha256": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792492909619-pdf-S-cold.pdf",
+        "bytes": 2359,
+        "sha256": "e80d68c298765476555670e63888dda8ed367ac6744454af32cd16301b10582a",
+        "expectedCount": 1
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792492909619-pdf-S-cold.pdf-rotated.pdf",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792492909619-pdf-S-cold-download.pdf",
+        "bytes": 2314,
+        "sha256": "3af8f1f8dfe21dc433aceeec89d62f335b96f85453bb31ef7d59f852031efaac",
+        "independentlyReopened": true,
+        "pages": 1,
+        "rotatedFirstPageDegrees": 90
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 2954688,
+        "after": 3874640,
+        "sampledPeak": 3874640,
+        "samples": 5
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 132948,
+          "rssKb": 308908,
+          "rawSha256": "04495ce82edb2316a6163b11223a1b42a7c9cc422950c87a3ff9dbfaf213ab9c"
+        },
+        "after": {
+          "pssKb": 131205,
+          "rssKb": 307196,
+          "rawSha256": "bd81bcfb91143beca602b50b4fdee4eac092eb71671de2c39042c02b9c35f2a1"
+        }
+      },
+      "timing": {
+        "samples": 15,
+        "maxIntervalMs": 66.70000000000005,
+        "inputLatencyMs": 13.80000000037262,
+        "elapsedMs": 392.40000000037253
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:41:53.481Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "S",
+      "phase": "warm",
+      "route": "/tools/pdf-rotate/",
+      "routeSha256": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792492909619-pdf-S-warm.pdf",
+        "bytes": 2359,
+        "sha256": "e80d68c298765476555670e63888dda8ed367ac6744454af32cd16301b10582a",
+        "expectedCount": 1
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792492909619-pdf-S-warm.pdf-rotated.pdf",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792492909619-pdf-S-warm-download.pdf",
+        "bytes": 2314,
+        "sha256": "3af8f1f8dfe21dc433aceeec89d62f335b96f85453bb31ef7d59f852031efaac",
+        "independentlyReopened": true,
+        "pages": 1,
+        "rotatedFirstPageDegrees": 90
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 4228056,
+        "after": 5131880,
+        "sampledPeak": 5131880,
+        "samples": 25
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 131328,
+          "rssKb": 307344,
+          "rawSha256": "62e3f814d97abb0736a8a398e6538a02d8308efdb3805d09bc1cfb66a03078c7"
+        },
+        "after": {
+          "pssKb": 131729,
+          "rssKb": 307592,
+          "rawSha256": "610c350fae8c102820eeff6fc69cd83d61c44185fc1c7e35414d5666599fc3f0"
+        }
+      },
+      "timing": {
+        "samples": 94,
+        "maxIntervalMs": 616.6999999999998,
+        "inputLatencyMs": 132.60000000037235,
+        "elapsedMs": 3918.2999999998137
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:41:59.115Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "M",
+      "phase": "cold",
+      "route": "/tools/pdf-rotate/",
+      "routeSha256": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792492909619-pdf-M-cold.pdf",
+        "bytes": 18889,
+        "sha256": "dd9c9b0be37dcf0b958c784f879a242ec8802653074b94d0f5eb14663ced6127",
+        "expectedCount": 12
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792492909619-pdf-M-cold.pdf-rotated.pdf",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792492909619-pdf-M-cold-download.pdf",
+        "bytes": 19885,
+        "sha256": "cb819ed5f7b654a6ce415d06c074b40c9f6963de01c06a788242ca7d211035f8",
+        "independentlyReopened": true,
+        "pages": 12,
+        "rotatedFirstPageDegrees": 90
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 5713744,
+        "after": 6290624,
+        "sampledPeak": 6944972,
+        "samples": 6
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 132309,
+          "rssKb": 308176,
+          "rawSha256": "014612e13931bfb30e7bfbbfdf27ec3f5d6caa436074e892e21305c259b4c918"
+        },
+        "after": {
+          "pssKb": 131573,
+          "rssKb": 307440,
+          "rawSha256": "4e091920cc056323a5fd0b208448e4625edc50abecd265e6c015d8bca9319105"
+        }
+      },
+      "timing": {
+        "samples": 16,
+        "maxIntervalMs": 116.59999999999991,
+        "inputLatencyMs": 1.2999999998137355,
+        "elapsedMs": 482.20000000018626
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:42:02.820Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "M",
+      "phase": "warm",
+      "route": "/tools/pdf-rotate/",
+      "routeSha256": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792492909619-pdf-M-warm.pdf",
+        "bytes": 18889,
+        "sha256": "dd9c9b0be37dcf0b958c784f879a242ec8802653074b94d0f5eb14663ced6127",
+        "expectedCount": 12
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792492909619-pdf-M-warm.pdf-rotated.pdf",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792492909619-pdf-M-warm-download.pdf",
+        "bytes": 19885,
+        "sha256": "cb819ed5f7b654a6ce415d06c074b40c9f6963de01c06a788242ca7d211035f8",
+        "independentlyReopened": true,
+        "pages": 12,
+        "rotatedFirstPageDegrees": 90
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 6628084,
+        "after": 7159300,
+        "sampledPeak": 7159300,
+        "samples": 19
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 131721,
+          "rssKb": 307588,
+          "rawSha256": "46e84f2632bd7ba906df219814b16a5b32e57316c4b7b144842f29499dee63ee"
+        },
+        "after": {
+          "pssKb": 131473,
+          "rssKb": 307344,
+          "rawSha256": "6fb4c0a780f48a2f8cbd99c09e27f0a2cc2435d2c73c9ed4b9db2978a2237a09"
+        }
+      },
+      "timing": {
+        "samples": 89,
+        "maxIntervalMs": 250,
+        "inputLatencyMs": 0,
+        "elapsedMs": 2362.600000000559
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:42:07.110Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "L",
+      "phase": "cold",
+      "route": "/tools/pdf-rotate/",
+      "routeSha256": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792492909619-pdf-L-cold.pdf",
+        "bytes": 68628,
+        "sha256": "c1e38465fa07371344235a18648ff11509dfe5b79dfb391490fa3be32abfef6e",
+        "expectedCount": 45
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792492909619-pdf-L-cold.pdf-rotated.pdf",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792492909619-pdf-L-cold-download.pdf",
+        "bytes": 73259,
+        "sha256": "1bcaffc583f1ab5ff8d15d08ad04bde69f999b871c82a1ba0e9eac84adb4ffbe",
+        "independentlyReopened": true,
+        "pages": 45,
+        "rotatedFirstPageDegrees": 90
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 9185848,
+        "after": 4895944,
+        "sampledPeak": 10977024,
+        "samples": 9
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 133036,
+          "rssKb": 308908,
+          "rawSha256": "2dcc89440e06b7b77a24ed5eece276b43e7b1911902eddd17699da4b7cd6c1fb"
+        },
+        "after": {
+          "pssKb": 131868,
+          "rssKb": 307740,
+          "rawSha256": "0cc73b3a0c2132d5c12ef810781540a5c749a15a4f6c3c84482736854aca5dd7"
+        }
+      },
+      "timing": {
+        "samples": 21,
+        "maxIntervalMs": 300,
+        "inputLatencyMs": 11.000000000372438,
+        "elapsedMs": 916.2000000001863
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:42:10.473Z"
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "L",
+      "phase": "warm",
+      "route": "/tools/pdf-rotate/",
+      "routeSha256": "366f35bf6adf689e7dfae28349a76ea1286d77c2a8c9f25ee9e14b82b8546a2b",
+      "status": "OBSERVED_PARTIAL_REVIEW_REQUIRED",
+      "coldDefinition": "fresh route navigation, browser process remains warm",
+      "input": {
+        "name": "str363-pdf-csv-1792492909619-pdf-L-warm.pdf",
+        "bytes": 68628,
+        "sha256": "c1e38465fa07371344235a18648ff11509dfe5b79dfb391490fa3be32abfef6e",
+        "expectedCount": 45
+      },
+      "output": {
+        "name": "str363-pdf-csv-1792492909619-pdf-L-warm.pdf-rotated.pdf",
+        "local": "/home/udodo/Code/.worktrees/str-363-capture-worker3/.tmp-str363-pdf-csv/str363-pdf-csv-1792492909619-pdf-L-warm-download.pdf",
+        "bytes": 73259,
+        "sha256": "1bcaffc583f1ab5ff8d15d08ad04bde69f999b871c82a1ba0e9eac84adb4ffbe",
+        "independentlyReopened": true,
+        "pages": 45,
+        "rotatedFirstPageDegrees": 90
+      },
+      "memory": {
+        "metric": "JS_HEAP_BYTES",
+        "before": 5091584,
+        "after": 5459420,
+        "sampledPeak": 8813844,
+        "samples": 18
+      },
+      "mainProcessMemoryKb": {
+        "before": {
+          "pssKb": 132572,
+          "rssKb": 308444,
+          "rawSha256": "ef31a848ed676c49d05d583bb71bb04ed0085eafb812663d26c45ef78a6d94ff"
+        },
+        "after": {
+          "pssKb": 132332,
+          "rssKb": 308204,
+          "rawSha256": "71421e1207e12c56182fc11a671040af94d2dc4fb9b5fb658dcf5b988b860ef8"
+        }
+      },
+      "timing": {
+        "samples": 83,
+        "maxIntervalMs": 249.89999999999964,
+        "inputLatencyMs": 0,
+        "elapsedMs": 2277.7000000001863
+      },
+      "errors": [],
+      "offsite": [],
+      "recovery": {
+        "cancel": "NOT_RUN",
+        "background": "NOT_RUN",
+        "retry": "NOT_RUN",
+        "controlledOom": "NOT_RUN"
+      },
+      "observedAt": "2026-10-20T10:42:14.918Z"
+    }
+  ],
+  "unresolved": [
+    "iOS #106 exclusive",
+    "cancel/background/retry/OOM/reopen post-background incomplete",
+    "Independent review of recorded device session and provenance required"
+  ]
+}
