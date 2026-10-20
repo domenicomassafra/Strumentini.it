@@ -88,7 +88,7 @@ export function WorkbookEditor389() {
     {workbook && <>
       <p class="file-note">{filename} · foglio {workbook.sheetName} · {workbook.cells.length} righe · {workbook.cells[0]?.length ?? 0} colonne. Seleziona una cella per cambiarne il tipo.</p>
       <label class="field"><span>Tipo cella selezionata {cellAddress389(...selected)}</span>
-        <select aria-label="Tipo cella selezionata" value={active?.kind === "blank" ? "text" : active?.kind}
+        <select aria-label="Tipo cella selezionata" value={active?.kind === "blank" ? (active.previousKind ?? "text") : active?.kind}
           disabled={busy} onChange={(event) => {
             if (!active) return;
             const type = event.currentTarget.value as WorkbookCellKind389;

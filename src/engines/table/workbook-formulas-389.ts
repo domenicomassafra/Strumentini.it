@@ -4,6 +4,8 @@ export interface WorkbookCell389 {
   readonly kind: WorkbookCellKind389;
   readonly input: string;
   readonly value: string;
+  /** Remember the explicit type while a populated cell is temporarily empty. */
+  readonly previousKind?: "number" | "text";
 }
 export interface Workbook389 {
   readonly sheetName: string;
@@ -51,6 +53,29 @@ export function strictWorkbookNumber389(raw: string): number {
   return value;
 }
 
+/** Excel stores at most 15 significant decimal digits for our supported numeric subset. */
+function roundedWorkbookNumber389(value: number): number {
+  if (!Number.isFinite(value)) throw new WorkbookError389("INVALID_FORMULA", "Risultato numerico non finito.");
+  return Number(value.toPrecision(15));
+}
+
+/** OOXML numeric caches must be plain decimal, including small exponential results. */
+function formulaResultText389(value: number): string {
+  const decimal = String(roundedWorkbookNumber389(value));
+  const parts = /^(-?)(\d+)(?:\.(\d+))?e([+-]?\d+)$/iu.exec(decimal);
+  let result = decimal;
+  if (parts) {
+    const digits = parts[2]! + (parts[3] ?? "");
+    const point = parts[2]!.length + Number(parts[4]);
+    result = parts[1] + (point <= 0 ? "0." + "0".repeat(-point) + digits :
+      point >= digits.length ? digits + "0".repeat(point - digits.length) :
+      digits.slice(0, point) + "." + digits.slice(point));
+  }
+  try { strictWorkbookNumber389(result); }
+  catch { throw new WorkbookError389("INVALID_FORMULA", "Risultato non esportabile con la precisione Excel supportata."); }
+  return result;
+}
+
 type NumericReader = (address: string) => number;
 
 /** Recursive descent grammar: arithmetic, parentheses, local cell references and SUM ranges. */
@@ -79,7 +104,7 @@ export function computeFormula389(formula: string, read: NumericReader): number 
       const [rowA, colA] = cellIndex389(first), [rowB, colB] = cellIndex389(last);
       if (rowB < rowA || colB < colA) throw new WorkbookError389("INVALID_FORMULA", "Intervallo SUM invertito.");
       let result = 0;
-      for (let r = rowA; r <= rowB; r++) for (let c = colA; c <= colB; c++) result += read(cellAddress389(r, c));
+      for (let r = rowA; r <= rowB; r++) for (let c = colA; c <= colB; c++) result = roundedWorkbookNumber389(result + read(cellAddress389(r, c)));
       return result;
     }
     if (token && /^\$?[A-Z]/u.test(token)) { cellIndex389(token); return read(token.replaceAll("$", "")); }
@@ -94,7 +119,7 @@ export function computeFormula389(formula: string, read: NumericReader): number 
     while (tokens[cursor] === "*" || tokens[cursor] === "/") {
       const op = tokens[cursor++]; const right = primary();
       if (op === "/" && right === 0) throw new WorkbookError389("INVALID_FORMULA", "Divisione per zero.");
-      result = op === "*" ? result * right : result / right;
+      result = roundedWorkbookNumber389(op === "*" ? result * right : result / right);
     }
     return result;
   }
@@ -102,13 +127,13 @@ export function computeFormula389(formula: string, read: NumericReader): number 
     let result = product();
     while (tokens[cursor] === "+" || tokens[cursor] === "-") {
       const op = tokens[cursor++]; const right = product();
-      result = op === "+" ? result + right : result - right;
+      result = roundedWorkbookNumber389(op === "+" ? result + right : result - right);
     }
     return result;
   }
   const result = addition();
   if (cursor !== tokens.length || !Number.isFinite(result)) throw new WorkbookError389("INVALID_FORMULA", "Formula incompleta o risultato non finito.");
-  return result;
+  return roundedWorkbookNumber389(result);
 }
 
 export function recalculateWorkbook389(workbook: Workbook389): Workbook389 {
@@ -129,13 +154,13 @@ export function recalculateWorkbook389(workbook: Workbook389): Workbook389 {
     if (state.get(address) === "done") return Number(cached.get(address));
     state.set(address, "active");
     const value = cell.kind === "number" ? strictWorkbookNumber389(cell.input) : computeFormula389(cell.input, calculate);
-    cached.set(address, String(value)); state.set(address, "done");
+    cached.set(address, formulaResultText389(value)); state.set(address, "done");
     return value;
   }
   const cells = workbook.cells.map((row, r) => row.map((cell, c) => {
     if (cell.kind === "blank") return { ...cell, input: "", value: "" };
     if (cell.kind === "text") return { ...cell, value: cell.input };
-    return { ...cell, value: String(calculate(cellAddress389(r, c))) };
+    return { ...cell, value: formulaResultText389(calculate(cellAddress389(r, c))) };
   }));
   return { sheetName: workbook.sheetName, cells };
 }
@@ -146,9 +171,11 @@ export function editWorkbookCell389(workbook: Workbook389, row: number, column: 
     throw new WorkbookError389("INVALID_CELL", "Cella fuori dal foglio o testo oltre 1024 caratteri.");
   }
   const current = workbook.cells[row]![column]!;
-  const nextKind = input === "" ? "blank" : kind ?? (input.startsWith("=") ? "formula" : current.kind === "formula" || current.kind === "blank" ? "text" : current.kind);
+  const nextKind = input === "" ? "blank" : kind ?? (input.startsWith("=") ? "formula" :
+    current.kind === "blank" ? (current.previousKind ?? "text") : current.kind === "formula" ? "text" : current.kind);
   const rows = workbook.cells.map((cells) => [...cells]);
-  rows[row]![column] = { kind: nextKind, input, value: "" };
+  const previousKind = nextKind === "blank" ? (current.kind === "number" || current.kind === "text" ? current.kind : current.previousKind) : undefined;
+  rows[row]![column] = { kind: nextKind, input, value: "", ...(previousKind ? { previousKind } : {}) };
   return recalculateWorkbook389({ sheetName: workbook.sheetName, cells: rows });
 }
 

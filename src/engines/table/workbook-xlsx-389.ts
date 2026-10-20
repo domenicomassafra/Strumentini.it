@@ -120,11 +120,25 @@ function inspectPackage(bytes: ArrayBuffer) {
   }
   const sheetPath = parts.join("/");
   if (!/^xl\/worksheets\/[^/]+\.xml$/u.test(sheetPath) || !entries[sheetPath]) refuse("Worksheet non trovata.");
+  const styles = entries["xl/styles.xml"] ? parsePart(entries, "xl/styles.xml") : undefined;
+  if (styles) {
+    if (localName(styles) !== "styleSheet") refuse("Stili Excel non validi.");
+    // An absent cell s attribute and explicit s="0" both use cellXfs[0].
+    // Reject dates and other effective formats even when the index is zero.
+    const xfs = getOne(styles, "cellXfs");
+    const defaultXf = xfs && children(xfs, "xf")[0];
+    const namedXfs = getOne(styles, "cellStyleXfs");
+    const baseXf = namedXfs && children(namedXfs, "xf")[0];
+    if (!defaultXf || attribute(defaultXf, "numFmtId") !== "0" ||
+        (baseXf && attribute(baseXf, "numFmtId") !== "0")) {
+      refuse("Formato di cella predefinito non General (date/stili) non supportato.");
+    }
+  }
   const sheet = parsePart(entries, sheetPath);
   if (localName(sheet) !== "worksheet") refuse("Struttura worksheet non valida.");
   checkAllowed(sheet, ["sheetPr", "dimension", "sheetViews", "sheetFormatPr", "sheetData", "pageMargins", "printOptions", "pageSetup"]);
   if (children(sheet, "pageSetup").length) refuse("Impostazioni di stampa avanzate non supportate.");
-  return { entries, sheet, sheetPath, sheetName };
+  return { entries, sheet, sheetPath, sheetName, workbook };
 }
 
 function readWorkbook(bytes: ArrayBuffer): Workbook389 {
@@ -210,7 +224,12 @@ export function exportXlsxWorkbook389(source: ArrayBuffer, workbook: Workbook389
   original.entries[original.sheetPath] = encoder.encode(next);
   const workbookXml = decoder.decode(original.entries["xl/workbook.xml"]!);
   const calc = /<(?:[A-Za-z_][\w.-]*:)?calcPr\b[^>]*\/\s*>/u;
-  const autoCalc = '<calcPr calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/>';
+  const calcElement = getOne(original.workbook, "calcPr");
+  // Preserve fullPrecision and calcId: they change Excel semantics if silently dropped.
+  const calcAttrs = (calcElement?.attributes ?? [])
+    .filter((attr) => !["calcMode", "fullCalcOnLoad", "forceFullCalc"].includes(attr.name))
+    .map((attr) => ` ${attr.name}="${xmlEscape(unescapeXml(attr.value))}"`).join("");
+  const autoCalc = `<${calcElement?.name ?? "calcPr"}${calcAttrs} calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/>`;
   if (/<(?:[A-Za-z_][\w.-]*:)?calcPr\b/u.test(workbookXml) && !calc.test(workbookXml)) {
     refuse("Proprietà di calcolo workbook non modificabili in sicurezza.");
   }

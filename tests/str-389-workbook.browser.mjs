@@ -44,7 +44,14 @@ try {
   await editor.getByLabel("Cella B2").waitFor({ timeout: 30_000 });
   assert.equal(await editor.getByLabel("Cella A2").inputValue(), "00123");
   assert.equal(await editor.getByLabel("Risultato C2").innerText(), "9", "non usare cache originale 777");
-  await editor.getByLabel("Cella B2").fill("6");
+  // Real key sequence: clearing the original numeric cell must not turn it into text.
+  const numberCell = editor.getByLabel("Cella B2");
+  await numberCell.click();
+  await numberCell.press("ControlOrMeta+A");
+  await numberCell.press("Backspace");
+  assert.equal(await numberCell.inputValue(), "");
+  await numberCell.press("6");
+  assert.equal(await numberCell.inputValue(), "6");
   assert.equal(await editor.getByLabel("Risultato C2").innerText(), "11");
   const downloadPromise = page.waitForEvent("download");
   await editor.getByRole("button", { name: "Scarica XLSX con formule" }).click();
