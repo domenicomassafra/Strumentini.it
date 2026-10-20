@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-04",
-  "family_count": 98,
+  "family_count": 99,
   "families": [
     {
       "id": "archive-checksum-manifest",
@@ -2382,6 +2382,28 @@
         "Active and traversing attachment refusal",
         "Corrupt MIME, invalid MSG and cancellation",
         "Upstream MSG parser corpus"
+      ]
+    },
+    {
+      "id": "epub3-local-safe",
+      "candidate_families": [
+        "EPUB3 offline text reader and chapter export"
+      ],
+      "path": "quality/fixtures/epub3-local-safe/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Two synthetic EPUB3 packages constructed with Python zipfile locally; all book text original, no third-party copyrighted book content."
+      },
+      "truth_sources": [
+        "epub-3.3",
+        "pkware-appnote",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "EPUB3 spine order, navigation and UTF-8",
+        "binary ZIP integrity and output TXT reopen",
+        "script, CSS, remote, traversal and ZIP-bomb refusal"
       ]
     }
   ]

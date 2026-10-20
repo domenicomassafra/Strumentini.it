@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 271,
+  "entry_count": 272,
   "entries": [
     {
       "id": "cand-001",
@@ -12094,6 +12094,53 @@
       "unresolved_gaps": [
         "No Gold receipt",
         "Broader MSG variant/mobile corpus not independently certified"
+      ]
+    },
+    {
+      "id": "cand-272",
+      "candidate": "EPUB3 offline text reader and chapter export",
+      "tool_family": "file-privacy",
+      "maintenance_class": "R",
+      "truth_sources": [
+        "epub-3.3",
+        "pkware-appnote",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic EPUB3 ZIP with uncompressed mimetype, META-INF/container.xml, OPF package/spine, XHTML navigation and UTF-8 chapter text.",
+      "invariants": [
+        "spine order determines chapter navigation",
+        "only decoded inert text may be copied or downloaded",
+        "no file member triggers network requests or active document execution",
+        "ZIP central/local bounds and decompression quotas checked before materialization"
+      ],
+      "adversarial_cases": [
+        "ZIP bomb",
+        "path traversal",
+        "script and SVG",
+        "remote hyperlink, image and navigation",
+        "DTD/ENTITY",
+        "wrong MIME or missing spine resources"
+      ],
+      "expected_output_strategy": "tests/regroom-str-422.test.ts validates fflate and independently Python-zipfile-packed EPUB3 fixture pairs; scripts/acceptance-epub-422.mjs tests compiled browser navigation, TXT download, fail-closed scripting and zero external requests; no Gold receipt.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "bounded 8 MiB EPUB input and aggregate text budget",
+        "DRM/encrypted resources rejected",
+        "only inert text emitted"
+      ],
+      "portability_browser_edges": [
+        "Chromium 390px emulator acceptance; physical mobile devices and other browser engines remain unverified"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "Python standard-library zipfile + ElementTree fixture and independent Chromium browser output reopen",
+        "role": "independent synthetic corpus proof, not a Gold receipt"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "No Gold receipt",
+        "No DRM support",
+        "No real iOS/Android physical verification"
       ]
     }
   ]
