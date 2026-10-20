@@ -22,7 +22,7 @@ interface QrReadResult {
   readonly payload: string;
   readonly version: number;
   readonly size: number;
-  readonly mask: number;
+  readonly mask: number | null;
   readonly errorCorrection: string;
   readonly byteLength: number;
   readonly source: string;
@@ -68,7 +68,7 @@ export function QrReaderTool() {
     async (signal) => {
       const input = file === null
         ? { rows: matrix.trim() }
-        : { pixels: await imagePixelsFrom(file) };
+        : { pixels: await imagePixelsFrom(file, QR_RASTER_MAX_PIXELS) };
       return toolRuntime.run("qr-reader", input, {}, signal);
     },
     { formatError: readerErrorIt, formatThrownError: readerThrownIt },
@@ -102,7 +102,7 @@ export function QrReaderTool() {
             />
             <small>
               {file === null
-                ? "Facoltativa. La lettura avviene nel browser con il rilevatore locale di questo strumento: nessun file viene caricato e non serve alcuna API del browser."
+                ? "Facoltativa. La lettura avviene interamente nel browser; nessun file viene caricato su un server e non serve la fotocamera."
                 : `${file.name} · elaborazione locale`}
             </small>
           </label>
@@ -138,17 +138,21 @@ export function QrReaderTool() {
               <div><dt>Origine</dt><dd>{sourceLabelIt(result.source)}</dd></div>
               <div><dt>Versione</dt><dd>{result.version === 0 ? "non determinata dall'immagine" : `${result.version} · ${result.size} moduli per lato`}</dd></div>
               <div><dt>Correzione errori</dt><dd>Livello {result.errorCorrection}</dd></div>
-              <div><dt>Maschera</dt><dd>{result.mask}</dd></div>
+              <div><dt>Maschera</dt><dd>{result.mask === null ? "non determinata" : result.mask}</dd></div>
               <div><dt>Byte UTF-8</dt><dd>{result.byteLength}</dd></div>
             </dl>
             <ul class="status-list">
               <li>
-                <StatusMark kind="ok" label={statusMarkLabel("ok")} />{" "}
-                Sintomi di Reed–Solomon verificati: nessun errore rilevato nei codeword letti.
+                <StatusMark kind={result.errorCorrectionVerified ? "ok" : "warn"} label={statusMarkLabel(result.errorCorrectionVerified ? "ok" : "warn")} />{" "}
+                {result.errorCorrectionVerified
+                  ? "Sintomi di Reed–Solomon verificati: nessun errore rilevato nei codeword letti."
+                  : "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile."}
               </li>
               <li>
                 <StatusMark kind={result.maskFromFormatInformation ? "ok" : "warn"} label={statusMarkLabel(result.maskFromFormatInformation ? "ok" : "warn")} />{" "}
-                {result.maskFromFormatInformation
+                {result.mask === null
+                  ? "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+                  : result.maskFromFormatInformation
                   ? `Maschera letta dal campo di formato del simbolo; le due copie ${result.formatCopiesAgree ? "coincidono" : "non coincidono"}.`
                   : "Campo di formato illeggibile: la maschera è stata determinata provando tutte e otto e verificando i sintomi."}
               </li>

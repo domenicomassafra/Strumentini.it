@@ -26736,14 +26736,15 @@
         },
         "module": {
           "path": "src/tools/qr-reader/module.ts",
-          "sha256": "ebca927091e620c7d4c0a7850f3820aa68f0d9833bd50b2c01e475762aad6bad"
+          "sha256": "bd75dfc1a9f1eae97b000d416dec4f752514e0f72b438ad06ff348009555fbc5"
         },
         "page": {
           "path": "src/pages/tools/qr-reader.astro",
           "sha256": "8c2d1b3587819370f6cb694f678f5759ef2d34ebf0eb83c0d0e603e19044242f"
         },
         "testFiles": [
-          "tests/qr-local-engine.test.ts"
+          "tests/qr-local-engine.test.ts",
+          "tests/qr-zxing-279.test.ts"
         ]
       },
       "oracle": {

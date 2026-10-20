@@ -19,8 +19,12 @@ export { QR_BYTE_CAPACITY, QR_EC_LEVEL, QR_MAX_BYTES, QR_MAX_VERSION, QR_QUIET_Z
 export { decodeQrMatrixValue, decodeQrFromRaster, generateQr, matrixFromRows, normalizeMatrixInput, rasterPlan, renderQrSvg };
 export { QR_EC_LEVEL as SUPPORTED_ERROR_CORRECTION };
 
-export interface QrReadResult extends QrDecodeResult {
+export interface QrReadResult extends Omit<QrDecodeResult, "errorCorrection" | "mask" | "formatRepairDistance" | "mode"> {
   readonly source: "matrix" | "svg" | "rows" | "image";
+  readonly errorCorrection: "L" | "M" | "Q" | "H";
+  readonly mask: number | null;
+  readonly formatRepairDistance: number | null;
+  readonly mode: "byte" | "other";
   readonly moduleSizePixels?: number;
 }
 
@@ -68,7 +72,7 @@ export async function readQrImage(source: ImageBitmap | HTMLImageElement | HTMLC
   return readQrPixels(canvas);
 }
 
-async function pixelsFor(source: ImageBitmap | HTMLImageElement | HTMLCanvasElement | Blob): Promise<RasterPixels> {
+export async function pixelsFor(source: ImageBitmap | HTMLImageElement | HTMLCanvasElement | Blob): Promise<RasterPixels> {
   if (!imagePathAvailable()) throw new Error("QR_IMAGE_DECODER_UNAVAILABLE");
   let width: number;
   let height: number;
