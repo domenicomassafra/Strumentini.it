@@ -4,12 +4,7 @@ import type { PdfAnnotation134, PdfAnnotationKind134 } from "../../../engines/pd
 import { runPdfAnnotationWorker134 } from "../../../engines/pdf/annotations-worker-client-134";
 import { preparePdfResult, PdfResultV2, type PreparedPdfResult } from "./PdfResultV2";
 
-interface Viewport134 {
-  readonly width: number;
-  readonly height: number;
-  convertToPdfPoint(x: number, y: number): [number, number];
-  convertToViewportPoint(x: number, y: number): [number, number];
-}
+type Viewport134 = ReturnType<Awaited<ReturnType<PDFDocumentProxy["getPage"]>>["getViewport"]>;
 interface Preview134 {
   url: string;
   viewport: Viewport134;
@@ -83,7 +78,8 @@ export function PdfAnnotationEditor134({ file, pageCount, initialPage }: { file:
         job = pdfPage.render({ canvas, canvasContext: context, viewport, background: "rgb(255,255,255)" });
         await job.promise;
         if (closed) return;
-        const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) =>
+        const renderedCanvas = canvas;
+        const blob = await new Promise<Blob>((resolve, reject) => renderedCanvas.toBlob((value) =>
           value ? resolve(value) : reject(new Error("Anteprima non disponibile")), "image/png"));
         if (closed) return;
         url = URL.createObjectURL(blob);
