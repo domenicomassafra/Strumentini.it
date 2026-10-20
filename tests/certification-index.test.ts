@@ -72,7 +72,9 @@ describe("expanded catalog certification index", () => {
     // #320 and #036 changed previously Gold-certified PDF password/audio
     // implementations. Historical receipts remain auditable but release gates
     // must fail closed until those changed implementations are recertified.
-    expect(index.summary.releaseEligibleGoldCount).toBe(255);
+    // #126 also changes the previously Gold image-format HEIC decoder contract.
+    // Preserve its historical receipt, but deny new release eligibility until recertified.
+    expect(index.summary.releaseEligibleGoldCount).toBe(254);
     const passwordPdf = index.tools.find((tool) => tool.id === "pdf-password-check-remove");
     expect(passwordPdf).toMatchObject({
       status: "GOLD",
@@ -80,6 +82,9 @@ describe("expanded catalog certification index", () => {
       releaseGate: "BLOCKED",
     });
     expect(passwordPdf?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
+    const imageConversion = index.tools.find((tool) => tool.id === "image-format-conversion");
+    expect(imageConversion).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
+    expect(imageConversion?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
     const audioWav = index.tools.find((tool) => tool.id === "audio-generator");
     expect(audioWav).toMatchObject({
       status: "GOLD",

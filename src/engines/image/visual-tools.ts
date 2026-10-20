@@ -292,8 +292,8 @@ export async function convertImageFormatLocal(input: unknown, signal?: AbortSign
     const lossy = mime === "image/jpeg" || mime === "image/webp";
     const sourceNote = decoded.framePolicy === "first-frame-only"
       ? ` GIF input has ${gifSource?.frameCount ?? "unknown"} source frame(s), with ${gifSource?.totalDelayCentiseconds ?? "unknown"} centiseconds of declared delays. Only its first decoded frame is exported; animation and frame timings are lost. Local first-frame extraction accepts GIFs up to 4 MiB and one million pixels. Short delays may be clamped by GIF players.`
-      : decoded.decoder === "libheif-wasm"
-        ? " HEIC/HEIF is decoded locally with the lazy libheif/WASM path before re-encoding."
+      : decoded.kind === "heic" || decoded.kind === "heif"
+        ? " HEIC/HEIF needs native browser decoding."
         : decoded.kind === "avif"
           ? " AVIF decode uses the browser's local decoder and fails explicitly when that decoder is unavailable."
           : "";
