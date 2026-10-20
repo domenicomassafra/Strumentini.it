@@ -19,6 +19,7 @@ export const PDF_ACTION_IT: Readonly<Record<PdfResultToolId, string>> = {
   "pdf-link-extractor": "Estrai collegamenti",
   "pdf-image-extractor": "Estrai immagini",
   "pdf-compare-lite": "Confronta PDF",
+  "pdf-repair": "Ripara puntatore PDF",
   "pdf-compression-lite": "Crea copia alleggerita",
   "document-handoff-manifest": "Crea manifest",
   "pdf-multi-text-search": "Cerca nei PDF",

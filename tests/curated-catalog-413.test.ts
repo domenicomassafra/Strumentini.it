@@ -9,7 +9,7 @@ import { curateHomeTools413, EDITORIAL_STARTERS_413 } from "../src/catalog/home-
 describe("#413 editorial home without hiding any catalog route", () => {
   it("keeps every canonical tool searchable, installable and backed by its own real Astro route", async () => {
     const ids = catalog.map((tool) => tool.id);
-    expect(ids).toHaveLength(272); // Source-bound catalog count updated for STR-422 on 2026-10-20; a change requires review.
+    expect(ids).toHaveLength(273); // Source-bound catalog count updated for STR-418 on 2026-10-20; a change requires review.
     expect(new Set(ids).size).toBe(ids.length);
     expect(new Set(searchCatalog.map((tool) => tool.id))).toEqual(new Set(ids));
     expect(new Set(workbenchCatalog.map((tool) => tool.id))).toEqual(new Set(ids));

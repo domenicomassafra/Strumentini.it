@@ -3617,6 +3617,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
   },
   {
+    "toolId": "pdf-repair",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "shared",
+      "component": "PdfTool",
+      "source": "src/components/tools/pdf/PdfTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "pdf",
+      "capabilities": [
+        "download",
+        "retry",
+        "reset"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "pdf-rotate",
     "engine": "pdf",
     "rendererSeam": {
