@@ -6,7 +6,7 @@ export function passwordActionLabel417(mode: PasswordMode417): string {
 }
 
 interface Props {
-  readonly file?: File;
+  readonly file: File | undefined;
   readonly mode: PasswordMode417;
   readonly password: string;
   readonly disabled: boolean;
