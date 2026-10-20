@@ -5,21 +5,40 @@ import { calculateTfr134, estimateTfrTax135 } from "../src/engines/italy/tfr-134
 import { getInvoiceStampReference152 } from "../src/engines/italy/invoice-stamp-reference-152";
 
 describe("T1-p04 annual fiscal consumer calculations", () => {
+  it("exposes only a 2026 national residual, never a final payroll net without geography and CCNL", () => {
+    const result = calculateStipendioNetto130({
+      taxYear: 2026, profile: "agricultural-worker-general",
+      ralCents: 3_000_000, payments: 13, declaresFpldBaseEqualsRal: true,
+    });
+    expect(result).toMatchObject({
+      state: "PARTIAL_NATIONAL_ONLY",
+      partialNationalResidualCents: 2_105_796,
+      modeledAnnualNetCents: null,
+      missingCoverage: expect.arrayContaining(["regione", "comune", "CCNL", "detrazioni"]),
+    });
+    expect(result.partialInstallmentsCents.reduce((sum, cents) => sum + cents, 0))
+      .toBe(result.partialNationalResidualCents);
+    expect(result.workerContributionsCents + result.nationalIrpefCents + result.partialNationalResidualCents)
+      .toBe(result.ralCents);
+    expect(result.employerContributionsCents).toBeGreaterThan(0);
+    expect(result.limitations).toContain("non sono zero");
+  });
+
   it("reconciles net from worker contribution + gross IRPEF, ignoring installment choice for tax", () => {
     const input = { taxYear: 2026, profile: "agricultural-worker-general", ralCents: 3_000_000,
       declaresFpldBaseEqualsRal: true };
     const p12 = calculateStipendioNetto130({ ...input, payments: 12 });
     for (const payments of [13, 14] as const) {
       const actual = calculateStipendioNetto130({ ...input, payments });
-      expect(actual.annualNetCents).toBe(p12.annualNetCents);
+      expect(actual.partialNationalResidualCents).toBe(p12.partialNationalResidualCents);
       expect(actual.nationalIrpefCents).toBe(p12.nationalIrpefCents);
-      expect(actual.installmentsCents.reduce((sum, n) => sum + n, 0)).toBe(actual.annualNetCents);
+      expect(actual.partialInstallmentsCents.reduce((sum, n) => sum + n, 0)).toBe(actual.partialNationalResidualCents);
     }
     expect(p12.workerContributionsCents).toBe(265200);
     expect(p12.employerContributionsCents).toBe(649800);
     expect(p12.taxableCents).toBe(2734800);
     expect(p12.nationalIrpefCents).toBe(629004);
-    expect(p12.ralCents - p12.workerContributionsCents - p12.nationalIrpefCents).toBe(p12.annualNetCents);
+    expect(p12.ralCents - p12.workerContributionsCents - p12.nationalIrpefCents).toBe(p12.partialNationalResidualCents);
     expect(() => calculateStipendioNetto130({ ...input, ralCents: 5_622_401, payments: 12 })).toThrow();
     expect(() => calculateStipendioNetto130({ ...input, declaresFpldBaseEqualsRal: false, payments: 12 })).toThrow();
   });
