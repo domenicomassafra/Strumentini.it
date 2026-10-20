@@ -105,7 +105,8 @@
     "acceptance:marketing-media": "npm run build && node scripts/acceptance-marketing-media.mjs",
     "acceptance:barcode": "npm run build && node scripts/acceptance-barcode.mjs",
     "gold:marketing-media": "npm run catalog:build && tsx scripts/gold/marketing-media-certify.ts",
-    "test:workerd": "vitest run --config vitest.workerd.config.ts"
+    "test:workerd": "vitest run --config vitest.workerd.config.ts",
+    "pdfa:export:419": "node scripts/pdfa-419.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "6.0.5",
@@ -156,10 +157,12 @@
     "@types/he": "1.2.3",
     "@types/node": "26.6.2",
     "@types/papaparse": "^5.5.2",
+    "@types/pdfkit": "0.17.6",
     "@types/turndown": "5.0.6",
     "axe-core": "4.14.0",
     "hash-wasm": "^4.12.0",
     "papaparse": "^5.7.0",
+    "pdfkit": "0.20.2",
     "tsx": "4.23.15",
     "typescript": "6.0.3",
     "vitest": "5.0.1",
