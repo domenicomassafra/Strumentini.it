@@ -64,22 +64,28 @@ function verifyClassicTable(view: string, offset: number): void {
   const records = view.slice(offset, trailerAt).trim().split(/\r\n|\r|\n/).map((line) => line.trim());
   if (records.shift() !== "xref") refuse("REFUSED", "Malformed classic xref table.");
   const visible = new Set<string>();
+  const indexedIds = new Set<number>();
   let cursor = 0;
   let total = 0;
+  let highestIndexEnd = 0;
   while (cursor < records.length) {
     const heading = /^(\d+) (\d+)$/.exec(records[cursor++] ?? "");
     if (!heading) refuse("REFUSED", "Invalid xref subsection.");
     const start = Number(heading[1]);
     const count = Number(heading[2]);
     total += count;
-    if (!Number.isSafeInteger(start) || !Number.isSafeInteger(count) || count < 1 || total > 1024) {
+    if (!Number.isSafeInteger(start) || !Number.isSafeInteger(count) || count < 1 ||
+        total > 1024 || start + count > 1024) {
       refuse("LIMIT", "Unsupported xref object count.");
     }
+    highestIndexEnd = Math.max(highestIndexEnd, start + count);
     for (let i = 0; i < count; i++) {
       const entry = /^(\d{10}) (\d{5}) ([fn])$/.exec(records[cursor++] ?? "");
       if (!entry) refuse("REFUSED", "Invalid fixed-width xref entry.");
-      if (entry[3] !== "n") continue;
       const id = start + i;
+      if (indexedIds.has(id)) refuse("REFUSED", "Ambiguous overlapping xref subsections.");
+      indexedIds.add(id);
+      if (entry[3] !== "n") continue;
       const generation = Number(entry[2]);
       const at = Number(entry[1]);
       const key = id + ":" + generation;
@@ -89,6 +95,12 @@ function verifyClassicTable(view: string, offset: number): void {
       }
       visible.add(key);
     }
+  }
+  // Trailer /Size must include exactly the complete object-number range
+  // described by the table. Tolerant parsers may silently ignore /Size 0.
+  const sizes = [...view.slice(trailerAt).matchAll(/\/Size\s+(\d+)\b/g)];
+  if (sizes.length !== 1 || Number(sizes[0]![1]) !== highestIndexEnd) {
+    refuse("REFUSED", "Trailer size disagrees with the xref table.");
   }
   const physical = [...view.slice(0, offset).matchAll(/(?:^|[\r\n])(\d+) (\d+) obj\b/g)]
     .map((match) => match[1] + ":" + match[2]);

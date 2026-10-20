@@ -56,6 +56,8 @@ describe("STR-418 bounded classic-xref pointer recovery", () => {
     ["signed marker", (bytes: Uint8Array) => replace(bytes, /trailer\s*<</, "trailer << /ByteRange [0 12 13 14]"), "UNSUPPORTED"],
     ["incremental marker", (bytes: Uint8Array) => replace(bytes, /trailer\s*<</, "trailer << /Prev 20"), "UNSUPPORTED"],
     ["corrupt xref section", (bytes: Uint8Array) => replace(bytes, /xref\s+0\s+\d+/, "xref\n1 2"), "REFUSED"],
+    ["invalid trailer size", (bytes: Uint8Array) => replace(bytes, /\/Size\s+\d+/, "/Size 0"), "REFUSED"],
+    ["overlapping free xref subsection", (bytes: Uint8Array) => replace(bytes, /\ntrailer\s*<</, "\n0 1\n0000000000 65535 f \ntrailer <<"), "REFUSED"],
   ])("refuses %s", async (_description, transform, code) => {
     const broken = replace(transform(await pdf()), /startxref\s+\d+\s+%%EOF/, "startxref\n99999999\n%%EOF");
     await expect(repairPdf418(broken)).rejects.toMatchObject({ code });

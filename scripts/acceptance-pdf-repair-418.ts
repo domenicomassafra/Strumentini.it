@@ -42,6 +42,23 @@ try {
   assert.match(info, /^Pages:\s+2$/mu);
   const beforeText = readText(before);
   const afterText = readText(after);
+  // Independent parsers may tolerate a lying /Size. The repair preflight
+  // must still reject the extra corruption rather than exporting it.
+  const hostile = Buffer.from(Buffer.from(damaged).toString("latin1").replace(
+    /\/Size\s+(\d+)\b/u,
+    (_literal, digits: string) => "/Size " + "0".repeat(digits.length),
+  ), "latin1");
+  assert.notDeepEqual(hostile, Buffer.from(damaged));
+  const hostilePath = join(folder, "hostile-size.pdf");
+  writeFileSync(hostilePath, hostile);
+  let popplerReadHostile = false;
+  try {
+    execFileSync("pdfinfo", [hostilePath], { timeout: 10_000, stdio: "pipe" });
+    popplerReadHostile = true;
+  } catch {
+    // A strict independent parser is also permitted to reject malformed input.
+  }
+  await assert.rejects(repairPdf418(hostile), { code: "REFUSED" });
   assert.equal(afterText, beforeText);
   assert.match(afterText, /STR418_FIRST_PAGE/u);
   assert.match(afterText, /STR418_SECOND_PAGE/u);
@@ -51,7 +68,8 @@ try {
     result: "PASS", profile: repaired.profile, pages: 2,
     originalBytesUnchanged: true, populatedTexts: 2,
     popplerPdfinfo: "PASS", popplerPdftotext: "PASS",
-    pdfLibIndependentOpen: "PASS", sourceBytes: source.byteLength,
+    pdfLibIndependentOpen: "PASS", hostileWrongTrailerSizeRefused: true,
+    popplerReadHostile, sourceBytes: source.byteLength,
     repairedBytes: repaired.bytes.byteLength,
   }));
 } finally {
