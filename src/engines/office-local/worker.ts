@@ -43,7 +43,7 @@ scope.onmessage = async (event) => {
       return;
     }
     if (payload.kind === "xlsx-to-csv") {
-      const result = await xlsxToCsv(payload.bytes, { ...(payload.sheet === undefined ? {} : { sheet: payload.sheet }), ...(payload.delimiter === undefined ? {} : { delimiter: payload.delimiter }) });
+      const result = await xlsxToCsv(payload.bytes, { ...(payload.sheet === undefined ? {} : { sheet: payload.sheet }), ...(payload.delimiter === undefined ? {} : { delimiter: payload.delimiter }), ...(payload.refuseFormulaLikeText === undefined ? {} : { refuseFormulaLikeText: payload.refuseFormulaLikeText }), ...(payload.strictEditing === undefined ? {} : { strictEditing: payload.strictEditing }) });
       post(jobId, { type: "resource", action: "reserve", resourceId: "csv-output", bytes: new TextEncoder().encode(result.csv).byteLength });
       post(jobId, { type: "progress", progress: { kind: "determinate", fraction: 1, phase: "complete" } });
       post(jobId, { type: "success", result: { kind: "spreadsheet-read", result } });

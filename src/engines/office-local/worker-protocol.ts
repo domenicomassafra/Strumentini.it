@@ -12,7 +12,7 @@ import type {
 export type OfficeLocalRequest =
   | { readonly kind: "csv-to-xlsx"; readonly text: string; readonly sheetName?: string; readonly columnPolicies?: readonly SpreadsheetColumnPolicy[] }
   | { readonly kind: "markdown-to-xlsx"; readonly markdown: string; readonly sheetName?: string; readonly columnPolicies?: readonly SpreadsheetColumnPolicy[] }
-  | { readonly kind: "xlsx-to-csv"; readonly bytes: ArrayBuffer; readonly sheet?: string | number; readonly delimiter?: string }
+  | { readonly kind: "xlsx-to-csv"; readonly bytes: ArrayBuffer; readonly sheet?: string | number; readonly delimiter?: string; readonly refuseFormulaLikeText?: boolean; readonly strictEditing?: boolean }
   | { readonly kind: "ooxml-analyze"; readonly bytes: ArrayBuffer }
   | { readonly kind: "ooxml-rebuild"; readonly bytes: ArrayBuffer }
   | { readonly kind: "office-structure"; readonly bytes: ArrayBuffer }
