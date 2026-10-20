@@ -135,7 +135,7 @@ describe("ticket 169 — representable XML to JSON/CSV/XLSX mappings", () => {
 });
 
 describe("ticket 291 — pinned donor parity and hostile XML fence", () => {
-  it("uses the donor AST for a representable row, but falls back on entity spelling loss", () => {
+  it("uses the donor for lossless rows and entities, and falls back on CRLF normalization", () => {
     const plain = '<rows><row id="001"><name>Marco</name></row></rows>';
     const plainValidated = parseXmlDocument(plain).root;
     const parsed = parseTabularXmlRoot(plain, plainValidated);
@@ -144,7 +144,11 @@ describe("ticket 291 — pinned donor parity and hostile XML fence", () => {
 
     const entity = "<rows><row><name>A &amp; B</name></row></rows>";
     const entityValidated = parseXmlDocument(entity).root;
-    expect(parseTabularXmlRoot(entity, entityValidated)).toBe(entityValidated);
+    expect(parseTabularXmlRoot(entity, entityValidated)).toEqual(entityValidated);
+
+    const originalLineEndings = "<rows><row><name>line1\r\nline2</name></row></rows>";
+    const validatedLineEndings = parseXmlDocument(originalLineEndings).root;
+    expect(parseTabularXmlRoot(originalLineEndings, validatedLineEndings)).toBe(validatedLineEndings);
   });
 
   it("runs the donor after strict validation and retains entity spelling, order and repeated nodes", () => {
