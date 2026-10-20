@@ -1,5 +1,6 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
 import { STR421_TOOL_COPY_IT } from "./tool-copy-str421";
+import { EPUB422_TOOL_COPY_IT } from "./tool-copy-epub-422";
 
 /** Copy pubblica: nomi e descrizioni in italiano; identificatori tecnici invariati. */
 export interface ItalianToolCopy {
@@ -10,6 +11,7 @@ export interface ItalianToolCopy {
 
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   ...STR421_TOOL_COPY_IT,
+  ...EPUB422_TOOL_COPY_IT,
   "tfr-calculator": {
     name: "Calcola TFR lordo e rivalutazione",
     summary: "Stima per anno la quota TFR e la rivalutazione FOI del fondo, distinguendo gli importi con ipotesi esplicite.",
@@ -22,15 +24,6 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "age-date-anniversary": {
     name: "Calcola età e prossimo anniversario",
     summary: "Calcola anni, mesi e giorni trascorsi e mostra la data del prossimo anniversario.",
-  },
-  "ai-code-fence-bundle": {
-    name: "Blocchi di codice AI → file ZIP",
-    summary: "Trasforma in locale i code fence incollati in file con nomi sicuri e deterministici, mostra l'albero previsto e scarica lo ZIP esatto.",
-    searchTerms: ["chatgpt codice in file", "code fence zip", "blocchi codice in file", "risposta ai zip", "markdown code files"],
-  },
-  "archive-checksum-manifest": {
-    name: "Checksum di un archivio",
-    summary: "Calcola gli SHA-256 di un archivio ZIP o di più file e crea un elenco verificabile da conservare o condividere.",
   },
   "aspect-ratio-calculator": {
     name: "Calcola proporzioni immagine",
