@@ -111,7 +111,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
     return jsonFormatterOperation(text, indent, sortKeys, mode === "minify" ? "minify" : "prettify");
   }
   if (toolId === "yaml-formatter") return yamlFormatterOperation(stringField(value, "text", "input", "yaml"), optionalNumberField(value, "indent", "spaces") ?? 2);
-  if (toolId === "toml-formatter") return tomlFormatterOperation(stringField(value, "text", "input", "toml"));
+  if (toolId === "toml-formatter") return tomlFormatterOperation(stringField(value, "text", "input", "toml"), signal);
   if (toolId === "json-yaml-converter") return jsonYamlConverterOperation(stringField(value, "text", "input", "source"), requireDirection(value), optionalNumberField(value, "indent", "spaces") ?? 2);
   if (toolId === "url-codec") return urlCodecOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", optionalStringField(value, "set", "encodingSet") ?? "component");
   if (toolId === "html-entity-codec") return htmlEntityOperation(stringField(value, "text", "input", "value"), optionalStringField(value, "mode", "operation") ?? "encode", booleanField(value, false, "numeric"), signal);

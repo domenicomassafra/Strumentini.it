@@ -1,0 +1,91 @@
+{
+  "ticket": 277,
+  "purpose": "Independent TOML corpus for the differential comparison between the legacy bounded subset and the pinned smol-toml donor.",
+  "fixtures": [
+    {
+      "id": "cargo-manifest",
+      "legacy": "refused",
+      "donor": "accepted",
+      "source": "[package]\nname = \"strumentini-core\"\nversion = \"0.3.1\"\nedition = \"2024\"\ndescription = \"\"\"\nUtility local-first, senza upload.\n\"\"\"\nlicense = \"MIT\"\nkeywords = [\"utility\", \"local-first\", \"italiano\"]\n\n[dependencies]\nserde = { version = \"1.0\", features = [\"derive\"] }\ntokio = { version = \"1.44\", features = [\"rt-multi-thread\"] }\n\n[[bin]]\nname = \"strumentini\"\npath = \"src/main.rs\"\n\n[profile.release]\nopt-level = 3\nlto = true\nincremental = false\n"
+    },
+    {
+      "id": "pyproject",
+      "legacy": "refused",
+      "donor": "accepted",
+      "source": "[project]\nname = \"documenti-locali\"\nversion = \"2.1.0\"\nrequires-python = \">=3.12\"\ndependencies = [\n  \"httpx>=0.28\",\n  \"pydantic>=2.9\",\n]\n\n[project.optional-dependencies]\ntest = [\"pytest>=8.3\"]\n\n[tool.ruff]\nline-length = 100\ntarget-version = \"py312\"\n\n[tool.ruff.lint]\nselect = [\"E\", \"F\", \"I\"]\nignore = [\"E501\"]\n"
+    },
+    {
+      "id": "app-config",
+      "legacy": "refused",
+      "donor": "accepted",
+      "source": "title = \"Configurazione ☕\"\nstarted = 1979-05-27\nrelease = 1979-05-27T07:32:00Z\nratio = 0.75\n\n[layer.one]\ninline = { width = 640, height = 480 }\nfeatures = { alpha = true, beta = false }\n\n[[route]]\npath = \"/\"\nmethods = [\"GET\"]\n\n[[route]]\npath = \"/api\"\nmethods = [\"POST\", \"PUT\"]\n"
+    },
+    {
+      "id": "inline-and-arrays",
+      "legacy": "accepted",
+      "donor": "accepted",
+      "source": "arr = [1, 2, 3]\npoint = { x = 1, y = 2 }\nnested = [[1, 2], [3, 4]]\ntext = \"a # b\" # commento finale\n"
+    },
+    {
+      "id": "tables",
+      "legacy": "accepted",
+      "donor": "accepted",
+      "source": "[owner]\nname = \"Ada\"\nenabled = true\n\n[database]\nport = 5432\nhost = \"localhost\"\n"
+    },
+    {
+      "id": "dates",
+      "legacy": "accepted",
+      "donor": "accepted",
+      "source": "date = 1979-05-27\nquoted = \"1979-05-27\"\n"
+    },
+    {
+      "id": "unicode-and-quoted-keys",
+      "legacy": "accepted",
+      "donor": "accepted",
+      "source": "\"chiave con spazi\" = \"Caffè ☕\"\n\"utf8\" = \"àèìòù\"\nemoji = \"🚀\"\n"
+    },
+    {
+      "id": "prototype-keys",
+      "legacy": "accepted",
+      "donor": "accepted",
+      "source": "__proto__.polluted = true\n[constructor.prototype.x]\ny = 1\n"
+    },
+    {
+      "id": "local-date-time-offset",
+      "legacy": "accepted",
+      "donor": "accepted",
+      "compare": "date-precision",
+      "source": "offset = 1979-05-27T00:32:00-07:00\n"
+    },
+    {
+      "id": "duplicate-key",
+      "legacy": "refused",
+      "donor": "refused",
+      "source": "a = 1\na = 2\n"
+    },
+    {
+      "id": "conflicting-path",
+      "legacy": "refused",
+      "donor": "refused",
+      "source": "a = 1\na.b = 2\n"
+    },
+    {
+      "id": "bad-string",
+      "legacy": "refused",
+      "donor": "refused",
+      "source": "a = \"unterminated\n"
+    },
+    {
+      "id": "unsupported-value",
+      "legacy": "refused",
+      "donor": "refused",
+      "source": "a = @invalid\n"
+    },
+    {
+      "id": "array-of-tables",
+      "legacy": "refused",
+      "donor": "accepted",
+      "source": "[[server]]\nhost = \"a\"\n\n[[server]]\nhost = \"b\"\n"
+    }
+  ]
+}
