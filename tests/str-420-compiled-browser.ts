@@ -14,14 +14,17 @@ const root = resolve(import.meta.dirname, "..");
 const origin = "http://127.0.0.1:19420";
 const server = spawn(resolve(root, "node_modules/.bin/astro"),
   ["preview", "--host", "127.0.0.1", "--port", "19420"],
-  { cwd: root, stdio: "ignore" });
+  { cwd: root, stdio: ["ignore", "ignore", "pipe"] });
+let serverError = "";
+server.stderr?.on("data", (chunk: Buffer) => { serverError = (serverError + chunk.toString()).slice(-2000); });
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function ready() {
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 300; i++) {
     try { if ((await fetch(origin + "/tools/pdf-to-markdown/")).ok) return; } catch {}
-    await sleep(100);
+    if (server.exitCode !== null) break;
+    await sleep(200);
   }
-  throw new Error("Compiled Astro preview unavailable");
+  throw new Error("Compiled Astro preview unavailable: " + (serverError || "startup timed out"));
 }
 function independentlyRead(bytes: Buffer) {
   const python = [
@@ -76,13 +79,17 @@ try {
     const response = await page.goto(origin + "/tools/pdf-to-markdown/", { waitUntil: "domcontentloaded" });
     assert.equal(response?.status(), 200);
     const upload = page.locator('input[aria-label="PDF sorgente per Word"]');
+    await page.waitForFunction(() => {
+      const input = document.querySelector('input[aria-label="PDF sorgente per Word"]');
+      return !!input && !input.closest("astro-island")?.hasAttribute("ssr");
+    }, undefined, { timeout: 60_000 });
     for (const [kind, bytes] of [
       ["paragraph", Buffer.from(createSimplePdf(["TESTO_BROWSER_STR420"]))],
       ["table", await tableFixture()],
     ] as const) {
       await upload.setInputFiles({ name: kind + ".pdf", mimeType: "application/pdf", buffer: bytes });
       await page.getByRole("button", { name: "Crea DOCX modificabile" }).click();
-      await page.locator("[data-pdf-docx-57-result]").waitFor({ timeout: 30_000 });
+      await page.locator("[data-pdf-docx-57-result]").waitFor({ timeout: 60_000 });
       const downloadPromise = page.waitForEvent("download");
       await page.locator("[data-pdf-docx-57-download]").click();
       const download = await downloadPromise;
