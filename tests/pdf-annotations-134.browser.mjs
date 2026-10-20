@@ -66,6 +66,14 @@ try {
     await editor.getByRole("button", { name: "Aggiungi con coordinate" }).click();
     await editor.getByRole("radio", { name: "Commento" }).check();
     await editor.getByRole("textbox", { name: "Testo del commento" }).fill("Nota persistente #134");
+    const previousPreview = await editor.locator("img").getAttribute("src");
+    await editor.getByRole("combobox", { name: "Pagina da annotare" }).selectOption("2");
+    await editor.getByRole("combobox", { name: "Ruota anteprima" }).selectOption("90");
+    await editor.getByRole("combobox", { name: "Zoom anteprima" }).selectOption("1.5");
+    await page.waitForFunction((previous) => {
+      const next = document.querySelector('[data-pdf-annotations-134] img');
+      return next && next.complete && next.naturalWidth > 0 && next.getAttribute("src") !== previous;
+    }, previousPreview, { timeout: 30_000 });
     if (width === 390) {
       const overlay = editor.getByRole("img", { name: "Area touch per annotazioni PDF" });
       const box = await overlay.boundingBox();
@@ -88,9 +96,11 @@ try {
     try {
       const pdf = await task.promise;
       assert.equal(pdf.numPages, 2);
-      const annotations = await (await pdf.getPage(1)).getAnnotations();
-      assert(annotations.some((a) => a.subtype === "Highlight"), "Highlight must be a real PDF annotation");
-      assert(annotations.some((a) => a.subtype === "Text" && a.contentsObj?.str === "Nota persistente #134"), "Comment text must survive download");
+      const firstAnnotations = await (await pdf.getPage(1)).getAnnotations();
+      const secondAnnotations = await (await pdf.getPage(2)).getAnnotations();
+      assert(firstAnnotations.some((a) => a.subtype === "Highlight"), "Page-one highlight must be a real PDF annotation");
+      assert(secondAnnotations.some((a) => a.subtype === "Text" && a.contentsObj?.str === "Nota persistente #134"),
+        "Page-two comment must survive rotation, zoom and download");
     } finally { await task.destroy(); }
     assert.deepEqual(pageErrors, [], "Browser JavaScript errors");
     assert.deepEqual(egress, [], "Unexpected network egress");
