@@ -17,22 +17,22 @@ const corpus = [
   "qr",
 ];
 
-const RUN = /M(\d+) (\d+)h(\d+)v(\d+)h-(\d+)z/gu;
+const RUN = /M(\d+) ([\d.]+)h(\d+)/gu;
 
 /** Decode only the painted SVG geometry; deliberately never inspect data-matrix. */
 function paintedModules(svg: string, size: number, scale: number): { rows: string[]; runs: number } {
-  const d = svg.match(/<path fill="#000000" d="([^"]+)"\/>/u)?.[1];
+  const matchPath = svg.match(/<path fill="none" stroke="#000000" stroke-width="(\d+)" stroke-linecap="butt" d="([^"]+)"\/>/u);
+  expect(Number(matchPath?.[1])).toBe(scale);
+  const d = matchPath?.[2];
   expect(d).toBeDefined();
   const visited = Array.from({ length: size }, () => Array<number>(size).fill(0));
   let runCount = 0;
   for (const match of d!.matchAll(RUN)) {
-    const [, left, top, width, height, closingWidth] = match.map(Number);
-    expect(width).toBe(closingWidth);
-    expect(height).toBe(scale);
+    const [, left, center, width] = match.map(Number);
     expect(left % scale).toBe(0);
-    expect(top % scale).toBe(0);
     expect(width % scale).toBe(0);
-    const y = top / scale - 4;
+    const y = center / scale - 4.5;
+    expect(Number.isInteger(y)).toBe(true);
     const x = left / scale - 4;
     const length = width / scale;
     expect(y).toBeGreaterThanOrEqual(0);
@@ -55,8 +55,8 @@ function previousSvg(rows: readonly string[], scale: number): string {
     .map(({ x, y }) => `M${(x + plan.quietZone) * scale} ${(y + plan.quietZone) * scale}h${scale}v${scale}h-${scale}z`)
     .join("");
   return renderQrSvg(rows, { scale }).replace(
-    /(<path fill="#000000" d=")[^"]+("\/>)/u,
-    (_match, start: string, end: string) => start + oldPath + end,
+    /<path fill="none" stroke="#000000" stroke-width="\d+" stroke-linecap="butt" d="[^"]+"\/>/u,
+    () => `<path fill="#000000" d="${oldPath}"/>`,
   );
 }
 

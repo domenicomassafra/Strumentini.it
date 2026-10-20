@@ -29,8 +29,8 @@ for (const payload of corpus) {
   const originalPath = plan.dark.map(({ x, y }) =>
     `M${(x + 4) * 8} ${(y + 4) * 8}h8v8h-8z`).join("");
   const oldSvg = generated.svg.replace(
-    /(<path fill="#000000" d=")[^"]+("\/>)/u,
-    (_match, start, end) => start + originalPath + end,
+    /<path fill="none" stroke="#000000" stroke-width="\d+" stroke-linecap="butt" d="[^"]+"\/>/u,
+    () => `<path fill="#000000" d="${originalPath}"/>`,
   );
   oldBytes += Buffer.byteLength(oldSvg);
   newBytes += Buffer.byteLength(generated.svg);

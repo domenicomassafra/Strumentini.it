@@ -173,9 +173,9 @@ export function renderQrSvg(rows: readonly string[], options: { readonly scale?:
       const start = x;
       while (row[x] === "1") x += 1;
       const left = (start + plan.quietZone) * scale;
-      const top = (y + plan.quietZone) * scale;
+      const center = (y + plan.quietZone + 0.5) * scale;
       const width = (x - start) * scale;
-      paths.push(`M${left} ${top}h${width}v${scale}h-${width}z`);
+      paths.push(`M${left} ${center}h${width}`);
     }
   }
   const { width, height } = plan;
@@ -183,7 +183,7 @@ export function renderQrSvg(rows: readonly string[], options: { readonly scale?:
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}"`,
     ` shape-rendering="crispEdges" role="img" aria-label="Codice QR" data-matrix="${rows.join(";")}">`,
     `<rect width="${width}" height="${height}" fill="#ffffff"/>`,
-    `<path fill="#000000" d="${paths.join("")}"/>`,
+    `<path fill="none" stroke="#000000" stroke-width="${scale}" stroke-linecap="butt" d="${paths.join("")}"/>`,
     `</svg>`,
   ].join("");
 }
