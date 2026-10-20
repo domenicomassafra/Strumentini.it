@@ -20,7 +20,7 @@ describe("#126 historical refusal and #417 legitimate password scope", () => {
     await expect(passwordModule.run({ file: asBlob(plain), mode: "protect" }, { defaults: {} }))
       .rejects.toThrow(/PDF_PASSWORD_REQUIRED/u);
     await expect(passwordModule.run({ file: asBlob(markerOnly), mode: "remove", password: "example-passphrase" }, { defaults: {} }))
-      .rejects.toThrow(/PDF_PASSWORD_UNSUPPORTED_417/u);
+      .rejects.toThrow(/PDF_NOT_ENCRYPTED/u);
     await expect(passwordModule.run({ file: asBlob(markerOnly), mode: "remove" }, { defaults: {} }))
       .rejects.toMatchObject({ code: "UNSUPPORTED_CAPABILITY" });
   });

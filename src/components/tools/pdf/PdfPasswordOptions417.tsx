@@ -1,9 +1,12 @@
+import { useEffect, useRef } from "preact/hooks";
+
 export type PasswordMode417 = "check" | "remove" | "protect";
 export function passwordActionLabel417(mode: PasswordMode417): string {
   return mode === "protect" ? "Proteggi con AES-256" : mode === "remove" ? "Sblocca o copia PDF" : "Controlla cifratura";
 }
 
 interface Props {
+  readonly file?: File;
   readonly mode: PasswordMode417;
   readonly password: string;
   readonly disabled: boolean;
@@ -11,7 +14,13 @@ interface Props {
   readonly onPassword: (value: string) => void;
 }
 
-export function PdfPasswordOptions417({ mode, password, disabled, onMode, onPassword }: Props) {
+export function PdfPasswordOptions417({ file, mode, password, disabled, onMode, onPassword }: Props) {
+  const lastFile = useRef(file);
+  useEffect(() => {
+    if (lastFile.current === file) return;
+    lastFile.current = file;
+    onPassword("");
+  }, [file]);
   return <>
     <label class="field"><span>Modalità</span>
       <select value={mode} onChange={(event) => onMode(event.currentTarget.value as PasswordMode417)} disabled={disabled}>

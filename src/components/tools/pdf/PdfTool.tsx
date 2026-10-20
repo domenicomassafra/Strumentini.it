@@ -270,7 +270,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
       : { file: files[0], groups };
     if (optionMode === "rotation") return { file: files[0], pages, rotation: Number(rotation) };
     if (optionMode === "delete-extract") return { file: files[0], pages, mode: deleteMode };
-    if (optionMode === "password") return { file: files[0], mode: passwordMode, ...(passwordMode === "check" ? {} : { password: pdfPassword417 }) };
+    if (optionMode === "password") return { file: files[0], mode: passwordMode, password: pdfPassword417 };
     if (optionMode === "text-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), mode: textExtractionMode };
     if (optionMode === "image-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), dedupe: imageDedupe };
     if (optionMode === "pdf-to-markdown") return { file: files[0] };
@@ -749,7 +749,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             )}
           </section>
         )}
-        {optionMode === "password" && <PdfPasswordOptions417 mode={passwordMode} password={pdfPassword417} disabled={isWorking}
+        {optionMode === "password" && <PdfPasswordOptions417 file={files[0]} mode={passwordMode} password={pdfPassword417} disabled={isWorking}
           onMode={(next) => { setPasswordMode(next); setPdfPassword417(""); setResult(null); }}
           onPassword={(next) => { setPdfPassword417(next); setResult(null); }} />}
         {(optionMode === "order" || optionMode === "rotation") && files[0] !== undefined && (

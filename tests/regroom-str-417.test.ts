@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { runPasswordJob417 } from "../src/engines/pdf/password-client-417";
 import passwordModule from "../src/tools/pdf-password-check-remove/module";
 import type { PdfPasswordCheckOutput } from "../src/tools/pdf-password-check-remove/types";
 
@@ -59,4 +60,22 @@ describe("STR-417 legitimate PDF encryption and unlock", () => {
     controller.abort();
     await expect(passwordModule.run({ file: asBlob(original), mode: "protect", password: credential }, context, controller.signal)).rejects.toMatchObject({ name: "AbortError" });
   }, 20_000);
+
+  it("terminates a stuck browser worker on an in-flight abort", async () => {
+    const controller = new AbortController();
+    let terminated = 0;
+    class StuckWorker {
+      onmessage = null;
+      onerror = null;
+      postMessage() { controller.abort(); }
+      terminate() { terminated++; }
+    }
+    vi.stubGlobal("window", {});
+    vi.stubGlobal("Worker", StuckWorker);
+    try {
+      await expect(runPasswordJob417(asBlob(original), "protect", credential, controller.signal))
+        .rejects.toMatchObject({ name: "AbortError" });
+      expect(terminated).toBe(1);
+    } finally { vi.unstubAllGlobals(); }
+  });
 });
