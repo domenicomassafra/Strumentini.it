@@ -7,6 +7,7 @@ import { IRPEF_128_COVERAGE, IRPEF_128_LIABILITY_SOURCES } from "../../engines/i
     <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / IRPEF</nav>
     <h1>IRPEF: scaglioni, detrazioni e addizionali</h1>
     <p>Parti dal reddito imponibile IRPEF già determinato. L'imposta lorda nazionale è disponibile per 2025 e 2026; le altre componenti sono documentate soltanto per i casi 2025 indicati.</p>
+    <noscript><p data-irpef-noscript>Il calcolo richiede JavaScript. Il pulsante resta disattivato e non invia il reddito.</p></noscript>
     <form novalidate>
       <label for="irpef-c-year">Anno d'imposta</label>
       <select id="irpef-c-year" name="year"><option value="2025">2025</option><option value="2026">2026 (solo nazionale)</option></select>
@@ -17,7 +18,7 @@ import { IRPEF_128_COVERAGE, IRPEF_128_LIABILITY_SOURCES } from "../../engines/i
       <label for="irpef-c-city">Comune per addizionale</label>
       <select id="irpef-c-city" name="city"><option value="unknown">Non disponibile / altro Comune</option><option value="bari">Bari (solo 2025, con Regione Puglia)</option></select>
       <label class="confirm"><input type="checkbox" name="employee" /> Applica detrazione ordinaria da lavoro dipendente 2025: confermo lavoro dipendente tutto l'anno (365 giorni), reddito complessivo pari all'imponibile inserito, assenza di condizioni speciali. Non sono considerate altre detrazioni.</label>
-      <button type="submit">Mostra scaglioni e componenti supportate</button>
+      <button type="submit" disabled>Mostra scaglioni e componenti supportate</button>
     </form>
     <p role="alert" class="error" hidden></p>
     <output aria-live="polite"></output>
@@ -85,6 +86,7 @@ import { IRPEF_128_COVERAGE, IRPEF_128_LIABILITY_SOURCES } from "../../engines/i
         error.hidden = false;
       }
     });
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   }
 </script>
 <style>

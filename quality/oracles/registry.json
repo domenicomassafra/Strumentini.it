@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 270,
+  "entry_count": 271,
   "entries": [
     {
       "id": "cand-001",
@@ -12048,6 +12048,53 @@
       "cross_check": { "usable": true, "implementation": "Hand-calculated annual gross and reserve fixture", "role": "Independent exact numeric and missing-data baseline" },
       "confidence": "medium",
       "unresolved_gaps": ["Full-month precision, tax, funds, advances and partial employment periods excluded", "Real employment ledger and physical devices unverified", "No Gold receipt"]
+    },
+    {
+      "id": "cand-271",
+      "candidate": "Browser-only EML/MSG offline viewer with inert HTML and guarded attachment downloads",
+      "tool_family": "file-privacy",
+      "maintenance_class": "H",
+      "truth_sources": [
+        "rfc5322",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-authored MIME multipart fixture, .msg sample from Apache-2.0 upstream with pinned SHA-256.",
+      "invariants": [
+        "email bytes stay local",
+        "HTML rendered only as text",
+        "active attachment extensions cannot be exported",
+        "all downloads use inert extension",
+        "supported raw EML and MSG can be reopened"
+      ],
+      "adversarial_cases": [
+        "multipart nesting",
+        "tracker image and script",
+        "path traversal and executables",
+        "malformed MIME boundary",
+        "wrong MSG signature",
+        "oversized and canceled input"
+      ],
+      "expected_output_strategy": "Literal fixture assertions in tests/regroom-str-421.test.ts, independently recognized OLE v2 signature and original byte/reopen parity; no Gold certification asserted.",
+      "security_privacy_edges": [
+        "no remote image fetches",
+        "12 MiB input cap and 6 MiB attachment cap",
+        "100 MIME parts and 40 attachments maximum",
+        "unsupported MSG embedded attachment export refused"
+      ],
+      "portability_browser_edges": [
+        "browser modern Web APIs required",
+        "no physical-device certification claimed"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "Unix file signature check for Apache-licensed .msg corpus plus byte-identical download reparse",
+        "role": "independent signature/source check and consumer readback"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "No Gold receipt",
+        "Broader MSG variant/mobile corpus not independently certified"
+      ]
     }
   ]
 }

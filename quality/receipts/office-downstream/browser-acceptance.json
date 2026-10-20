@@ -3,7 +3,8 @@
   "status": "PASS",
   "scope": "bounded Office downstream 161/163/225/226/227/260-outline/261; no faithful raster claim",
   "workersObserved": 8,
-  "lazyResourcesAdded": 134,
+  "lazyResourcesAdded": 188,
+  "downloadedDocxBytes": 9802,
   "externalRequests": 0,
   "mobileOverflow": false,
   "result": {

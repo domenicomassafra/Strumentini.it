@@ -173,6 +173,22 @@ describe("#285 real workerd Worker/D1/DO integration", () => {
     expect(logout.headers.get("set-cookie")).toContain("Max-Age=0");
     expect(await count("sessions")).toBe(0);
     expect(await (await dispatch("GET", "/api/auth/session", undefined, { cookie })).json()).toEqual({ user: null });
+
+    // Exercise the credential path inside workerd, not only registration and a
+    // CSRF-rejected login. The authenticated session must persist in local D1.
+    const loggedIn = await dispatch("POST", "/api/auth/login", {
+      email: EMAIL, password: PASSWORD,
+    }, sameOrigin());
+    expect(loggedIn.status).toBe(200);
+    const loginCookie = sessionCookie(loggedIn);
+    expect(await loggedIn.json()).toEqual({ user: {
+      email: EMAIL, name: "Workerd Test", passwordEnabled: true, googleConnected: false,
+    } });
+    expect(await count("sessions")).toBe(1);
+    expect(await (await dispatch("GET", "/api/auth/session", undefined, { cookie: loginCookie })).json())
+      .toEqual({ user: { email: EMAIL, name: "Workerd Test", passwordEnabled: true, googleConnected: false } });
+    expect((await dispatch("POST", "/api/auth/logout", undefined, sameOrigin(loginCookie))).status).toBe(204);
+    expect(await count("sessions")).toBe(0);
   }, 60_000);
 
   it("rolls back a failed multi-statement D1 batch and resets test storage", async () => {

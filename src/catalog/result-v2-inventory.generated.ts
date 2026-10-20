@@ -1552,6 +1552,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
+    "toolId": "eml-msg-viewer",
+    "engine": "file-privacy",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "EmlMsgViewerTool",
+      "source": "src/components/tools/EmlMsgViewerTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "download",
+        "reset",
+        "provenance"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "engineering-unit-converter",
     "engine": "business-math",
     "rendererSeam": {

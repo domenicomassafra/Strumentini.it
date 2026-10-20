@@ -3,8 +3,8 @@
   "status": "GOLD",
   "goldEligible": true,
   "receiptPath": "quality/receipts/business-italy-date/gestione-separata-contributi.gold.json",
-  "revision": "fd9c0debbed83345e08af1ca471dd0c2df7ef8ea",
-  "sourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
+  "revision": "367e7161386a4a3d03da94359b3a1919e5c2d142",
+  "sourceFingerprint": "10bc57577d2b40dddaf730a8a9c921d3257925f762baace61007de8b500d763d",
   "toolId": "gestione-separata-contributi",
   "runtime": {
     "location": "LOCAL",
@@ -40,10 +40,10 @@
   "identities": {
     "manifestSha256": "ec9b31c1d819f2093604604d1df89b33d314fc2cd08573def78b3d8f1b1d71ed",
     "moduleSha256": "7d5382c1bf9e86a1b2ea73c0699536c56b4e67f9d180f800deeb2269ebd4a029",
-    "oracleRegistrySha256": "62dd5a3bfcc7f7b35282396110c3123c3b43be5430fd9e0ef3168c178059ebe7",
-    "fixtureIndexSha256": "42301c4b8340889277939789548202b2ab2180b6fda34f339ff79df7f6cb8832",
-    "browserAcceptanceSha256": "de5f439c07f5f18ce5256ee9a841f52948635c18719f757407f9af1f9bfd19e4",
-    "browserAcceptanceSourceFingerprint": "2c38b13c93d65e40d24730c76c0e766fee5a764dd214dd007d17e2a064fafeeb",
+    "oracleRegistrySha256": "0a3e59022e6a65068c21cee44122f579f1c061a1325cbd5af22c52b6c1acbbf8",
+    "fixtureIndexSha256": "f0db027f15fa0beaf7574b160f01e5d7473883a9a5b2c801c58d2a6cc025e876",
+    "browserAcceptanceSha256": "43aae626c6477b68f8745eb4e5878d48f18688a66bb171a26a82e4ae68bf0e3c",
+    "browserAcceptanceSourceFingerprint": "10bc57577d2b40dddaf730a8a9c921d3257925f762baace61007de8b500d763d",
     "focusedTestsSha256": "c55fdf1a01fba334a99c08b1bc0075678e54a3f2ed3ff5747f456a555760d6f3",
     "fixture:italy-2026-consumers:sha256": "be3213387e7f246567ca6177063807dd51dd01269ea99c262bb8c19fb8a3bb78"
   }

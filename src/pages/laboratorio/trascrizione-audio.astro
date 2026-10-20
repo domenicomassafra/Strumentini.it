@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { AudioWhisperPanel298 } from "../../components/tools/audio/AudioWhisperPanel298";
+import "../../components/tools/tool-surface.css";
+---
+<BaseLayout title="Laboratorio trascrizione audio locale" description="Demo sperimentale opt-in di Whisper per WAV italiani nel browser" noindex>
+  <main class="tool-page tool-sheet whisper298-page" data-whisper298-preview="experimental-local-only"><h1>Laboratorio: trascrivi audio in italiano</h1>
+    <p><a href="/tools/microphone-recorder/">Torna al registratore locale</a></p>
+    <AudioWhisperPanel298 client:load />
+  </main>
+</BaseLayout>
+<style>
+  .whisper298-page { max-width: 950px; margin: 0 auto; padding: 2rem 1rem 4rem; min-width: 0; display: grid; gap: 1.2rem; }
+  :global([data-whisper-298]) { display: grid; gap: 1rem; min-width: 0; overflow-wrap: anywhere; }
+  :global([data-whisper-298] .tool-actions) { display: flex; flex-wrap: wrap; gap: .7rem; }
+  :global([data-whisper-298] button) { border: 1px solid var(--line); border-radius: .55rem; padding: .6rem 1rem; cursor: pointer; }
+  :global([data-whisper-298] button:disabled) { opacity: .55; cursor: default; }
+  :global([data-whisper-298] textarea) { box-sizing: border-box; width: 100%; padding: .7rem; font: inherit; }
+</style>
