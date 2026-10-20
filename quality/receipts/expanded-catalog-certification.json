@@ -24649,7 +24649,7 @@
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-repair/manifest.ts",
-          "sha256": "61d0128bbbe81ae5fd236bab193f6165a9ee022ef3caecde9419803c2a3ccdd1"
+          "sha256": "18517bbb4011bc0661272210dab5baec79dac10718f5cd23f3ebe7bab96b77c4"
         },
         "module": {
           "path": "src/tools/pdf-repair/module.ts",
@@ -24661,16 +24661,16 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/regroom-str-418.test.ts"
         ]
       },
       "oracle": {
-        "entryId": "cand-272",
-        "candidate": "EPUB3 offline text reader and chapter export",
-        "maintenanceClass": "R",
+        "entryId": "cand-273",
+        "candidate": "Bounded PDF classic xref pointer recovery with byte-preserving independently verified pages",
+        "maintenanceClass": "H",
         "truthSources": [
-          "epub-3.3",
-          "pkware-appnote",
+          "iso-pdf2",
           "fixture-policy"
         ],
         "status": "BOUND",
@@ -24742,8 +24742,7 @@
       "coverageGaps": [
         "LAZY_LOAD_EVIDENCE_UNVERIFIED",
         "LOCALITY_EVIDENCE_UNVERIFIED",
-        "MOBILE_A11Y_EVIDENCE_UNVERIFIED",
-        "ORACLE_MAINTENANCE_CLASS_DIFFERS_FROM_MANIFEST"
+        "MOBILE_A11Y_EVIDENCE_UNVERIFIED"
       ]
     },
     {
