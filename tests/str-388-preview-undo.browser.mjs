@@ -58,6 +58,22 @@ try {
     await page.locator("[data-str388-undo]").click();
     assert.equal(await page.locator("textarea").first().inputValue(), source, "Undo restores source bytes incl Unicode/duplicates");
     assert.equal(await page.locator("[data-result-class=table]").count(), 0);
+    const oversizedSource = "id,score\n" + "r,1\n".repeat(100_001);
+    await page.locator("textarea").first().fill(oversizedSource);
+    await page.locator("button[data-tool-run-control]").click();
+    await page.locator('[role="alert"]').first().waitFor();
+    assert.equal(await page.locator("textarea").first().inputValue(), oversizedSource, "refusal preserves full original rows");
+    assert.equal(await page.locator("[data-str388-apply]").count(), 0);
+    assert.equal(await page.locator('[data-result-class="table"]').count(), 0);
+    const hugeCell = "🚀" + "x".repeat(150_000);
+    await page.locator("textarea").first().fill("id,description\n1," + hugeCell);
+    await page.getByLabel("Posizione colonna").fill("0");
+    await page.locator("button[data-tool-run-control]").click();
+    await page.locator("[data-str388-diff]").waitFor();
+    assert.match(await page.locator("[data-str388-diff]").innerText(), /Anteprima limitata/u);
+    await page.locator("[data-str388-apply]").click();
+    await page.locator("[data-str388-undo]").click();
+    assert.equal(await page.locator("textarea").first().inputValue(), "id,description\n1," + hugeCell, "huge Unicode row remains exact after undo");
 
     await open("csv-filter");
     await page.locator("textarea").first().fill(source);
