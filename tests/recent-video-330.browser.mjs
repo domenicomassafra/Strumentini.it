@@ -91,22 +91,10 @@ try {
   await frame.locator("[data-frame-status]").getByText(/VIDEO_FRAME_RANGE/u).waitFor();
   assert.equal(await recent(page).then(rows => rows[0]?.useCount), 3, "failed frame must not record");
 
-  // Real GIF encoding (not merely an encoder capability probe).
-  const gif = page.locator("[data-video-gif-306]");
-  await gif.getByRole("spinbutton", { name: "Inizio clip (secondi)" }).fill("0.25");
-  await gif.getByRole("spinbutton", { name: /Fine clip/u }).fill("1.25");
-  await gif.getByRole("button", { name: "Converti video in GIF" }).evaluate(button => { button.click(); button.click(); });
-  await Promise.race([
-    gif.locator("[data-video-gif-result]").waitFor({ timeout: 35_000 }),
-    gif.locator("[data-video-gif-status]").getByText(/VIDEO_GIF_306_/u).waitFor({ timeout: 35_000 })
-      .then(async () => { throw Error(await gif.locator("[data-video-gif-status]").innerText()); }),
-  ]);
-  await expectCount(page, 4);
-  // Cancellation after a prior success cannot publish a second stale result.
-  await gif.getByRole("button", { name: "Converti video in GIF" }).click();
-  await gif.getByRole("button", { name: "Annulla conversione GIF" }).click();
-  await gif.locator("[data-video-gif-status]").getByText(/VIDEO_GIF_306_CANCELLED/u).waitFor();
-  assert.equal((await recent(page))[0]?.useCount, 4, "cancelled GIF must not record");
+  // #126 option B: retired codecs must not expose phantom conversion controls.
+  assert.match(await frame.locator("[data-video-codec-retired-126]").innerText(), /Mediabunny/u);
+  assert.equal(await frame.locator("[data-video-gif-306], [data-video-transform-234]").count(), 0);
+  assert.equal((await recent(page))[0]?.useCount, 3, "retired conversion must not count");
 
   // Contact sheet can either finish verified PNG+ZIP or honestly refuse when
   // Chromium cannot attest the presentation timestamp within the deadline.
@@ -118,13 +106,13 @@ try {
       .then(() => "refused"),
   ]);
   if (sheetOutcome === "success") {
-    await expectCount(page, 5);
+    await expectCount(page, 4);
   } else {
     assert.match(await sheet.locator("[data-contact-status]").innerText(), /VIDEO_CONTACT_/u);
     assert.equal(await sheet.locator("[data-contact-result]").count(), 0);
-    assert.equal((await recent(page))[0]?.useCount, 4, "unverified contact sheet must not count");
+    assert.equal((await recent(page))[0]?.useCount, 3, "unverified contact sheet must not count");
   }
-  const expectedAfterSheet = sheetOutcome === "success" ? 5 : 4;
+  const expectedAfterSheet = sheetOutcome === "success" ? 4 : 3;
 
   // The audio extractor has its own verified PCM16 output; its parent is still
   // the catalogued video-inspector page, not a separate invented tool ID.
@@ -147,7 +135,7 @@ try {
   await expectCount(page, expectedAfterSheet + 1);
   assert.deepEqual(errors, []);
   assert.deepEqual(outgoing, [], "video file content must not leave browser");
-  console.log(`PASS recent-video-330: ${expectedAfterSheet + 1} real video-family outputs (inspect, bitrate, PNG, GIF, WAV${sheetOutcome === "success" ? ", contact sheet" : ""}), contact sheet ${sheetOutcome}, invalid/no count, duplicate click once, metadata-only IDB, preferiti reload, no egress`);
+  console.log(`PASS recent-video-330: ${expectedAfterSheet + 1} real video-family outputs (inspect, bitrate, PNG, WAV${sheetOutcome === "success" ? ", contact sheet" : ""}), retired conversions absent, contact sheet ${sheetOutcome}, invalid/no count, duplicate click once, metadata-only IDB, preferiti reload, no egress`);
 } finally {
   await browser.close();
 }

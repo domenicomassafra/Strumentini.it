@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "ticket": "STR-366 / GitHub issue #126",
-  "capturedDate": "2026-10-18",
+  "capturedDate": "2026-10-19",
   "decision": "NO_GO",
-  "decisionReason": "Original byte identity does not satisfy all notice, licensing, attribution and runtime dependency requirements.",
+  "decisionReason": "Font/OCR provenance checked, including historical official Italian model; LGPL/MPL/PDF distribution obligations remain to be audited and fulfilled.",
   "upstreamGoogleFontsGitCommit": "47d54ca1ebb14fd864695f1d39dc734f39017c33",
   "primaryNpmTarballs": {
     "tesseract-js": {
@@ -35,7 +35,7 @@
     "font-ofl": "OFL-1.1: ship the applicable copyright notice and full OFL license with every copy; respect reserved font name rules if modifying. Four upstream-exact notices are included in public/fonts.",
     "ocr-js": "Apache-2.0 package: retain LICENSE and relevant NOTICE if any; retain separately shipped minified bundle MIT/BSD-3-Clause notices and their attribution.",
     "ocr-core": "Apache-2.0 package: preserve LICENSE, notices and permitted source/license statements for WASM and JavaScript core artifacts.",
-    "ocr-ita": "NO_GO: npm package declares MIT, but no copyright-holder-specific MIT license was present in the tarball; local MIT file is a generic template with placeholders. Parent naptha/tessdata tracks Apache-2.0; clarify original authorship, attribution and MIT/Apache corpus redistribution rights before legal clearance."
+    "ocr-ita": "Apache-2.0 provenance: decompressed npm Italian model is byte-identical to tesseract-ocr/tessdata commit c2b2e0df86272ce11be323f23f96cf656565ed41; naptha/tessdata's pinned Apache license is shipped. npm MIT metadata has no standalone license grant, and the unattributed local MIT template was removed. NO_GO persists for other redistribution obligations."
   },
   "assets": [
     {
@@ -224,15 +224,6 @@
       "archivePath": "package/tesseract-core-simd-lstm.wasm.js"
     },
     {
-      "path": "public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE",
-      "bytes": 1078,
-      "sha256": "b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5",
-      "evidence": "UNVERIFIED_LICENSE_AUTHORITY",
-      "sourceKind": "local-unattributed-mit-template",
-      "sourceUrl": null,
-      "obligation": "ocr-ita"
-    },
-    {
       "path": "public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE",
       "bytes": 11357,
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
@@ -251,7 +242,9 @@
       "obligation": "ocr-ita",
       "packageId": "italian-model",
       "archivePath": "package/4.0.0/ita.traineddata.gz",
-      "additionalUpstreamUrl": "https://raw.githubusercontent.com/naptha/tessdata/806cd9adc8c6e8abc11c782db1818c990576bebc/4.0.0/ita.traineddata.gz"
+      "additionalUpstreamUrl": "https://raw.githubusercontent.com/naptha/tessdata/806cd9adc8c6e8abc11c782db1818c990576bebc/4.0.0/ita.traineddata.gz",
+      "originalUncompressedSourceUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/ita.traineddata",
+      "originalUncompressedSha256": "795032c2e1eebdce34216acaa849e07c0583dfc0ea309dc4f2bfcb7b1cddd9e3"
     },
     {
       "path": "public/ocr-246/vendor/tesseract-js-APACHE-2.0.LICENSE",

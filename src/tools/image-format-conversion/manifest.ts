@@ -5,7 +5,7 @@ export const image_format_conversionManifest = {
   id: "image-format-conversion",
   route: "/tools/image-format-conversion",
   name: "Image Format Conversion",
-  summary: "Convert JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF and the first GIF frame locally to PNG, JPEG or WebP with verified output and explicit fidelity limits.",
+  summary: "Convert JPG/JPEG, PNG, WebP, AVIF and the first GIF frame locally to PNG, JPEG or WebP; HEIC/HEIF require native browser decoding.",
   aliases: ["convert image format","image format converter","jpg to png","jpeg to png","png to jpg","png to jpeg","jpg to webp","jpeg to webp","webp to jpg","webp to png","heic to jpg","heic to jpeg","heic to png","heic to webp","heif to jpg","avif to jpg","avif to png","gif to jpg","gif to png"],
   jobs: ["convert image format","change image file format","convert JPG to PNG","convert PNG to JPG","convert JPG to WebP","convert WebP to PNG","convert HEIC or HEIF to JPG PNG or WebP","convert AVIF to JPG or PNG","extract the first GIF frame to JPG PNG or WebP"],
   category: "files-assets",

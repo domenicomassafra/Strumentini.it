@@ -5,9 +5,7 @@ const DISTRIBUTIONS = [
   ["public/ocr-246/lang/", "@tesseract.js-data/ita"],
   ["public/ocr-246/core/", "tesseract.js-core"],
   ["public/ocr-246/vendor/", "tesseract.js"],
-  ["src/engines/pdf/vendor/pdfstudio/", "pdfstudio"],
   ["src/engines/video/vendor/gifenc-mit-1.0.3/", "gifenc"],
-  ["src/engines/video/vendor/mediabunny-mpl-1.61.3/", "mediabunny"],
 ] as const;
 
 export function expectedAssetDistribution366(path: string): string | null {

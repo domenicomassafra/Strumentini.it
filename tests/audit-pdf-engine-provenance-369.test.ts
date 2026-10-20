@@ -87,8 +87,8 @@ describe("#369 execution-backed installed PDF vendor provenance gate", () => {
       installed: false, licenseGate: "AGPL_OR_COMMERCIAL_UNAPPROVED", decision: "NO_ADOPT",
       mobileEvidence: "NOT_RUN",
     });
-    expect(evidence.comparison.find((r) => r.engine === "pdfstudio / qpdf WASM")?.browserBundle)
-      .toMatch(/local qpdf WASM \d+B raw\/\d+B gzip/u);
+    expect(evidence.comparison.find((r) => r.engine === "pdfstudio / qpdf WASM"))
+      .toMatchObject({ installed: false, decision: "NOT_APPLICABLE", browserBundle: expect.stringContaining("0B") });
     expect(evidence.comparison.find((r) => r.engine === "pdf-lib")).toMatchObject({
       installed: false, decision: "NO_ADOPT",
     });
