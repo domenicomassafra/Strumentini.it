@@ -3,10 +3,15 @@ import { basename, join, relative, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
 import { groups } from "../src/catalog/groups";
 import { publicIndexPaths } from "../src/seo/public-discovery";
+import { auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
 
 const root = resolve(import.meta.dirname, "..");
 const updateBaseline = process.argv.includes("--update-baseline");
 const dist = resolve(root, "dist");
+const noticeFailures = auditDistributedNotices366(dist);
+if (noticeFailures.length > 0) {
+  throw new Error(`Distributed donor notices are incomplete: ${noticeFailures.join("; ")}`);
+}
 const pagePath = resolve(dist, "tools/business-day/index.html");
 const page = await readFile(pagePath, "utf8");
 
@@ -241,6 +246,7 @@ console.log(
   `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
     `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
     `${pageMetadata.length} unique metadata page(s), ${sitemapLocations.length} sitemap entry(ies); ` +
+    `${DONOR_NOTICES_366.length} distributed donor notice(s); ` +
     `${discoveryUrlMode}; ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );
