@@ -18,12 +18,28 @@ const dir = await mkdtemp(join(tmpdir(), "str-212-avif-"));
 const sequencePath = join(dir, "real-4-frame.avif");
 let server;
 try {
-  execFileSync("ffmpeg", [
-    "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",
-    "-i", "testsrc2=size=32x24:rate=2:duration=2",
-    "-frames:v", "4", "-c:v", "libsvtav1", "-preset", "11", "-crf", "48",
-    "-f", "avif", sequencePath,
-  ], { stdio: "pipe", timeout: 30_000 });
+  // SVT-AV1 builds can refuse tiny 32x24 fixtures. The independent output
+  // oracle below verifies actual AV1 frames, timing and sequence brands for
+  // either installed encoder; a failed encoder never counts as a passing test.
+  const sourceArgs = ["-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",
+    "-i", "testsrc2=size=32x24:rate=2:duration=2", "-frames:v", "4"];
+  const encoders = [
+    { name: "libsvtav1", options: ["-preset", "11", "-crf", "48"] },
+    { name: "libaom-av1", options: ["-cpu-used", "8", "-crf", "48", "-b:v", "0", "-threads", "2"] },
+  ];
+  const failures = [];
+  let encodedWith;
+  for (const encoder of encoders) {
+    try {
+      execFileSync("ffmpeg", [...sourceArgs, "-c:v", encoder.name, ...encoder.options, "-f", "avif", sequencePath],
+        { stdio: "pipe", timeout: 30_000 });
+      encodedWith = encoder.name;
+      break;
+    } catch (error) {
+      failures.push(`${encoder.name}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  assert.ok(encodedWith, `No approved local AV1 fixture encoder succeeded: ${failures.join("; ")}`);
   const declared = JSON.parse(execFileSync("ffprobe", [
     "-v", "error", "-show_entries", "format=duration:stream=codec_name,width,height,nb_frames",
     "-of", "json", sequencePath,
