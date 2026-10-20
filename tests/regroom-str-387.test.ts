@@ -84,6 +84,37 @@ describe("#146 STR-387: edit/export fidelity and independent consumers", () => {
       .rejects.toMatchObject({ code: "UNSUPPORTED_XLSX_FEATURE" });
   });
 
+  it("refuses conditional formatting and data validation instead of discarding workbook rules", async () => {
+    const source = await csvToXlsx("id,amount\n00123,12");
+    const injected = spawnSync("python3", ["-c", String.raw`
+import io,sys,zipfile
+from xml.etree import ElementTree as ET
+ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main'
+ET.register_namespace('',ns)
+original=io.BytesIO(sys.stdin.buffer.read());output=io.BytesIO()
+with zipfile.ZipFile(original) as src,zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED) as dst:
+    for entry in src.infolist():
+        data=src.read(entry.filename)
+        if entry.filename=='xl/worksheets/sheet1.xml':
+            root=ET.fromstring(data)
+            rules=ET.SubElement(root,'{%s}conditionalFormatting'%ns,{'sqref':'B2'})
+            rule=ET.SubElement(rules,'{%s}cfRule'%ns,{'type':'expression','priority':'1'})
+            ET.SubElement(rule,'{%s}formula'%ns).text='B2>10'
+            valid=ET.SubElement(root,'{%s}dataValidations'%ns,{'count':'1'})
+            check=ET.SubElement(valid,'{%s}dataValidation'%ns,{'type':'whole','sqref':'B2'})
+            ET.SubElement(check,'{%s}formula1'%ns).text='0'
+            ET.SubElement(check,'{%s}formula2'%ns).text='100'
+            data=ET.tostring(root,encoding='utf-8',xml_declaration=True)
+        dst.writestr(entry,data)
+sys.stdout.buffer.write(output.getvalue())
+`], { input: Buffer.from(source.bytes), timeout: 10_000, maxBuffer: 2 * 1024 * 1024 });
+    expect(injected.status, injected.stderr?.toString() ?? String(injected.error)).toBe(0);
+    const value = injected.stdout.buffer.slice(injected.stdout.byteOffset,
+      injected.stdout.byteOffset + injected.stdout.byteLength) as ArrayBuffer;
+    await expect(xlsxToCsv(value, { strictEditing: true }))
+      .rejects.toMatchObject({ code: "UNSUPPORTED_XLSX_FEATURE" });
+  });
+
   it("reads valid accents and rejects malformed UTF-8 before edit/export", async () => {
     expect(parseEditable387(await readBlobText(new Blob([new TextEncoder().encode("nome\ncaffè")]))).rows)
       .toEqual([["caffè"]]);

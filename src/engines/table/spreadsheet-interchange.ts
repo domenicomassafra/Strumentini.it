@@ -5,7 +5,7 @@ import { parseXmlDocument, type XmlElement } from "../developer-web/structured-r
 import { analyzeOoxmlPackage, OOXML_PACKAGE_LIMITS, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
 import { isPotentialCsvFormula, parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
 import { csvCell387, readColumnTypes387 } from "./spreadsheet-cell-fidelity-387";
-import { refuseLossyWorkbook387, workbookWorksheetTarget387 } from "./spreadsheet-style-refusal-387";
+import { hasLossyWorksheetFeatures387, refuseLossyWorkbook387, workbookWorksheetTarget387 } from "./spreadsheet-style-refusal-387";
 import { assertSpreadsheetTableBounds370 } from "./spreadsheet-table-bounds-370";
 
 export const SPREADSHEET_INTERCHANGE_LIMITS = {
@@ -399,8 +399,8 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer, strictEditing = false): void 
     const entry = archivedParts.get(part);
     if (!entry) fail("XLSX_READ_FAILED", "Declared XLSX worksheet part is missing from the archive.");
     const worksheetXml = readBoundedXlsxXml(bytes, entry, OOXML_PACKAGE_LIMITS.maxEntryUncompressedBytes);
-    if (strictEditing && /<(?:[A-Za-z_][\w.-]*:)?(?:mergeCells|hyperlinks)(?=[\s/>])/u.test(worksheetXml)) {
-      fail("UNSUPPORTED_XLSX_FEATURE", "Merged cells or hyperlinks would be discarded by editing.");
+    if (strictEditing && hasLossyWorksheetFeatures387(worksheetXml)) {
+      fail("UNSUPPORTED_XLSX_FEATURE", "Worksheet rules cannot be preserved by editing.");
     }
     if (containsActualXlsxFormulaTag(worksheetXml)) {
       fail("UNSUPPORTED_XLSX_FEATURE", "Workbook formulas and their unverified cached results cannot be imported as CSV.");

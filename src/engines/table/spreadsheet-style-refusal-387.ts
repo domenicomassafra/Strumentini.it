@@ -1,6 +1,11 @@
 import { parseXmlDocument, type XmlElement } from "../developer-web/structured-repair";
 import type { OoxmlZipEntry } from "../ooxml/package";
 
+/** Structures that cannot survive the value-only XLSX editor. */
+export function hasLossyWorksheetFeatures387(xml: string): boolean {
+  return /<(?:[A-Za-z_][\w.-]*:)?(?:mergeCells|hyperlinks|conditionalFormatting|dataValidations|autoFilter|tableParts|sheetProtection|drawing|legacyDrawing|rowBreaks|colBreaks|cols)(?=[\s/>])/u.test(xml);
+}
+
 export function workbookWorksheetTarget387(target: string, refuse: (reason: string) => never): string {
   if (/[\\?#%]/u.test(target) || /^[A-Za-z][\w+.-]*:/u.test(target)) {
     refuse("Unsupported XLSX worksheet relationship target.");
