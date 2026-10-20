@@ -15630,6 +15630,7 @@
           "tests/image-resize-engine.test.ts",
           "tests/image-result-v2.test.ts",
           "tests/image-visual-tools.test.ts",
+          "tests/regroom-str-277.test.ts",
           "tests/regroom-str-280.test.ts",
           "tests/regroom-str-281.test.ts",
           "tests/release-scope-405.test.ts",
