@@ -99,12 +99,36 @@ async function pages420(file: File, bytes: Uint8Array, count: number, signal?: A
           // reading order. Do not misrepresent columns as plain paragraphs.
           const fragments = items.map((item) => ({
             x: item.transform[4]!, y: item.transform[5]!,
-            right: item.transform[4]! + item.width, text: item.str,
+            right: item.transform[4]! + item.width,
           }));
           for (const a of fragments) for (const b of fragments) {
             if (a === b || Math.abs(a.y - b.y) > 2 || b.x <= a.x) continue;
             if (b.x - a.right > 36) {
               throw new Error("PDF420_COLUMNS_UNSUPPORTED: Colonne o blocchi affiancati ambigui.");
+            }
+          }
+          // Independent columns can have staggered baselines. Their text
+          // clusters still occupy disjoint horizontal bands and overlap in Y.
+          // Require two fragments on each side to avoid confusing a single
+          // right-aligned line with a second column.
+          if (fragments.length >= 4) for (const edge of new Set(fragments.map(({ right }) => right))) {
+            let left = 0, right = 0;
+            let leftMinY = Infinity, leftMaxY = -Infinity;
+            let rightMinY = Infinity, rightMaxY = -Infinity;
+            for (const part of fragments) {
+              if (part.right <= edge + 0.5) {
+                left++;
+                leftMinY = Math.min(leftMinY, part.y);
+                leftMaxY = Math.max(leftMaxY, part.y);
+              } else if (part.x >= edge + 36) {
+                right++;
+                rightMinY = Math.min(rightMinY, part.y);
+                rightMaxY = Math.max(rightMaxY, part.y);
+              } else { left = -1; break; }
+            }
+            if (left >= 2 && right >= 2 &&
+                Math.min(leftMaxY, rightMaxY) > Math.max(leftMinY, rightMinY)) {
+              throw new Error("PDF420_COLUMNS_UNSUPPORTED: Colonne sfalsate con lettura ambigua.");
             }
           }
         }

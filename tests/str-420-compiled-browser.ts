@@ -11,9 +11,9 @@ import { resolve } from "node:path";
 import { strict as assert } from "node:assert";
 
 const root = resolve(import.meta.dirname, "..");
-const origin = "http://127.0.0.1:18373";
+const origin = "http://127.0.0.1:19420";
 const server = spawn(resolve(root, "node_modules/.bin/astro"),
-  ["preview", "--host", "127.0.0.1", "--port", "18373"],
+  ["preview", "--host", "127.0.0.1", "--port", "19420"],
   { cwd: root, stdio: "ignore" });
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function ready() {
@@ -58,9 +58,12 @@ async function columnFixture() {
 }
 try {
   await ready();
-  const browser = await chromium.launch({ headless: true });
+  // Reuse the MiniPC's existing automation-browser session; never start an
+  // additional Chromium profile for this integration acceptance.
+  const browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
   try {
     const context = await browser.newContext({ acceptDownloads: true });
+    try {
     const page = await context.newPage();
     const browserErrors: string[] = [];
     const external: string[] = [];
@@ -102,5 +105,6 @@ try {
     assert.deepEqual(browserErrors, []);
     assert.deepEqual(external, []);
     console.log("COMPILED_BROWSER_PASS columns=REFUSED externalRequests=0 pageErrors=0");
+    } finally { await context.close(); }
   } finally { await browser.close(); }
 } finally { server.kill("SIGTERM"); }

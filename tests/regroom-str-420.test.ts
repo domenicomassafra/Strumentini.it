@@ -34,6 +34,19 @@ async function columns(): Promise<File> {
   return asPdf(await document.save({ useObjectStreams: false }));
 }
 
+async function staggeredColumns(): Promise<File> {
+  const document = await PDFDocument.create();
+  const page = document.addPage([595, 842]);
+  const font = await document.embedFont(StandardFonts.Helvetica);
+  for (const [text, x, y] of [
+    ["Sinistra prima riga", 50, 700],
+    ["Sinistra seconda riga", 50, 672],
+    ["Destra prima riga", 340, 688],
+    ["Destra seconda riga", 340, 660],
+  ] as const) page.drawText(text, { x, y, size: 12, font });
+  return asPdf(await document.save({ useObjectStreams: false }));
+}
+
 async function imageWithText(): Promise<File> {
   const document = await PDFDocument.create();
   const page = document.addPage([595, 842]);
@@ -115,6 +128,7 @@ describe("STR-420 PDF -> editable Word semantic feasibility", () => {
 
   it("refuses multicols, image pages, scanned pages and incomplete graphics as semantic reconstruction", async () => {
     await expect(pdfToDocx57(await columns())).rejects.toThrow(/PDF420_COLUMNS_UNSUPPORTED/u);
+    await expect(pdfToDocx57(await staggeredColumns())).rejects.toThrow(/PDF420_COLUMNS_UNSUPPORTED/u);
     await expect(pdfToDocx57(await imageWithText())).rejects.toThrow(/PDF420_IMAGE_UNSUPPORTED/u);
     await expect(pdfToDocx57(asPdf(createSimplePdf([""])))).rejects.toThrow(/PDF57_OCR_REQUIRED/u);
     const noGrid = await PDFDocument.create();
