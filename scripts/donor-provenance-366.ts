@@ -258,6 +258,7 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
   for (const dir of dirs) {
     if (!safeAssetPath(root, dir) || !existsSync(resolve(root, dir)) ||
       !lstatSync(resolve(root, dir)).isDirectory()) {
+      if ((dir === "public/models" || dir === "public/vendor") && !existsSync(resolve(root, dir))) continue;
       failures.push(`MISSING_ASSET_DIRECTORY ${dir}`);
       continue;
     }
@@ -304,7 +305,7 @@ export function parseAssetPins366(document: string): AssetPin366[] {
 }
 
 export const VENDORED_DIRS_366 = [
-  "public/ocr-246", "public/fonts", "src/engines/video/vendor",
+  "public/ocr-246", "public/fonts", "src/engines/video/vendor", "public/models", "public/vendor",
 ];
 
 export function auditRepository366(root: string) {
