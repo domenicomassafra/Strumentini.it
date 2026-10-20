@@ -10,6 +10,8 @@ export interface AndroidChromeAvd277Receipt {
   build: { revision: string; compiled: true; route: "/tools/image-resize/"; htmlSha256: string };
   input: { filename: string; mime: "image/png"; bytes: number; sha256: string; width: number; height: number };
   operation: { androidPickerOpened: true; fileSelected: true; resizedInChrome: true; androidDownloadSaved: true };
+  negative: { pickerCancelledWithoutSelection: true; corruptJpegRefused: true; offsiteRequests: 0 };
+  screenshot: { file: string; kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED"; bytes: number; sha256: string };
   output: { filename: string; mime: "image/jpeg"; bytes: number; sha256: string; width: number; height: number; decoder: "sharp/libvips"; reopened: true };
 }
 
@@ -35,6 +37,10 @@ export function validateAndroidChromeAvd277(value: unknown): string[] {
   if (input.mime !== "image/png" || !nonEmpty(input.filename) || !positive(input.bytes) || !sha(input.sha256) || !positive(input.width) || !positive(input.height)) errors.push("input image byte/MIME/dimension identity missing");
   const operation = isObject(value.operation) ? value.operation : {};
   if (operation.androidPickerOpened !== true || operation.fileSelected !== true || operation.resizedInChrome !== true || operation.androidDownloadSaved !== true) errors.push("Android picker/resize/download interaction incomplete");
+  const negative = isObject(value.negative) ? value.negative : {};
+  if (negative.pickerCancelledWithoutSelection !== true || negative.corruptJpegRefused !== true || negative.offsiteRequests !== 0) errors.push("negative picker/format/network proof missing");
+  const screenshot = isObject(value.screenshot) ? value.screenshot : {};
+  if (screenshot.kind !== "ANDROID_EMULATOR_SCREENSHOT_SIMULATED" || screenshot.file !== "quality/receipts/android-chrome-avd-277-simulated.jpg" || !positive(screenshot.bytes) || !sha(screenshot.sha256)) errors.push("simulated screenshot proof missing");
   const output = isObject(value.output) ? value.output : {};
   if (output.mime !== "image/jpeg" || !nonEmpty(output.filename) || !positive(output.bytes) || !sha(output.sha256) || !positive(output.width) || !positive(output.height) || output.decoder !== "sharp/libvips" || output.reopened !== true) errors.push("independent download readback incomplete");
   if (positive(input.width) && positive(input.height) && positive(output.width) && positive(output.height) && ((output.width as number) >= (input.width as number) || (output.height as number) >= (input.height as number))) errors.push("output was not resized smaller");

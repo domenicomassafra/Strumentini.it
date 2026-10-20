@@ -15,6 +15,8 @@ const fixture = {
   build: { revision: "b".repeat(40), compiled: true, route: "/tools/image-resize/", htmlSha256: digest },
   input: { filename: "str277-source.png", mime: "image/png", bytes: 500, sha256: digest, width: 320, height: 240 },
   operation: { androidPickerOpened: true, fileSelected: true, resizedInChrome: true, androidDownloadSaved: true },
+  negative: { pickerCancelledWithoutSelection: true, corruptJpegRefused: true, offsiteRequests: 0 },
+  screenshot: { file: "quality/receipts/android-chrome-avd-277-simulated.jpg", kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED", bytes: 100, sha256: digest },
   output: { filename: "str277-output.jpg", mime: "image/jpeg", bytes: 300, sha256: digest, width: 160, height: 120, decoder: "sharp/libvips", reopened: true },
 };
 
@@ -42,6 +44,9 @@ describe("STR-277 Android Emulator + Chrome image resize acceptance", () => {
     expect(errors((d) => { d.output.sha256 = "unknown"; })).toContain("independent download readback incomplete");
     expect(errors((d) => { d.output.mime = "image/png"; })).toContain("independent download readback incomplete");
     expect(errors((d) => { d.output.width = 320; })).toContain("output was not resized smaller");
+    expect(errors((d) => { d.negative.corruptJpegRefused = false; })).toContain("negative picker/format/network proof missing");
+    expect(errors((d) => { d.negative.offsiteRequests = 1 as 0; })).toContain("negative picker/format/network proof missing");
+    expect(errors((d) => { d.screenshot.sha256 = "unknown"; })).toContain("simulated screenshot proof missing");
   });
 
   it("independently reopens the downloaded Android Chrome artifact and verifies declared bytes, MIME and dimensions", async () => {
@@ -54,7 +59,13 @@ describe("STR-277 Android Emulator + Chrome image resize acceptance", () => {
     expect(bytes.subarray(0, 3).toString("hex")).toBe("ffd8ff");
     const decoded = await sharp(bytes, { failOn: "error" }).metadata();
     expect(decoded.format).toBe("jpeg");
+    const decodedPixels = await sharp(bytes, { failOn: "error" }).ensureAlpha().raw().toBuffer();
+    expect(decodedPixels.length).toBe(decoded.width! * decoded.height! * 4);
     expect([decoded.width, decoded.height]).toEqual([receipt.output.width, receipt.output.height]);
+    const screenshot = readFileSync(resolve(root, receipt.screenshot.file));
+    expect(screenshot.length).toBe(receipt.screenshot.bytes);
+    expect(sha256(screenshot)).toBe(receipt.screenshot.sha256);
+    expect((await sharp(screenshot).metadata()).format).toBe("jpeg");
     const source = readFileSync(resolve(root, "tests/fixtures/android-chrome-avd-277-input.png"));
     expect(source.length).toBe(receipt.input.bytes);
     expect(sha256(source)).toBe(receipt.input.sha256);

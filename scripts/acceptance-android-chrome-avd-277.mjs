@@ -16,7 +16,6 @@ const port = 18875;
 const fixture = resolve(root, "tests/fixtures/android-chrome-avd-277-input.png");
 const outputFile = resolve(root, "quality/receipts/android-chrome-avd-277-output.jpg");
 const receiptFile = resolve(root, "quality/receipts/android-chrome-avd-277.json");
-const outputName = "str277-android-result.jpg";
 const fingerprint = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const adb = (...args) => execFileSync(adbBin, args, { encoding: "utf8", timeout: 30_000 }).trim();
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
@@ -87,7 +86,6 @@ const sourceMetadata = await sharp(source).metadata();
 assert.deepEqual([sourceMetadata.format, sourceMetadata.width, sourceMetadata.height], ["png", 320, 240]);
 const html = await readFile(resolve(dist, "tools/image-resize/index.html"));
 adb("push", fixture, "/sdcard/Download/str277-source.png");
-adb("shell", "rm", "-f", `/sdcard/Download/${outputName}`);
 const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
 const browserVersion = adb("shell", "dumpsys", "package", "com.android.chrome").match(/versionName=([^\s]+)/u)?.[1];
 assert(browserVersion);
@@ -103,18 +101,27 @@ try {
   let cdpError;
   for (let attempt = 0; attempt < 20 && !browser; attempt++) {
     try {
-      browser = await chromium.connectOverCDP("http://127.0.0.1:9222", { timeout: 3500 });
+      browser = await chromium.connectOverCDP("http://127.0.0.1:9222", { timeout: 3500, noDefaults: true });
     } catch (error) {
       cdpError = error;
       await sleep(1000);
     }
   }
   if (!browser) throw cdpError;
+  // Playwright's default CDP download directory points to the Linux host;
+  // leave Android Chrome's native DownloadManager untouched (Playwright Apache-2.0).
+  console.log("AVD_NATIVE_CHROME_DOWNLOAD_BEHAVIOR", "browser-default/noDefaults");
   const context = browser.contexts()[0];
   const page = context.pages().find((item) => item.url().includes("/tools/image-resize/")) ?? context.pages()[0] ?? await context.newPage();
   console.log("AVD_TABS", context.pages().map((item) => item.url()));
   const errors = [];
+  const externalRequests = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("request", (request) => {
+    if (!request.url().startsWith(`http://127.0.0.1:${port}/`) && !/^(blob:|data:)/u.test(request.url())) {
+      externalRequests.push({ method: request.method(), url: request.url() });
+    }
+  });
   const response = await page.goto(`http://127.0.0.1:${port}/tools/image-resize/`, { waitUntil: "domcontentloaded", timeout: 30000 });
   assert.equal(response?.status(), 200);
   await page.locator("#image-resize-file").waitFor({ timeout: 30000 });
@@ -163,36 +170,55 @@ try {
   const href = await link.getAttribute("href");
   assert(href?.startsWith("blob:"), "output must originate from local Blob");
   const siteFilename = await link.getAttribute("download");
-  assert(siteFilename?.endsWith(".jpg") || siteFilename?.endsWith(".jpeg"));
+  assert.match(siteFilename, /^[\w .()-]+\.jpe?g$/iu, "unexpected image download filename");
+  adb("shell", "rm", "-f", "/sdcard/Download/" + siteFilename);
   page.on("download", async (download) => {
     console.log("CDP_DOWNLOAD_EVENT", download.suggestedFilename());
     try { console.log("CDP_DOWNLOAD_PATH", await download.path()); } catch(error) { console.log("CDP_DOWNLOAD_ERROR", String(error)); }
   });
   await link.scrollIntoViewIfNeeded();
-  console.log("AVD_DOWNLOAD_LINK", JSON.stringify(await link.evaluate((el) => {
-    const r = el.getBoundingClientRect();
-    return { top:r.top, left:r.left, width:r.width, height:r.height, dpr:window.devicePixelRatio, innerWidth:window.innerWidth, innerHeight:window.innerHeight, text:el.textContent };
-  })));
-  console.log("AVD_VISIBLE_DOWNLOAD_NODES", JSON.stringify(pickerNodes().filter((n)=>/Scarica|Download/iu.test(n.text + n.description)).slice(0, 16)));
-  const position = await link.evaluate((el) => {
-    const rect = el.getBoundingClientRect();
-    return { x: Math.round((rect.left + rect.right) / 2), y: Math.round((rect.top + rect.bottom) / 2), cssWidth: innerWidth, cssHeight: innerHeight };
-  });
-  const dpiScale = Number(adb("shell", "wm", "size").match(/(\d+)x(\d+)/u)?.[1]) / position.cssWidth;
-  const touchX = Math.round(position.x * dpiScale);
-  const touchY = Math.round(136 + position.y * dpiScale);
-  console.log("AVD_DOWNLOAD_ANDROID_TAP", touchX, touchY);
-  adb("shell", "input", "tap", String(touchX), String(touchY));
+  await link.click({ timeout: 15000 });
+  console.log("AVD_CHROME_LINK_CLICKED", siteFilename);
   await sleep(1200);
-  console.log("AVD_POST_DOWNLOAD_NODES", JSON.stringify(pickerNodes().filter((n)=>n.bounds?.[0] !== n.bounds?.[2] && (n.text || n.description)).slice(-18)));
+  console.log("AVD_POST_DOWNLOAD_NODES", JSON.stringify(pickerNodes().filter((n) => n.text || n.description).slice(-18)));
   const byteCount = await waitDownloaded(siteFilename);
   adb("pull", `/sdcard/Download/${siteFilename}`, resolve(temp, "android-downloaded.jpg"));
   const bytes = await readFile(resolve(temp, "android-downloaded.jpg"));
   assert.equal(bytes.length, byteCount);
   assert.equal(bytes.subarray(0, 3).toString("hex"), "ffd8ff");
   const decoded = await sharp(bytes, { failOn: "error" }).metadata();
+  const decodedPixels = await sharp(bytes, { failOn: "error" }).ensureAlpha().raw().toBuffer();
+  assert.equal(decodedPixels.length, decoded.width * decoded.height * 4, "download must fully decode");
   assert.deepEqual([decoded.format, decoded.width, decoded.height], ["jpeg", 160, 120]);
   assert.deepEqual(errors, []);
+  assert.deepEqual(externalRequests, [], "image-resize page attempted offsite requests");
+  const capture = execFileSync(adbBin, ["exec-out", "screencap", "-p"], { timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
+  const smallCapture = await sharp(capture).resize({ width: 280 }).jpeg({ quality: 36 }).toBuffer();
+  assert(smallCapture.length < 20_000, "simulated screenshot exceeds agent file budget");
+  const screenshotFile = resolve(root, "quality/receipts/android-chrome-avd-277-simulated.jpg");
+  await writeFile(screenshotFile, smallCapture);
+
+  // Negative native picker: Cancel refuses access to another file after reset.
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.locator("#image-resize-file").click({ force: true });
+  await tapNative("Cancel");
+  const cancelledPicker = await page.locator("#image-resize-file").evaluate((input) => input.files?.length === 0);
+  assert.equal(cancelledPicker, true, "native picker cancellation must not select a file");
+  assert.equal(await page.locator('a[download]').count(), 0, "cancelled picker must not create output");
+
+  // Negative format: exercise the real Android renderer's refusal with a test-injected
+  // corrupt image; the successful source selection above used the native picker.
+  await page.locator("#image-resize-file").setInputFiles({
+    name: "corrupt.jpg", mimeType: "image/jpeg", buffer: Buffer.from([0xff, 0xd8, 0xff, 0x00]),
+  });
+  await page.getByRole("button", { name: "Ridimensiona", exact: true }).click();
+  await page.locator('p.error[role="alert"]').waitFor({ timeout: 20000 });
+  const formatError = await page.locator('p.error[role="alert"]').innerText();
+  assert.match(formatError, /danneggiata|non riuscit|Scegli un'immagine/iu);
+  assert.equal(await page.locator('a[download]').count(), 0, "bad format must not produce a download");
+  assert.deepEqual(errors, []);
+  assert.deepEqual(externalRequests, []);
+  console.log("ANDROID_CHROME_AVD_277_NEGATIVES_PASS", JSON.stringify({ pickerCancel: true, malformedJpegRefused: true, offsiteRequests: 0 }));
   await copyFile(resolve(temp, "android-downloaded.jpg"), outputFile);
   const receipt = {
     schemaVersion: 1, ticket: "STR-277", evidenceKind: "ANDROID_EMULATOR_CHROME_SIMULATED", physicalDeviceObserved: false,
@@ -202,6 +228,8 @@ try {
     build: { revision, compiled: true, route: "/tools/image-resize/", htmlSha256: fingerprint(html) },
     input: { filename: "str277-source.png", mime: "image/png", bytes: source.length, sha256: fingerprint(source), width: sourceMetadata.width, height: sourceMetadata.height },
     operation: { androidPickerOpened: true, fileSelected: true, resizedInChrome: true, androidDownloadSaved: true },
+    negative: { pickerCancelledWithoutSelection: true, corruptJpegRefused: true, offsiteRequests: externalRequests.length },
+    screenshot: { file: "quality/receipts/android-chrome-avd-277-simulated.jpg", kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED", bytes: smallCapture.length, sha256: fingerprint(smallCapture) },
     output: { filename: siteFilename, mime: "image/jpeg", bytes: bytes.length, sha256: fingerprint(bytes), width: decoded.width, height: decoded.height, decoder: "sharp/libvips", reopened: true },
   };
   await writeFile(receiptFile, JSON.stringify(receipt, null, 2) + "\n");
