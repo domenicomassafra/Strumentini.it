@@ -7,6 +7,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <nav aria-label="Percorso"><a href="/">Home</a> / <a href="/strumenti/">Strumenti</a> / Calcoli fiscali italiani</nav>
     <h1>Calcoli fiscali italiani</h1>
     <p>Quattro percorsi indipendenti. Le fonti valgono per gli anni e i profili indicati; i risultati sono stime informative nel browser, senza invio di dati personali.</p>
+    <noscript><p data-fiscal-noscript>Le simulazioni richiedono JavaScript. Senza JavaScript i pulsanti restano disattivati e non inviano importi.</p></noscript>
 
     <section aria-labelledby="net130-title">
       <h2 id="net130-title">Stipendio netto annuo — dipendente agricolo 2026</h2>
@@ -15,7 +16,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         <label>RAL e base FPLD 2026 (€) <input name="ral" inputmode="decimal" placeholder="30000,00" required /></label>
         <label>Mensilità <select name="payments"><option>12</option><option>13</option><option>14</option></select></label>
         <label class="check"><input type="checkbox" name="baseConfirmed" required /> Confermo il profilo OTD/OTI ordinario e che la base FPLD coincide con la RAL inserita.</label>
-        <button type="submit">Stima il netto annuo</button>
+        <button type="submit" disabled>Stima il netto annuo</button>
         <p role="alert" hidden></p><output aria-live="polite"></output>
       </form>
       <p class="source">Fonti 2026: <a href="https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/04/Circolare_15228/Allegati/16697_Circolare-numero-43-del-07-04-2026.pdf">INPS, circ. 43/2026</a>; <a href="https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED">IRPEF, legge 199/2025</a>. Esclude detrazioni, addizionali, altri contributi e bonus.</p>
@@ -57,7 +58,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           <label>Reddito annuo storico di riferimento verificato (€; lascia vuoto senza documentazione) <input name="historical" inputmode="decimal" /></label>
           <label>Anni di storico verificato <input name="historyYears" type="number" min="0" value="0" /></label>
         </fieldset>
-        <button type="submit">Calcola TFR e imposta indicativa</button>
+        <button type="submit" disabled>Calcola TFR e imposta indicativa</button>
         <p role="alert" hidden></p><output aria-live="polite"></output>
       </form>
       <p class="source">Fonti: <a href="https://servizi2.inps.it/servizi/Bussola/VisualizzaDoc.aspx?sVirtualURL=%2FCircolari%2FCircolare+numero+70+del+3-4-2007.htm">INPS, art. 2120 c.c., maturazione e rivalutazione</a>; <a href="https://www.istat.it/comunicato-stampa/prezzi-al-consumo-dicembre-2025/">ISTAT, FOI dicembre 2025</a>. La quota teorica esclude riduzione contributiva 0,50%, anticipi, conferimenti, imposta sulla rivalutazione e liquidazione aziendale. L'imposta illustrativa usa la sola IRPEF lorda nazionale sul reddito storico dichiarato: non è la tassazione separata ufficiale.</p>
@@ -72,7 +73,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         <label>Natura operazione <select name="nature"><option value="N2.2">N2.2 — non soggetta</option><option value="N3.6">N3.6 — non imponibile</option><option value="N4">N4 — esente</option><option value="OTHER">Altra natura</option></select></label>
         <label class="check"><input name="single" type="checkbox" required /> È una fattura elettronica ordinaria con una sola riga.</label>
         <label class="check"><input name="noExempt" type="checkbox" required /> Ho verificato che non vi sono esenzioni speciali (NB1, NB2, NB3 o altre).</label>
-        <button type="submit">Controlla il riferimento bollo</button>
+        <button type="submit" disabled>Controlla il riferimento bollo</button>
         <p role="alert" hidden></p><output aria-live="polite"></output>
       </form>
       <p class="source">Fonte e versione: <a href="https://www1.agenziaentrate.gov.it/web_app_entrate/bollo_fatture_2024.html">Agenzia delle Entrate, guida novembre 2024, elenco B</a>. Il risultato è un riferimento descrittivo e non certifica un obbligo legale individuale.</p>
@@ -165,7 +166,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         alert.hidden = false;
       }
     });
-    if (form.dataset.calculator === "forf133") form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   });
 </script>
 

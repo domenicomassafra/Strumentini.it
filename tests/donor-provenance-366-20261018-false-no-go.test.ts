@@ -3,19 +3,26 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { auditLockedPackages366, auditVendoredAssets366, parseAssetPins366, VENDORED_DIRS_366 } from "../scripts/donor-provenance-366";
+import { auditLockedPackages366, auditRepository366, auditVendoredAssets366, parseAssetPins366, VENDORED_DIRS_366 } from "../scripts/donor-provenance-366";
 
 const lock = JSON.parse(readFileSync(resolve("package-lock.json"), "utf8"));
 const manifest = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
 const pins = parseAssetPins366(readFileSync(resolve("docs/donor-provenance-366-2026-10-11.md"), "utf8"));
 const authored = [
-  "src/engines/pdf/vendor/pdfstudio/PROVENANCE.md",
   "src/engines/video/vendor/gifenc-mit-1.0.3/README.md",
   "src/engines/video/vendor/gifenc-mit-1.0.3/index.d.mts",
-  "src/engines/video/vendor/mediabunny-mpl-1.61.3/README.md",
 ] as const;
 
 describe("#366 false refusals versus real provenance blockers", () => {
+  it("accepts proven primary sources after the prohibited codecs are removed", () => {
+    const report = auditRepository366(process.cwd());
+    expect(report.assets.status).toBe("VERIFIED_METADATA");
+    expect(report.primary.failures).toEqual([]);
+    expect(report.primary.unresolved).toBe(0);
+    expect(report.status).toBe("VERIFIED_METADATA");
+    expect(report.failures).toEqual([]);
+    expect(report.candidates.every((candidate) => candidate.decision === "NO_ADOPT")).toBe(true);
+  }, 30_000);
   it("audits installed optional-runtime peers even after a new dependency makes sharp required", () => {
     const report = auditLockedPackages366(lock, manifest);
     expect(report.failures.filter((failure: string) => /DEV_ONLY_(TRANSITIVE|OPTIONAL)/u.test(failure))).toEqual([]);
@@ -44,7 +51,7 @@ describe("#366 false refusals versus real provenance blockers", () => {
     expect(auditLockedPackages366(broken, manifest).failures).toContain("UNKNOWN_LICENSE node_modules/tslib");
   });
 
-  it("recognizes only the four exact locally authored git-pinned files", () => {
+  it("recognizes only the two retained locally authored git-pinned files", () => {
     const report = auditVendoredAssets366(process.cwd(), pins, VENDORED_DIRS_366);
     for (const path of authored) {
       expect(report.failures.filter((failure) => failure.endsWith(" " + path)), path).toEqual([]);
@@ -53,16 +60,11 @@ describe("#366 false refusals versus real provenance blockers", () => {
       expect(pin.version).toBe("GIT");
       expect(pin.source).toMatch(/^git:[a-f0-9]{40}:[a-f0-9]{40}$/u);
     }
-    expect(report.status).toBe("NO_GO");
-    // The 8 CDN fonts + 4 primary OFL notices and the 7 OCR core binaries/
-    // license now carry exact upstream attestations. The three Italian-model
-    // language assets remain a legal-license refusal, even if bytes match.
+    expect(report.status).toBe("VERIFIED_METADATA");
+    // Local font/OCR byte attribution now includes the original 2018 tessdata
+    // model under Apache-2.0. The repository-level legal review remains NO_GO.
     expect(report.failures.filter((failure) => failure.includes("public/fonts/"))).toEqual([]);
-    expect(report.failures.filter((failure) => failure.includes("public/ocr-246/"))).toEqual([
-      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE",
-      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE",
-      "UNKNOWN_ASSET_LICENSE public/ocr-246/lang/ita.traineddata.gz",
-    ]);
+    expect(report.failures.filter((failure) => failure.includes("public/ocr-246/"))).toEqual([]);
   });
 
   // Five negative cases each rehash the entire pinned vendor corpus; under CI
@@ -74,7 +76,7 @@ describe("#366 false refusals versus real provenance blockers", () => {
       { ...original, source: "git:" + "f".repeat(40) + ":" + original.source.split(":")[2] },
       { ...original, license: "MIT" },
       { ...original, sha256: "a".repeat(64) },
-      { ...original, path: "src/engines/pdf/vendor/pdfstudio/wasm/qpdf.wasm" },
+      { ...original, path: "src/engines/video/vendor/gifenc-mit-1.0.3/index.mjs" },
     ];
     for (const attack of attacks) {
       const modified = pins.map((item) => item.path === original.path ? attack : item);

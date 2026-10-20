@@ -18,7 +18,7 @@ describe("#415 indexed fixture content must remain consumable current JSON", () 
     const index = JSON.parse(await readFile(resolve(checkout, "quality/fixtures/index.json"), "utf8")) as {
       families: { id: string; path: string; format: string }[];
     };
-    expect(index.families).toHaveLength(97);
+    expect(index.families).toHaveLength(98);
     expect(index.families.every(row => row.format === "json")).toBe(true);
     const hashes = await readCurrentFixtureHashes415(checkout, index.families.map(row => row.id), index.families);
     expect(hashes?.size).toBe(index.families.length);

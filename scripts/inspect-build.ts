@@ -156,8 +156,18 @@ const descriptions = pageMetadata.map(({ description }) => description);
 if (new Set(titles).size !== titles.length) throw new Error("Rendered page titles are not unique");
 if (new Set(descriptions).size !== descriptions.length) throw new Error("Rendered page descriptions are not unique");
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");
+const officialSitemap = await readFile(resolve(dist, "sitemap-0.xml"), "utf8");
+const sitemapIndex = await readFile(resolve(dist, "sitemap-index.xml"), "utf8");
+const sitemapSite = new URL(process.env.SITE_URL ?? process.env.PUBLIC_SITE_URL ?? "https://strumentini.it");
+if (sitemap !== officialSitemap || !sitemap.includes("<urlset ")) {
+  throw new Error("Legacy sitemap.xml differs from the official Astro sitemap URL set");
+}
+if (!sitemapIndex.includes("<sitemapindex ") ||
+    !sitemapIndex.includes(`<loc>${new URL("sitemap-0.xml", sitemapSite).href}</loc>`)) {
+  throw new Error("Astro sitemap index does not point to the generated URL set");
+}
 const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((match) => match[1] ?? "");
-// `/categorie/<slug>` is an indexable destination, exactly as `sitemap.xml.ts` declares it.
+// `/categorie/<slug>` is an indexable destination, exactly as the Astro sitemap filter declares it.
 const indexablePaths = [...publicIndexPaths, ...groups.map((group) => `/categorie/${group.slug}`), ...catalog.map((tool) => tool.route)]
   .map((route) => route === "/" ? "/" : `${route.replace(/\/+$/u, "")}/`)
   .sort();
@@ -168,6 +178,10 @@ if (sitemapPaths.some((path) => previewOnlyPaths.some((preview) => path === `/${
 if (indexablePaths.length !== new Set(indexablePaths).size) throw new Error("Indexable routes are not unique");
 if (sitemapPaths.length !== indexablePaths.length || sitemapPaths.some((path, index) => path !== indexablePaths[index])) {
   throw new Error("Sitemap does not contain one unique entry per indexable page");
+}
+const expectedLocations = indexablePaths.map((path) => new URL(path, sitemapSite).href).sort();
+if (sitemapLocations.slice().sort().some((location, index) => location !== expectedLocations[index])) {
+  throw new Error("Sitemap has an incorrect canonical origin or trailing slash");
 }
 if (sitemapLocations.some((location) => location.includes("localhost"))) throw new Error("Localhost URL leaked into sitemap");
 for (const tool of catalog) if (!sitemap.includes(tool.route)) throw new Error(`Sitemap is missing ${tool.route}`);

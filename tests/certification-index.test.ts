@@ -60,15 +60,21 @@ describe("expanded catalog certification index", () => {
     // A newly registered tool may not inherit Gold from an earlier catalog;
     // exact append-only oracle lineage may independently preserve the historic
     // receipts but never weakens the unverified tool's release gate.
-    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 11 });
-    expect(index.catalogToolCount).toBe(270);
+    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 12 });
+    expect(index.tools.find((tool) => tool.id === "eml-msg-viewer")).toMatchObject({
+      status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED",
+      oracle: { status: "BOUND", entryId: "cand-271" },
+    });
+    expect(index.catalogToolCount).toBe(271);
     expect(index.summary.certificationGoldCount).toBe(index.tools.filter((tool) => tool.status === "GOLD").length);
     expect(index.summary.releaseEligibleGoldCount).toBe(index.tools.filter((tool) => tool.goldEligible).length);
     expect(index.summary.releaseEligibleGoldCount).toBeLessThanOrEqual(index.summary.certificationGoldCount);
     // #320 and #036 changed previously Gold-certified PDF password/audio
     // implementations. Historical receipts remain auditable but release gates
     // must fail closed until those changed implementations are recertified.
-    expect(index.summary.releaseEligibleGoldCount).toBe(255);
+    // #126 also changes the previously Gold image-format HEIC decoder contract.
+    // Preserve its historical receipt, but deny new release eligibility until recertified.
+    expect(index.summary.releaseEligibleGoldCount).toBe(254);
     const passwordPdf = index.tools.find((tool) => tool.id === "pdf-password-check-remove");
     expect(passwordPdf).toMatchObject({
       status: "GOLD",
@@ -76,6 +82,9 @@ describe("expanded catalog certification index", () => {
       releaseGate: "BLOCKED",
     });
     expect(passwordPdf?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
+    const imageConversion = index.tools.find((tool) => tool.id === "image-format-conversion");
+    expect(imageConversion).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
+    expect(imageConversion?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
     const audioWav = index.tools.find((tool) => tool.id === "audio-generator");
     expect(audioWav).toMatchObject({
       status: "GOLD",
@@ -182,7 +191,7 @@ describe("expanded catalog certification index", () => {
       oracle: { status: "VERIFIED" },
     });
     expect(risConverter?.certificationReceipt).toBe("quality/receipts/research-knowledge/ris-bibtex-converter.gold.json");
-    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["ooxml-media-compression", "pdf-booklet-interleave", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "pdf-page-numbers", "pdf-tables-to-xlsx", "pdf-watermark", "printable-pdf-from-text", "tfr-calculator", "video-inspector"]);
+    expect(index.tools.filter((tool) => tool.status === "IMPLEMENTED_UNVERIFIED").map((tool) => tool.id)).toEqual(["eml-msg-viewer", "ooxml-media-compression", "pdf-booklet-interleave", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "pdf-page-numbers", "pdf-tables-to-xlsx", "pdf-watermark", "printable-pdf-from-text", "tfr-calculator", "video-inspector"]);
     expect(index.tools.filter((tool) => tool.status === "PARTIAL").map((tool) => tool.id)).toEqual(["image-resize", "microphone-recorder"]);
     for (const tool of index.tools.filter((entry) => entry.status === "GOLD")) {
       expect(tool.certificationReceipt).not.toBeNull();
