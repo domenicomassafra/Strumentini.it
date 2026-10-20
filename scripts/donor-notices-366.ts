@@ -92,6 +92,30 @@ export const DONOR_NOTICES_366: readonly DonorNotice366[] = [
     sha256: "659b010fe62ce794cf25e1e36c2d739db17ea10a159f9a46ba2293e1f26d31c7",
     marker: "Adrien Gibrat",
   },
+  {
+    file: "qrcode-278-MIT.txt",
+    packages: ["qrcode@1.5.4"],
+    spdx: "MIT",
+    upstream: "https://github.com/soldair/node-qrcode",
+    sha256: "8df47c6ad9ac2c41eb9b2a72def9908959da0ede8dadd56c7b249c1bdb0c5ce6",
+    marker: "Ryan Day",
+  },
+  {
+    file: "dijkstrajs-278-MIT.txt",
+    packages: ["dijkstrajs@1.0.3"],
+    spdx: "MIT",
+    upstream: "https://github.com/tcort/dijkstrajs",
+    sha256: "c46324e45a005413535a6fb7a97e9eacd3cc6bf30335b7d5c10b8ee3af9e60c2",
+    marker: "Wyatt Baldwin",
+  },
+  {
+    file: "pngjs-278-MIT.txt",
+    packages: ["pngjs@5.0.0"],
+    spdx: "MIT",
+    upstream: "https://github.com/pngjs/pngjs",
+    sha256: "176b07a18c0bb3836aaeb61088fd0bf11a38f66e6f15e3fbda85faa225250d6e",
+    marker: "Luke Page",
+  },
 ];
 
 const SOURCE_NOTICE_DIR = "public/licenses";
