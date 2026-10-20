@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { readBlobText } from "../../../engines/table/csv";
 import { runOfficeLocalJob } from "../../../engines/office-local/client";
+import { handoffCatalog } from "../../../generated/handoff-catalog";
 import { toolRuntime } from "../../../runtime/tool-runtime";
-import { receiveHandoffFromOpener } from "../../../runtime/handoff";
+import { compatibleHandoffTargets, openHandoffTarget, receiveHandoffFromOpener } from "../../../runtime/handoff";
 import type { ToolSummary } from "../../../catalog/manifest";
 import type { FactoryToolManifest } from "../../../tool-factory/manifest";
 import {
@@ -131,6 +132,9 @@ export function TableRelations390({ kind, manifest }: { readonly kind: RelationK
   const model = useMemo(() => operation.result === null ? null
     : buildTableResultV2Model(manifest.id, kind, operation.result, leftText),
   [operation.result, manifest.id, kind, leftText]);
+  const handoffTargets = useMemo(() => model === null ? [] : compatibleHandoffTargets(
+    model.handoff, handoffCatalog.filter((target) => target.id !== manifest.id),
+  ), [model, manifest.id]);
   const result = operation.result;
   const summary = result === null ? "" : result.partCounts !== undefined
     ? `${result.partCounts.length} parti · ${result.partCounts.join(" + ")} righe; nessun duplicato rimosso`
@@ -154,6 +158,13 @@ export function TableRelations390({ kind, manifest }: { readonly kind: RelationK
     } catch {
       setActionStatus("Gli appunti non sono disponibili. Usa il download.");
     }
+  }
+  function handoff(target = handoffTargets[0]) {
+    if (target === undefined || model === null) return;
+    const opened = openHandoffTarget(target, model.handoff, { sourceToolId: manifest.id });
+    setActionStatus(opened
+      ? `Aperto ${target.target.name}: il CSV completo passa direttamente tra le due finestre.`
+      : "Il browser ha bloccato la finestra dello strumento di destinazione.");
   }
 
   return <ToolOperation className="table-workbench" busy={operation.isRunning}>
@@ -195,6 +206,7 @@ export function TableRelations390({ kind, manifest }: { readonly kind: RelationK
         {result.ambiguousKeys && result.ambiguousKeys.length > 0 && <p class="file-note" role="status">Chiavi ambigue (prime 8): {result.ambiguousKeys.slice(0, 8).map((item) => `${item.key.join(" / ")}: righe sinistra ${item.leftRows.join(",") || "—"}, destra ${item.rightRows.join(",") || "—"}`).join("; ")}</p>}
         <div data-result-slot="table-preview"><BoundedTableResultPreview preview={model.preview} /></div>
         <div class="actions"><button type="button" onClick={download}>Scarica CSV completo</button><button type="button" onClick={() => void copy()}>Copia risultato</button><button type="button" onClick={() => { setLeftText(model.reusePayload ?? model.exportPayload); setRightText(""); invalidate(); }}>Riusa come prima tabella</button></div>
+        {handoffTargets.length > 0 && <div><p class="file-note">Continua con un altro strumento compatibile:</p><div class="actions">{handoffTargets.slice(0, 8).map((target) => <button type="button" key={target.target.id} onClick={() => handoff(target)}>{target.target.name}</button>)}</div></div>}
         {actionStatus && <p role="status" class="success">{actionStatus}</p>}
       </div>}
     </ToolResultPanel>
