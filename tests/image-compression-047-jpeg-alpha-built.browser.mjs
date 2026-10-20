@@ -43,7 +43,8 @@ try {
         !request.url().startsWith("blob:")) offsite.push(request.url());
   });
   assert.equal((await page.goto(origin + "/tools/image-compression/"))?.status(), 200);
-  const form = page.locator("form").last();
+  const form = page.locator("form").filter({ has: page.locator("[data-png-lossless-47]") });
+  assert.equal(await form.count(), 1, "Expected exactly one public raster compression form");
   await form.getByLabel("Formato di uscita").selectOption("image/jpeg");
   const upload = form.locator('input[type="file"]');
   await upload.setInputFiles({ name: "alpha.png", mimeType: "image/png", buffer: transparent });
