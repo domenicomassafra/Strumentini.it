@@ -423,7 +423,7 @@ function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): re
     return [
       ...(raw.rasterBackedPdf === true ? [{ label: "PDF", value: "Raster JPEG incorporato, non vettoriale" }] : []),
       ...(stringField(raw.inputKind) === undefined ? [] : [{ label: "Formato ingresso rilevato", value: stringField(raw.inputKind)!.toUpperCase() }]),
-      ...(stringField(raw.decoder) === undefined ? [] : [{ label: "Decoder", value: stringField(raw.decoder) === "libheif-wasm" ? "libheif/WASM locale (lazy)" : "decoder locale del browser" }]),
+      ...(stringField(raw.decoder) === undefined ? [] : [{ label: "Decoder", value: "decoder locale del browser (HEIC/HEIF se supportato)" }]),
       ...(stringField(raw.framePolicy) === undefined ? [] : [{ label: "Frame", value: stringField(raw.framePolicy) === "first-frame-only" ? "solo primo frame" : "immagine singola" }]),
       ...(typeof gifSource?.frameCount === "number"
         ? [{ label: "GIF originale", value: `${gifSource.frameCount} frame · ${typeof gifSource.totalDelayCentiseconds === "number" ? gifSource.totalDelayCentiseconds : "?"} centesimi di secondo dichiarati · animazione non esportata` }]

@@ -13,7 +13,7 @@ describe("high-value image/PDF conversion matrix", () => {
   it("signature-identifies PNG, AVIF, HEIC and GIF with truthful decoder/frame policy", () => {
     expect(identifyPortableImage(bytes("source.png"), { name: "source.png", type: "image/png" })).toMatchObject({ kind: "png", mime: "image/png", decoder: "browser", framePolicy: "single-image" });
     expect(identifyPortableImage(bytes("source.avif"), { name: "source.avif", type: "image/avif" })).toMatchObject({ kind: "avif", mime: "image/avif", decoder: "browser", framePolicy: "single-image" });
-    expect(identifyPortableImage(bytes("source.heic"), { name: "source.heic", type: "image/heic" })).toMatchObject({ kind: "heic", mime: "image/heic", decoder: "libheif-wasm", framePolicy: "single-image" });
+    expect(identifyPortableImage(bytes("source.heic"), { name: "source.heic", type: "image/heic" })).toMatchObject({ kind: "heic", mime: "image/heic", decoder: "browser", framePolicy: "single-image" });
     expect(identifyPortableImage(bytes("source.gif"), { name: "source.gif", type: "image/gif" })).toMatchObject({ kind: "gif", mime: "image/gif", decoder: "browser", framePolicy: "first-frame-only" });
   });
 

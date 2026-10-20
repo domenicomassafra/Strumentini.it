@@ -8,8 +8,9 @@ import { expectedAssetDistribution366 } from "./donor-asset-distributions-366";
 import { knownSpdx366 as knownSpdx } from "./donor-spdx-366";
 import { isLocalAuthored366, verifyLocalAuthored366 } from "./donor-local-authored-366";
 import { verifiedFontPrimary366 } from "./donor-font-primary-366";
+import { verifyPrimarySource366 } from "./verify-primary-source-366";
+import { auditForbiddenCodecs126 } from "./forbidden-codecs-126";
 
-// Use pinned semver for actual dependency constraints.
 const semver = createRequire(import.meta.url)("semver") as {
   validRange: (range: string) => string | null;
   satisfies: (version: string, range: string) => boolean;
@@ -67,9 +68,7 @@ function resolveDependency(name: string, from: string, entries: Record<string, L
 function resolvePeerDependency(name: string, from: string, entries: Record<string, LockEntry>): string | null {
   let at = from;
   while (true) {
-    // Each package-lock path is a sequence of node_modules package boundaries.
-    // Skip the consumer's own descendants and (for scoped packages) @scope
-    // folders; only an actual ancestor's node_modules can supply its peer.
+    // Only ancestor node_modules can satisfy peers: skip descendants and scope folders.
     const boundary = at.lastIndexOf("node_modules/");
     if (boundary === -1) return null;
     const ancestor = at.slice(0, boundary);
@@ -173,9 +172,7 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
   for (const [name, spec] of Object.entries(manifest.dependencies ?? {})) {
     const target = entries[`node_modules/${name}`];
     if (!target) failures.push(`MISSING_DIRECT ${name}`);
-    // A direct runtime dependency is necessarily production code even when a
-    // lockfile erroneously marks its node dev/devOptional. Such a marker would
-    // otherwise exclude it from every license, source and integrity check.
+    // A direct runtime dependency stays production, even if incorrectly marked devOptional.
     else if (target.dev || target.devOptional) {
       failures.push(`DEV_ONLY_DIRECT ${name} -> node_modules/${name}`);
     }
@@ -307,7 +304,7 @@ export function parseAssetPins366(document: string): AssetPin366[] {
 }
 
 export const VENDORED_DIRS_366 = [
-  "public/ocr-246", "public/fonts", "src/engines/video/vendor", "src/engines/pdf/vendor",
+  "public/ocr-246", "public/fonts", "src/engines/video/vendor",
 ];
 
 export function auditRepository366(root: string) {
@@ -316,9 +313,13 @@ export function auditRepository366(root: string) {
   const pins = parseAssetPins366(readFileSync(resolve(root, "docs/donor-provenance-366-2026-10-11.md"), "utf8"));
   const packages = auditLockedPackages366(lock, manifest);
   const assets = auditVendoredAssets366(root, pins, VENDORED_DIRS_366);
+  const primary = verifyPrimarySource366(root);
   const snapshots = JSON.parse(readFileSync(resolve(root, "docs/audit-2026-10-10/donor-packages.json"), "utf8")) as Candidate[];
   const candidates = snapshots.map((item) => auditCandidate366(item, lock.packages?.[`node_modules/${item.name}`] ?? null, lock));
-  return { status: packages.failures.length || assets.failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, packages, assets, candidates };
+  const forbidden = auditForbiddenCodecs126(root, lock, manifest);
+  const rights = primary.failures.length === 0 && primary.unresolved === 0 ? [] : ["PRIMARY_ASSET_RIGHTS_NOT_VERIFIED"];
+  const failures = [...packages.failures, ...assets.failures, ...primary.failures, ...rights, ...forbidden];
+  return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, packages, assets, primary, candidates, failures };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -332,6 +333,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     optionalRuntimePackages: report.packages.optionalInstalled.length,
     assetFiles: report.assets.files, donorCandidates: report.candidates.map(({ name, version, license, decision, failures }) =>
       ({ name, version, license, decision, failures })),
-    failures: [...report.packages.failures, ...report.assets.failures] }, null, 2));
+    failures: report.failures }, null, 2));
   if (process.argv.includes("--check") && report.status === "NO_GO") process.exitCode = 1;
 }
