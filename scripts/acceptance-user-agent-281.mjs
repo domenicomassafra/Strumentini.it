@@ -30,8 +30,9 @@ async function inspectBrowser(browserType) {
   const browser = existingChrome
     ? await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 45000 })
     : await browserType.launch({ headless: true, timeout: 45000 });
+  let context;
   try {
-    const context = await browser.newContext({
+    context = await browser.newContext({
       viewport: { width: 390, height: 844 }, isMobile: true,
       hasTouch: true, userAgent: iosSafari, deviceScaleFactor: 3,
     });
@@ -48,10 +49,22 @@ async function inspectBrowser(browserType) {
     if (response?.status() !== 200) throw new Error(`HTTP ${response?.status()} user-agent-parser`);
     const submit = page.locator('[data-tool-run-control="true"]');
     await submit.waitFor();
+    // Astro emits an SSR button before Preact has attached its submit handler.
+    // Wait for the actual island hydration; clicking the SSR control loses the action.
+    await page.waitForFunction(() => {
+      const island = document.querySelector('astro-island[component-export="UserAgentParserTool"]');
+      return island !== null && !island.hasAttribute("ssr");
+    }, undefined, { timeout: 30000 });
     console.log(`STR-281: ${browserType.name()} submits`);
     const scriptsBeforeSubmit = requests.filter((item) => item.kind === "script").length;
     await submit.click();
-    await page.locator(".gutter[data-state='success']").waitFor({ timeout: 10000 });
+    await page.locator(".gutter[data-state='success']").waitFor({ timeout: 30000 }).catch(async (error) => {
+      console.error("STR-281 result diagnostic", JSON.stringify({
+        consoleErrors: errors, requests: requests.slice(-20),
+        pageText: (await page.locator("body").innerText()).slice(-1800),
+      }));
+      throw error;
+    });
     const output = await page.locator(".bounded-result-preview pre").textContent();
     if (!output?.includes("Safari") || !output.includes("iOS") || !output.includes("WebKit")) {
       throw new Error(`Unexpected UA result: ${output}`);
@@ -61,9 +74,9 @@ async function inspectBrowser(browserType) {
     const lazyJs = requests.filter((item) => item.kind === "script").length - scriptsBeforeSubmit;
     if (lazyJs === 0) throw new Error("No lazy parser script loaded on submit");
     const result = { browser: browserType.name(), iOSViewport: "390x844", output: "Safari / iOS / WebKit", lazyJs, offsiteRequests: 0, cspErrors: 0 };
-    await context.close();
     return result;
   } finally {
+    await context?.close();
     if (!existingChrome) await browser.close();
   }
 }
@@ -80,6 +93,12 @@ try {
     results.push(result);
   }
   console.log(JSON.stringify({ status: "PASS", results }));
+} catch (error) {
+  console.error(error);
+  process.exitCode = 1;
 } finally {
   server.kill();
+  // CDP keeps a control socket alive: terminate only this test process.
+  // The shared automation-browser Chrome process remains untouched.
+  if (process.argv.includes("--cdp-existing")) process.exit(process.exitCode ?? 0);
 }
