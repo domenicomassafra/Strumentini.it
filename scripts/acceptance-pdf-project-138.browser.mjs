@@ -54,14 +54,8 @@ async function persisted(page) {
 }
 try {
   await ready();
-  try {
-    browser = await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 3_000 });
-  } catch {
-    // The shared automation CDP endpoint can be unresponsive when its GUI
-    // profile is in use. An isolated headless profile stays private to this run.
-    browser = await chromium.launch({ executablePath: "/usr/bin/google-chrome", headless: true,
-      args: ["--no-sandbox", "--disable-dev-shm-usage"] });
-  }
+  // Reuse the existing automation browser. Do not launch a competing profile.
+  browser = await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 30_000 });
   context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   let page = await context.newPage();
   const offsite = [];
@@ -164,8 +158,31 @@ try {
   await page.locator("[data-pdf-project-message]").getByText(/Salvataggio non riuscito/u).waitFor();
   assert.equal((await persisted(page)).count, 1, "failed write replaced original project");
 
-  // A future schema is kept untouched and hidden from restoration.
+  // A damaged checksum must hide the project without mutating its PDF bytes.
   await page.evaluate(async () => {
+    const db = await new Promise((resolve, reject) => {
+      const req = indexedDB.open("strumentini-optin-pdf-341", 2);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    try {
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction("projects", "readwrite");
+        const store = tx.objectStore("projects");
+        const req = store.getAll();
+        req.onsuccess = () => store.put({ ...req.result[0], sha256: "0".repeat(64) });
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  });
+  await page.reload();
+  await page.getByText(/Alcuni progetti non sono leggibili/u).waitFor();
+  assert.equal(await page.getByRole("button", { name: "Riprendi progetto" }).count(), 0);
+  assert.equal((await persisted(page)).hash, originalHash, "corrupt checksum changed original bytes");
+
+  // A future schema is kept untouched and hidden from restoration.
+  await page.evaluate(async (originalHash) => {
     const db = await new Promise((resolve, reject) => {
       const req = indexedDB.open("strumentini-optin-pdf-341", 2);
       req.onsuccess = () => resolve(req.result);
@@ -178,13 +195,13 @@ try {
         const req = store.getAll();
         req.onsuccess = () => {
           const existing = req.result[0];
-          store.put({ ...existing, schemaVersion: 2 });
+          store.put({ ...existing, schemaVersion: 2, sha256: originalHash });
         };
         tx.oncomplete = resolve;
         tx.onerror = () => reject(tx.error);
       });
     } finally { db.close(); }
-  });
+  }, originalHash);
   await page.reload();
   await page.getByText(/Alcuni progetti non sono leggibili/u).waitFor();
   assert.equal(await page.getByRole("button", { name: "Riprendi progetto" }).count(), 0);
@@ -195,12 +212,14 @@ try {
     test: "STR-379 compiled PDF project", status: "PASS", viewport: "390x844",
     undoRedo: true, selectionAndModeRestore: true, crashRecovery: true,
     originalSha256: originalHash, independentReadback: "pdf-lib and Poppler",
-    failedWritePreservesRecord: true, futureSchemaRefused: true,
+    failedWritePreservesRecord: true, corruptedHashRefused: true, futureSchemaRefused: true,
     offsiteRequests: offsite.length, physicalDevice: "NOT_RUN",
   }));
 } finally {
   await context?.close();
-  if (browser) await browser.close();
+  // Browser.close() on a CDP attachment can terminate the shared Chrome process.
+  // Close this Playwright client's connection without sending Browser.close.
+  if (browser) browser._connection.close();
   server.kill();
   rmSync(temp, { recursive: true, force: true });
 }
