@@ -7253,13 +7253,14 @@
         },
         "module": {
           "path": "src/tools/csv-join/module.ts",
-          "sha256": "1a9fad7e99154a6ed2694a825bd73c05a76793e239c9b9cef9f4566194dfecb0"
+          "sha256": "d71f3e50cb46ab445ddbbfa02a8380cfa83727baa57d8711ce7a0314bb7753e3"
         },
         "page": {
           "path": "src/pages/tools/csv-join.astro",
           "sha256": "2169ca45d4d50b0112b9388ae8d5410318673f4d5af03da030906cc5e4504d9e"
         },
         "testFiles": [
+          "tests/str-390-key-collisions.test.ts",
           "tests/table-expansion.test.ts",
           "tests/table-transform-upgrade-195.test.ts"
         ]
@@ -31379,13 +31380,14 @@
         },
         "module": {
           "path": "src/tools/table-compare/module.ts",
-          "sha256": "5a48c7acee6e0261827e934d7cef8b96edce4f4b69ad8404408ba7f6f2153d66"
+          "sha256": "682bfe6ef20c125c73e6dc5f11402f23aacdf494903f9c9a17ef8643ac0f6208"
         },
         "page": {
           "path": "src/pages/tools/table-compare.astro",
           "sha256": "aa525496f23cc32b1e12c99254f0b01eb624ee196802fbf60e1a114a0c81dd07"
         },
         "testFiles": [
+          "tests/str-390-key-collisions.test.ts",
           "tests/table-advanced-operations.test.ts",
           "tests/table-expansion.test.ts"
         ]
