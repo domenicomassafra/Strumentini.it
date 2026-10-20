@@ -5,6 +5,7 @@ import { PDF_LIMITS } from "../../../engines/pdf/types";
 import type { PdfWorkspaceMode372 } from "../../../engines/pdf/workspace-372";
 import { runPdfWorkspaceWorker372 } from "../../../engines/pdf/workspace-worker-client-372";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
+import { PdfAnnotationEditor134 } from "./PdfAnnotationEditor134";
 
 interface Thumbnail { page: number; url?: string; error?: string }
 
@@ -17,6 +18,7 @@ export function PdfPageWorkspace372() {
   const [target, setTarget] = useState("1");
   const [images, setImages] = useState<Thumbnail[]>([]);
   const [mode, setMode] = useState<PdfWorkspaceMode372>("reorder");
+  const [showAnnotator, setShowAnnotator] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
@@ -38,6 +40,7 @@ export function PdfPageWorkspace372() {
     setSelected([]);
     setStart(0);
     setMode("reorder");
+    setShowAnnotator(false);
     setError("");
     setResult(null);
     setBusy(false);
@@ -53,6 +56,7 @@ export function PdfPageWorkspace372() {
     setSelected([]);
     setStart(0);
     setMode("reorder");
+    setShowAnnotator(false);
     setResult(null);
     setError(next && next.size > PDF_LIMITS.maxBytes
       ? "PDF troppo grande: massimo 25 MiB. Il file originale non è stato modificato."
@@ -181,7 +185,7 @@ export function PdfPageWorkspace372() {
   return (
     <section class="tool-operation" data-pdf-workspace-372>
       <section class="tool-form-card">
-        <p class="file-note">Organizza localmente un PDF, tocca le miniature per selezionare le pagine, spostale e scarica una nuova copia. Il file originale rimane invariato.</p>
+        <p class="file-note">Organizza e annota un PDF locale: seleziona le pagine, riordinale oppure evidenzia e commenta sulla pagina. Scarica una nuova copia; l'originale rimane invariato.</p>
         <label class="field"><span>PDF da modificare</span>
           <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={busy} aria-label="PDF da modificare" />
           <small>Massimo 25 MiB, 200 pagine. Quattro miniature per volta; nessun caricamento su server.</small>
@@ -235,6 +239,12 @@ export function PdfPageWorkspace372() {
               })}
             </ol>
           </section>
+          <div class="actions">
+            <button type="button" onClick={() => setShowAnnotator((opened) => !opened)} disabled={busy} aria-expanded={showAnnotator}>
+              {showAnnotator ? "Chiudi editor annotazioni" : "Evidenzia, commenta e annota le pagine"}
+            </button>
+          </div>
+          {showAnnotator && file && <PdfAnnotationEditor134 file={file} pageCount={order.length} initialPage={selected[0] ?? order[0] ?? 1} />}
           <fieldset class="field">
             <legend>Risultato da creare</legend>
             <label><input type="radio" name="workspace-mode-372" checked={mode === "reorder"} disabled={busy} onChange={() => { setMode("reorder"); setResult(null); setError(""); }} /> Riordina tutte le pagine</label>
