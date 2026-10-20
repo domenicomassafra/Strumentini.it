@@ -1,4 +1,5 @@
 import { checkPdfPassword, removePdfPassword } from "../../engines/pdf";
+import { runPasswordJob417 } from "../../engines/pdf/password-client-417";
 import type { ToolModule } from "../../runtime/types";
 import { requireFile, resultArtifacts } from "../pdf/shared";
 import type { PdfPasswordCheckOutput } from "./types";
@@ -9,14 +10,21 @@ const module: ToolModule = {
     const file = requireFile((value as { file?: unknown }).file);
     const requestedMode = (value as { mode?: unknown }).mode;
     const mode = requestedMode === "remove" || requestedMode === "protect" ? requestedMode : "check";
+    const password = (value as { password?: unknown }).password;
+    if (password !== undefined && typeof password !== "string") throw new Error("PDF_PASSWORD_REQUIRED");
     if (mode === "protect") {
-      throw new Error("PDF_PASSWORD_CODEC_REMOVED_126: La protezione con password non è disponibile: il codec QPDF è stato rimosso.");
+      const bytes = await runPasswordJob417(file.blob, "protect", password ?? "", signal);
+      const artifact = { bytes, blob: new Blob([Uint8Array.from(bytes).buffer], { type: "application/pdf" }),
+        filename: "protetto-aes256.pdf", mime: "application/pdf" as const };
+      return { mode, encrypted: true, artifact: resultArtifacts([artifact]), policy: "AES-256 locale; password mai salvata o trasmessa." };
     }
     if (mode === "remove") {
-      const password = (value as { password?: unknown }).password;
-      if (password !== undefined && typeof password !== "string") throw new Error("PDF_PASSWORD_REQUIRED: Password non valida.");
-      if (typeof password === "string" && password.length > 0)
-        throw new Error("PDF_PASSWORD_CODEC_REMOVED_126: La decifratura con password non è disponibile: il codec QPDF è stato rimosso.");
+      if (typeof password === "string" && password.length > 0) {
+        const bytes = await runPasswordJob417(file.blob, "remove", password, signal);
+        const artifact = { bytes, blob: new Blob([Uint8Array.from(bytes).buffer], { type: "application/pdf" }),
+          filename: "sbloccato.pdf", mime: "application/pdf" as const };
+        return { mode, encrypted: false, artifact: resultArtifacts([artifact]), policy: "Sblocco locale solo con password valida; nessun bypass." };
+      }
       const artifact = await removePdfPassword(file.blob, signal);
       return { mode, encrypted: false, artifact: resultArtifacts([artifact]), policy: "No encryption bypass is attempted." };
     }

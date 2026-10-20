@@ -730,8 +730,8 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     searchTerms: ["testo in pdf", "markdown in pdf", "html in pdf", "csv in pdf", "crea pdf da testo"],
   },
   "pdf-password-check-remove": {
-    name: "Controlla cifratura PDF",
-    summary: "Verifica se un PDF è cifrato e copia soltanto file già non protetti. Protezione e sblocco con password non sono disponibili.",
+    name: "Proteggi o sblocca PDF",
+    summary: "AES-256 locale per proteggere PDF; sblocco dei soli file supportati con password valida. AES-128 non supportato.",
   },
   "pdf-rotate": {
     name: "Ruota PDF",
