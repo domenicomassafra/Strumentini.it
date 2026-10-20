@@ -136,7 +136,7 @@ describe("ticket 169 — representable XML to JSON/CSV/XLSX mappings", () => {
 
 describe("ticket 291 — pinned donor parity and hostile XML fence", () => {
   it("uses the donor AST for a representable row, but falls back on entity spelling loss", () => {
-    const plain = "<rows><row id='001'><name>Marco</name></row></rows>";
+    const plain = '<rows><row id="001"><name>Marco</name></row></rows>';
     const plainValidated = parseXmlDocument(plain).root;
     const parsed = parseTabularXmlRoot(plain, plainValidated);
     expect(parsed).not.toBe(plainValidated);
