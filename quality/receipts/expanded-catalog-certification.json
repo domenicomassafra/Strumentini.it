@@ -31579,6 +31579,7 @@
         },
         "testFiles": [
           "tests/search-ranking.test.ts",
+          "tests/text-diff-donor-300.test.ts",
           "tests/text-list-catalog.test.ts",
           "tests/text-list-engine.test.ts",
           "tests/text-writing-catalog.test.ts",
