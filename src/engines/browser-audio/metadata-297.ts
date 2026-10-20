@@ -55,33 +55,62 @@ export async function probeAudio297(file: Blob, signal?: AbortSignal): Promise<A
   throw new Error("AUDIO_METADATA_UNSUPPORTED: expected MP3, FLAC, Ogg or WAV signature");
 }
 
-/** A dedicated Worker is terminated on abort/timeout even when parsing is CPU-bound. */
+/** A single deadline covers both Blob preflight I/O and the CPU-bound parser Worker. */
 export async function inspectAudioMetadata297(file: Blob, signal?: AbortSignal): Promise<AudioMetadata297> {
-  const container = await probeAudio297(file, signal);
   aborted(signal);
-  if (typeof Worker === "undefined") throw new Error("AUDIO_METADATA_UNSUPPORTED: Web Worker unavailable");
-  const worker = new Worker(new URL("./metadata-297-worker.ts", import.meta.url), { type: "module" });
-  return new Promise<AudioMetadata297>((resolve, reject) => {
-    let finished = false;
-    const finish = (error?: Error, result?: AudioMetadata297) => {
-      if (finished) return;
-      finished = true;
-      clearTimeout(timer);
-      signal?.removeEventListener("abort", cancel);
-      worker.terminate();
-      if (error) reject(error);
-      else if (result) resolve(result);
-      else reject(new Error("AUDIO_METADATA_INVALID"));
-    };
-    const cancel = () => finish(new DOMException("Audio inspection cancelled", "AbortError"));
-    const timer = setTimeout(() => finish(new Error("AUDIO_METADATA_TIMEOUT")), AUDIO_METADATA_TIMEOUT_MS);
-    worker.onmessage = (event: MessageEvent<{ result?: AudioMetadata297; error?: string }>) => {
-      if (event.data.error) finish(new Error(event.data.error));
-      else finish(undefined, event.data.result);
-    };
-    worker.onerror = () => finish(new Error("AUDIO_METADATA_INVALID: parser worker failed"));
-    signal?.addEventListener("abort", cancel, { once: true });
-    if (signal?.aborted) cancel();
-    else worker.postMessage({ file, container });
-  });
+  const lifetime = new AbortController();
+  let abortError: Error = new DOMException("Audio inspection cancelled", "AbortError");
+  const cancel = () => {
+    abortError = new DOMException("Audio inspection cancelled", "AbortError");
+    lifetime.abort();
+  };
+  const timer = setTimeout(() => {
+    abortError = new Error("AUDIO_METADATA_TIMEOUT");
+    lifetime.abort();
+  }, AUDIO_METADATA_TIMEOUT_MS);
+  signal?.addEventListener("abort", cancel, { once: true });
+  if (signal?.aborted) cancel();
+
+  try {
+    return await new Promise<AudioMetadata297>((resolve, reject) => {
+      let worker: Worker | undefined;
+      let finished = false;
+      const finish = (error?: Error, result?: AudioMetadata297) => {
+        if (finished) return;
+        finished = true;
+        lifetime.signal.removeEventListener("abort", onAbort);
+        worker?.terminate();
+        if (error) reject(error);
+        else if (result) resolve(result);
+        else reject(new Error("AUDIO_METADATA_INVALID"));
+      };
+      const onAbort = () => finish(abortError);
+      lifetime.signal.addEventListener("abort", onAbort, { once: true });
+      if (lifetime.signal.aborted) {
+        onAbort();
+        return;
+      }
+
+      void (async () => {
+        try {
+          const container = await probeAudio297(file, lifetime.signal);
+          aborted(lifetime.signal);
+          if (typeof Worker === "undefined") throw new Error("AUDIO_METADATA_UNSUPPORTED: Web Worker unavailable");
+          worker = new Worker(new URL("./metadata-297-worker.ts", import.meta.url), { type: "module" });
+          worker.onmessage = (event: MessageEvent<{ result?: AudioMetadata297; error?: string }>) => {
+            if (event.data.error) finish(new Error(event.data.error));
+            else finish(undefined, event.data.result);
+          };
+          worker.onerror = () => finish(new Error("AUDIO_METADATA_INVALID: parser worker failed"));
+          if (lifetime.signal.aborted) onAbort();
+          else worker.postMessage({ file, container });
+        } catch (error) {
+          finish(error instanceof Error ? error : new Error("AUDIO_METADATA_INVALID"));
+        }
+      })();
+    });
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", cancel);
+  }
 }
