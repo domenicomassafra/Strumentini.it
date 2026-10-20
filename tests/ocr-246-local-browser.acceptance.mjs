@@ -13,9 +13,16 @@ assert.equal(createHash("sha256").update(await readFile(sample)).digest("hex"),
   "1bfc71b54560679f6b6d0e8f978201b2ca27fdfcd84d47ef9344d41db0a2f27b");
 
 let browser;
+let context;
+let page;
 try {
-  browser = await chromium.launch({ headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+  // Use existing MiniPC automation-browser when supplied; preserve the
+  // standalone Playwright consumer path for other test hosts.
+  browser = process.env.OCR246_CDP_URL
+    ? await chromium.connectOverCDP(process.env.OCR246_CDP_URL)
+    : await chromium.launch({ headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+  context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+  page = await context.newPage();
   const allRequests = [];
   const runtimeErrors = [];
   page.on("request", (req) => allRequests.push(req.url()));
@@ -35,6 +42,14 @@ try {
   const text = (await page.locator('textarea[aria-label="Testo OCR italiano"]').inputValue()).replace(/\s+/gu, " ").trim();
   assert.equal(text, expected);
   assert.match(await page.locator("[data-ocr-confidence]").innerText(), /Tesseract/u);
+  assert.equal(await page.locator('#ocr395-language option[value="eng"]').isDisabled(), true,
+    "unapproved English model must not be selectable or fetchable");
+  const originalPreview = page.locator("[data-ocr-original-preview]");
+  await originalPreview.waitFor({ state: "visible" });
+  await page.waitForFunction(() => {
+    const img = document.querySelector("[data-ocr-original-preview]");
+    return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0;
+  }, null, { timeout: 10_000 });
   assert.ok(allRequests.some((u) => u.endsWith("ita.traineddata.gz")), "must fetch locally vendored ITA traineddata");
   assert.ok(allRequests.some((u) => u.includes("tesseract-core") && u.includes(".wasm")), "must fetch local Tesseract WASM core");
   const offsite = allRequests.filter((u) => u.startsWith("http") && new URL(u).origin !== route.origin);
@@ -48,12 +63,40 @@ try {
   assert.equal(download.suggestedFilename(), "ocr-italiano-246.txt");
   assert.equal((await readFile(await download.path(), "utf8")).replace(/\s+/gu, " ").trim(), expected);
 
+  // STR-395: the operator must be able to correct actual recognized text,
+  // and TXT must contain the correction while the engine's raw result and
+  // confidence remain identified as an unverified OCR draft.
+  const editor = page.locator('textarea[aria-label="Testo OCR italiano"]');
+  const manuallyCorrected = "Fattura corretta manualmente: 12345 — totale € 678,90";
+  await editor.fill(manuallyCorrected);
+  assert.equal(await editor.inputValue(), manuallyCorrected);
+  assert.match(await page.locator("[data-ocr-result]").innerText(), /corrett[oa].*manual/iu);
+  assert.match(await page.locator("[data-ocr-confidence]").innerText(), /non.*(calibrat|correzion)/iu);
+  const correctedTxtPending = page.waitForEvent("download");
+  await page.getByRole("button", { name: /Scarica TXT locale/u }).click();
+  const correctedTxt = await correctedTxtPending;
+  assert.equal(await readFile(await correctedTxt.path(), "utf8"), manuallyCorrected);
+
   // A changed orientation invalidates the old text AND its success status.
   await page.locator("#ocr246-rotation").selectOption("90");
   assert.equal(await page.locator("[data-ocr-result]").count(), 0,
     "changing orientation must hide results obtained with the previous rotation");
   assert.match(await page.locator("[data-ocr-status]").innerText(), /orientamento.*riesegui/iu,
     "do not leave a stale OCR-completed announcement after changing orientation");
+
+  // Independent negative oracle: a fully white 1280x240 scan contains no
+  // writing. Tesseract must never turn it into verified or downloadable text.
+  const blankScan = await sharp({ create: {
+    width: 1280, height: 240, channels: 4, background: "#ffffff",
+  } }).png().toBuffer();
+  await page.locator("#ocr246-file").setInputFiles({ name: "scansione-senza-testo.png", mimeType: "image/png", buffer: blankScan });
+  await page.locator("#ocr246-rotation").selectOption("0");
+  await page.locator("[data-ocr-run]").click();
+  await page.locator("[data-ocr-result]").waitFor({ state: "visible", timeout: 95_000 });
+  assert.equal(await editor.inputValue(), "", "a blank scan must not invent an OCR transcription");
+  assert.match(await page.locator("[data-ocr-correction]").innerText(), /nessuna conferma di accuratezza/iu);
+  assert.equal(await page.getByRole("button", { name: /Scarica TXT locale/u }).isDisabled(), true,
+    "a blank scan cannot expose a downloadable authoritative result");
 
   // Reproduce the independently observed RAW-90 failure input, then correct
   // orientation only by explicit user choice (270 clockwise); never claim
@@ -83,5 +126,7 @@ try {
   console.log("#246 BROWSER PASS: real Tesseract Italian OCR exact on original and manually corrected RAW-90 invoice; worker/WASM/ITA same origin, lazy load, two actual TXT downloads, 390px responsive, no external HTTP, no JS errors.");
   console.log("#246 OCR ASSET REQUESTS:", allRequests.filter((u) => u.includes("/ocr-246/")).map((u) => new URL(u).pathname).join(", "));
 } finally {
+  if (page) await page.close();
+  if (context) await context.close();
   if (browser) await browser.close();
 }

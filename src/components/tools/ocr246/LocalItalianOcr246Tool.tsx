@@ -1,5 +1,6 @@
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { recognizeLocalItalianOcr246, type OcrResult246 } from "../../../engines/ocr/local-italian-246";
+import { prepareOcrTextExport395 } from "../../../engines/ocr/correction-395";
 
 /** Experimental local-only direct route. #271 blocks public production promotion. */
 export function LocalItalianOcr246Tool() {
@@ -8,13 +9,23 @@ export function LocalItalianOcr246Tool() {
   const [active, setActive] = useState(false);
   const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
   const [result, setResult] = useState<OcrResult246 | null>(null);
+  const [editedText, setEditedText] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const operation = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (!file || !result) { setPreviewUrl(null); return; }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file, result]);
 
   const cancel = () => {
     operation.current?.abort();
     operation.current = null;
     setActive(false);
     setResult(null);
+    setEditedText("");
     setStatus("OCR annullato: i worker e i buffer locali vengono chiusi.");
   };
 
@@ -24,6 +35,7 @@ export function LocalItalianOcr246Tool() {
     operation.current = controller;
     setActive(true);
     setResult(null);
+    setEditedText("");
     setStatus("Avvio del worker OCR italiano locale: il primo caricamento può impiegare tempo.");
     try {
       const recognized = await recognizeLocalItalianOcr246(file, {
@@ -37,7 +49,8 @@ export function LocalItalianOcr246Tool() {
       });
       if (operation.current !== controller) return;
       setResult(recognized);
-      setStatus("OCR terminato sul dispositivo. Verifica il testo prima di riutilizzarlo.");
+      setEditedText(recognized.text);
+      setStatus("Bozza OCR locale non verificata: confronta la scansione e correggi il testo prima dell'uso.");
     } catch (error) {
       if (operation.current !== controller) return;
       const message = error instanceof Error ? error.message : "Errore OCR non classificato";
@@ -51,8 +64,9 @@ export function LocalItalianOcr246Tool() {
   }
 
   function downloadTxt() {
-    if (!result?.text) return;
-    const url = URL.createObjectURL(new Blob([result.text], { type: "text/plain;charset=utf-8" }));
+    if (!result || !editedText.trim()) return;
+    const exportDraft = prepareOcrTextExport395(result, editedText);
+    const url = URL.createObjectURL(new Blob([exportDraft.text], { type: "text/plain;charset=utf-8" }));
     try {
       const anchor = document.createElement("a");
       anchor.href = url;
@@ -71,6 +85,12 @@ export function LocalItalianOcr246Tool() {
           setFile(chosen);
           setStatus(chosen ? `Pronto: ${chosen.name}` : "Nessuna immagine selezionata.");
         }} />
+      <label class="ocr246-label" for="ocr395-language">Lingua di riconoscimento</label>
+      <select id="ocr395-language" value="ita" aria-describedby="ocr395-language-note" disabled={active}>
+        <option value="ita">Italiano (modello locale verificato)</option>
+        <option value="eng" disabled>Inglese (modello e diritti non verificati)</option>
+      </select>
+      <p id="ocr395-language-note">L'inglese resta disabilitato finché modello, hash, licenza e corpus di scansioni non saranno approvati. Nessun caricamento di modelli esterni.</p>
       <label class="ocr246-label" for="ocr246-rotation">Correzione manuale orientamento, in senso orario</label>
       <select id="ocr246-rotation" value={rotation} disabled={active}
         onChange={(event) => {
@@ -78,6 +98,7 @@ export function LocalItalianOcr246Tool() {
           if (degrees === 0 || degrees === 90 || degrees === 180 || degrees === 270) {
             setRotation(degrees);
             setResult(null);
+            setEditedText("");
             setStatus("Orientamento modificato: riesegui l'OCR italiano prima di usare il testo.");
           }
         }}>
@@ -95,17 +116,30 @@ export function LocalItalianOcr246Tool() {
       <p class="ocr246-status" data-ocr-status role="status" aria-live="polite">{status}</p>
       {result && (
         <div class="ocr246-output" data-ocr-result>
-          <h2>Testo riconosciuto</h2>
-          <textarea readOnly aria-label="Testo OCR italiano" value={result.text} rows={7} />
+          <h2>Scansione e trascrizione da correggere</h2>
+          <div class="ocr395-review">
+            {previewUrl && <figure>
+              <img data-ocr-original-preview src={previewUrl} alt={`Scansione originale non modificata: ${result.image.name}`} />
+              <figcaption>Originale inalterato. Non sono disponibili coordinate affidabili delle singole parole.</figcaption>
+            </figure>}
+            <div>
+              <label class="ocr246-label" for="ocr395-edit">Modifica la trascrizione confrontandola con la scansione</label>
+              <textarea id="ocr395-edit" aria-label="Testo OCR italiano" value={editedText} maxLength={100_000} rows={7}
+                onInput={(event) => setEditedText(event.currentTarget.value)} />
+              <p data-ocr-correction>{editedText !== result.text
+                ? "Testo corretto manualmente: confidenza OCR riferita solo al testo originario."
+                : "Bozza automatica da verificare: nessuna conferma di accuratezza."}</p>
+            </div>
+          </div>
           <p>
             Motore: Tesseract.js 7, lingua {result.language}. Origine: {result.image.name}, {result.image.width}×{result.image.height}px.
             {result.rotateClockwiseDegrees !== 0 ? ` Correzione manuale applicata: ${result.rotateClockwiseDegrees}° in senso orario.` : ""}
           </p>
           <p data-ocr-confidence>
             {result.confidence === null ? "Confidenza: non fornita dal motore." :
-              `Indicatore di confidenza Tesseract: ${result.confidence.toFixed(1)} / 100 (non è una probabilità calibrata di correttezza).`}
+              `Indicatore di confidenza Tesseract sul riconoscimento iniziale: ${result.confidence.toFixed(1)} / 100 (non è una probabilità calibrata di correttezza né valuta le correzioni).`}
           </p>
-          <button type="button" disabled={!result.text} onClick={downloadTxt}>Scarica TXT locale</button>
+          <button type="button" disabled={!editedText.trim()} onClick={downloadTxt}>Scarica TXT locale</button>
         </div>
       )}
       <p class="ocr246-note">
