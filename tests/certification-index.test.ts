@@ -60,12 +60,12 @@ describe("expanded catalog certification index", () => {
     // A newly registered tool may not inherit Gold from an earlier catalog;
     // exact append-only oracle lineage may independently preserve the historic
     // receipts but never weakens the unverified tool's release gate.
-    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 13 });
+    expect(index.summary.statusCounts).toEqual({ GOLD: 257, PARTIAL: 2, IMPLEMENTED_UNVERIFIED: 14 });
     expect(index.tools.find((tool) => tool.id === "eml-msg-viewer")).toMatchObject({
       status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED",
       oracle: { status: "BOUND", entryId: "cand-271" },
     });
-    expect(index.catalogToolCount).toBe(272);
+    expect(index.catalogToolCount).toBe(273);
     expect(index.tools.find((tool) => tool.id === "epub-reader")).toMatchObject({ status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED", oracle: { entryId: "cand-272", status: "BOUND" } });
     expect(index.summary.certificationGoldCount).toBe(index.tools.filter((tool) => tool.status === "GOLD").length);
     expect(index.summary.releaseEligibleGoldCount).toBe(index.tools.filter((tool) => tool.goldEligible).length);

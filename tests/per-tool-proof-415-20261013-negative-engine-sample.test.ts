@@ -1,6 +1,6 @@
 /**
  * #415 original AC3 — runnable, bounded source-backed consumer sample.
- * This is ONE representative set of local engines, NOT 272 Gold certificates.
+ * This is ONE representative set of local engines, NOT 273 Gold certificates.
  * Direct producer bytes are independently read by fflate and node:zlib.
  * Unexamined routes, device runs, release receipts and runtime limits remain PENDING.
  */
@@ -25,9 +25,9 @@ describe("#415 representative independent real engine proof (source-only, no Gol
   it("maps every live catalog tool to job, limit status, source identity and current proof OR explicit PENDING", async () => {
     const map = await auditCurrentProofMap415(root);
     expect(map.scope).toBe("source-local-readonly-no-release");
-    expect(map.entries).toHaveLength(272);
-    expect(new Set(map.entries.map((item) => item.toolId)).size).toBe(272);
-    expect(new Set(map.entries.map((item) => item.route)).size).toBe(272);
+    expect(map.entries).toHaveLength(273);
+    expect(new Set(map.entries.map((item) => item.toolId)).size).toBe(273);
+    expect(new Set(map.entries.map((item) => item.route)).size).toBe(273);
     expect(map.entries.map((item) => item.toolId).toSorted()).toEqual(catalog.map((tool) => tool.id).toSorted());
     for (const entry of map.entries) {
       expect(entry.route, entry.toolId).toBe(`/tools/${entry.toolId}`);
@@ -41,7 +41,7 @@ describe("#415 representative independent real engine proof (source-only, no Gol
       else expect(entry.currentReceipt, entry.toolId).toMatch(/^quality\/receipts\/[a-z0-9_/-]+\.gold\.json$/u);
     }
     expect(map.summary).toMatchObject({
-      tools: 272, verified: 0, pending: 272, sourceErrors: 0,
+      tools: 273, verified: 0, pending: 273, sourceErrors: 0,
       runtimeLimitsPending: 229, registryBindingsPending: 0,
     });
     expect(map.entries.filter((item) => item.limitsStatus === "DECLARED_HANDOFF_LIMITS_ONLY")).toHaveLength(43);

@@ -25,17 +25,17 @@ function pdfArtifact(bytes: Uint8Array, filename = "result.pdf", pageCount = 2) 
 }
 
 describe("ticket 98 PDF/document Result v2 migration", () => {
-  it("declares exactly twenty PDF/document tools with truthful semantic classes", () => {
+  it("declares 21 PDF/document tools and preserves original ticket 98 ownership", () => {
     const declarations = Object.values(PDF_RESULT_DECLARATIONS);
-    expect(declarations).toHaveLength(20);
-    expect(declarations.filter(({ class: resultClass }) => resultClass === "pdf")).toHaveLength(9);
+    expect(declarations).toHaveLength(21);
+    expect(declarations.filter(({ class: resultClass }) => resultClass === "pdf")).toHaveLength(10);
     expect(declarations.filter(({ class: resultClass }) => resultClass === "file")).toHaveLength(2);
     expect(declarations.filter(({ class: resultClass }) => resultClass === "text-code")).toHaveLength(3);
     expect(declarations.filter(({ class: resultClass }) => resultClass === "validator")).toHaveLength(6);
     expect(Object.values(PDF_RESULT_DECLARATIONS).some(({ capabilities }) => new Set<string>(capabilities).has("share"))).toBe(false);
     expect(Object.values(PDF_RESULT_DECLARATIONS).some(({ capabilities }) => new Set<string>(capabilities).has("reuse"))).toBe(false);
 
-    const originalIds = new Set(Object.keys(PDF_RESULT_DECLARATIONS));
+    const originalIds = new Set(Object.keys(PDF_RESULT_DECLARATIONS).filter((id) => id !== "pdf-repair"));
     const owned = resultV2Inventory.filter(({ migrationOwner, toolId }) => migrationOwner === ticket98 && originalIds.has(toolId));
     expect(owned).toHaveLength(20);
     expect(owned.map(({ toolId }) => toolId).toSorted()).toEqual([...originalIds].toSorted());
