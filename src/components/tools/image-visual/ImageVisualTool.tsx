@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import { receivePngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
 import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
@@ -49,19 +49,16 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [pngPalette, setPngPalette] = useState<"off" | "exact" | "lossy">("off");
   const [handoffStatus, setHandoffStatus] = useState("");
   const [colorMode, setColorMode] = useState("convert");
-  // Only a verified single PNG result, from conversion or compression.
-  // Always render OFF during SSR; mount restores the shared preference without downloads.
+  // SSR defaults downloads OFF.
   const [pngAutoDownload, setPngAutoDownload] = useState(false);
   const [pngDownloadStatus, setPngDownloadStatus] = useState("");
   const operation = useToolOperation<PreparedImageResult>(async (signal) => {
-    // Astro renders the native input before client:load hydrates the island.
-    // A file picked during that interval is retained by the DOM, but its
-    // change event may precede Preact's listener and leave `file` null.
+    // Preserve prehydration metadata picks.
     const selectedFile = toolId === "image-metadata-viewer"
       ? fileInputRef.current?.files?.[0] ?? file
       : file;
     if (toolId === "image-format-conversion" || toolId === "image-compression") setPngDownloadStatus("");
-    // Consent must precede the job and still exist on completion.
+    // Verify consent twice.
     const autoAtStart = mime === "image/png"
       && (toolId === "image-format-conversion" || (toolId === "image-compression" && !batchMode && file !== null))
       && readAutoDownload339(browserStorage339());
@@ -83,6 +80,8 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const operationBusy = useRef(operation.isRunning);
   operationBusy.current = operation.isRunning;
   const result = operation.result;
+  // Ignore the download preference.
+  useLayoutEffect(clearResult, [file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette]);
 
   useEffect(() => {
     if (toolId === "image-metadata-viewer") setMetadataPickerReady(true);
@@ -138,6 +137,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
 
   function clearResult() {
     operation.reset();
+    setPngDownloadStatus("");
   }
 
   async function submit(event: Event) {
@@ -147,7 +147,6 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   }
 
   function reset() {
-    operation.reset();
     if (toolId === "image-metadata-viewer" && fileInputRef.current) fileInputRef.current.value = "";
     setFile(null);
     setSecondFile(null);

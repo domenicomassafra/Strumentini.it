@@ -67,6 +67,15 @@ export function parsePdfPageSelection(expression: string, pageCount: number): nu
   return found;
 }
 
+/** Reordering requires the strict selection to contain every original page exactly once. */
+export function parsePdfPageReorder(expression: string, pageCount: number): number[] {
+  const pages = parsePdfPageSelection(expression, pageCount);
+  if (pages.length !== pageCount) {
+    throw new PdfPageSelectionError("(ordine)", `specifica tutte le ${pageCount} pagine una sola volta`);
+  }
+  return pages;
+}
+
 export function parsePdfPageGroups(expression: string, pageCount: number): number[][] {
   assertCount(pageCount);
   assertExpressionLength(expression);

@@ -128,6 +128,11 @@ export function ImageResizeTool() {
     setResult(null);
   }
 
+  function updateSetting(action: () => void) {
+    action();
+    clearOutput();
+  }
+
   async function chooseFile(event: Event) {
     const selected = event.currentTarget instanceof HTMLInputElement
       ? event.currentTarget.files?.[0] ?? null
@@ -159,6 +164,7 @@ export function ImageResizeTool() {
 
   function updateWidth(value: string) {
     setWidth(value);
+    clearOutput();
     if (!lockAspect || sourceDimensions === null) return;
     const numeric = Number(value);
     if (!Number.isFinite(numeric) || numeric < 1) return;
@@ -167,6 +173,7 @@ export function ImageResizeTool() {
 
   function updateHeight(value: string) {
     setHeight(value);
+    clearOutput();
     if (!lockAspect || sourceDimensions === null) return;
     const numeric = Number(value);
     if (!Number.isFinite(numeric) || numeric < 1) return;
@@ -175,6 +182,7 @@ export function ImageResizeTool() {
 
   function toggleAspectLock(checked: boolean) {
     setLockAspect(checked);
+    clearOutput();
     if (!checked || sourceDimensions === null) return;
     const numericWidth = Number(width);
     if (!Number.isFinite(numericWidth) || numericWidth < 1) return;
@@ -318,7 +326,7 @@ export function ImageResizeTool() {
               type="radio"
               name="image-sizing-mode"
               checked={sizingMode === "pixels"}
-              onChange={() => setSizingMode("pixels")}
+              onChange={() => updateSetting(() => setSizingMode("pixels"))}
               disabled={status === "working"}
             />
             Dimensioni in pixel
@@ -328,7 +336,7 @@ export function ImageResizeTool() {
               type="radio"
               name="image-sizing-mode"
               checked={sizingMode === "percent"}
-              onChange={() => setSizingMode("percent")}
+              onChange={() => updateSetting(() => setSizingMode("percent"))}
               disabled={status === "working"}
             />
             Percentuale
@@ -388,7 +396,7 @@ export function ImageResizeTool() {
               step="1"
               inputMode="decimal"
               value={percent}
-              onInput={(event) => setPercent(event.currentTarget.value)}
+              onInput={(event) => updateSetting(() => setPercent(event.currentTarget.value))}
               disabled={status === "working"}
             />
             <small>100% mantiene le dimensioni originali; valori maggiori possono ingrandire se lo consenti.</small>
@@ -402,7 +410,7 @@ export function ImageResizeTool() {
               type="radio"
               name="image-fit"
               checked={fit === "contain"}
-              onChange={() => setFit("contain")}
+              onChange={() => updateSetting(() => setFit("contain"))}
               disabled={status === "working"}
             />
             Contieni nell'area
@@ -412,7 +420,7 @@ export function ImageResizeTool() {
               type="radio"
               name="image-fit"
               checked={fit === "cover"}
-              onChange={() => setFit("cover")}
+              onChange={() => updateSetting(() => setFit("cover"))}
               disabled={status === "working"}
             />
             Ritaglia per riempire
@@ -430,7 +438,7 @@ export function ImageResizeTool() {
             <input
               type="checkbox"
               checked={noUpscale}
-              onChange={(event) => setNoUpscale(event.currentTarget.checked)}
+              onChange={(event) => updateSetting(() => setNoUpscale(event.currentTarget.checked))}
               disabled={status === "working"}
             />{" "}
             Non ingrandire oltre l'originale
@@ -452,7 +460,7 @@ export function ImageResizeTool() {
             <span>Formato di uscita</span>
             <select
               value={outputMime}
-              onChange={(event) => setOutputMime(event.currentTarget.value as "image/jpeg" | "image/webp")}
+              onChange={(event) => updateSetting(() => setOutputMime(event.currentTarget.value as "image/jpeg" | "image/webp"))}
               disabled={status === "working"}
             >
               <option value="image/jpeg">JPEG</option>
@@ -470,7 +478,7 @@ export function ImageResizeTool() {
               max="1"
               step="0.01"
               value={quality}
-              onInput={(event) => setQuality(event.currentTarget.value)}
+              onInput={(event) => updateSetting(() => setQuality(event.currentTarget.value))}
               disabled={status === "working"}
             />
           </label>

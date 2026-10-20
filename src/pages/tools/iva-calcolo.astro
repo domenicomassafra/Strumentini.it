@@ -7,6 +7,7 @@ import { ANNUAL_VAT_2025_WINDOW_117 } from "../../reference-data/italy/fiscal-an
     <nav aria-label="Percorso"><a href="/strumenti/">Strumenti</a> / IVA</nav>
     <h1>IVA: aggiungi o scorpora dal totale</h1>
     <p>Calcolo locale senza inviare importi al server. Seleziona una percentuale dichiarata da te oppure una delle categorie legali documentate nel periodo coperto dalle fonti.</p>
+    <noscript><p data-iva-noscript>Il calcolo richiede JavaScript. Il pulsante resta disattivato e non invia l'importo.</p></noscript>
     <form novalidate>
       <label for="iva-operation">Operazione</label>
       <select id="iva-operation" name="operation"><option value="add">Aggiungi IVA all'imponibile</option><option value="scorporo">Scorpora dal totale lordo</option></select>
@@ -31,7 +32,7 @@ import { ANNUAL_VAT_2025_WINDOW_117 } from "../../reference-data/italy/fiscal-an
         <label class="confirmation"><input name="scopeConfirmed" type="checkbox" /> Confermo che l'operazione rientra esattamente nella categoria descritta e nelle sue condizioni/esclusioni.</label>
         <label class="confirmation"><input name="taxableConfirmed" type="checkbox" /> Confermo che è un'operazione imponibile e che non si applicano esenzioni o regimi speciali.</label>
       </div>
-      <button type="submit">Calcola imponibile, IVA e totale</button>
+      <button type="submit" disabled>Calcola imponibile, IVA e totale</button>
     </form>
     <p class="error" role="alert" hidden></p>
     <output aria-live="polite"></output>
@@ -102,6 +103,7 @@ import { ANNUAL_VAT_2025_WINDOW_117 } from "../../reference-data/italy/fiscal-an
         error.hidden = false;
       }
     });
+    form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = false;
   }
 </script>
 <style>
