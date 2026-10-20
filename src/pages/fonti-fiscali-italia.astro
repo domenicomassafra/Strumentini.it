@@ -2,7 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getItalySourcePackDecision } from "../reference-data/italy/source-packs";
 import { VERIFIED_IRPEF_EXCERPTS_117 as irpef, VERIFIED_FORFETTARIO_COEFFICIENTS_2025_117 as coeff, INVOICE_STAMP_REFERENCE_2024_117 as bollo } from "../reference-data/italy/fiscal-annual-117";
+import { diffFiscalBands409 } from "../reference-data/italy/fiscal-revisions-409";
 const pack = getItalySourcePackDecision(117);
+const irpefDiff = diffFiscalBands409(irpef[0]!, irpef[1]!);
 ---
 <BaseLayout title="Fonti fiscali ufficiali italiane per anno" description="Consulta fonti e intervalli di validità verificati per IRPEF, forfettario e bollo con riferimenti normativi e limiti aggiornati.">
   <main class="sources-fiscal">
@@ -10,9 +12,20 @@ const pack = getItalySourcePackDecision(117);
     <h1>Fonti fiscali ufficiali per anno</h1>
     <p>Archivi con intervalli, aliquote e riferimenti verificabili. Il pacchetto completo annuale IVA–IRPEF–forfettario richiede ancora fonti di dettaglio: ogni tabella sotto dichiara esattamente quale sottoinsieme è documentato.</p>
     <p>Revisione delle fonti: <strong>{pack.checkedAt}</strong> · Identificativo: <code>{pack.decisionVersion}</code> · Aggiornamenti quando cambiano la norma o l'anno fiscale.</p>
+    <section aria-label="Registro versioni fiscali" data-fiscal-versions409>
+      <h2>Registro delle versioni IRPEF nazionali</h2>
+      <p>Ogni calcolo identifica la propria versione delle regole; una rettifica con efficacia retroattiva deve aggiungere una versione distinta e richiedere una selezione esplicita, mantenendo accessibile il risultato basato sulla versione precedente.</p>
+      <div class="fiscal-scroll409" role="region" aria-label="Tabella versioni fiscali scorrevole" tabindex="0"><table><thead><tr><th>Anno</th><th>Versione</th><th>Vigenza</th><th>Verifica snapshot</th><th>Responsabile revisione fiscale</th></tr></thead><tbody>
+        {irpef.map(entry => <tr data-fiscal-version409={entry.revisionId}><td>{entry.taxYear}</td><td><code>{entry.revisionId}</code></td>
+          <td>{entry.effectiveFrom} / {entry.effectiveTo}</td><td>{entry.checkedAt}</td>
+          <td>{entry.reviewOwner ?? "Da nominare — approvazione fiscale non attestata"}</td></tr>)}
+      </tbody></table></div>
+      <p data-fiscal-diff409>Confronto 2025 → 2026: {irpefDiff.changedBands.map(change => `fino a ${change.upToCents === null ? "oltre l'ultima soglia" : `${(change.upToCents / 100).toLocaleString("it-IT")} €`}: ${(change.previousBasisPoints ?? 0) / 100}% → ${(change.nextBasisPoints ?? 0) / 100}%`).join("; ")}. La legge 199/2025 modifica la seconda aliquota con decorrenza 2026; non è una rettifica retroattiva del 2025.</p>
+      <p data-fiscal-amendments409>Rettifiche retroattive verificate e registrate: nessuna. L'eventuale revisione successiva richiede fonte ufficiale, data di efficacia, nuova versione e validazione del responsabile; il pacchetto fiscale annuale completo rimane bloccato.</p>
+    </section>
     {irpef.map(year => <section class="fiscal-year">
       <h2>Anno fiscale {year.taxYear} — IRPEF nazionale lorda</h2>
-      <p>Validità {year.effectiveFrom} / {year.effectiveTo}. Solo scaglioni nazionali lordi; detrazioni e addizionali richiedono verifiche separate.</p>
+      <p>Versione <code>{year.revisionId}</code>. Validità {year.effectiveFrom} / {year.effectiveTo}. Solo scaglioni nazionali lordi; detrazioni e addizionali richiedono verifiche separate.</p>
       <table><thead><tr><th>Reddito imponibile fino a</th><th>Aliquota</th></tr></thead><tbody>
         {year.bands.map(band => <tr><td>{band.upToCents === null ? "Oltre lo scaglione precedente" : new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR"}).format(band.upToCents/100)}</td><td>{(band.rateBasisPoints/100).toLocaleString("it-IT")}%</td></tr>)}
       </tbody></table>
@@ -33,5 +46,5 @@ const pack = getItalySourcePackDecision(117);
   </main>
 </BaseLayout>
 <style>
-  .sources-fiscal{max-width:1000px;margin:0 auto;padding:30px 22px 80px}.sources-fiscal p{line-height:1.65}.sources-fiscal .fiscal-year{border:1px solid var(--border);border-radius:14px;padding:18px;margin:24px 0}.sources-fiscal table{width:100%;border-collapse:collapse}.sources-fiscal th,.sources-fiscal td{text-align:left;padding:9px;border-bottom:1px solid var(--border)}
+  .sources-fiscal{max-width:1000px;margin:0 auto;padding:30px 22px 80px}.sources-fiscal p{line-height:1.65}.sources-fiscal .fiscal-year{border:1px solid var(--border);border-radius:14px;padding:18px;margin:24px 0}.sources-fiscal table{width:100%;border-collapse:collapse}.sources-fiscal th,.sources-fiscal td{text-align:left;padding:9px;border-bottom:1px solid var(--border)}.fiscal-scroll409{max-width:100%;overflow-x:auto}.fiscal-scroll409 table{min-width:680px}
 </style>
