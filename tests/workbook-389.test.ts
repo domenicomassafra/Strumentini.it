@@ -94,6 +94,17 @@ describe("STR-389 XLSX workbook formula graph and faithful export", () => {
     expect(() => computeFormula389("=SUM(A1:A99999)", read)).toThrow(WorkbookError389);
   });
 
+  it("preserves explicitly typed formula-looking strings as inert XML text", async () => {
+    const source = await realWorkbook();
+    const opened = openXlsxWorkbook389(source);
+    const literal = editWorkbookCell389(opened, 1, 0, "=HYPERLINK(\"https://example.invalid\")", "text");
+    const output = exportXlsxWorkbook389(source, literal);
+    expect(openXlsxWorkbook389(output).cells[1]![0]).toMatchObject({ kind: "text", input: '=HYPERLINK("https://example.invalid")' });
+    const xml = decoder.decode(unzipSync(new Uint8Array(output))["xl/worksheets/sheet1.xml"]!);
+    expect(xml).toContain('<c r="A2" t="inlineStr"><is><t xml:space="preserve">=HYPERLINK(&quot;https://example.invalid&quot;)</t></is></c>');
+    expect(xml).not.toContain("<f>HYPERLINK");
+  });
+
   it("rejects macros, external relations and advanced workbook structures without emitting altered output", async () => {
     const source = await realWorkbook();
     const withMacro = changeArchive(source, (parts) => {

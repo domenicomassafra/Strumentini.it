@@ -146,7 +146,7 @@ export function editWorkbookCell389(workbook: Workbook389, row: number, column: 
     throw new WorkbookError389("INVALID_CELL", "Cella fuori dal foglio o testo oltre 1024 caratteri.");
   }
   const current = workbook.cells[row]![column]!;
-  const nextKind = input === "" ? "blank" : input.startsWith("=") ? "formula" : kind ?? (current.kind === "formula" ? "text" : current.kind === "blank" ? "text" : current.kind);
+  const nextKind = input === "" ? "blank" : kind ?? (input.startsWith("=") ? "formula" : current.kind === "formula" || current.kind === "blank" ? "text" : current.kind);
   const rows = workbook.cells.map((cells) => [...cells]);
   rows[row]![column] = { kind: nextKind, input, value: "" };
   return recalculateWorkbook389({ sheetName: workbook.sheetName, cells: rows });

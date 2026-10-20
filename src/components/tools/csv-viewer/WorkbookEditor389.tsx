@@ -92,7 +92,9 @@ export function WorkbookEditor389() {
           disabled={busy} onChange={(event) => {
             if (!active) return;
             const type = event.currentTarget.value as WorkbookCellKind389;
-            const raw = type === "formula" && !active.input.startsWith("=") ? "=" + active.input : active.input;
+            const address = cellAddress389(...selected);
+            const typed = drafts[address] ?? active.input;
+            const raw = type === "formula" && !typed.startsWith("=") ? "=" + typed : typed;
             edit(selected[0], selected[1], raw, type);
           }}>
           <option value="text">Testo (zeri iniziali conservati)</option>
