@@ -32,6 +32,19 @@ export function refuseLossyWorkbook387(
   if (entries.some(({ path }) => /^xl\/(?:drawings|charts|media|comments|tables|pivot|embeddings|vmlDrawings|ctrlProps)\//iu.test(path))) {
     refuse("Workbook contains charts, tables, comments or embedded objects the editor cannot preserve.");
   }
+  const workbook = entries.find(({ path }) => path === "xl/workbook.xml");
+  if (!workbook) refuse("Workbook metadata is missing.");
+  let metadata: XmlElement;
+  try {
+    metadata = parseXmlDocument(readXml(workbook)).root;
+  } catch {
+    refuse("Workbook metadata cannot be inspected faithfully.");
+  }
+  if (metadata.name.split(":").at(-1) !== "workbook") refuse("Unsupported workbook metadata root.");
+  if (metadata.children.some((node) => node.kind === "element" && node.name.split(":").at(-1) === "definedNames" &&
+    node.children.some((child) => child.kind === "element"))) {
+    refuse("Workbook defined names cannot be preserved by value-only editing.");
+  }
   const styles = entries.find(({ path }) => path === "xl/styles.xml");
   if (!styles) return;
   let root: XmlElement;

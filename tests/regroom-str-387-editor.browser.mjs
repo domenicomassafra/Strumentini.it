@@ -1,7 +1,7 @@
 /** #146: compiled editor tested in the installed automation-browser at 390px. */
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import { chromium } from "@playwright/test";
 import readXlsxFile from "read-excel-file/universal";
@@ -29,7 +29,15 @@ try {
   const input = editor.getByLabel("Apri CSV UTF-8 o XLSX");
   const csv = "id;valore;data;note\n00123;12.50;03/04/2026;Caffè\n00007;123456789012345678901;11/12/2026;Roma";
   await input.setInputFiles({ name: "origine.csv", mimeType: "text/csv", buffer: Buffer.from(csv, "utf8") });
-  await editor.getByLabel("Riga 1 colonna 4").waitFor();
+  await editor.getByLabel("Riga 1 colonna 4").waitFor({ timeout: 15_000 }).catch(async (error) => {
+    console.error("STR387_BROWSER_DEBUG", JSON.stringify({
+      editorText: (await editor.innerText().catch(() => "<editor missing>")).slice(0, 1200),
+      pageErrors: errors,
+      route: page.url(),
+      html: (await page.locator("body").innerText().catch(() => "<body missing>")).slice(0, 700),
+    }));
+    throw error;
+  });
   await editor.getByLabel("Riga 1 colonna 4").fill("Città");
   let downloadPromise = page.waitForEvent("download");
   await editor.getByRole("button", { name: "Scarica CSV modificato" }).click();
@@ -64,12 +72,51 @@ try {
   await input.setInputFiles({ name: "multi.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: Buffer.from(await multi.arrayBuffer()) });
   await editor.getByRole("alert").getByText(/SHEET_SELECTION_REQUIRED|più fogli/u).waitFor();
   assert.equal(await editor.getByRole("button", { name: "Scarica Excel modificato" }).count(), 0);
+  const numericHeader = await writeXlsxFile([{
+    sheet: "Dati",
+    data: [[{ value: 123, type: Number }, { value: "titolo", type: String }],
+      [{ value: "prima", type: String }, { value: "nota", type: String }]],
+  }]).toBlob();
+  await input.setInputFiles({ name: "header-numerico.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    buffer: Buffer.from(await numericHeader.arrayBuffer()) });
+  await editor.getByRole("alert").getByText(/UNSUPPORTED_XLSX_FEATURE.*headers/u).waitFor();
+  assert.equal(await editor.getByRole("button", { name: "Scarica Excel modificato" }).count(), 0);
+
+  const namedBase = await writeXlsxFile([{
+    sheet: "Dati",
+    data: [[{ value: "id", type: String }, { value: "value", type: String }],
+      [{ value: "00123", type: String }, { value: "ok", type: String }]],
+  }]).toBlob();
+  const python = [
+    "import io,sys,zipfile",
+    "from xml.etree import ElementTree as E",
+    "ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main'",
+    "E.register_namespace('',ns)",
+    "original=io.BytesIO(sys.stdin.buffer.read());out=io.BytesIO()",
+    "with zipfile.ZipFile(original) as src,zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as dst:",
+    " for entry in src.infolist():",
+    "  data=src.read(entry.filename)",
+    "  if entry.filename=='xl/workbook.xml':",
+    "   root=E.fromstring(data);names=E.SubElement(root,'{%s}definedNames'%ns)",
+    "   E.SubElement(names,'{%s}definedName'%ns,{'name':'AuditRange'}).text='Dati!$A$2'",
+    "   data=E.tostring(root,encoding='utf-8',xml_declaration=True)",
+    "  dst.writestr(entry,data)",
+    "sys.stdout.buffer.write(out.getvalue())",
+  ].join("\n");
+  const injected = spawnSync("python3", ["-c", python],
+    { input: Buffer.from(await namedBase.arrayBuffer()), maxBuffer: 2 * 1024 * 1024, timeout: 10_000 });
+  assert.equal(injected.status, 0, String(injected.stderr));
+  await input.setInputFiles({ name: "defined-names.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    buffer: injected.stdout });
+  await editor.getByRole("alert").getByText(/UNSUPPORTED_XLSX_FEATURE.*defined names/u).waitFor();
+  assert.equal(await editor.getByRole("button", { name: "Scarica Excel modificato" }).count(), 0);
+
   assert.deepEqual(errors, []);
   assert.deepEqual(requests.filter(r => !r.url.startsWith(origin)), [], "no external network");
   assert.deepEqual(requests.filter(r => !["GET", "HEAD"].includes(r.method)), [], "no uploads");
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth), false);
   console.log(JSON.stringify({ status: "PASS", consumer: "compiled Astro + Chrome automation-browser", viewport: "390x844",
-    csv: "roundtrip-edit-utf8", xlsx: "independent-read-excel-file-reopened", formula: "REFUSED", multisheet: "REFUSED",
+    csv: "roundtrip-edit-utf8", xlsx: "independent-read-excel-file-reopened", formula: "REFUSED", multisheet: "REFUSED", numericHeader: "REFUSED", definedNames: "REFUSED",
     networkEgress: 0, uploads: 0, pageErrors: 0 }));
 } catch (error) {
   console.error(error);
