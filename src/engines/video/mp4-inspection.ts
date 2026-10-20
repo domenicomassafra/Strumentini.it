@@ -50,10 +50,6 @@ function fail(message: string): never {
   throw new Error(`UNSUPPORTED_VIDEO_CONTAINER: ${message}`);
 }
 
-function checkAbort(signal?: AbortSignal): void {
-  if (signal?.aborted) throw new DOMException("Video inspection cancelled", "AbortError");
-}
-
 function view(bytes: Uint8Array): DataView {
   return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
 }
