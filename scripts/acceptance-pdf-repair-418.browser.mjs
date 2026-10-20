@@ -35,7 +35,9 @@ try {
     source.subarray(0, footer.index), pointer, source.subarray(footer.index + footer[0].length),
   ]);
   await ready();
-  browser = await chromium.launch({ headless: true });
+  // Reuse the dedicated MiniPC automation-browser instance: no new Chrome
+  // process, user profile, or debugger port is created for acceptance.
+  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   const pageUi = await context.newPage();
   const errors = [];
