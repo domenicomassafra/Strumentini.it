@@ -19,9 +19,14 @@ try {
     await sleep(100);
   }
   assert(ready, "static build server unavailable");
-  for (const [name, type] of [["Chromium", chromium], ["Firefox", firefox], ["WebKit", webkit]]) {
-    console.log(`${name}: launching`);
-    const browser = await type.launch({ headless: true, timeout: 15_000 });
+  // CI can launch independent engines; real MiniPC acceptance reuses the existing automation-browser CDP session.
+  const cdpEndpoint = process.env.STR300_AUTOMATION_BROWSER_CDP;
+  const browsers = cdpEndpoint ? [["Chromium-CDP", chromium]] : [["Chromium", chromium], ["Firefox", firefox], ["WebKit", webkit]];
+  for (const [name, type] of browsers) {
+    console.log(`${name}: connecting/launching`);
+    const browser = cdpEndpoint
+      ? await chromium.connectOverCDP(cdpEndpoint)
+      : await type.launch({ headless: true, timeout: 15_000 });
     try {
       console.log(`${name}: opening page`);
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
