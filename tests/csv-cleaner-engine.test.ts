@@ -18,6 +18,17 @@ describe("CSV cleaner engine", () => {
   it("detects semicolon/tab and ragged rows", () => {
     expect(parseCsvText("a;b\n1;2\n").delimiter).toBe(";"); expect(parseCsvText("a\tb\n1\t2\n").delimiter).toBe("\t"); expect(parseCsvText("a,b\n1,2,3\n").warnings.some((warning)=>warning.code==="RAGGED_ROW")).toBe(true);
   });
+  it("never silently replaces legacy or malformed CSV bytes with U+FFFD", async () => {
+    const latin1 = Uint8Array.from(Buffer.from("6e616d653b69640a636166e93b310a616e6ee93b320a", "hex"));
+    await expect(readBlobText(new Blob([latin1]))).rejects.toMatchObject({ code: "INVALID_ENCODING" });
+    const truncated = Uint8Array.from([0x6e, 0x61, 0x6d, 0x65, 0x3b, 0x69, 0x64, 0x0a, 0x61, 0x3b, 0xc3]);
+    await expect(readBlobText(new Blob([truncated]))).rejects.toMatchObject({ code: "INVALID_ENCODING" });
+    const valid = "name;id\ncafé;1\nanné;2\n";
+    const output = cleanCsvText(await readBlobText(new Blob([new TextEncoder().encode(valid)])));
+    expect(output.output).toBe(valid);
+    expect(output.output).not.toContain("\uFFFD");
+  });
+
   it("supports parser abort and cancellable Blob reads", async () => {
     const large = `a,b\n${Array.from({length:1000},(_,i)=>`${i},${i}`).join("\n")}`; expect(provePapaAbort(large, 10)).toBe(true);
     const controller = new AbortController(); controller.abort(); await expect(readBlobText(new Blob([large]), controller.signal)).rejects.toMatchObject({ code:"CANCELLED" });

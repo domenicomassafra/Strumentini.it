@@ -39,7 +39,9 @@ export function CsvCleanerTool() {
     } catch (caught) {
       if (controller.current !== active) return;
       if (active.signal.aborted || (caught instanceof CsvCleanerError && caught.code === "CANCELLED")) setError("Pulizia annullata. Non è stato prodotto alcun risultato.");
-      else setError("La pulizia del CSV non è riuscita. Controlla il file e riprova.");
+      else if (caught instanceof CsvCleanerError && caught.code === "INVALID_ENCODING") {
+        setError("Il CSV contiene byte non UTF-8. Nessun dato è stato esportato: converti esplicitamente la codifica del file prima di riprovare.");
+      } else setError("La pulizia del CSV non è riuscita. Controlla il file e riprova.");
     } finally { if (controller.current === active) { setProcessing(false); controller.current = null; } }
   }
 
