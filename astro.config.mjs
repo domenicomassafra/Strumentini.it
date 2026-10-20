@@ -37,6 +37,8 @@ export default defineConfig({
     },
   ],
   vite: {
+    // iconv-lite (MSG donor) relies on Node buffer; map it to a browser-safe polyfill.
+    resolve: { alias: { buffer: "buffer/" } },
     plugins: [{
       name: "whisper-298-prune-optional-onnx-asyncify",
       apply: "build",
