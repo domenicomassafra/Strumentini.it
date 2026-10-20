@@ -30,6 +30,8 @@ const errors = [];
 const remote = [];
 const uploads = [];
 const requests = [];
+// Vite names exifr's bundled distribution `full.esm.<hash>.js`, not `exifr`.
+const exifrChunk = (url) => /\/full\.esm\.[^/]+\.js(?:\?|$)/u.test(url);
 page.on("pageerror", (error) => errors.push(error.message));
 page.on("request", (request) => {
   requests.push(request.url());
@@ -42,7 +44,7 @@ try {
   const input = page.locator('form input[type="file"]').first();
   await input.waitFor();
   assert.equal(await page.locator("[data-gps-revealed-272]").count(), 0);
-  assert.equal(requests.filter((url) => /exifr/i.test(url)).length, 0, "EXIF parser must be lazy before input");
+  assert.equal(requests.filter(exifrChunk).length, 0, "EXIF parser must be lazy before input");
 
   const run = async (name) => {
     await input.setInputFiles({
@@ -79,13 +81,21 @@ try {
   await panel.getByText("sRGB built-in", { exact: true }).waitFor();
   await panel.getByText("EXIFR 272 IPTC Title", { exact: true }).waitFor();
   assert.equal(await privateGps.count(), 0);
-  assert.ok(requests.some((url) => /exifr/i.test(url)), "dynamic exifr import must load only on demand");
+  assert.ok(requests.some(exifrChunk), "dynamic exifr import must load only on demand");
   assert.deepEqual(errors, []);
   assert.deepEqual(uploads, [], "image data must never be uploaded");
   assert.deepEqual(remote, [], "test must not call third-party endpoints");
   console.log("PASS #272 automation-browser Chrome 390x844: JPEG EXIF GPS default hidden/reveal/hide, safe JSON copy, positive ICC/IPTC, lazy exifr, no remote/upload/error; physical devices NOT_RUN");
+} catch (error) {
+  console.error(error);
+  process.exitCode = 1;
 } finally {
-  await page.close();
-  await context.close();
   server.kill("SIGTERM");
+  // The shared CDP socket may remain open after closing our private context.
+  // Do not close the owner's automation-browser process through browser.close().
+  await Promise.race([
+    (async () => { await page.close(); await context.close(); })(),
+    delay(5_000),
+  ]);
+  process.exit(process.exitCode ?? 0);
 }
