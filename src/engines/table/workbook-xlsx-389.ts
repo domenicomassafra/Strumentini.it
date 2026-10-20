@@ -129,8 +129,9 @@ function inspectPackage(bytes: ArrayBuffer) {
     const defaultXf = xfs && children(xfs, "xf")[0];
     const namedXfs = getOne(styles, "cellStyleXfs");
     const baseXf = namedXfs && children(namedXfs, "xf")[0];
-    if (!defaultXf || attribute(defaultXf, "numFmtId") !== "0" ||
-        (baseXf && attribute(baseXf, "numFmtId") !== "0")) {
+    // OOXML omits numFmtId for the built-in General style (equivalent to 0).
+    if (!defaultXf || (attribute(defaultXf, "numFmtId") ?? "0") !== "0" ||
+        (baseXf && (attribute(baseXf, "numFmtId") ?? "0") !== "0")) {
       refuse("Formato di cella predefinito non General (date/stili) non supportato.");
     }
   }
