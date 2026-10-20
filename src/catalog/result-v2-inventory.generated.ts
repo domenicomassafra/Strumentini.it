@@ -5306,9 +5306,9 @@ export const resultV2Inventory = [
     "toolId": "zip-creator",
     "engine": "file-privacy",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "FilePrivacyTool",
-      "source": "src/components/tools/file-privacy/FilePrivacyTool.tsx"
+      "kind": "bespoke",
+      "component": "ZipCreatorTool",
+      "source": "src/components/tools/file-privacy/ZipCreatorTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",

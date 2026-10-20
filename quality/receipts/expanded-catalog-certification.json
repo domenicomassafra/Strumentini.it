@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 12
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 254,
-    "releaseBlockedCount": 17,
+    "releaseEligibleGoldCount": 253,
+    "releaseBlockedCount": 18,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 271,
     "fixtureBoundCount": 271,
@@ -35888,12 +35888,12 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/zip-creator.gold.json",
-      "releaseGate": "PASS",
-      "goldEligible": true,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
       "implementation": {
         "manifest": {
           "path": "src/tools/zip-creator/manifest.ts",
-          "sha256": "8879ed6ddeb3a4294c83ed036dbb718a4dd9fbd5ceb59e7a657c1859d7c3e347"
+          "sha256": "2df2eacdcd62c68a55d0790d133481a9adf067fbfd0a5e417605b9ded9c7ca29"
         },
         "module": {
           "path": "src/tools/zip-creator/module.ts",
@@ -36001,7 +36001,9 @@
           "status": "PASS"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
+      ],
       "coverageGaps": []
     }
   ]
