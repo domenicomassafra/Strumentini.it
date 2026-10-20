@@ -39,6 +39,19 @@ describe("legacy primary-result detector", () => {
     ]);
   });
 
+  it("rejects a new manually authored primary output even with real consumer selectors", () => {
+    const source = [
+      "export function NewTool() {",
+      "  return <form><section data-new-result className='gutter result-panel' data-state='success'>",
+      "    <a download='example.pdf' href={url}>Scarica PDF</a>",
+      "  </section></form>;",
+      "}",
+    ].join("\n");
+    const findings = auditLegacyPrimaryOutputSource("src/components/tools/NewTool.tsx", source);
+    expect(findings).toEqual([expect.objectContaining({ pathClass: "manual-result-panel" })]);
+    expect(() => assertNoLegacyPrimaryOutputs(findings)).toThrow(/NewTool\.tsx/u);
+  });
+
   it("allows an explicitly secondary raw/debug representation", () => {
     const source = [
       "<ToolResultPanel eyebrow='x' placeholder='x'>",

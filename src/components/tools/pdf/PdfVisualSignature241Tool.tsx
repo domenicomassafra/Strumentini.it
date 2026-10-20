@@ -3,6 +3,7 @@ import { inspectPdfBytes } from "../../../engines/pdf";
 import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import { encodeSignatureCanvas241, planVisualSignature241, type VisualSignature241Plan } from "../../../engines/pdf/visual-signature-241";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
+import { ResultPrimaryAnswer, ToolResultPanel } from "../shared";
 
 type Ready241 = { readonly blob: Blob; readonly filename: string; readonly plan: VisualSignature241Plan; readonly previews: readonly { page: number; blob: Blob }[] };
 type Loaded241 = { readonly bytes: Uint8Array; readonly pages: number };
@@ -12,7 +13,6 @@ type Mode241 = "image" | "text" | "draw";
 const message241 = (reason: unknown) => reason instanceof Error ? reason.message : "Operazione PDF non riuscita";
 const number241 = (raw: string) => raw.trim() !== "" && Number.isFinite(Number(raw)) ? Number(raw) : NaN;
 
-/** A visible graphic on simple, unsigned PDFs. It is NEVER a digital signature. */
 export function PdfVisualSignature241Tool() {
   const [source, setSource] = useState<File | null>(null);
   const [pngFile, setPngFile] = useState<File | null>(null);
@@ -189,9 +189,7 @@ export function PdfVisualSignature241Tool() {
   }, [result]);
   useEffect(() => () => { generation.current += 1; inFlight.current = false; controller.current?.abort(); }, []);
 
-  // A completed operation is not merely worker output: the verified PDF must
-  // also be reopenable and visibly rendered in every final preview. Store only
-  // the catalog ID, timestamp and count, never name, drawing, PNG or PDF bytes.
+  // A result is visible only after PDF.js renders all final pages; Recenti stores no file bytes.
   const resultVisible = result !== null && downloadUrl !== "" && finalUrls.length === result.plan.pages.length
     && finalUrls.every(({ url }) => loadedFinalUrls.includes(url));
   useEffect(() => {
@@ -346,10 +344,13 @@ export function PdfVisualSignature241Tool() {
       <button type="button" data-241-reset onClick={clear}>Azzera tutto</button>
     </div>
     {working && <p role="status">Elaborazione locale e riapertura del PDF tramite PDF.js…</p>}
-    {resultVisible && result && <section data-241-result class="result-panel" data-state="success">
-      <p role="status">Firma visiva applicata alla pagina {result.plan.pages.join(", ")} e output PDF verificato, inclusa anteprima finale.</p>
+    {resultVisible && result && <ToolResultPanel eyebrow="Firma visiva" placeholder="Applica la firma visiva." state="success">
+      <div data-241-result>
+      <ResultPrimaryAnswer label="Pagine elaborate">{result.plan.pages.join(", ")}</ResultPrimaryAnswer>
+      <p role="status">Output PDF verificato, inclusa anteprima finale.</p>
       <p>Questa immagine non firma digitalmente il documento. Il PDF risultante non contiene certificati di firma creati da questo strumento.</p>
       <a data-241-download href={downloadUrl} download={result.filename}>Scarica PDF con firma grafica visiva (NON digitale)</a>
-    </section>}
+      </div>
+    </ToolResultPanel>}
   </form>;
 }
