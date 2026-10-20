@@ -42,7 +42,7 @@ describe("#415 representative independent real engine proof (source-only, no Gol
     }
     expect(map.summary).toMatchObject({
       tools: 273, verified: 0, pending: 273, sourceErrors: 0,
-      runtimeLimitsPending: 229, registryBindingsPending: 0,
+      runtimeLimitsPending: 230, registryBindingsPending: 0,
     });
     expect(map.entries.filter((item) => item.limitsStatus === "DECLARED_HANDOFF_LIMITS_ONLY")).toHaveLength(43);
     expect(map.entries.every((item) => item.currentProof === "PENDING" && item.currentReceipt === null)).toBe(true);

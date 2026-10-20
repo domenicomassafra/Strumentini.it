@@ -174,7 +174,7 @@ describe("expanded catalog certification index", () => {
     expect(textWriting.filter((tool) => newTextIds.has(tool.id))).toHaveLength(7);
     expect(textWriting.filter((tool) => newTextIds.has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
     const pdf = index.tools.filter((tool) => tool.engine === "pdf");
-    expect(pdf.filter((tool) => !new Set(["pdf-page-numbers", "pdf-watermark", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "printable-pdf-from-text", "pdf-booklet-interleave", "pdf-tables-to-xlsx"]).has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
+    expect(pdf.filter((tool) => !new Set(["pdf-page-numbers", "pdf-watermark", "pdf-crop-normalize", "pdf-fill-overlays", "pdf-n-up", "printable-pdf-from-text", "pdf-booklet-interleave", "pdf-tables-to-xlsx", "pdf-repair"]).has(tool.id)).every((tool) => tool.status === "GOLD")).toBe(true);
     expect(pdf.find((tool) => tool.id === "pdf-page-numbers")).toMatchObject({
       status: "IMPLEMENTED_UNVERIFIED", goldEligible: false, releaseGate: "BLOCKED",
     });
