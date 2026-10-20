@@ -71,5 +71,6 @@ for (const row of source.observations) {
   for (const name of ["cancel", "background", "retry", "controlledOom"]) assert.equal(row.recovery[name], "NOT_RUN");
 }
 console.log(JSON.stringify({ status: "PARTIAL_RAW_CROSSCHECKED_REVIEW_REQUIRED", cases: seen.size,
-  rawSha256: hash(await readFile(canonical)), revision: actualHead, independentDecoder: "sharp/libvips",
+  rawSha256: hash(await readFile(canonical)), sourceRevision: source.sourceRevision, auditHead: actualHead,
+  independentDecoder: "sharp/libvips",
   limitations: "Cannot attest native capture, input picker or unrun recovery; PR #380 receipt remains 36 NOT_RUN" }));
