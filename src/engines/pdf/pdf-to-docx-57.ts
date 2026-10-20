@@ -24,6 +24,7 @@ export const PDF_DOCX_57_LIMITS = {
 
 type Page420 = { page: number; text: string; width: number; height: number; table?: PdfTablePreview254 };
 type WordBlock420 = { type: "paragraph"; text: string } | { type: "table"; rows: readonly (readonly string[])[] };
+type TextFragment420 = { x: number; y: number; right: number };
 const losses = [
   "Sono ricostruiti testo orizzontale e tabelle con griglia completa; colonne affiancate e immagini sono rifiutate.",
   "Font, stili, margini interni delle celle e coordinate esatte non sono ricostruiti.",
@@ -33,6 +34,70 @@ const hex = (bytes: Uint8Array) => Array.from(bytes, (byte) => byte.toString(16)
 const stopped = (signal?: AbortSignal) => {
   if (signal?.aborted) throw new DOMException("Conversione PDF annullata", "AbortError");
 };
+
+function rejectAmbiguousColumns420(fragments: readonly TextFragment420[]): void {
+  // Sweep from left to right. A range-minimum tree indexed by baseline Y
+  // finds distant fragments sharing a line, without quadratic pair scans.
+  const ys = [...new Set(fragments.map(({ y }) => y))].sort((a, b) => a - b);
+  const bound = (value: number, includeEqual: boolean) => {
+    let lo = 0, hi = ys.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >>> 1;
+      if (ys[mid]! < value || (includeEqual && ys[mid] === value)) lo = mid + 1;
+      else hi = mid;
+    }
+    return lo;
+  };
+  let size = 1;
+  while (size < ys.length) size *= 2;
+  const minimumRight = new Float64Array(size * 2).fill(Infinity);
+  for (const part of [...fragments].sort((a, b) => a.x - b.x)) {
+    let lo = size + bound(part.y - 2, false);
+    let hi = size + bound(part.y + 2, true);
+    let closestRight = Infinity;
+    while (lo < hi) {
+      if (lo % 2) closestRight = Math.min(closestRight, minimumRight[lo++]!);
+      if (hi % 2) closestRight = Math.min(closestRight, minimumRight[--hi]!);
+      lo >>>= 1;
+      hi >>>= 1;
+    }
+    if (part.x - closestRight > 36) {
+      throw new Error("PDF420_COLUMNS_UNSUPPORTED: Colonne o blocchi affiancati ambigui.");
+    }
+    let position = size + bound(part.y, false);
+    minimumRight[position] = Math.min(minimumRight[position]!, part.right);
+    while (position > 1) {
+      position >>>= 1;
+      minimumRight[position] = Math.min(minimumRight[position * 2]!, minimumRight[position * 2 + 1]!);
+    }
+  }
+
+  // Staggered columns may have no matching baselines. Any two disjoint
+  // horizontal clusters with overlapping vertical ranges are ambiguous.
+  if (fragments.length < 4) return;
+  const sorted = [...fragments].sort((a, b) => a.right - b.right);
+  const count = sorted.length;
+  const suffixMinX = new Array<number>(count + 1).fill(Infinity);
+  const suffixMinY = new Array<number>(count + 1).fill(Infinity);
+  const suffixMaxY = new Array<number>(count + 1).fill(-Infinity);
+  for (let i = count - 1; i >= 0; i--) {
+    const part = sorted[i]!;
+    suffixMinX[i] = Math.min(part.x, suffixMinX[i + 1]!);
+    suffixMinY[i] = Math.min(part.y, suffixMinY[i + 1]!);
+    suffixMaxY[i] = Math.max(part.y, suffixMaxY[i + 1]!);
+  }
+  let leftMinY = Infinity, leftMaxY = -Infinity;
+  for (let i = 0; i < count - 1; i++) {
+    const part = sorted[i]!;
+    leftMinY = Math.min(leftMinY, part.y);
+    leftMaxY = Math.max(leftMaxY, part.y);
+    if (i < 1 || count - i - 1 < 2 || sorted[i + 1]!.right <= part.right + 0.5 ||
+        suffixMinX[i + 1]! < part.right + 36) continue;
+    if (Math.min(leftMaxY, suffixMaxY[i + 1]!) > Math.max(leftMinY, suffixMinY[i + 1]!)) {
+      throw new Error("PDF420_COLUMNS_UNSUPPORTED: Colonne sfalsate con lettura ambigua.");
+    }
+  }
+}
 
 async function pages420(file: File, bytes: Uint8Array, count: number, signal?: AbortSignal): Promise<Page420[]> {
   const pdfjs = typeof document === "undefined"
@@ -97,16 +162,10 @@ async function pages420(file: File, bytes: Uint8Array, count: number, signal?: A
         } else {
           // A page whose text has side-by-side blocks has no unambiguous
           // reading order. Do not misrepresent columns as plain paragraphs.
-          const fragments = items.map((item) => ({
+          rejectAmbiguousColumns420(items.map((item) => ({
             x: item.transform[4]!, y: item.transform[5]!,
-            right: item.transform[4]! + item.width, text: item.str,
-          }));
-          for (const a of fragments) for (const b of fragments) {
-            if (a === b || Math.abs(a.y - b.y) > 2 || b.x <= a.x) continue;
-            if (b.x - a.right > 36) {
-              throw new Error("PDF420_COLUMNS_UNSUPPORTED: Colonne o blocchi affiancati ambigui.");
-            }
-          }
+            right: item.transform[4]! + Math.max(0, item.width),
+          })));
         }
         result.push({ page: number, text, width: viewport.width, height: viewport.height, ...(table ? { table } : {}) });
       } finally { page.cleanup(); }
