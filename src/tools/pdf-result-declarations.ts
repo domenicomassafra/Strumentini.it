@@ -5,6 +5,7 @@ export const PDF_RESULT_DECLARATIONS = {
   "document-handoff-manifest": { class: "text-code", capabilities: ["copy", "download", "reset"] },
   "images-to-pdf": { class: "pdf", capabilities: ["download", "retry", "reset"] },
   "pdf-compare-lite": { class: "validator", capabilities: ["copy", "retry", "reset"] },
+  "pdf-repair": { class: "pdf", capabilities: ["download", "retry", "reset"] },
   "pdf-compression-lite": { class: "pdf", capabilities: ["download", "retry", "reset"] },
   "pdf-flatten": { class: "pdf", capabilities: ["download", "retry", "reset"] },
   "pdf-form-inspector": { class: "validator", capabilities: ["copy", "retry", "reset"] },

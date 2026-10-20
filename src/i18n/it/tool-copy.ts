@@ -1,6 +1,7 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
 import { STR421_TOOL_COPY_IT } from "./tool-copy-str421";
 import { EPUB422_TOOL_COPY_IT } from "./tool-copy-epub-422";
+import { STR418_TOOL_COPY_IT } from "./tool-copy-str418";
 
 /** Copy pubblica: nomi e descrizioni in italiano; identificatori tecnici invariati. */
 export interface ItalianToolCopy {
@@ -12,6 +13,7 @@ export interface ItalianToolCopy {
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   ...STR421_TOOL_COPY_IT,
   ...EPUB422_TOOL_COPY_IT,
+  ...STR418_TOOL_COPY_IT,
   "tfr-calculator": {
     name: "Calcola TFR lordo e rivalutazione",
     summary: "Stima per anno la quota TFR e la rivalutazione FOI del fondo, distinguendo gli importi con ipotesi esplicite.",
@@ -623,11 +625,6 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "pdf-compare-lite": {
     name: "Confronta due PDF",
     summary: "Confronta due PDF per pagine, dimensioni, rotazioni e testo che lo strumento riesce a estrarre.",
-  },
-  "pdf-compression-lite": {
-    name: "Alleggerisci un PDF",
-    summary: "Crea una copia più pulita rimuovendo metadati e riducendo contenuti testuali non compressi quando possibile.",
-    searchTerms: ["comprimi pdf", "compressione pdf", "riduci peso pdf"],
   },
   "pdf-flatten": {
     name: "Rimuovi elementi interattivi dal PDF",
