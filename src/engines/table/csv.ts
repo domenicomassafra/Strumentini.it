@@ -171,6 +171,14 @@ export function serializeCsvTable(table: Pick<CsvTable, "header" | "rows" | "del
   return Papa.unparse([table.header, ...table.rows], { delimiter: table.delimiter, newline: "\n", escapeFormulae: dangerousFormula });
 }
 
+/** Refusal policy for editing/importing a cell that could execute in a CSV consumer. */
+export function isPotentialCsvFormula(value: string): boolean {
+  if (/^[\t\r\n\u0000-\u001f\u007f]/u.test(value)) return true;
+  const trimmed = value.trimStart();
+  return /^[=+@]/u.test(trimmed) ||
+    (/^-/u.test(trimmed) && !/^-\d+(?:\.\d+)?$/u.test(trimmed));
+}
+
 function validateColumnIndexes(indexes: readonly number[], columnCount: number, code: string): number[] {
   if (indexes.length === 0 || new Set(indexes).size !== indexes.length) throw new Error(code);
   if (indexes.some((index) => !Number.isInteger(index) || index < 0 || index >= columnCount)) throw new Error(code);
