@@ -107,7 +107,17 @@ try {
   await file.setInputFiles({ name: "broken.pdf", mimeType: "application/pdf", buffer: Buffer.from("not a PDF") });
   await page.getByRole("alert").first().waitFor({ timeout: 25_000 });
   assert.equal(await page.getByRole("button", { name: "Crea PDF e verifica" }).count(), 0);
-  await file.setInputFiles({ name: "huge.pdf", mimeType: "application/pdf", buffer: Buffer.alloc(25 * 1024 * 1024 + 1) });
+  // The large synthetic fixture stays in browser memory; sending 25 MiB over
+  // CDP setInputFiles can time out before the product's size guard ever runs.
+  await page.evaluate(() => {
+    const file = new File([new Uint8Array(25 * 1024 * 1024 + 1)], "huge.pdf", { type: "application/pdf" });
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    const input = document.querySelector('[data-pdf-workspace-372] input[type="file"]');
+    if (!(input instanceof HTMLInputElement)) throw new Error("Missing PDF file input");
+    input.files = transfer.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
   assert.match(await page.getByRole("alert").first().innerText(), /troppo grande/i);
   assert.equal(await page.getByRole("button", { name: "Crea PDF e verifica" }).count(), 0);
   assert.deepEqual(offsite, []);
