@@ -4773,14 +4773,15 @@
         },
         "module": {
           "path": "src/tools/connection-device-info/module.ts",
-          "sha256": "c180336cce9a90692716a445bc0b6e546758c28f8e9d53d135b3f04ee7866cd2"
+          "sha256": "ad49014cc439dc311530e2b1cf785ad770654ea3ef91b92e8b0199fc83a62c7c"
         },
         "page": {
           "path": "src/pages/tools/connection-device-info.astro",
           "sha256": "291779765257213f3240c97aafc4a890b4dfe28460771aea270c20d6409b0a03"
         },
         "testFiles": [
-          "tests/browser-diagnostics.test.ts"
+          "tests/browser-diagnostics.test.ts",
+          "tests/user-agent-bowser-281.test.ts"
         ]
       },
       "oracle": {

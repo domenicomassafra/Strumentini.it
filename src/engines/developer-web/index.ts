@@ -2,6 +2,7 @@ import type { ToolModule } from "../../runtime/types";
 import {
   DEVELOPER_WEB_ENGINE_VERSION,
   DeveloperWebError,
+  assertInputSize,
   asObject,
   booleanField,
   invalid,
@@ -48,7 +49,6 @@ import {
   mimeTypeOperation,
   queryStringOperation,
   unixTimestampOperation,
-  userAgentOperation,
 } from "./web-reference";
 
 export * from "./types";
@@ -177,7 +177,15 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
     const signature = optionalStringField(value, "bytes", "hex", "signature");
     return mimeTypeOperation(stringField(value, "lookup", "extension", "filename", "input", "hex"), optionalStringField(value, "mode", "operation") ?? "extension", signature === undefined || signature.trim() === "" ? undefined : signature);
   }
-  if (toolId === "user-agent-parser") return userAgentOperation(stringField(value, "userAgent", "ua", "input", "text"));
+  if (toolId === "user-agent-parser") {
+    const raw = stringField(value, "userAgent", "ua", "input", "text");
+    assertInputSize(raw, 100_000);
+    // The third-party parser is only loaded by this tool's route.
+    return import("./user-agent").then(({ userAgentOperation }) => {
+      if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+      return userAgentOperation(raw);
+    });
+  }
   if (toolId === "query-string-editor") return queryStringOperation(value);
   if (toolId === "json-path-playground") return jsonPathOperation(stringField(value, "json", "text", "input", "document"), stringField(value, "path", "query", "jsonPath"));
   if (toolId === "cidr-calculator") return cidrOperation(stringField(value, "cidr", "input", "value"), signal);
