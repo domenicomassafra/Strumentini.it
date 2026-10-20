@@ -1,7 +1,7 @@
 # STR-REUSE-55.5 / #279 — QR foto con ZXing
 
 Valutazione del 19-20 ottobre 2026. La branch è stata riallineata
-a `origin/main` `0120bdbd98c875f84e8c8f8cd76c8a2c01d4b778`.
+a `origin/main` `5bc81d7dbca67b0249b43e54913e3e9aad42b268`.
 **Decisione di distribuzione: BLOCKED / NO_GO fino al gate #126 (STR-366).**
 La branch prepara un fallback locale dietro import dinamico e conserva il decoder
 attuale. Questa prova non promuove alcun tool a Gold e non certifica la release.
@@ -37,14 +37,17 @@ attuale. Questa prova non promuove alcun tool a Gold e non certifica la release.
 
 `@zxing/library@0.23.0` dichiara Node `>=24`; l'uso prodotto è browser.
 Il 20 ottobre, su MiniPC Node **26.12.0**, i 39 test QR mirati passano.
-Il gate `tsx scripts/donor-provenance-366.ts --check`, dopo il merge di main,
-riporta un solo errore: `UNKNOWN_LICENSE node_modules/@zxing/text-encoding`.
+Il gate `tsx scripts/donor-provenance-366.ts --check`, prima dell'aggiornamento
+del parser, riportava `UNKNOWN_LICENSE node_modules/@zxing/text-encoding`.
 Il pacchetto dichiara realmente `(Unlicense OR Apache-2.0)`, espressione SPDX
-valida, ma il parser #366 non riconosce l'identificatore `Unlicense`.
+valida; la correzione #126 in PR #362 aggiunge l'identificatore `Unlicense`
+al parser. Sul branch riallineato alla sua integrazione in main, il gate
+restituisce **`VERIFIED_METADATA` e zero failures**: è una verifica di
+metadati e integrità, non una clearance legale complessiva.
 Il confronto byte per byte tra i quattro file `public/licenses/zxing-279-*`
 e i file LICENSE dei pacchetti npm installati è **4/4 identico**.
-La classificazione e i diritti di distribuzione richiedono comunque la
-verifica indipendente del gate #126 prima di un merge.
+La verifica indipendente dei diritti di distribuzione resta distinta dalla
+lettura automatica dello SPDX e dai quattro testi legali conservati.
 
 ## Confronto dei decoder
 
@@ -117,9 +120,10 @@ WebKit è scaduto due volte senza produrre un risultato;
 **Safari mobile NON_VERIFICATO** (manca una prova reale).
 
 **Gate di ammissione:** [issue #126](https://github.com/domenicomassafra/strumentini-it/issues/126)
-rimane aperta. Il merge `0120bdbd` ha eliminato i tre errori OCR
-preesistenti visti sul branch prima del riallineamento; il gate su #279
-rimane `NO_GO` per il solo SPDX opzionale citato sopra.
-Niente merge/deploy/GOLD finché il gate non risulta verificato. Rollback:
+è stata riaperta per questioni di diritti più ampie; il gate tecnico sul
+donor QR ora è `VERIFIED_METADATA`. Il merge `0120bdbd` ha eliminato i tre
+errori OCR preesistenti visti prima del riallineamento. Safari mobile fisico
+resta **NON_VERIFICATO** e non c'è ammissione release o promozione Gold.
+Rollback:
 rimuovere l'import e l'adapter `zxing-adapter.ts`, le due dipendenze dirette
 e i loro testi legali; `decodeQrFromRaster` è preservato.
