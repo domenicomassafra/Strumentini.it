@@ -7,6 +7,7 @@ export function VideoContactSheet308({ video, file }: { readonly video: HTMLVide
   const [count, setCount] = useState(4);
   const [status, setStatus] = useState("Esporta solo fotogrammi il cui timestamp di presentazione è verificato dal browser.");
   const [busy, setBusy] = useState(false);
+  const [progress411, setProgress411] = useState<{ phase: "read" | "frames"; completed: number; total: number } | null>(null);
   const [result, setResult] = useState<ContactSheet308Result | null>(null);
   const abort = useRef<AbortController | null>(null);
   const urls = useRef<string[]>([]);
@@ -25,11 +26,20 @@ export function VideoContactSheet308({ video, file }: { readonly video: HTMLVide
     abort.current?.abort();
     urls.current.forEach((url) => URL.revokeObjectURL(url));
   }, []);
+  useEffect(() => {
+    // A new source invalidates any pending/finished ZIP from the previous video.
+    abort.current?.abort();
+    abort.current = null;
+    setBusy(false);
+    setProgress411(null);
+    clearUrls();
+  }, [file]);
 
   function cancel() {
     abort.current?.abort();
     abort.current = null;
     setBusy(false);
+    setProgress411(null);
     setStatus("Esportazione annullata: nessun file incompleto disponibile.");
     clearUrls();
   }
@@ -38,12 +48,18 @@ export function VideoContactSheet308({ video, file }: { readonly video: HTMLVide
     if (abort.current) return;
     clearUrls();
     setBusy(true);
+    setProgress411(null);
     setStatus("Decodifica sequenziale e verifica timestamp locale…");
     const controller = new AbortController();
     abort.current = controller;
     try {
       const { exportVideoContactSheet308 } = await import("../../../engines/video/contact-sheet-308");
-      const exported = await exportVideoContactSheet308(video, file, count, controller.signal);
+      const exported = await exportVideoContactSheet308(video, file, count, controller.signal,
+        (phase, completed, total) => {
+          if (abort.current !== controller || controller.signal.aborted) return;
+          setProgress411({ phase, completed, total });
+          if (phase === "frames" && completed === total) setStatus("Fotogrammi verificati: composizione ZIP in corso, nessuna percentuale di compressione stimata.");
+        });
       if (controller.signal.aborted || abort.current !== controller) return;
       const nextSheet = URL.createObjectURL(exported.sheet);
       const nextZip = URL.createObjectURL(exported.zip);
@@ -56,7 +72,7 @@ export function VideoContactSheet308({ video, file }: { readonly video: HTMLVide
     } catch (error) {
       if (!controller.signal.aborted) setStatus(error instanceof Error ? error.message : "Esportazione non verificabile in questo browser.");
     } finally {
-      if (abort.current === controller) { abort.current = null; setBusy(false); }
+      if (abort.current === controller) { abort.current = null; setBusy(false); setProgress411(null); }
     }
   }
 
@@ -68,6 +84,11 @@ export function VideoContactSheet308({ video, file }: { readonly video: HTMLVide
       <button type="button" disabled={busy} onClick={() => void exportFrames()}>Genera contact sheet e ZIP</button>
       <button type="button" disabled={!busy} onClick={cancel}>Annulla contact sheet</button>
     </div>
+    {busy && progress411 && <p class="file-note" data-media-progress411>
+      <progress value={progress411.completed} max={progress411.total}
+        aria-label={progress411.phase === "read" ? "Byte video letti" : "Fotogrammi verificati"} />
+      {progress411.completed} / {progress411.total} {progress411.phase === "read" ? "byte video letti" : "fotogrammi verificati"}
+    </p>}
     <p role="status" data-contact-status aria-live="polite">{status}</p>
     {result && sheetUrl && zipUrl && <section data-contact-result aria-label="Export contact sheet video">
       <p>{result.frames.map((item) => `${item.requestedSeconds.toFixed(3)} → ${item.presentedSeconds.toFixed(3)} s`).join(" · ")}</p>

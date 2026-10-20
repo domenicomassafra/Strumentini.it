@@ -1,6 +1,8 @@
 import { createZip, inspectZip } from "../file-privacy";
 import { captureVideoFrame305, validateFrameRequest305, type VideoFrame305Result } from "./frame-extract-305";
 import { inspectMp4Local, type Mp4Inspection } from "./mp4-inspection";
+import { readMediaFile411 } from "../media/read-file-411";
+import { awaitMediaTask411 } from "../media/await-task-411";
 
 /** An export is valid only when the browser supplies actual presented-frame timestamps.
  * A seek target by itself is not evidence of which frame was decoded. */
@@ -53,8 +55,16 @@ export function verifyPresentedFrame308(frame: VideoFrame305Result): number {
   return actual;
 }
 
-async function hashBlob(blob: Blob): Promise<string> {
-  const bytes = await crypto.subtle.digest("SHA-256", await blob.arrayBuffer());
+async function hashBlob(blob: Blob, signal?: AbortSignal,
+  onProgress?: (bytes: number, total: number) => void): Promise<string> {
+  const data = await readMediaFile411(blob, { maxBytes: MAX_FILE_BYTES, signal, onProgress });
+  cancelled(signal);
+  const bytes = await awaitMediaTask411(crypto.subtle.digest("SHA-256", data), signal, {
+    timeoutMs: 45_000,
+    abortMessage: "Hash video annullato",
+    timeoutMessage: "VIDEO_CONTACT_HASH_TIMEOUT: Calcolo sospeso; torna in primo piano e riprova.",
+  });
+  cancelled(signal);
   return Array.from(new Uint8Array(bytes), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
@@ -136,12 +146,16 @@ export async function packageContactSheet308(args: {
   const zipped = await createZip({ files }, signal);
   if (!("blob" in zipped) || !(zipped.blob instanceof Blob) || zipped.compression !== "store") throw new Error("VIDEO_CONTACT_ZIP_FAILED");
   const checked = await inspectZip({ files: [new File([zipped.blob], "contact-sheet.zip", { type: "application/zip" })] }, signal);
+  cancelled(signal);
   const found = "entries" in checked && Array.isArray(checked.entries) ? checked.entries : [];
   if (found.length !== entries.length || found.some((item, index) => item.path !== entries[index] || item.method !== 0)) throw new Error("VIDEO_CONTACT_ZIP_VERIFY_FAILED");
   return { zip: zipped.blob, manifest, zipEntries: entries };
 }
 
-export async function exportVideoContactSheet308(video: HTMLVideoElement, source: File, count: number, signal?: AbortSignal): Promise<ContactSheet308Result> {
+export async function exportVideoContactSheet308(
+  video: HTMLVideoElement, source: File, count: number, signal?: AbortSignal,
+  onProgress?: (phase: "read" | "frames", completed: number, total: number) => void,
+): Promise<ContactSheet308Result> {
   if (source.size <= 0 || source.size > MAX_FILE_BYTES || !/\.(mp4|m4v)$/iu.test(source.name)) {
     throw new Error("VIDEO_CONTACT_SOURCE: Serve un MP4 locale, massimo 50 MiB.");
   }
@@ -151,7 +165,10 @@ export async function exportVideoContactSheet308(video: HTMLVideoElement, source
   if (Math.abs(inspection.durationSeconds - video.duration) > 0.2) throw new Error("VIDEO_CONTACT_DURATION_MISMATCH: Durata browser e MP4 incoerenti.");
   const times = planContactFrames308(inspection.durationSeconds, count);
   const frames: ContactFrame308[] = [];
-  const sourceSha256 = await hashBlob(source);
+  const sourceSha256 = await hashBlob(source, signal, (completed, total) =>
+    onProgress?.("read", completed, total));
+  cancelled(signal);
+  onProgress?.("frames", 0, times.length);
   for (let index = 0; index < times.length; index++) {
     cancelled(signal);
     validateFrameRequest305(times[index]!, video.duration, video.videoWidth, video.videoHeight);
@@ -161,10 +178,13 @@ export async function exportVideoContactSheet308(video: HTMLVideoElement, source
       filename: `frame-${String(index + 1).padStart(2, "0")}.png`,
       requestedSeconds: times[index]!, presentedSeconds: presented,
       presentationErrorSeconds: Math.abs(presented - times[index]!),
-      sha256: await hashBlob(extracted.blob), width: extracted.width, height: extracted.height, blob: extracted.blob,
+      sha256: await hashBlob(extracted.blob, signal), width: extracted.width, height: extracted.height, blob: extracted.blob,
     });
+    cancelled(signal);
+    onProgress?.("frames", index + 1, times.length);
   }
   const sheet = await drawSheet(frames, signal);
   const archive = await packageContactSheet308({ source, inspection, frames, sheet, sourceSha256 }, signal);
+  cancelled(signal);
   return { ...archive, frames, sheet, sourceSha256, inspection };
 }
