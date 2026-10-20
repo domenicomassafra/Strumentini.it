@@ -50,14 +50,22 @@ export interface FatturaPaVatSummary {
   readonly vatNature: string | null;
 }
 
+export interface FatturaPaPayment {
+  readonly method: string | null;
+  readonly dueDate: string | null;
+  readonly amount: string | null;
+}
+
 export interface FatturaPaInvoiceBody {
   readonly documentType: string | null;
   readonly currency: string | null;
   readonly date: string | null;
   readonly number: string | null;
   readonly documentTotal: string | null;
+  readonly stampDutyAmount: string | null;
   readonly lines: readonly FatturaPaLine[];
   readonly vatSummaries: readonly FatturaPaVatSummary[];
+  readonly payments: readonly FatturaPaPayment[];
 }
 
 export interface FatturaPaReadResult {
@@ -269,6 +277,7 @@ function ordinaryBody(
     date: isoDate(child(general, "Data", rootPrefix), `${base}/DatiGenerali/DatiGeneraliDocumento/Data`, errors),
     number: requiredText(child(general, "Numero", rootPrefix), `${base}/DatiGenerali/DatiGeneraliDocumento/Numero`, errors),
     documentTotal: decimal(child(general, "ImportoTotaleDocumento", rootPrefix), `${base}/DatiGenerali/DatiGeneraliDocumento/ImportoTotaleDocumento`, errors),
+    stampDutyAmount: decimal(path(general, rootPrefix, "DatiBollo", "ImportoBollo"), `${base}/DatiGenerali/DatiGeneraliDocumento/DatiBollo/ImportoBollo`, errors),
     lines: children(goods, "DettaglioLinee", rootPrefix).map((line, lineIndex) => ordinaryLine(line, index, lineIndex + 1, rootPrefix, errors)),
     vatSummaries: children(goods, "DatiRiepilogo", rootPrefix).map((summary, summaryIndex) => {
       const prefix = `${base}/DatiBeniServizi/DatiRiepilogo[${summaryIndex + 1}]`;
@@ -279,6 +288,16 @@ function ordinaryBody(
         vatNature: text(child(summary, "Natura", rootPrefix)),
       };
     }),
+    payments: children(body, "DatiPagamento", rootPrefix).flatMap((group, groupIndex) =>
+      children(group, "DettaglioPagamento", rootPrefix).map((payment, paymentIndex) => {
+        const prefix = `${base}/DatiPagamento[${groupIndex + 1}]/DettaglioPagamento[${paymentIndex + 1}]`;
+        return {
+          method: text(child(payment, "ModalitaPagamento", rootPrefix)),
+          dueDate: text(child(payment, "DataScadenzaPagamento", rootPrefix)) === null
+            ? null : isoDate(child(payment, "DataScadenzaPagamento", rootPrefix), `${prefix}/DataScadenzaPagamento`, errors),
+          amount: decimal(child(payment, "ImportoPagamento", rootPrefix), `${prefix}/ImportoPagamento`, errors),
+        };
+      })),
   };
 }
 
@@ -297,6 +316,7 @@ function simplifiedBody(
     date: isoDate(child(general, "Data", rootPrefix), `${base}/DatiGenerali/DatiGeneraliDocumento/Data`, errors),
     number: requiredText(child(general, "Numero", rootPrefix), `${base}/DatiGenerali/DatiGeneraliDocumento/Numero`, errors),
     documentTotal: null,
+    stampDutyAmount: null,
     lines: goods.map((item, itemIndex) => {
       const prefix = `${base}/DatiBeniServizi[${itemIndex + 1}]`;
       const vat = child(item, "DatiIVA", rootPrefix);
@@ -312,6 +332,7 @@ function simplifiedBody(
       };
     }),
     vatSummaries: [],
+    payments: [],
   };
 }
 

@@ -29,6 +29,7 @@ const htmlPages = await Promise.all(htmlFiles.map(async (path) => ({ path, html:
 const designStudyPath = "prototipi/351/index.html";
 const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
 const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
+const whisper298Path = "laboratorio/trascrizione-audio/index.html";
 const previewOnlyPaths = [
   "tools/codice-fiscale/index.html",
   "tools/iva-calcolo/index.html",
@@ -37,6 +38,7 @@ const previewOnlyPaths = [
   "tools/stipendio-netto/index.html",
   "tools/ocr-italiano-locale-246/index.html",
   pdfOcr247Path,
+  whisper298Path,
   designStudyPath,
   fiscalBoundedPath,
 ] as const;
@@ -47,7 +49,11 @@ for (const previewPath of previewOnlyPaths) {
     throw new Error(`Unreviewed preview route promoted into index/catalog: ${previewPath}`);
   }
   const preview = htmlPages.find(({ path }) => relative(dist, path).replaceAll("\\", "/") === previewPath)?.html;
-  const sourceSafe = previewPath === "tools/codice-fiscale/index.html"
+  const sourceSafe = previewPath === whisper298Path
+    ? preview?.includes('data-whisper298-preview="experimental-local-only"') &&
+      preview.includes("sperimentale") && preview.includes("browser") &&
+      preview.includes("Trascrizione audio italiana")
+    : previewPath === "tools/codice-fiscale/index.html"
     ? preview?.includes('data-cf-canonical-route="/tools/codice-fiscale/"') &&
       preview.includes("ANPR") && preview.includes("Agenzia delle Entrate")
     : previewPath === "tools/iva-calcolo/index.html"
@@ -150,8 +156,18 @@ const descriptions = pageMetadata.map(({ description }) => description);
 if (new Set(titles).size !== titles.length) throw new Error("Rendered page titles are not unique");
 if (new Set(descriptions).size !== descriptions.length) throw new Error("Rendered page descriptions are not unique");
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");
+const officialSitemap = await readFile(resolve(dist, "sitemap-0.xml"), "utf8");
+const sitemapIndex = await readFile(resolve(dist, "sitemap-index.xml"), "utf8");
+const sitemapSite = new URL(process.env.SITE_URL ?? process.env.PUBLIC_SITE_URL ?? "https://strumentini.it");
+if (sitemap !== officialSitemap || !sitemap.includes("<urlset ")) {
+  throw new Error("Legacy sitemap.xml differs from the official Astro sitemap URL set");
+}
+if (!sitemapIndex.includes("<sitemapindex ") ||
+    !sitemapIndex.includes(`<loc>${new URL("sitemap-0.xml", sitemapSite).href}</loc>`)) {
+  throw new Error("Astro sitemap index does not point to the generated URL set");
+}
 const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((match) => match[1] ?? "");
-// `/categorie/<slug>` is an indexable destination, exactly as `sitemap.xml.ts` declares it.
+// `/categorie/<slug>` is an indexable destination, exactly as the Astro sitemap filter declares it.
 const indexablePaths = [...publicIndexPaths, ...groups.map((group) => `/categorie/${group.slug}`), ...catalog.map((tool) => tool.route)]
   .map((route) => route === "/" ? "/" : `${route.replace(/\/+$/u, "")}/`)
   .sort();
@@ -162,6 +178,10 @@ if (sitemapPaths.some((path) => previewOnlyPaths.some((preview) => path === `/${
 if (indexablePaths.length !== new Set(indexablePaths).size) throw new Error("Indexable routes are not unique");
 if (sitemapPaths.length !== indexablePaths.length || sitemapPaths.some((path, index) => path !== indexablePaths[index])) {
   throw new Error("Sitemap does not contain one unique entry per indexable page");
+}
+const expectedLocations = indexablePaths.map((path) => new URL(path, sitemapSite).href).sort();
+if (sitemapLocations.slice().sort().some((location, index) => location !== expectedLocations[index])) {
+  throw new Error("Sitemap has an incorrect canonical origin or trailing slash");
 }
 if (sitemapLocations.some((location) => location.includes("localhost"))) throw new Error("Localhost URL leaked into sitemap");
 for (const tool of catalog) if (!sitemap.includes(tool.route)) throw new Error(`Sitemap is missing ${tool.route}`);

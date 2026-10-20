@@ -4,6 +4,7 @@ import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { generateDocxFromSemanticText } from "../src/engines/ooxml/office-semantics";
 import { simpleDocxToPrintableText56 } from "../src/engines/pdf/simple-docx-print-56";
 import { buildPrintablePdf } from "../src/engines/pdf/printable-document";
+import { strFromU8, strToU8, unzipSync, zipSync } from "fflate";
 
 describe("STR-056: DOCX semplice→PDF locale", () => {
   it("riconosce DOCX editabile semplice, genera PDF con testo e conferma pagine con PDF.js", async () => {
@@ -33,5 +34,12 @@ describe("STR-056: DOCX semplice→PDF locale", () => {
   it("rifiuta archivi rinominati e dimensioni eccessive", async () => {
     await expect(simpleDocxToPrintableText56(new Uint8Array(512 * 1024 + 1))).rejects.toThrow(/PDF56_DOCX_LIMIT/u);
     await expect(simpleDocxToPrintableText56(new TextEncoder().encode("not an office document"))).rejects.toThrow();
+  });
+  it("rifiuta note reali anche se accompagnate dai separatori standard di docx", async () => {
+    const generated = await generateDocxFromSemanticText("Ricevuta", "text");
+    const entries = unzipSync(new Uint8Array(generated.bytes));
+    const xml = strFromU8(entries["word/footnotes.xml"]!);
+    entries["word/footnotes.xml"] = strToU8(xml.replace("</w:footnotes>", '<w:footnote w:id="1"><w:p><w:r><w:t>Nota privata</w:t></w:r></w:p></w:footnote></w:footnotes>'));
+    await expect(simpleDocxToPrintableText56(zipSync(entries))).rejects.toThrow(/PDF56_DOCX_UNSUPPORTED/u);
   });
 });

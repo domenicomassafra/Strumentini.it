@@ -53,7 +53,9 @@ print(json.dumps({'csv':csv_rows,'xlsx':rows},ensure_ascii=False))
 let browser;
 try {
   await waitForServer();
-  browser = await chromium.launch({ headless: true, args: ["--enable-precise-memory-info"] });
+  // The MiniPC's shared automation-browser is the approved browser runtime.
+  // Connect to it instead of launching an independent Chrome profile/process.
+  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
   const outcomes = [];
   for (const [name, viewport, isMobile] of [
     ["desktop", { width: 1280, height: 800 }, false],

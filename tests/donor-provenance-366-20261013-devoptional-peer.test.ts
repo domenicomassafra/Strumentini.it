@@ -1,10 +1,13 @@
 /** #366: npm v3 devOptional can mean a valid present OPTIONAL runtime peer.
- * Authentic Vite lock metadata; all mutations are hermetic in-memory fixtures.
+ * Authentic Vite peer ranges; devOptional fixtures are synthesized from the
+ * installed peer metadata because a new runtime dependency can make a formerly
+ * devOptional node required and remove that npm lockfile marker.
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { auditLockedPackages366 } from "../scripts/donor-provenance-366";
+import { knownSpdx366 } from "../scripts/donor-spdx-366";
 
 type Entry = {
   version?: string; license?: string; integrity?: string; resolved?: string;
@@ -35,8 +38,11 @@ function graph() {
   };
   for (const name of peers) {
     const from = source.packages["node_modules/" + name];
+    // An independently installed production donor can promote a previously
+    // devOptional peer (for example @types/node used by docx) to production.
+    // Reconstruct the Vite-only optional graph without depending on npm hoisting.
     if (!from?.version || !from.license || !from.integrity || !from.resolved ||
-      from.devOptional !== true || from.dev === true ||
+      from.dev === true ||
       vite.peerDependenciesMeta?.[name]?.optional !== true || !vite.peerDependencies?.[name]) {
       throw new Error("Expected actual compatible optional Vite peer: " + name);
     }
@@ -49,6 +55,11 @@ function graph() {
 }
 
 describe("#366 actual npm devOptional + Vite optional peer semantics", () => {
+  it("recognizes postal-mime MIT-0 SPDX metadata, without granting rights clearance", () => {
+    expect(source.packages["node_modules/postal-mime"]?.license).toBe("MIT-0");
+    expect(knownSpdx366("MIT-0")).toBe(true);
+    expect(knownSpdx366("MIT-0 OR NOASSERTION")).toBe(false);
+  });
   it("accepts version-compatible, properly attributed present optional peers", () => {
     const { lock, manifest } = graph();
     const result = auditLockedPackages366(lock, manifest);

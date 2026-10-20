@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it, vi } from "vitest";
 import { XMLParser } from "fast-xml-parser";
+import { parseXmlDocument } from "../src/engines/developer-web/structured-repair";
+import { parseTabularXmlRoot } from "../src/engines/table/xml-parser-adapter";
 import { parseCsvTable } from "../src/engines/table/csv";
 import {
   XmlInterchangeError,
@@ -133,6 +135,18 @@ describe("ticket 169 — representable XML to JSON/CSV/XLSX mappings", () => {
 });
 
 describe("ticket 291 — pinned donor parity and hostile XML fence", () => {
+  it("uses the donor AST for a representable row, but falls back on entity spelling loss", () => {
+    const plain = "<rows><row id='001'><name>Marco</name></row></rows>";
+    const plainValidated = parseXmlDocument(plain).root;
+    const parsed = parseTabularXmlRoot(plain, plainValidated);
+    expect(parsed).not.toBe(plainValidated);
+    expect(parsed).toEqual(plainValidated);
+
+    const entity = "<rows><row><name>A &amp; B</name></row></rows>";
+    const entityValidated = parseXmlDocument(entity).root;
+    expect(parseTabularXmlRoot(entity, entityValidated)).toBe(entityValidated);
+  });
+
   it("runs the donor after strict validation and retains entity spelling, order and repeated nodes", () => {
     const donor = vi.spyOn(XMLParser.prototype, "parse");
     const source = "<data><record z='003' a='001'><name>A &amp; B<![CDATA[ < C]]>&#x1F600;</name><tag>first</tag><tag>second</tag><empty/></record></data>";

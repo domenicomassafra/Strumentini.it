@@ -4,6 +4,7 @@ import { compatibleHandoffTargets, openHandoffTarget, type TableHandoffEnvelope 
 import { createOutputArtifactDescriptor, type OutputArtifactDescriptor } from "../../../runtime/output-artifact";
 import { resolveResultActions } from "../../../runtime/result-actions";
 import { handoffCatalog } from "../../../generated/handoff-catalog";
+import { partitaIvaResultRows } from "./partita-iva-rows";
 import {
   researchResultV2Definition,
   type ResearchResultV2ToolId,
@@ -304,13 +305,7 @@ function summaryRowsFor(tool: ResearchResultV2ToolId, result: Record<string, unk
     ])];
   }
   if (tool === "partita-iva-validator") {
-    return [...generic, ...compactRows([
-      row("Partita IVA normalizzata", result.normalized),
-      row("Regola non superata", result.failureRule),
-      row("Cifra di controllo inserita", result.checkDigit),
-      row("Cifra di controllo attesa", result.expectedCheckDigit),
-      row("Esistenza nel registro verificata", result.registerVerified),
-    ])];
+    return [...generic, ...compactRows(partitaIvaResultRows(result).map(([label, value]) => row(label, value)))];
   }
   return generic;
 }

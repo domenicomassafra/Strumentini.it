@@ -43,30 +43,10 @@ export function selectPageDescription(description: string, tool?: DiscoveryTool)
   return value === generic ? tool.summary : value;
 }
 
-function escapeXml(value: string): string {
-  return value.replace(/[&<>"']/gu, (character) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;",
-    "'": "&apos;",
-  })[character] ?? character);
-}
-
 /** The indexable routes that are not a tool page. Pages that opt out of
  *  indexing (search results, the account area) are absent on purpose, and so
  *  are the redirects. */
 export const publicIndexPaths: readonly string[] = ["/", "/strumenti", "/calcoli-essenziali", "/documenti-markdown", "/categorie", "/risorse", "/chi-siamo", "/onboarding"];
-
-export function buildSitemapXml(
-  tools: readonly DiscoveryTool[],
-  siteUrl?: string | URL,
-  extraPaths: readonly string[] = [],
-): string {
-  const paths = [...new Set([...publicIndexPaths, ...extraPaths, ...tools.map((tool) => tool.route)])];
-  const entries = paths.map((path) => `  <url><loc>${escapeXml(resolveDiscoveryUrl(path, siteUrl))}</loc></url>`).join("\n");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
-}
 
 export function buildRobotsTxt(siteUrl?: string | URL): string {
   return `User-agent: *\nAllow: /\n\nSitemap: ${resolveDiscoveryUrl("/sitemap.xml", siteUrl)}\n`;
