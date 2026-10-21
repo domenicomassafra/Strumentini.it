@@ -194,20 +194,38 @@ try {
   // supplementary to engine-level PDF/CSV cancellation tests, not an OS OOM claim.
   await page.goto(origin + "/tools/image-resize/", { waitUntil: "domcontentloaded" });
   const large = await fixture("image", "L");
+  const largeHash = sha(large.bytes);
   await page.locator("#image-resize-file").setInputFiles({ name: large.name, mimeType: large.mime, buffer: large.bytes });
   await page.locator('input[type="number"]').nth(0).fill("1200");
   await page.locator('input[type="number"]').nth(1).fill("1200");
   await page.getByRole("button", { name: "Ridimensiona", exact: true }).click();
   const cancel = page.getByRole("button", { name: "Annulla", exact: true });
-  if (await cancel.count()) {
-    await cancel.click();
-    await page.locator('p.error[role="alert"]').waitFor({ timeout: 15_000 });
-    assert.equal(await page.locator('a[download]').count(), 0, "cancel published stale result");
-    await page.getByRole("button", { name: "Ridimensiona", exact: true }).click();
-    await page.locator('a[download]').first().waitFor({ timeout: 90_000 });
-  } else {
-    console.log("STR363_CANCEL_NOT_RUN: image operation finished before cancel became clickable");
-  }
+  await cancel.waitFor({ timeout: 15_000 });
+  await cancel.click();
+  await page.locator('p.error[role="alert"]').waitFor({ timeout: 15_000 });
+  assert.equal(await page.locator('a[download]').count(), 0, "cancel published stale result");
+  await page.getByRole("button", { name: "Ridimensiona", exact: true }).click();
+  const recovered = page.locator('a[download]').first();
+  await recovered.waitFor({ timeout: 90_000 });
+  const retryDownload = page.waitForEvent("download", { timeout: 30_000 });
+  await recovered.click();
+  const retryPath = await (await retryDownload).path();
+  assert(retryPath);
+  await independentlyReopen("image", await readFile(retryPath), retryPath, [1200, 1200]);
+  assert.equal(sha(large.bytes), largeHash, "cancel/retry mutated source image");
+
+  // A controlled refusal exercises the memory budget without inducing device OOM.
+  await page.getByLabel("Non ingrandire oltre l'originale").uncheck();
+  await page.locator('input[type="number"]').nth(0).fill("9000");
+  await page.locator('input[type="number"]').nth(1).fill("9000");
+  await page.getByRole("button", { name: "Ridimensiona", exact: true }).click();
+  const refusal = await page.locator('p.error[role="alert"]').innerText({ timeout: 15_000 });
+  assert.match(refusal, /limite|dimension|sicurezza|pixel|memori/iu);
+  assert.equal(await page.locator('a[download]').count(), 0, "refusal exposed stale output");
+  await page.locator('input[type="number"]').nth(0).fill("1200");
+  await page.locator('input[type="number"]').nth(1).fill("1200");
+  await page.getByRole("button", { name: "Ridimensiona", exact: true }).click();
+  await page.locator('a[download]').first().waitFor({ timeout: 90_000 });
   assert.equal(matrix.length, 18);
   assert.deepEqual(pageErrors, []);
   assert.deepEqual(offsite, []);
@@ -231,4 +249,5 @@ try {
 }
 // The attached CDP WebSocket otherwise keeps the standalone test process alive.
 // No Browser.close command is sent to the shared automation-browser.
+await new Promise(resolve => process.stdout.write("", resolve));
 process.exit(0);
