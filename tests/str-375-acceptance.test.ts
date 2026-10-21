@@ -18,7 +18,8 @@ async function renderBounds(bytes: Uint8Array): Promise<Geometry> {
       try {
         const viewport = page.getViewport({ scale: 1 });
         const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
-        await page.render({ canvasContext: canvas.getContext("2d") as never, viewport }).promise;
+        await page.render({ canvas: canvas as never,
+          canvasContext: canvas.getContext("2d") as never, viewport }).promise;
         return canvas.toBuffer("image/png");
       } finally { page.cleanup(); }
     } finally { await loading.destroy(); }
