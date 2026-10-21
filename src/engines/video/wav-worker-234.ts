@@ -8,7 +8,10 @@ type WriteRequest = {
   readonly frames: number;
 };
 
-export function writeWav234({ channels, sampleRate, frames }: WriteRequest): ArrayBuffer {
+export function writeWav234(
+  { channels, sampleRate, frames }: WriteRequest,
+  onProgress?: (framesWritten: number, totalFrames: number) => void,
+): ArrayBuffer {
   if (!Number.isInteger(sampleRate) || sampleRate < 8000 || sampleRate > 96000
     || !Number.isSafeInteger(frames) || frames < 1 || channels.length < 1 || channels.length > 2
     || channels.some((channel) => !(channel instanceof Float32Array) || channel.length !== frames)) {
@@ -35,6 +38,7 @@ export function writeWav234({ channels, sampleRate, frames }: WriteRequest): Arr
 
   let offset = 44;
   for (let frame = 0; frame < frames; frame++) {
+    if ((frame & 8191) === 0) onProgress?.(frame, frames);
     for (let channel = 0; channel < channels.length; channel++) {
       const sample = channels[channel]![frame]!;
       if (!Number.isFinite(sample)) throw new Error("VIDEO_AUDIO_PCM_INVALID: Campioni non finiti.");
@@ -43,13 +47,15 @@ export function writeWav234({ channels, sampleRate, frames }: WriteRequest): Arr
       offset += 2;
     }
   }
+  onProgress?.(frames, frames);
   return bytes;
 }
 
 if (typeof self !== "undefined") {
   self.onmessage = (event: MessageEvent<WriteRequest>) => {
     try {
-      const bytes = writeWav234(event.data);
+      const bytes = writeWav234(event.data, (completed, total) =>
+        self.postMessage({ kind: "progress", completed, total }));
       self.postMessage({ kind: "done", bytes }, { transfer: [bytes] });
     } catch (error) {
       self.postMessage({ kind: "error", message: error instanceof Error ? error.message : "VIDEO_AUDIO_WORKER_FAILED" });

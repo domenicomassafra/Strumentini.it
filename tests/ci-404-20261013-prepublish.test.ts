@@ -76,10 +76,10 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
       run.push(step.name);
       if (step.name === "read-only-required-admission") throw new Error("BLOCKED: GOLD_RECEIPT_MISSING; PHYSICAL_DEVICE_EVIDENCE_MISSING");
     };
-    await expect(runPrepublish404({ expectedSha: SHA, verifyRevision: async () => {}, snapshotAssets: goodAssets, runStep: actual })).rejects.toThrow(/GOLD_RECEIPT_MISSING/u);
+    await expect(runPrepublish404({ expectedSha: SHA, policy420: false, verifyRevision: async () => {}, snapshotAssets: goodAssets, runStep: actual })).rejects.toThrow(/GOLD_RECEIPT_MISSING/u);
     expect(run.at(-1)).toBe("read-only-required-admission");
     expect(run).not.toContain("wrangler-production-deploy");
-    const steps = prepublishSteps404(SHA);
+    const steps = prepublishSteps404(SHA, false);
     expect(steps.filter((step) => step.publishes).map((step) => step.name)).toEqual(["wrangler-production-deploy"]);
     const validator = steps.find((step) => step.name === "read-only-required-admission");
     expect(validator?.args).toEqual(expect.arrayContaining(["--no-write-receipt", "--require-ready", `--expected-sha=${SHA}`]));
@@ -88,7 +88,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
   it("requires the full deployed scope and a proven staging rollback even after cumulative admission", async () => {
     const calls: string[] = [];
     await expect(runPrepublish404({
-      expectedSha: SHA, verifyRevision: async () => {}, snapshotAssets: goodAssets,
+      expectedSha: SHA, policy420: false, verifyRevision: async () => {}, snapshotAssets: goodAssets,
       runStep: async (step) => {
         calls.push(step.name);
         if (step.name === "scope-and-staging-rollback-admission") throw new Error("STAGING_CANARY_NOT_RUN");
@@ -96,7 +96,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
     })).rejects.toThrow("STAGING_CANARY_NOT_RUN");
     expect(calls).toContain("read-only-required-admission");
     expect(calls).not.toContain("wrangler-production-deploy");
-    expect(prepublishSteps404(SHA).find((step) => step.name === "scope-and-staging-rollback-admission")?.args)
+    expect(prepublishSteps404(SHA, false).find((step) => step.name === "scope-and-staging-rollback-admission")?.args)
       .toEqual(["node_modules/tsx/dist/cli.mjs", "scripts/verify-release-scope-405.ts", "--all"]);
   });
 
@@ -149,6 +149,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
     const calls: string[] = [];
     await expect(runPrepublish404({
       expectedSha: SHA,
+      policy420: false,
       verifyRevision: async () => {},
       snapshotAssets: async () => createHash("sha256").update(outputBytes).digest("hex"),
       runStep: async (step) => {
