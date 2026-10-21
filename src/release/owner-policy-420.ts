@@ -66,6 +66,8 @@ export interface OwnerPolicyEvidence {
   readonly androidReceiptPath: string;
   readonly iosReceipt: unknown;
   readonly iosReceiptPath: string;
+  readonly rollbackReceipt: unknown;
+  readonly rollbackReceiptPath: string;
   /** Compiled bytes of the routes each mobile receipt must bind. */
   readonly distPageHashes: Readonly<Record<string, string>>;
 }
@@ -260,6 +262,52 @@ export function validateOwnerIosPolicy420(evidence: {
   return findings;
 }
 
+/** Validate an observed Cloudflare staging rollback and candidate restoration. */
+export function validateOwnerRollbackPolicy420(evidence: {
+  readonly receipt: unknown;
+  readonly path: string;
+  readonly revision: string;
+  readonly sourceFingerprint: string;
+}): ReleaseFinding[] {
+  const record = asRecord(evidence.receipt);
+  if (record === undefined) {
+    return [finding("POLICY_ROLLBACK_MISSING", "blocker", "real staging rollback receipt is missing", evidence.path)];
+  }
+  const findings: ReleaseFinding[] = [];
+  if (record.schemaVersion !== 1 || record.kind !== "cloudflare-static-assets-rollback" ||
+      record.status !== "VERIFIED" || record.externalDeploymentPerformed !== true ||
+      record.rollbackVerified !== true || record.environment !== "staging-worker" ||
+      record.worker !== "strumentini-328-staging-20261015" ||
+      record.origin !== "https://strumentini-328-staging-20261015.massafradomenico4.workers.dev" ||
+      record.databaseMigration !== "NONE") {
+    findings.push(finding("POLICY_ROLLBACK_UNVERIFIED", "blocker", "staging rollback was not independently observed and verified", evidence.path));
+  }
+  if (record.currentRevision !== evidence.revision || record.sourceFingerprint !== evidence.sourceFingerprint) {
+    findings.push(finding("POLICY_ROLLBACK_SOURCE_STALE", "blocker", "rollback receipt belongs to another release source", evidence.path));
+  }
+  const observed = asString(record.observedAt);
+  if (observed === undefined || !Number.isFinite(Date.parse(observed)) || Date.parse(observed) > Date.now() + 300000) {
+    findings.push(finding("POLICY_ROLLBACK_TIMESTAMP", "blocker", "rollback receipt has no valid observation time", evidence.path));
+  }
+  const previous = asString(record.previousKnownGoodDeploymentId);
+  const candidate = asString(record.currentDeploymentId);
+  if (!previous || !candidate || previous === candidate ||
+      record.rollbackCommand !== "wrangler rollback " + previous + " --config worker/wrangler.staging.jsonc") {
+    findings.push(finding("POLICY_ROLLBACK_VERSIONS", "blocker", "rollback target and candidate are not distinct observed versions", evidence.path));
+  }
+  const observations = asRecord(record.observations);
+  const before = asString(observations?.previousHomeSha256);
+  const after = asString(observations?.candidateHomeSha256);
+  const restoredBefore = asString(observations?.restoredPreviousHomeSha256);
+  const restoredAfter = asString(observations?.restoredCandidateHomeSha256);
+  if (!hex64.test(before ?? "") || !hex64.test(after ?? "") || before === after ||
+      before !== restoredBefore || after !== restoredAfter ||
+      observations?.candidateBytesDistinctFromPrevious !== true) {
+    findings.push(finding("POLICY_ROLLBACK_RESTORE_UNPROVEN", "blocker", "staging rollback and candidate restore did not preserve their served bytes", evidence.path));
+  }
+  return findings;
+}
+
 /** Aggregates every gate the owner decision requires for this release. */
 export function assessOwnerPolicy420(evidence: OwnerPolicyEvidence): OwnerPolicyResult {
   const findings: ReleaseFinding[] = [];
@@ -284,6 +332,10 @@ export function assessOwnerPolicy420(evidence: OwnerPolicyEvidence): OwnerPolicy
     receipt: evidence.iosReceipt, path: evidence.iosReceiptPath,
     revision: evidence.revision, distPageHashes: evidence.distPageHashes,
   }));
+  findings.push(...validateOwnerRollbackPolicy420({
+    receipt: evidence.rollbackReceipt, path: evidence.rollbackReceiptPath,
+    revision: evidence.revision, sourceFingerprint: evidence.sourceFingerprint,
+  }));
   const failures = new Set(findings.filter((item) => item.severity === "blocker" || item.severity === "error").map((item) => item.code));
   const gateOf = (prefixes: readonly string[]): "PASS" | "NO_GO" =>
     [...failures].some((code) => prefixes.some((prefix) => code.startsWith(prefix))) ? "NO_GO" : "PASS";
@@ -294,6 +346,7 @@ export function assessOwnerPolicy420(evidence: OwnerPolicyEvidence): OwnerPolicy
       source: gateOf(["POLICY_SOURCE_"]),
       browser: gateOf(["POLICY_BROWSER_"]),
       "simulated-mobile": gateOf(["POLICY_MOBILE_"]),
+      rollback: gateOf(["POLICY_ROLLBACK_"]),
     },
     waived: OWNER_RELEASE_POLICY_420.waivedGates.map((item) => ({ gate: item.gate, status: "WAIVED_OWNER_DECISION" as const })),
   };
