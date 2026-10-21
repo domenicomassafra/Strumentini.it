@@ -3563,9 +3563,9 @@ export const resultV2Inventory = [
     "toolId": "pdf-page-reorder",
     "engine": "pdf",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "PdfTool",
-      "source": "src/components/tools/pdf/PdfTool.tsx"
+      "kind": "bespoke",
+      "component": "PdfPageReorderTool",
+      "source": "src/components/tools/PdfPageReorderTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",

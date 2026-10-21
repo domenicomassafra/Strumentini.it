@@ -3,10 +3,15 @@ import { basename, join, relative, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
 import { groups } from "../src/catalog/groups";
 import { publicIndexPaths } from "../src/seo/public-discovery";
+import { auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
 
 const root = resolve(import.meta.dirname, "..");
 const updateBaseline = process.argv.includes("--update-baseline");
 const dist = resolve(root, "dist");
+const noticeFailures = auditDistributedNotices366(dist);
+if (noticeFailures.length > 0) {
+  throw new Error(`Distributed donor notices are incomplete: ${noticeFailures.join("; ")}`);
+}
 const pagePath = resolve(dist, "tools/business-day/index.html");
 const page = await readFile(pagePath, "utf8");
 
@@ -30,6 +35,7 @@ const designStudyPath = "prototipi/351/index.html";
 const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
 const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
 const whisper298Path = "laboratorio/trascrizione-audio/index.html";
+const portrait274Path = "laboratorio/scontorno-ritratti/index.html";
 const previewOnlyPaths = [
   "tools/codice-fiscale/index.html",
   "tools/iva-calcolo/index.html",
@@ -39,6 +45,7 @@ const previewOnlyPaths = [
   "tools/ocr-italiano-locale-246/index.html",
   pdfOcr247Path,
   whisper298Path,
+  portrait274Path,
   designStudyPath,
   fiscalBoundedPath,
 ] as const;
@@ -49,7 +56,11 @@ for (const previewPath of previewOnlyPaths) {
     throw new Error(`Unreviewed preview route promoted into index/catalog: ${previewPath}`);
   }
   const preview = htmlPages.find(({ path }) => relative(dist, path).replaceAll("\\", "/") === previewPath)?.html;
-  const sourceSafe = previewPath === whisper298Path
+  const sourceSafe = previewPath === portrait274Path
+    ? preview?.includes('data-portrait274-preview="experimental-local-only"') &&
+      preview.includes("Rimozione sfondo ritratti") && preview.includes("esperimento locale") &&
+      preview.includes("browser")
+    : previewPath === whisper298Path
     ? preview?.includes('data-whisper298-preview="experimental-local-only"') &&
       preview.includes("sperimentale") && preview.includes("browser") &&
       preview.includes("Trascrizione audio italiana")
@@ -241,6 +252,7 @@ console.log(
   `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
     `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
     `${pageMetadata.length} unique metadata page(s), ${sitemapLocations.length} sitemap entry(ies); ` +
+    `${DONOR_NOTICES_366.length} distributed donor notice(s); ` +
     `${discoveryUrlMode}; ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );
