@@ -46,7 +46,17 @@ export const mobilePickerReceipt336 = z.object({
   }
 });
 
-export function validateMobilePickerReceipt336(receipt: unknown): string[] {
+export function validateMobilePickerReceipt336(
+  receipt: unknown,
+  expected?: { revision?: string },
+): string[] {
   const parsed = mobilePickerReceipt336.safeParse(receipt);
-  return parsed.success ? [] : parsed.error.issues.map((issue) => `${issue.path.join(".") || "receipt"}: ${issue.message}`);
+  if (!parsed.success) {
+    return parsed.error.issues.map((issue) => `${issue.path.join(".") || "receipt"}: ${issue.message}`);
+  }
+  // A receipt only proves the build it names; accept it just against that source.
+  if (expected?.revision !== undefined && parsed.data.build.revision !== expected.revision) {
+    return [`build.revision: receipt ${parsed.data.build.revision} is not the built source ${expected.revision}`];
+  }
+  return [];
 }

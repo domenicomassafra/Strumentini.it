@@ -60,6 +60,13 @@ describe("STR-336 mobile Photos/Files simulator acceptance receipt", () => {
     ]) expect(validateMobilePickerReceipt336({ ...fixture, ...incomplete })).not.toEqual([]);
   });
 
+  it("binds every receipt to the source revision that produced the build", () => {
+    expect(validateMobilePickerReceipt336(fixture, { revision: fixture.build.revision })).toEqual([]);
+    expect(validateMobilePickerReceipt336(fixture, { revision: "d".repeat(40) })).not.toEqual([]);
+    expect(validateMobilePickerReceipt336(
+      { ...fixture, build: { ...fixture.build, revision: "a".repeat(39) } },
+    )).not.toEqual([]);
+  });
   it("refuses physical claims, wrong device/browser combination, uploads and unobserved errors", () => {
     for (const incomplete of [
       { device: { ...fixture.device, physicalHardware: "PASS" } },
