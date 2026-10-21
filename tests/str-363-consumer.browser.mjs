@@ -219,7 +219,9 @@ try {
   }));
 } finally {
   if (page) await page.close();
-  if (browser) await browser.close(); // Disconnects CDP. Never closes the shared Chrome process.
+  // This is an externally owned automation-browser process. Closing the CDP
+  // Browser can send Browser.close on some Playwright/agent-browser versions.
+  // Let this standalone Node process release its WebSocket at exit instead.
   server.kill("SIGTERM");
   await new Promise(done => {
     if (server.exitCode !== null) return done();
@@ -227,3 +229,6 @@ try {
     setTimeout(done, 1500).unref();
   });
 }
+// The attached CDP WebSocket otherwise keeps the standalone test process alive.
+// No Browser.close command is sent to the shared automation-browser.
+process.exit(0);
