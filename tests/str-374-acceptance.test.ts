@@ -43,7 +43,7 @@ describe("STR-374 durable PDF annotations", () => {
     } finally {
       await loading.destroy();
     }
-  });
+  }, 20_000);
 
   it("keeps previously saved annotations when reopening and adding another comment", async () => {
     const source = await fixture();

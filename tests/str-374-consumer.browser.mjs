@@ -21,7 +21,8 @@ const server = spawn("python3", ["-c", pythonServer], { stdio: ["ignore", "pipe"
 let serverLogs = "";
 for (const stream of [server.stdout, server.stderr]) stream.on("data", (buffer) => { serverLogs += buffer.toString(); });
 let browser;
-const source = await readFile("quality/fixtures/pdf-gold/simple-2page.pdf");
+const sourcePath = "quality/fixtures/pdf-gold/simple-2page.pdf";
+const source = await readFile(sourcePath);
 assert.equal(source.subarray(0, 5).toString(), "%PDF-");
 try {
   let ready = false;
@@ -31,7 +32,8 @@ try {
     await sleep(250);
   }
   assert(ready, "PDF workspace route unavailable: " + serverLogs.slice(-1000));
-  browser = await chromium.launch({ headless: true });
+  // Use the owner automation-browser already running on the MiniPC; isolate our test in fresh contexts.
+  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
   const reports = [];
   for (const width of [390, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: 880 }, isMobile: width === 390, hasTouch: width === 390, acceptDownloads: true });
@@ -92,6 +94,7 @@ try {
     const download = await downloadEvent;
     const output = await readFile(await download.path());
     assert.equal(output.subarray(0, 5).toString(), "%PDF-");
+    assert.deepEqual(await readFile(sourcePath), source, "Original PDF fixture must remain byte-for-byte unchanged");
     const task = getDocument({ data: new Uint8Array(output) });
     try {
       const pdf = await task.promise;
