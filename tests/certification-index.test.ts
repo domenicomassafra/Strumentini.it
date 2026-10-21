@@ -76,7 +76,12 @@ describe("expanded catalog certification index", () => {
     // #126 also changes the previously Gold image-format HEIC decoder contract.
     // #169 expands the existing ZIP creator to verified ZIP/GZIP handling:
     // preserve its historical receipt but fail the prior manifest identity.
-    expect(index.summary.releaseEligibleGoldCount).toBe(253);
+    // #136 changes the Gold PDF form inspector's editing contract. Its old
+    // receipt remains historical and cannot authorize release of the new UI.
+    expect(index.summary.releaseEligibleGoldCount).toBe(252);
+    const formEditor = index.tools.find((tool) => tool.id === "pdf-form-inspector");
+    expect(formEditor).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
+    expect(formEditor?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
     const zipCreator = index.tools.find((tool) => tool.id === "zip-creator");
     expect(zipCreator).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
     expect(zipCreator?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
