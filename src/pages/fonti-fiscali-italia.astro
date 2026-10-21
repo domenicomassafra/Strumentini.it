@@ -3,8 +3,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getItalySourcePackDecision } from "../reference-data/italy/source-packs";
 import { VERIFIED_IRPEF_EXCERPTS_117 as irpef, VERIFIED_FORFETTARIO_COEFFICIENTS_2025_117 as coeff, INVOICE_STAMP_REFERENCE_2024_117 as bollo } from "../reference-data/italy/fiscal-annual-117";
 import { diffFiscalBands409 } from "../reference-data/italy/fiscal-revisions-409";
+import { buildAnnualFiscalSourceReview117 } from "../reference-data/italy/annual-source-registry-117";
+import { todayItaly158 } from "../reference-data/italy/freshness-158";
 const pack = getItalySourcePackDecision(117);
 const irpefDiff = diffFiscalBands409(irpef[0]!, irpef[1]!);
+const annualReview = buildAnnualFiscalSourceReview117(todayItaly158());
+const shortHash = (value: string) => `${value.slice(0, 23)}…`;
+const yearRows = [...annualReview.rows].sort((a, b) => b.taxYear - a.taxYear || a.datasetId.localeCompare(b.datasetId));
 ---
 <BaseLayout title="Fonti fiscali ufficiali italiane per anno" description="Consulta fonti e intervalli di validità verificati per IRPEF, forfettario e bollo con riferimenti normativi e limiti aggiornati.">
   <main class="sources-fiscal">
@@ -12,6 +17,18 @@ const irpefDiff = diffFiscalBands409(irpef[0]!, irpef[1]!);
     <h1>Fonti fiscali ufficiali per anno</h1>
     <p>Archivi con intervalli, aliquote e riferimenti verificabili. Il pacchetto completo annuale IVA–IRPEF–forfettario richiede ancora fonti di dettaglio: ogni tabella sotto dichiara esattamente quale sottoinsieme è documentato.</p>
     <p>Revisione delle fonti: <strong>{pack.checkedAt}</strong> · Identificativo: <code>{pack.decisionVersion}</code> · Aggiornamenti quando cambiano la norma o l'anno fiscale.</p>
+    <section aria-label="Registro ufficiale delle fonti annuali" data-annual-sources117>
+      <h2>Registro ufficiale delle fonti per anno</h2>
+      <p>Gli agenti mantengono il registro usando solo fonti ufficiali: Agenzia delle Entrate, Ministero dell'Economia e delle Finanze, Gazzetta Ufficiale e Normattiva come pubblicazione ufficiale della legge. Ogni riga riporta anno, versione identificabile, data di verifica, intervallo di vigenza, collegamento e impronta SHA-256 dello snapshot conservato.</p>
+      <div class="fiscal-scroll409" role="region" aria-label="Tabella fonti annuali scorrevole" tabindex="0"><table><thead><tr><th>Anno</th><th>Dati</th><th>Versione</th><th>Autorità ufficiale</th><th>Verificato il</th><th>Vigenza</th><th>Fonte</th><th>SHA-256</th></tr></thead><tbody>
+        {yearRows.map(entry => <tr data-annual-source117={`${entry.datasetId}:${entry.taxYear}:${entry.version}`}>
+          <td>{entry.taxYear}</td><td>{entry.label}</td><td><code>{entry.version}</code></td><td>{entry.authority}</td>
+          <td>{entry.checkedAt}</td><td>{entry.effectiveFrom} / {entry.effectiveTo}</td>
+          <td><a href={entry.url} target="_blank" rel="noopener noreferrer">Documento ufficiale</a></td>
+          <td><code>{shortHash(entry.sha256)}</code></td></tr>)}
+      </tbody></table></div>
+      <p data-annual-review117>Revisione annuale automatica al 1º gennaio: anno corrente <strong>{annualReview.currentYear}</strong>, prossimo controllo <strong>{annualReview.nextAnnualReviewAt}</strong>. Dataset con valori dell'anno corrente verificati: {annualReview.currentYearCovered.length > 0 ? annualReview.currentYearCovered.join(", ") : "nessuno"}. {annualReview.blockedClaims.length > 0 ? `Senza snapshot ufficiale dell'anno corrente: ${annualReview.blockedClaims.join(", ")} — restano non determinati e non ereditano altri anni.` : "Nessun dataset con claim anno corrente è privo di snapshot ufficiale."} Il controllo automatico blocca i calcoli con claim anno corrente e apre una richiesta di revisione, senza inventare aliquote.</p>
+    </section>
     <section aria-label="Registro versioni fiscali" data-fiscal-versions409>
       <h2>Registro delle versioni IRPEF nazionali</h2>
       <p>Ogni calcolo identifica la propria versione delle regole; una rettifica con efficacia retroattiva deve aggiungere una versione distinta e richiedere una selezione esplicita, mantenendo accessibile il risultato basato sulla versione precedente.</p>
