@@ -22,3 +22,22 @@
 - Local Node **26.10.0** microbenchmark (`--expose-gc`, four representative CIDRs, 24,000 operations per implementation, same process): old parser **880.7 ms / 36.70 µs per operation**, donor **951.0 ms / 39.63 µs** (~8% slower in this run). Sampled heap peak: **9.53 MiB old**, **11.68 MiB donor** (+2.15 MiB), with explicit GC before each run. Results are indicative and subject to system contention; this is not a cold-browser load or mobile memory measurement. The donor trades some runtime overhead for a verified MIT parser.
 - Source parser deleted from `network-numeric.ts` (164 lines of parser/formatter/calculation) and replaced with lazy adapter (~5.8 KB source), plus `ipaddr.js` parser (~38 KB uncompressed JS, isolated in the CIDR chunk); no claim that the total transfer size shrinks.
 - No production deployment is part of this adoption; live production still follows the separate release acceptance process. This document records a code adoption, not a Gold or physical device certificate.
+
+## Browser matrix follow-up (2026-10-20)
+
+The previous macOS Playwright WebKit `browser.newPage()` hang did not reproduce on MiniPC Linux. The compiled local static route `/tools/cidr-calculator/` was exercised with the browser regression `tests/cidr-ipaddr-303.browser.mjs` from branch `verify/str-303-webkit-worker1`, against `origin/main` at `7b687d9a7f4d5ecc8cff384458f379f4cf20a707`, Node 26.12.0 and Playwright 1.63.0. The test waits for Astro `client:load` hydration before submitting the server-rendered form, which avoids submitting before Preact attaches handlers.
+
+| Engine (Playwright) | Valid CIDRs | Refused inputs | Stale results / offsite / POST | Elapsed |
+| --- | --- | --- | --- | --- |
+| Chromium | 5/5 | 4/4 | None | 1,637 ms |
+| Firefox | 5/5 | 4/4 | None | 13,000 ms |
+| WebKit (installed `webkit-2359`) | 5/5 | 4/4 | None | 6,047 ms |
+
+Run against the generated static `dist/` output on MiniPC:
+```sh
+STR303_BROWSER=chromium node tests/cidr-ipaddr-303.browser.mjs
+STR303_BROWSER=firefox timeout 60s node tests/cidr-ipaddr-303.browser.mjs
+STR303_BROWSER=webkit timeout 60s node tests/cidr-ipaddr-303.browser.mjs
+```
+
+The cases include IPv4 /31 and /32 (RFC 3021), IPv6 /127 and /128, embedded IPv4, invalid short IPv4 and prefixes, and IPv6 zone identifier refusal. Browser request interception blocks any offsite request or POST. Independently, the current checkout completed 43/43 tests from the three targeted Vitest files (including the Python `ipaddress` oracle), and the Node 26 production build produced 308 pages with asset inspection PASS. This is real Playwright desktop-engine evidence; physical iOS/Android and public production release/deploy remain **NOT_RUN**.

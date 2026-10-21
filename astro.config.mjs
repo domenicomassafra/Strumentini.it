@@ -4,6 +4,11 @@ import sitemap from "@astrojs/sitemap";
 import { copyFile } from "node:fs/promises";
 import { loadEnv } from "vite";
 import { isPublicSitemapUrl } from "./src/seo/sitemap-routes.ts";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
+
+const require = createRequire(import.meta.url);
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 const site = env.SITE_URL ?? env.PUBLIC_SITE_URL ?? process.env.SITE_URL ?? process.env.PUBLIC_SITE_URL ?? "https://strumentini.it";
@@ -48,6 +53,17 @@ export default defineConfig({
         // The fallback alone exceeds Cloudflare's 25 MiB asset ceiling.
         for (const path of Object.keys(bundle)) {
           if (/(?:^|\/)ort-wasm-simd-threaded\.asyncify-[\w-]+\.wasm$/u.test(path)) delete bundle[path];
+        }
+      },
+    }, {
+      name: "portrait-modnet-274-self-host-onnx-wasm",
+      apply: "build",
+      generateBundle() {
+        // Reuse exact installed MIT onnxruntime-web 1.31 dev release from the lockfile.
+        // No runtime request goes to external model or WASM CDNs.
+        const dist = dirname(require.resolve("onnxruntime-web"));
+        for (const file of ["ort-wasm-simd-threaded.mjs", "ort-wasm-simd-threaded.wasm"]) {
+          this.emitFile({ type: "asset", fileName: `vendor/portrait-modnet/${file}`, source: readFileSync(join(dist, file)) });
         }
       },
     }],
