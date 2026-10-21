@@ -28,14 +28,19 @@ export function calculateStipendioNetto130(input: {
   const taxableCents = input.ralCents - workerContributionsCents;
   const irpef = calculateNationalGrossIrpef127(input.taxYear, taxableCents);
   const nationalIrpefCents = irpef.grossNationalTaxCents;
-  const annualNetCents = taxableCents - nationalIrpefCents;
-  const installmentsCents = Array.from({ length: input.payments }, (_, i) =>
-    Math.trunc(annualNetCents / input.payments) + (i < annualNetCents % input.payments ? 1 : 0));
+  const partialNationalResidualCents = taxableCents - nationalIrpefCents;
+  const partialInstallmentsCents = Array.from({ length: input.payments }, (_, i) =>
+    Math.trunc(partialNationalResidualCents / input.payments)
+    + (i < partialNationalResidualCents % input.payments ? 1 : 0));
   return {
+    state: "PARTIAL_NATIONAL_ONLY" as const,
     taxYear: 2026 as const, profile: input.profile, ralCents: input.ralCents,
     workerContributionsCents, employerContributionsCents,
-    taxableCents, nationalIrpefCents, annualNetCents, installmentsCents,
+    taxableCents, nationalIrpefCents, partialNationalResidualCents, partialInstallmentsCents,
+    // Without current local taxes, deductions and CCNL the actual payroll net is unknown.
+    modeledAnnualNetCents: null,
+    missingCoverage: ["regione", "comune", "CCNL", "detrazioni", "altri contributi", "bonus"] as const,
     sourceInps: inps.provenance, sourceIrpef: irpef.sources,
-    limitations: "Simulazione nazionale 2026 OTD/OTI ordinario: RAL dichiarata uguale alla base FPLD; imposta lorda nazionale; non comprende detrazioni, bonus, addizionali, altre trattenute e situazioni contrattuali particolari.",
+    limitations: "Solo residuo nazionale parziale 2026 OTD/OTI ordinario: base FPLD dichiarata uguale alla RAL. Regione, comune e CCNL non dichiarati; detrazioni, addizionali, bonus, altre trattenute e situazioni individuali restano sconosciuti, non sono zero. Non è il netto annuo in busta paga.",
   };
 }

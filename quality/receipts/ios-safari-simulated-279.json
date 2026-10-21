@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "ticket": 279,
+  "generatedAt": "2026-10-21T16:17:35.201Z",
+  "evidenceKind": "SIMULATED_DESKTOP_WEBKIT_MOBILE",
+  "physicalDeviceObserved": false,
+  "browser": {
+    "platform": "linux Playwright",
+    "engine": "webkit",
+    "version": "26.6",
+    "deviceProfile": "iPhone 17"
+  },
+  "build": {
+    "revision": "4122b94a4149a16b877e8a06cb4824f4bfceca3a",
+    "pages": {
+      "/tools/qr-reader/": "09943ed1be2b2e4ac1057ea73d850ad050cdf2f06bb2c69ce254e7f4ddab6b51"
+    },
+    "fingerprintSha256": "a4c6d3a6183d92fd3aa96e8844385514aa833c96a788380dfb2bf3b8bd1567e2"
+  },
+  "fixtures": [
+    {
+      "file": "photo-ecm-279.jpg",
+      "payload": "https://esempio.it/zxing-279-mobile",
+      "errorCorrectionLevel": "M",
+      "width": 536,
+      "height": 536,
+      "sha256": "34d66f0ec7f760ef4bf63aea9df771b3e85beba865835c2692d75d530aff062c",
+      "matchesManifest": true
+    },
+    {
+      "file": "photo-lowcontrast-279.jpg",
+      "payload": "STR-279 basso contrasto",
+      "errorCorrectionLevel": "Q",
+      "width": 504,
+      "height": 504,
+      "sha256": "5410c616be9d2426a6cdd9effeee208ca79123c96b927e2fd9fd5af54b37dae9",
+      "matchesManifest": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "iphone17-photo-ecm",
+      "status": "PASS",
+      "file": "photo-ecm-279.jpg",
+      "payload": "https://esempio.it/zxing-279-mobile",
+      "metadata": {
+        "origin": "immagine locale",
+        "version": "non determinata dall'immagine",
+        "errorCorrection": "Livello M",
+        "mask": "non determinata",
+        "byteLength": "35"
+      },
+      "warnings": [
+        "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile.",
+        "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+      ],
+      "bytes": {
+        "fixture": 25438,
+        "decoderChunksLazy": null,
+        "decoderChunksAtLoad": null
+      },
+      "timing": {
+        "decodeMs": 1251
+      },
+      "lazyLoading": {
+        "scriptRequestsAtLoad": 22,
+        "afterSubmit": [
+          "http://127.0.0.1:41099/_astro/registry.B_h4ZVMB.js",
+          "http://127.0.0.1:41099/_astro/preload-helper.B3nfOi5I.js",
+          "http://127.0.0.1:41099/_astro/module.DdR0wy3i.js",
+          "http://127.0.0.1:41099/_astro/qr.BrahQyzP.js",
+          "http://127.0.0.1:41099/_astro/zxing-adapter.Cgcd2UtG.js",
+          "http://127.0.0.1:41099/_astro/esm.C3Xyb1Yq.js",
+          "http://127.0.0.1:41099/_astro/esm.BGRWGqjG.js",
+          "http://127.0.0.1:41099/_astro/membership.DaJP9OAM.js",
+          "http://127.0.0.1:41099/_astro/rolldown-runtime.C0FnF6B9.js",
+          "http://127.0.0.1:41099/_astro/state.DpV1PFnD.js",
+          "http://127.0.0.1:41099/_astro/persistence.D6ZDEc_a.js"
+        ]
+      },
+      "overflowPixels": 0,
+      "workerCount": 0,
+      "network": {
+        "offsite": [],
+        "writes": []
+      },
+      "deviceProfile": "iPhone 17",
+      "memory": {
+        "measurement": "POLICY_ESTIMATE_ONLY",
+        "estimatedBytes": 1174622,
+        "hardLimitBytes": 16000000,
+        "observedPeakBytes": null,
+        "limitation": "WebKit exposes no reliable per-tab peak JS/Canvas memory; the memory figure is a policy estimate (fixture bytes + decoded RGBA), not a measured peak."
+      },
+      "worker": {
+        "created": 0,
+        "limitation": "The ZXing adapter decodes on a main-thread DOM canvas (`decodeFromCanvas`); no Worker is created by design, so worker parity is not applicable and is asserted as zero constructions."
+      },
+      "cancellation": {
+        "status": "NOT_OBSERVED_IN_UI",
+        "limitation": "The QR reader exposes no cancel control while decoding; cancellation is covered by the AbortError unit test in tests/qr-zxing-279.test.ts, not by this UI run."
+      }
+    },
+    {
+      "name": "iphone17-photo-lowcontrast",
+      "status": "PASS",
+      "file": "photo-lowcontrast-279.jpg",
+      "payload": "STR-279 basso contrasto",
+      "metadata": {
+        "origin": "immagine locale",
+        "version": "non determinata dall'immagine",
+        "errorCorrection": "Livello Q",
+        "mask": "non determinata",
+        "byteLength": "23"
+      },
+      "warnings": [
+        "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile.",
+        "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+      ],
+      "bytes": {
+        "fixture": 15125,
+        "decoderChunksLazy": null,
+        "decoderChunksAtLoad": null
+      },
+      "timing": {
+        "decodeMs": 986
+      },
+      "lazyLoading": {
+        "scriptRequestsAtLoad": 22,
+        "afterSubmit": [
+          "http://127.0.0.1:41099/_astro/registry.B_h4ZVMB.js",
+          "http://127.0.0.1:41099/_astro/preload-helper.B3nfOi5I.js",
+          "http://127.0.0.1:41099/_astro/module.DdR0wy3i.js",
+          "http://127.0.0.1:41099/_astro/qr.BrahQyzP.js",
+          "http://127.0.0.1:41099/_astro/zxing-adapter.Cgcd2UtG.js",
+          "http://127.0.0.1:41099/_astro/esm.C3Xyb1Yq.js",
+          "http://127.0.0.1:41099/_astro/esm.BGRWGqjG.js",
+          "http://127.0.0.1:41099/_astro/membership.DaJP9OAM.js",
+          "http://127.0.0.1:41099/_astro/rolldown-runtime.C0FnF6B9.js",
+          "http://127.0.0.1:41099/_astro/state.DpV1PFnD.js",
+          "http://127.0.0.1:41099/_astro/persistence.D6ZDEc_a.js"
+        ]
+      },
+      "overflowPixels": 0,
+      "workerCount": 0,
+      "network": {
+        "offsite": [],
+        "writes": []
+      },
+      "deviceProfile": "iPhone 17"
+    },
+    {
+      "name": "viewport-390x844-photo-ecm",
+      "status": "PASS",
+      "file": "photo-ecm-279.jpg",
+      "payload": "https://esempio.it/zxing-279-mobile",
+      "metadata": {
+        "origin": "immagine locale",
+        "version": "non determinata dall'immagine",
+        "errorCorrection": "Livello M",
+        "mask": "non determinata",
+        "byteLength": "35"
+      },
+      "warnings": [
+        "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile.",
+        "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+      ],
+      "bytes": {
+        "fixture": 25438,
+        "decoderChunksLazy": null,
+        "decoderChunksAtLoad": null
+      },
+      "timing": {
+        "decodeMs": 495
+      },
+      "lazyLoading": {
+        "scriptRequestsAtLoad": 22,
+        "afterSubmit": [
+          "http://127.0.0.1:41099/_astro/registry.B_h4ZVMB.js",
+          "http://127.0.0.1:41099/_astro/preload-helper.B3nfOi5I.js",
+          "http://127.0.0.1:41099/_astro/module.DdR0wy3i.js",
+          "http://127.0.0.1:41099/_astro/qr.BrahQyzP.js",
+          "http://127.0.0.1:41099/_astro/zxing-adapter.Cgcd2UtG.js",
+          "http://127.0.0.1:41099/_astro/esm.C3Xyb1Yq.js",
+          "http://127.0.0.1:41099/_astro/esm.BGRWGqjG.js",
+          "http://127.0.0.1:41099/_astro/membership.DaJP9OAM.js",
+          "http://127.0.0.1:41099/_astro/rolldown-runtime.C0FnF6B9.js",
+          "http://127.0.0.1:41099/_astro/state.DpV1PFnD.js",
+          "http://127.0.0.1:41099/_astro/persistence.D6ZDEc_a.js"
+        ]
+      },
+      "overflowPixels": 0,
+      "workerCount": 0,
+      "network": {
+        "offsite": [],
+        "writes": []
+      },
+      "viewport": "390x844"
+    },
+    {
+      "name": "viewport-1280x844-photo-ecm",
+      "status": "PASS",
+      "file": "photo-ecm-279.jpg",
+      "payload": "https://esempio.it/zxing-279-mobile",
+      "metadata": {
+        "origin": "immagine locale",
+        "version": "non determinata dall'immagine",
+        "errorCorrection": "Livello M",
+        "mask": "non determinata",
+        "byteLength": "35"
+      },
+      "warnings": [
+        "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile.",
+        "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+      ],
+      "bytes": {
+        "fixture": 25438,
+        "decoderChunksLazy": null,
+        "decoderChunksAtLoad": null
+      },
+      "timing": {
+        "decodeMs": 1082
+      },
+      "lazyLoading": {
+        "scriptRequestsAtLoad": 22,
+        "afterSubmit": [
+          "http://127.0.0.1:41099/_astro/registry.B_h4ZVMB.js",
+          "http://127.0.0.1:41099/_astro/preload-helper.B3nfOi5I.js",
+          "http://127.0.0.1:41099/_astro/module.DdR0wy3i.js",
+          "http://127.0.0.1:41099/_astro/qr.BrahQyzP.js",
+          "http://127.0.0.1:41099/_astro/zxing-adapter.Cgcd2UtG.js",
+          "http://127.0.0.1:41099/_astro/esm.C3Xyb1Yq.js",
+          "http://127.0.0.1:41099/_astro/esm.BGRWGqjG.js",
+          "http://127.0.0.1:41099/_astro/membership.DaJP9OAM.js",
+          "http://127.0.0.1:41099/_astro/rolldown-runtime.C0FnF6B9.js",
+          "http://127.0.0.1:41099/_astro/state.DpV1PFnD.js",
+          "http://127.0.0.1:41099/_astro/persistence.D6ZDEc_a.js"
+        ]
+      },
+      "overflowPixels": 0,
+      "workerCount": 0,
+      "network": {
+        "offsite": [],
+        "writes": []
+      },
+      "viewport": "1280x844"
+    },
+    {
+      "name": "iphone17-csp-strict-photo-ecm",
+      "status": "PASS",
+      "file": "photo-ecm-279.jpg",
+      "payload": "https://esempio.it/zxing-279-mobile",
+      "metadata": {
+        "origin": "immagine locale",
+        "version": "non determinata dall'immagine",
+        "errorCorrection": "Livello M",
+        "mask": "non determinata",
+        "byteLength": "35"
+      },
+      "warnings": [
+        "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile.",
+        "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+      ],
+      "bytes": {
+        "fixture": 25438,
+        "decoderChunksLazy": null,
+        "decoderChunksAtLoad": null
+      },
+      "timing": {
+        "decodeMs": 1219
+      },
+      "lazyLoading": {
+        "scriptRequestsAtLoad": 22,
+        "afterSubmit": [
+          "http://127.0.0.1:44277/_astro/registry.B_h4ZVMB.js",
+          "http://127.0.0.1:44277/_astro/preload-helper.B3nfOi5I.js",
+          "http://127.0.0.1:44277/_astro/module.DdR0wy3i.js",
+          "http://127.0.0.1:44277/_astro/qr.BrahQyzP.js",
+          "http://127.0.0.1:44277/_astro/zxing-adapter.Cgcd2UtG.js",
+          "http://127.0.0.1:44277/_astro/esm.C3Xyb1Yq.js",
+          "http://127.0.0.1:44277/_astro/esm.BGRWGqjG.js",
+          "http://127.0.0.1:44277/_astro/membership.DaJP9OAM.js",
+          "http://127.0.0.1:44277/_astro/rolldown-runtime.C0FnF6B9.js",
+          "http://127.0.0.1:44277/_astro/state.DpV1PFnD.js",
+          "http://127.0.0.1:44277/_astro/persistence.D6ZDEc_a.js"
+        ]
+      },
+      "overflowPixels": 0,
+      "workerCount": 0,
+      "network": {
+        "offsite": [],
+        "writes": []
+      },
+      "csp": "script-src 'self' + inline hashes; connect-src 'none'"
+    },
+    {
+      "name": "iphone17-refuses-oversized-input",
+      "status": "PASS",
+      "file": ".oversized-279.png.tmp",
+      "refusal": "L'immagine supera il limite di 4 megapixel impostato per questa lettura locale. Riducila e riprova.",
+      "decodedPayloadPresent": false,
+      "input": {
+        "width": 2400,
+        "height": 1800,
+        "bytes": 16672
+      }
+    },
+    {
+      "name": "iphone17-refuses-blank-image",
+      "status": "PASS",
+      "file": ".blank-279.png.tmp",
+      "refusal": "Non riconosco un codice QR leggibile in questa immagine. Prova un'immagine più nitida, meno ruotata o con più margine bianco attorno al simbolo.",
+      "decodedPayloadPresent": false,
+      "input": {
+        "width": 320,
+        "height": 320
+      }
+    }
+  ],
+  "limitations": [
+    "Simulated mobile WebKit on macOS, not iOS Safari on a device or in the iOS Simulator: this host has no Simulator.app (Xcode 27 install without it) and SafariDriver 26.6.2 rejects `safari:useSimulator` (session not created), so no in-simulator Safari session can be driven.",
+    "WebKit exposes no reliable per-tab peak JS/Canvas memory; the memory figure is a policy estimate (fixture bytes + decoded RGBA), not a measured peak.",
+    "The ZXing adapter decodes on a main-thread DOM canvas (`decodeFromCanvas`); no Worker is created by design, so worker parity is not applicable and is asserted as zero constructions.",
+    "The QR reader exposes no cancel control while decoding; cancellation is covered by the AbortError unit test in tests/qr-zxing-279.test.ts, not by this UI run."
+  ]
+}
