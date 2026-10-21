@@ -44,4 +44,3 @@ export function resultSummary(result: WorkbenchSummary388 | null): string {
   add("affidabilità", result.confidence);
   return parts.join(" · ");
 }
-
