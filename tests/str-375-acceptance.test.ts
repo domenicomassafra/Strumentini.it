@@ -1,17 +1,29 @@
-import { spawnSync } from "node:child_process";
+import { createCanvas } from "@napi-rs/canvas";
 import { describe, expect, it } from "vitest";
 import { degrees, PDFDict, PDFDocument, PDFName } from "pdf-lib";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import sharp from "sharp";
 import { insertPdfImage375, type PdfImagePlacement375 } from "../src/engines/pdf/image-placement-375";
 
 type Geometry = { left: number; top: number; right: number; bottom: number };
 
 async function renderBounds(bytes: Uint8Array): Promise<Geometry> {
-  const rendered = spawnSync("pdftoppm",
-    ["-cropbox", "-f", "1", "-l", "1", "-r", "72", "-png", "-singlefile", "-"],
-    { input: Buffer.from(bytes), timeout: 20_000, maxBuffer: 8_000_000 });
-  expect(rendered.status, String(rendered.stderr)).toBe(0);
-  const { data, info } = await sharp(rendered.stdout).removeAlpha().raw()
+  // PDF.js is installed by npm ci on Linux CI, while pdftoppm is a MiniPC-only
+  // consumer oracle. The consumer acceptance separately compares both renderers.
+  const loading = getDocument({ data: bytes.slice(), useSystemFonts: true });
+  const rendered = await (async () => {
+    try {
+      const document = await loading.promise;
+      const page = await document.getPage(1);
+      try {
+        const viewport = page.getViewport({ scale: 1 });
+        const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
+        await page.render({ canvasContext: canvas.getContext("2d") as never, viewport }).promise;
+        return canvas.toBuffer("image/png");
+      } finally { page.cleanup(); }
+    } finally { await loading.destroy(); }
+  })();
+  const { data, info } = await sharp(rendered).removeAlpha().raw()
     .toBuffer({ resolveWithObject: true });
   let left = info.width, top = info.height, right = -1, bottom = -1;
   for (let y = 0; y < info.height; y++) for (let x = 0; x < info.width; x++) {
