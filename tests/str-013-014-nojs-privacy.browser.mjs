@@ -10,7 +10,7 @@ const scenarios = [
   { path: "/tools/stipendio-netto/", selector: "[data-salary-estimate-13] form", warning: "[data-salary-noscript]", values: { ral: "40000" }, enter: "ral" },
   { path: "/tools/partita-iva-validator/", selector: '[data-tax396="piva"] form', warning: "[data-forf-noscript]", values: { receipts: "30000" }, enter: "receipts" },
   { path: "/tools/calcoli-fiscali-italia/", selector: '[data-calculator="forf133"]', warning: "[data-forf133-noscript]", values: { revenue: "30000" }, enter: "revenue" },
-  { path: "/tools/calcoli-fiscali-italia/", selector: '[data-calculator="net130"]', warning: "[data-fiscal-noscript]", values: { ral: "30000" }, checks: ["baseConfirmed"], enter: "ral", result: "Netto annuo illustrativo" },
+  { path: "/tools/calcoli-fiscali-italia/", selector: '[data-calculator="net130"]', warning: "[data-fiscal-noscript]", values: { ral: "30000" }, checks: ["baseConfirmed"], enter: "ral", result: "Residuo annuo nazionale parziale" },
   { path: "/tools/calcoli-fiscali-italia/", selector: '[data-calculator="tfr134"]', warning: "[data-fiscal-noscript]", values: { prior: "10000", salary: "30000", historical: "30000", historyYears: "5" }, enter: "historical", result: "Totale TFR lordo teorico" },
   { path: "/tools/calcoli-fiscali-italia/", selector: '[data-calculator="bollo152"]', warning: "[data-fiscal-noscript]", values: { amount: "77,48" }, checks: ["single", "noExempt"], enter: "amount", result: "Riferimento guida Agenzia 2024" },
   { path: "/tools/irpef-componenti/", selector: "[data-irpef-components] form", warning: "[data-irpef-noscript]", values: { income: "40000" }, enter: "income", result: "IRPEF lorda nazionale" },

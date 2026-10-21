@@ -64,11 +64,21 @@ try {
     assert.match(review, /prossimo controllo 2027-01-01/u);
     assert.match(review, /national-irpef-gross-subset/u);
     assert.match(review, /senza inventare aliquote|non ereditano altri anni/u);
+    const changes = page.locator("[data-annual-change117]");
+    assert.equal(await changes.count(), 5);
+    const owner = await page.locator("[data-annual-owner117]").innerText();
+    assert.match(owner, /Agenti — revisione annuale delle fonti ufficiali/u);
+    assert.match(owner, /Approvazione fiscale professionale: non attestata/u);
+    const audit = await page.locator("[data-annual-changelog-audit117]").innerText();
+    assert.match(audit, /Audit versioni al \d{4}-\d{2}-\d{2}: OK/u);
+    assert.match(audit, /Non eseguiti alla data: nessuno/u);
+    assert.match(audit, /Rettifiche retroattive registrate: 0/u);
+    assert.match(audit, /Ogni anno registrato ha uno snapshot ufficiale verificato/u);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
       `no whole-page horizontal overflow at ${viewport.width}px`);
     assert.deepEqual(errors, []);
     assert.deepEqual(unexpected, []);
-    console.log(`STR-117 PASS @${viewport.width}px: 8 official per-year snapshots, dated checks, https sources, SHA-256 preview, automatic annual review, no off-origin requests`);
+    console.log(`STR-117/409 PASS @${viewport.width}px: 8 official per-year snapshots, dated checks, https sources, SHA-256 preview, automatic annual review, append-only change log with agent owner, no off-origin requests`);
   }
 } finally {
   for (const context of contexts) await context?.close();

@@ -53,11 +53,15 @@ try {
   const salary12 = await output(employee);
   assert(salary12.includes(euro(2652)), "salary worker INPS separated");
   assert(salary12.includes(euro(6290.04)), "salary national gross tax");
-  assert(salary12.includes("Netto annuo illustrativo: " + euro(21057.96)), "annual salary reconciliation");
+  assert(salary12.includes("Residuo annuo nazionale parziale (non netto in busta paga): " + euro(21057.96)), "annual salary reconciliation");
+  assert(salary12.includes("Netto annuo effettivo: non determinato"), "unknown payroll net explicit");
+  assert(salary12.includes("CCNL") && salary12.includes("regione") && salary12.includes("comune"), "missing contract and geography visible");
+  assert(salary12.includes("a carico datore (fuori dalla RAL): " + euro(6498)), "employer share separate from worker");
+  assert(!salary12.includes("Netto annuo illustrativo"), "no unsupported final-net claim");
   await input(employee, "payments").selectOption("14");
   assert.equal(await output(employee), "", "no stale salary when changing installment count");
   await send(employee);
-  assert((await output(employee)).includes("Netto annuo illustrativo: " + euro(21057.96)), "14 installment preserves annual");
+  assert((await output(employee)).includes("Residuo annuo nazionale parziale (non netto in busta paga): " + euro(21057.96)), "14 installment preserves annual");
 
   const piva = form("forf133");
   for (const [name, number] of Object.entries({ ateco: "62.01.00", prior: "20000", revenue: "30000.00", paid: "1000.00" }))
