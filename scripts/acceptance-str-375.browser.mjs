@@ -92,8 +92,11 @@ try {
         await page.keyboard.press("ArrowLeft");
         assert.equal(await range.inputValue(), "30");
         const overlay = page.locator('[aria-label="Posizione immagine sulla pagina"]');
+        await overlay.scrollIntoViewIfNeeded();
         const box = await overlay.boundingBox();
         assert(box);
+        assert(box.y >= 0 && box.y + box.height <= viewport.height,
+          "image overlay must be within the viewport before pointer movement");
         await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
         await page.mouse.down();
         await page.mouse.move(box.x + box.width / 2 + 6, box.y + box.height / 2 + 9, { steps: 6 });
@@ -134,7 +137,19 @@ try {
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
         assert.equal(overflow, false, "no horizontal overflow on mobile simulation");
         if (viewport.width === 390) {
-          await context.setOffline(true);
+          // Playwright's WebKit offline switch rejects even self-contained blob Workers.
+          // Block all HTTP requests instead; prove the origin is unreachable, then re-save.
+          // Chromium uses the native offline emulation.
+          const allHttp = /^https?:\/\//;
+          const webkitNetworkBlocked = engine.name() === "webkit";
+          if (webkitNetworkBlocked) {
+            await page.route(allHttp, (route) => route.abort("internetdisconnected"));
+            const denied = await page.evaluate(async (url) => {
+              try { await fetch(url + "/robots.txt", { cache: "no-store" }); return false; }
+              catch { return true; }
+            }, origin);
+            assert(denied, "WebKit network blockade must deny the origin");
+          } else await context.setOffline(true);
           await page.getByRole("button", { name: "Salva PDF con immagine" }).click();
           await page.locator("[data-pdf-image-375]").getByRole("link", { name: /Scarica/iu }).first().waitFor({ timeout: 12_000 })
             .catch(async (reason) => {
@@ -146,7 +161,8 @@ try {
           await page.locator("[data-pdf-image-375]").getByRole("link", { name: /Scarica/iu }).first().click();
           const offlineBytes = readFileSync(await (await offlineDownload).path());
           assert.equal((await PDFDocument.load(offlineBytes)).getPageCount(), 1, "offline saved PDF must independently reopen");
-          await context.setOffline(false);
+          if (webkitNetworkBlocked) await page.unroute(allHttp);
+          else await context.setOffline(false);
         }
         assert.deepEqual(cspErrors, [], "strict CSP must not block the editor");
         console.log(engine.name() + " viewport=" + viewport.width + " PASS: drag, resize, PDF result, Poppler diff pixels=" + changed + ", form and annotations, local requests, CSP" + (viewport.width === 390 ? ", offline re-save" : ""));
