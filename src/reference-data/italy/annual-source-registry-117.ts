@@ -28,6 +28,25 @@ export const OFFICIAL_FISCAL_SOURCE_HOSTS_117 = Object.freeze([
   "giustiziatributaria.gov.it",
 ] as const);
 
+/**
+ * Annual source owner (owner decision 20/10/2026): the agents maintain the
+ * annual official fiscal sources. `professionalApproval` stays NOT_ATTESTED:
+ * owning the source review is not a qualified professional fiscal sign-off.
+ */
+export const ANNUAL_FISCAL_REVIEW_OWNER_117 = Object.freeze({
+  ownerId: "agents-official-sources-117",
+  kind: "AGENT_PROCESS" as const,
+  label: "Agenti — revisione annuale delle fonti ufficiali",
+  mandate: "Decisione owner 20/10/2026: gli agenti gestiscono le fonti fiscali usando solo documenti ufficiali.",
+  officialAuthorities: Object.freeze([
+    "Agenzia delle Entrate",
+    "Ministero dell'Economia e delle Finanze",
+    "Gazzetta Ufficiale",
+    "Normattiva",
+  ]),
+  cadence: "Controllo automatico mensile; snapshot ufficiale dell'anno entro il 1º gennaio",
+  professionalApproval: "NOT_ATTESTED" as const,
+});
 /** Exact-host or subdomain match: `evil-normattiva.it` is refused. */
 export function isOfficialFiscalSourceUrl117(value: string): boolean {
   let parsed: URL;

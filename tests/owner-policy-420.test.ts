@@ -5,6 +5,7 @@ import {
   validateOwnerAndroidPolicy420,
   validateOwnerBrowserPolicy420,
   validateOwnerIosPolicy420,
+  validateOwnerRollbackPolicy420,
 } from "../src/release/owner-policy-420";
 import { prepublishSteps404, releasePolicy420Enabled } from "../scripts/prepublish-404";
 
@@ -65,6 +66,32 @@ const iosReceipt = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+const rollbackReceipt = (overrides: Record<string, unknown> = {}) => ({
+  schemaVersion: 1,
+  kind: "cloudflare-static-assets-rollback",
+  status: "VERIFIED",
+  externalDeploymentPerformed: true,
+  environment: "staging-worker",
+  worker: "strumentini-328-staging-20261015",
+  origin: "https://strumentini-328-staging-20261015.massafradomenico4.workers.dev",
+  currentRevision: SHA,
+  sourceFingerprint: FINGERPRINT,
+  currentDeploymentId: "candidate-123",
+  previousKnownGoodDeploymentId: "previous-456",
+  rollbackCommand: "wrangler rollback previous-456 --config worker/wrangler.staging.jsonc",
+  rollbackVerified: true,
+  observedAt: "2026-10-21T10:00:00.000Z",
+  databaseMigration: "NONE",
+  observations: {
+    previousHomeSha256: "e".repeat(64),
+    candidateHomeSha256: "f".repeat(64),
+    restoredPreviousHomeSha256: "e".repeat(64),
+    restoredCandidateHomeSha256: "f".repeat(64),
+    candidateBytesDistinctFromPrevious: true,
+  },
+  ...overrides,
+});
+
 const pages = { "tools/tool-a/": TOOL_HTML, "tools/tool-b/": AUDIO_HTML };
 
 describe("owner release policy 20/10/2026 for Strumentini.it", () => {
@@ -82,6 +109,7 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
       androidReceipt: androidReceipt(), androidReceiptPath: "android.json",
       iosReceipt: iosReceipt(), iosReceiptPath: "ios.json",
       distPageHashes: pages,
+      rollbackReceipt: rollbackReceipt(), rollbackReceiptPath: "rollback.json",
     });
     expect(result.status).toBe("PASS");
     expect(result.waived).toEqual([
@@ -145,9 +173,43 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
       androidReceipt: undefined, androidReceiptPath: "android.json",
       iosReceipt: undefined, iosReceiptPath: "ios.json",
       distPageHashes: pages,
+      rollbackReceipt: undefined, rollbackReceiptPath: "rollback.json",
     });
     expect(result.status).toBe("NO_GO");
-    expect(result.gates).toEqual({ source: "PASS", browser: "NO_GO", "simulated-mobile": "NO_GO" });
+    expect(result.gates).toEqual({ source: "PASS", browser: "NO_GO", "simulated-mobile": "NO_GO", rollback: "NO_GO" });
+  });
+
+  it("requires a real, source-bound staging rollback that restored both versions", () => {
+    const input = { path: "rollback.json", revision: SHA, sourceFingerprint: FINGERPRINT };
+    expect(validateOwnerRollbackPolicy420({ ...input, receipt: rollbackReceipt() })).toEqual([]);
+    for (const receipt of [
+      undefined,
+      rollbackReceipt({ currentRevision: "1".repeat(40) }),
+      rollbackReceipt({ rollbackVerified: false }),
+      rollbackReceipt({ externalDeploymentPerformed: false }),
+      rollbackReceipt({ status: "LOCAL_FIXTURE_ONLY" }),
+      rollbackReceipt({ previousKnownGoodDeploymentId: "candidate-123" }),
+      rollbackReceipt({ observations: { previousHomeSha256: "e".repeat(64), candidateHomeSha256: "f".repeat(64),
+        restoredPreviousHomeSha256: "0".repeat(64), restoredCandidateHomeSha256: "f".repeat(64) } }),
+    ]) {
+      expect(validateOwnerRollbackPolicy420({ ...input, receipt }).length).toBeGreaterThan(0);
+    }
+    const browser = browserReceipt();
+    const android = androidReceipt();
+    const ios = iosReceipt();
+    const common = {
+      revision: SHA, sourceFingerprint: FINGERPRINT, workingTreeDirty: false,
+      browserReceipt: browser, browserReceiptPath: "browser.json",
+      androidReceipt: android, androidReceiptPath: "android.json",
+      iosReceipt: ios, iosReceiptPath: "ios.json", distPageHashes: pages,
+      rollbackReceiptPath: "rollback.json",
+    };
+    const missing = assessOwnerPolicy420({ ...common, rollbackReceipt: undefined });
+    expect(missing.status).toBe("NO_GO");
+    expect(missing.gates.rollback).toBe("NO_GO");
+    const verified = assessOwnerPolicy420({ ...common, rollbackReceipt: rollbackReceipt() });
+    expect(verified.status).toBe("PASS");
+    expect(verified.gates.rollback).toBe("PASS");
   });
 
   it("routes the guarded publisher through the automatic gate unless strict mode is asked for", () => {

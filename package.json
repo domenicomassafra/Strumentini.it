@@ -108,6 +108,8 @@
     "fixtures:metadata-segments": "tsx scripts/generate-metadata-segment-fixtures.ts",
     "acceptance:marketing-media": "npm run build && node scripts/acceptance-marketing-media.mjs",
     "acceptance:barcode": "npm run build && node scripts/acceptance-barcode.mjs",
+    "acceptance:qr-reader:mobile": "node scripts/acceptance-qr-reader-279.mjs",
+    "fixtures:qr-279:photo": "node scripts/generate-qr-279-photo-fixtures.mjs",
     "gold:marketing-media": "npm run catalog:build && tsx scripts/gold/marketing-media-certify.ts",
     "test:workerd": "vitest run --config vitest.workerd.config.ts",
     "pdfa:export:419": "node scripts/pdfa-419.mjs"

@@ -7,8 +7,7 @@ import { basename, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { tsImport } from "tsx/esm/api";
 
-// The matrix runs via `node` (including Node 22 CI). Use the installed tsx
-// loader to share the EXACT release/Gold source binding, never a second hash.
+// Runs via `node`; shares the exact release source binding through tsx.
 const { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } =
   await tsImport("../lib/current-revision.ts", import.meta.url);
 
@@ -142,13 +141,13 @@ const engineDefinitions = [
     name: "chrome",
     label: "system Google Chrome",
     type: "chromium",
-    executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    executablePath: process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   },
   {
     name: "edge",
     label: "system Microsoft Edge",
     type: "chromium",
-    executablePath: "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+    executablePath: process.env.EDGE_PATH || "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
   },
   {
     name: "chromium",

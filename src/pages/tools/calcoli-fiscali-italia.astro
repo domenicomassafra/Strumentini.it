@@ -10,13 +10,13 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     <noscript><p data-fiscal-noscript>Le simulazioni richiedono JavaScript. Senza JavaScript i pulsanti restano disattivati e non inviano importi.</p></noscript>
 
     <section aria-labelledby="net130-title">
-      <h2 id="net130-title">Stipendio netto annuo — dipendente agricolo 2026</h2>
-      <p>Solo operaio agricolo ordinario OTD/OTI, base contributiva FPLD uguale alla RAL dichiarata e fino a 56.224 €. Mostra separatamente contributi INPS del lavoratore, quota datoriale e IRPEF lorda nazionale, poi ripartisce lo stesso netto annuo su 12, 13 o 14 rate.</p>
+      <h2 id="net130-title">Residuo nazionale parziale da RAL — dipendente agricolo 2026</h2>
+      <p>Solo operaio agricolo ordinario OTD/OTI, base contributiva FPLD uguale alla RAL dichiarata e fino a 56.224 €. Mostra separatamente contributi INPS del lavoratore, quota datoriale e IRPEF lorda nazionale, poi ripartisce il solo residuo nazionale parziale su 12, 13 o 14 rate. Regione, comune e CCNL non sono acquisiti: il netto in busta paga resta non determinato.</p>
       <form data-calculator="net130">
         <label>RAL e base FPLD 2026 (€) <input name="ral" inputmode="decimal" placeholder="30000,00" required /></label>
         <label>Mensilità <select name="payments"><option>12</option><option>13</option><option>14</option></select></label>
         <label class="check"><input type="checkbox" name="baseConfirmed" required /> Confermo il profilo OTD/OTI ordinario e che la base FPLD coincide con la RAL inserita.</label>
-        <button type="submit" disabled>Stima il netto annuo</button>
+        <button type="submit" disabled>Calcola il residuo nazionale parziale</button>
         <p role="alert" hidden></p><output aria-live="polite"></output>
       </form>
       <p class="source">Fonti 2026: <a href="https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/04/Circolare_15228/Allegati/16697_Circolare-numero-43-del-07-04-2026.pdf">INPS, circ. 43/2026</a>; <a href="https://www.normattiva.it/eli/stato/LEGGE/2025/12/30/199/CONSOLIDATED">IRPEF, legge 199/2025</a>. Esclude detrazioni, addizionali, altri contributi e bonus.</p>
@@ -122,7 +122,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
           const result = calculateStipendioNetto130({ taxYear: 2026, profile: "agricultural-worker-general",
             ralCents: money(form, "ral"), payments: Number(value(form, "payments")) as 12 | 13 | 14,
             declaresFpldBaseEqualsRal: checked(form, "baseConfirmed") });
-          output.textContent = `RAL: ${euro(result.ralCents)}. Contributi INPS a carico lavoratore: ${euro(result.workerContributionsCents)}; a carico datore (fuori dalla RAL): ${euro(result.employerContributionsCents)}. Imponibile IRPEF nazionale: ${euro(result.taxableCents)}. IRPEF lorda nazionale: ${euro(result.nationalIrpefCents)}. Netto annuo illustrativo: ${euro(result.annualNetCents)}. ${result.installmentsCents.length} rate: ${result.installmentsCents.map(euro).join(" + ")}. ${result.limitations}`;
+          output.textContent = `RAL: ${euro(result.ralCents)}. Contributi INPS a carico lavoratore: ${euro(result.workerContributionsCents)}; a carico datore (fuori dalla RAL): ${euro(result.employerContributionsCents)}. Imponibile IRPEF nazionale: ${euro(result.taxableCents)}. IRPEF lorda nazionale: ${euro(result.nationalIrpefCents)}. Residuo annuo nazionale parziale (non netto in busta paga): ${euro(result.partialNationalResidualCents)}. Netto annuo effettivo: non determinato. ${result.partialInstallmentsCents.length} rate del solo residuo parziale: ${result.partialInstallmentsCents.map(euro).join(" + ")}. Voci senza copertura: ${result.missingCoverage.join(", ")}. ${result.limitations}`;
         } else if (form.dataset.calculator === "forf133") {
           if (value(form, "year") !== "2025") throw new Error("Anno 2026 non verificato: il calcolo forfettario copre soltanto il 2025.");
           if (!checked(form, "paidVerified")) throw new Error("Conferma i contributi effettivamente pagati.");

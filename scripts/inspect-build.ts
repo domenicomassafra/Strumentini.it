@@ -89,7 +89,9 @@ for (const previewPath of previewOnlyPaths) {
         preview.includes("risultato parziale")
     : previewPath === fiscalBoundedPath
       ? preview?.includes('data-fiscal-t1') &&
-        preview.includes("Stipendio netto annuo") &&
+        preview.includes("Residuo nazionale parziale da RAL") &&
+        preview.includes("netto in busta paga resta non determinato") &&
+        !preview.includes("Netto annuo illustrativo") &&
         preview.includes("Regime forfettario annuale") &&
         preview.includes("2025 — fonti verificate") &&
         preview.includes("TFR maturato e rivalutazione") &&
