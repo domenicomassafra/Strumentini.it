@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "ticket": 279,
+  "generatedAt": "2026-10-21T17:04:48Z",
+  "evidenceKind": "REAL_SAFARI_WEBDRIVER_DESKTOP",
+  "physicalDeviceObserved": false,
+  "host": "Mac Studio (macOS 26.6.2, Safari 26.6.2 via SafariDriver)",
+  "browser": {
+    "engine": "Safari",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Safari/605.1.15",
+    "viewport": {
+      "w": 390,
+      "title": "Leggi QR code · Strumentini.it",
+      "overflow": 0,
+      "h": 792
+    }
+  },
+  "build": {
+    "revision": "4122b94a4149a16b877e8a06cb4824f4bfceca3a"
+  },
+  "screenshots": [
+    "quality/receipts/safari-279-qr-reader-390.png",
+    "quality/receipts/safari-279-qr-reader-390-lowcontrast.png"
+  ],
+  "cases": [
+    {
+      "evidenceKind": "REAL_SAFARI_WEBDRIVER_DESKTOP",
+      "physicalDeviceObserved": false,
+      "browser": {
+        "engine": "Safari",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Safari/605.1.15",
+        "viewport": {
+          "w": 390,
+          "title": "Leggi QR code · Strumentini.it",
+          "overflow": 0,
+          "h": 792
+        }
+      },
+      "build": {
+        "revision": "4122b94a4149a16b877e8a06cb4824f4bfceca3a"
+      },
+      "fixture": {
+        "path": "/private/tmp/qr279-run/repo/quality/fixtures/qr-contract/photo-ecm-279.jpg",
+        "sha256": "34d66f0ec7f760ef4bf63aea9df771b3e85beba865835c2692d75d530aff062c"
+      },
+      "upload": {
+        "mechanism": "same-origin fetch + DataTransfer",
+        "hasInput": true,
+        "bytes": 25438,
+        "sha256": "34d66f0ec7f760ef4bf63aea9df771b3e85beba865835c2692d75d530aff062c",
+        "attached": 1,
+        "readable": true
+      },
+      "expectedPayload": "https://esempio.it/zxing-279-mobile",
+      "payload": "https://esempio.it/zxing-279-mobile",
+      "metadata": {
+        "Correzione errori": "Livello M",
+        "Maschera": "non determinata",
+        "Origine": "immagine locale",
+        "Byte UTF-8": "35",
+        "Versione": "non determinata dall'immagine"
+      },
+      "warnings": [
+        "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile.",
+        "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+      ],
+      "decodeMs": 827,
+      "lazyResources": [
+        "http://127.0.0.1:18288/__qr279/photo-ecm-279.jpg",
+        "http://127.0.0.1:18288/_astro/registry.B_h4ZVMB.js",
+        "http://127.0.0.1:18288/_astro/module.DdR0wy3i.js",
+        "http://127.0.0.1:18288/_astro/zxing-adapter.Cgcd2UtG.js",
+        "http://127.0.0.1:18288/_astro/esm.C3Xyb1Yq.js",
+        "http://127.0.0.1:18288/_astro/esm.BGRWGqjG.js",
+        "http://127.0.0.1:18288/_astro/membership.DaJP9OAM.js",
+        "http://127.0.0.1:18288/_astro/rolldown-runtime.C0FnF6B9.js",
+        "http://127.0.0.1:18288/_astro/state.DpV1PFnD.js",
+        "http://127.0.0.1:18288/_astro/persistence.D6ZDEc_a.js",
+        "http://127.0.0.1:18288/fonts/roboto-mono-latin.woff2"
+      ],
+      "offsiteResources": [],
+      "asserts": {
+        "payloadMatches": true,
+        "ecLevelShown": true,
+        "maskNotAttested": true,
+        "zxingWarningShown": true,
+        "lazyChunkLoaded": true,
+        "noOffsiteRequest": true,
+        "noHorizontalOverflow": true,
+        "uploadedBytesMatchFixture": true
+      }
+    },
+    {
+      "evidenceKind": "REAL_SAFARI_WEBDRIVER_DESKTOP",
+      "physicalDeviceObserved": false,
+      "browser": {
+        "engine": "Safari",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Safari/605.1.15",
+        "viewport": {
+          "w": 390,
+          "title": "Leggi QR code · Strumentini.it",
+          "overflow": 0,
+          "h": 792
+        }
+      },
+      "build": {
+        "revision": "4122b94a4149a16b877e8a06cb4824f4bfceca3a"
+      },
+      "fixture": {
+        "path": "/private/tmp/qr279-run/repo/quality/fixtures/qr-contract/photo-lowcontrast-279.jpg",
+        "sha256": "5410c616be9d2426a6cdd9effeee208ca79123c96b927e2fd9fd5af54b37dae9"
+      },
+      "upload": {
+        "mechanism": "same-origin fetch + DataTransfer",
+        "hasInput": true,
+        "bytes": 15125,
+        "sha256": "5410c616be9d2426a6cdd9effeee208ca79123c96b927e2fd9fd5af54b37dae9",
+        "attached": 1,
+        "readable": true
+      },
+      "expectedPayload": "STR-279 basso contrasto",
+      "payload": "STR-279 basso contrasto",
+      "metadata": {
+        "Correzione errori": "Livello Q",
+        "Maschera": "non determinata",
+        "Origine": "immagine locale",
+        "Byte UTF-8": "23",
+        "Versione": "non determinata dall'immagine"
+      },
+      "warnings": [
+        "Testo riconosciuto dal decoder ZXing; verifica indipendente dei sindromi non disponibile.",
+        "Maschera e copie del campo di formato non determinate dal decoder di immagine."
+      ],
+      "decodeMs": 255,
+      "lazyResources": [
+        "http://127.0.0.1:18287/__qr279/photo-lowcontrast-279.jpg",
+        "http://127.0.0.1:18287/_astro/registry.B_h4ZVMB.js",
+        "http://127.0.0.1:18287/_astro/module.DdR0wy3i.js",
+        "http://127.0.0.1:18287/_astro/zxing-adapter.Cgcd2UtG.js",
+        "http://127.0.0.1:18287/_astro/esm.C3Xyb1Yq.js",
+        "http://127.0.0.1:18287/_astro/esm.BGRWGqjG.js",
+        "http://127.0.0.1:18287/_astro/membership.DaJP9OAM.js",
+        "http://127.0.0.1:18287/_astro/rolldown-runtime.C0FnF6B9.js",
+        "http://127.0.0.1:18287/_astro/state.DpV1PFnD.js",
+        "http://127.0.0.1:18287/_astro/persistence.D6ZDEc_a.js",
+        "http://127.0.0.1:18287/fonts/roboto-mono-latin.woff2"
+      ],
+      "offsiteResources": [],
+      "asserts": {
+        "payloadMatches": true,
+        "ecLevelShown": true,
+        "maskNotAttested": true,
+        "zxingWarningShown": true,
+        "lazyChunkLoaded": true,
+        "noOffsiteRequest": true,
+        "noHorizontalOverflow": true,
+        "uploadedBytesMatchFixture": true
+      }
+    }
+  ],
+  "limitations": [
+    "Desktop Safari in a 390x844 window, not iOS Safari: the iOS Simulator on this host cannot be driven (no Simulator.app in the Xcode 27 install; SafariDriver rejects safari:useSimulator).",
+    "SafariDriver native file injection yields a file whose bytes the page cannot read (arrayBuffer -> NotReadableError), an automation limitation; the identical fixture bytes are attached through DataTransfer after pinning their SHA-256 in the page against the manifest.",
+    "Peak memory is not exposed by Safari; no memory measurement is claimed here."
+  ]
+}

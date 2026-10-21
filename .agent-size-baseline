@@ -78,7 +78,7 @@
   "scripts/acceptance-developer-web-operations.ts": 26773,
   "scripts/acceptance-directory.mjs": 45554,
   "scripts/acceptance-research-knowledge.mjs": 23560,
-  "scripts/acceptance/browser-performance-matrix.mjs": 22840,
+  "scripts/acceptance/browser-performance-matrix.mjs": 22810,
   "scripts/audit-office-fidelity-368.ts": 34621,
   "scripts/compare-jsquash-367.ts": 22499,
   "scripts/donor-codecs-367.ts": 20391,

@@ -67,6 +67,23 @@ npm run deploy:production:guarded -- --expected-sha="$(git rev-parse origin/main
 
 Il wrapper ripete test/check/build/dry-run, richiede release admission valida e solo allora esegue `wrangler deploy`; se una prova manca termina `NO_GO` prima della pubblicazione.
 
+### Policy di rilascio owner 20/10/2026 (#162, #80)
+
+L'owner ha sostituito il criterio di rilascio: «pubblica con test automatici verdi» — suite completa, prove browser e telefoni simulati verdi, rollback effettivamente provato; il telefono fisico è opzionale dopo la release, e per le lane mobili «basta simulatore ed emulatore». Il criterio vive in `src/release/owner-policy-420.ts` e governa il wrapper guarded: le prove per-tool Gold e i receipt di dispositivo fisico restano visibili come `WAIVED_OWNER_DECISION`, mai come PASS. Il profilo storico resta disponibile con `STRUMENTINI_RELEASE_STRICT=1`.
+
+Evidenze richieste, tutte legate a revisione e impronta sorgente:
+
+```sh
+npm run build                     # dist su cui girano le lane mobili
+npm run acceptance:browser-performance     # matrix chrome/chromium/firefox/webkit
+npm run acceptance:android-chrome-avd:277  # emulatore Android + Chrome installato
+npm run acceptance:ios-safari-sim          # simulatore iOS/WebKit su macOS
+npm run release:rollback:420               # staging: deploy, rollback reale, ripristino
+npm run release:gate:420                   # ammissione automatica
+```
+
+Un receipt non si corregge a mano: se manca una prova la release resta `NO_GO`. `EMULATOR`/`SIMULATOR` non diventano mai prova fisica.
+
 ## Consegna e installazione
 
 Lavora da `origin/main` su un branch breve `feat/<ticket>` o `fix/<ticket>`; per sola documentazione va bene `docs/<ticket>`. Prima del push riallinea con `git pull --rebase origin main`, poi push del branch e PR verso `main`. La CI PR esegue i controlli scoped; merge solo con CI verde e criteri del ticket provati. Il pre-push locale blocca `origin/main`; non aggirarlo. Dopo il merge rileggi lo SHA remoto di `main` e verifica la CI cumulativa. La merge non fa deploy.

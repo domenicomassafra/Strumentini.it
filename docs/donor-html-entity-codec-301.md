@@ -4,6 +4,7 @@
 
 - **Adottato:** [`mathiasbynens/he`](https://github.com/mathiasbynens/he), tag [`v2.0.0`](https://github.com/mathiasbynens/he/releases/tag/v2.0.0), commit `e5658eccfecf6dfccee8797ca5126a3f22855609` (tag object `23433c0d2b3b0945bbc17ad43ef0895cb1fd8f0c`). Pubblicato su npm il 4 ottobre 2026. Licenza **MIT** (`LICENSE-MIT.txt` nel tarball).
 - **Pacchetto runtime:** `he@2.0.0` versione esatta in `package.json` e `package-lock.json`; tarball `https://registry.npmjs.org/he/-/he-2.0.0.tgz`; integrity npm `sha512-0jE+JPv08nhXWmI1dULybzqNt34RbkH6Ul6V4cmDONpjYx1SfyObKF38FJLaJ1K7WWD93LWL9lewzk4E1Ria4A==`.
+- **Notice MIT distribuito:** `public/licenses/he-301-MIT.txt` è una copia byte-identica di `node_modules/he/LICENSE-MIT.txt` (SHA-256 `483acb265f182907d1caf6cff9c16c96f31325ed23792832cc5d8b12d5f88c8a`). Il registro `scripts/donor-notices-366.ts` vincola i byte, l’attribuzione `Mathias Bynens` e la presenza finale in `dist/licenses/` tramite `scripts/inspect-build.ts`; la licenza resta quella del donor MIT. Nessun notice transitive per `he@2.0.0`, perché nessuna dependency runtime.
 - **Dependencies runtime/transitive per `he@2.0.0`:** nessuna. Asset esterni, font, WASM e file caricati a runtime dal donor: **nessuno**; la tabella di entità è inclusa nel pacchetto. `@types/he@1.2.3` è solo una dipendenza di sviluppo per i tipi. La precedente versione `he@1.2.0` continua come dipendenza interna di `node-html-parser`, senza sostituirla. Il gate generale di provenance/licenze **#126 rimane valido**, non è una dichiarazione Gold o ammissione al deploy.
 - **Alternative:** [`html-entities@2.6.0`](https://github.com/mdevils/html-entities) (MIT; ultimo npm 2025-03-30, codice upstream aggiornato al 2025-04-06, 686★ alla verifica 19/10/2026) offre HTML4/HTML5, ma `he@2.0.0` è più recente ed è già selezionato nella mappa `reuse-str-testo.md`, con semantica di tokenizzazione WHATWG documentata (ambiguous ampersands e riferimenti senza `;`). `html` di Python è un oracle distinto, non una dipendenza browser.
 
@@ -18,7 +19,7 @@ Differenze previste e coperte da test: la codifica named include anche caratteri
 ## Prove ripetibili
 
 ```sh
-npx vitest run tests/developer-web-engine.test.ts tests/html-entity-codec-301.test.ts --maxWorkers=1
+npx vitest run tests/developer-web-engine.test.ts tests/html-entity-codec-301.test.ts tests/html-entity-codec-301-regression.test.ts tests/donor-notices-366.test.ts --maxWorkers=1
 npx tsx scripts/benchmark-html-entity-301.ts
 npm run build
 node scripts/acceptance-html-entity-301.browser.mjs

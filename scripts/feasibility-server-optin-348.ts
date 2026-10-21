@@ -71,6 +71,9 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   "src/components/account/auth-client.ts": "b32363ed352edf1a2b97c5f1cfc4650c0d46d55731cdf2e11e2fc354fb8b8f21",
   // 2026-10-12 #330 reviewed: external GET remains explicit opt-in, no credentials/referrer, no new endpoint, abort/stale guard.
   "src/components/tools/ConnectionDeviceInfoTool.tsx": "fe92363d300ef4ac5e1e73d55f28ddb06eade2d46b218be6e73d3670b92acc84",
+  // #274 source-reviewed: opt-in same-origin GET of three fixed /models/portrait-modnet/
+  // assets into CacheStorage; AbortController cancels the download. No image upload.
+  "src/components/tools/image-visual/PortraitMattingPanel274.tsx": "d1f7ba013e7dbdf341e3241d50dc566d32dd49f31eda203ff7fe58482ef5fc8e",
   "src/components/tools/research-knowledge/ViesVerificationPanel.tsx": "8e5032a786b97b117b7c079ffd7077ba2f70118fecf0c735b17bd5a05425e147",
   "src/engines/pdf/pdf-to-pptx-255.ts": "d810c0cbb05f8d59810bcbf04dc070a953e800e12fdba5b94d073493416b2a6c",
   "src/engines/url-marketing/index.ts": "b21ca7a9fe2002ba75e4a40e83a824e40bf06a57833f5eec58a59f09dbfae521",
