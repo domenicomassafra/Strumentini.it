@@ -1,6 +1,7 @@
 import fontkit from "@pdf-lib/fontkit";
 import {
-  PDFDocument, PDFTextField, PDFCheckBox, PDFDropdown, PDFRadioGroup, PDFRef,
+  PDFArray, PDFDict, PDFDocument, PDFName, PDFStream, type PDFObject,
+  PDFTextField, PDFCheckBox, PDFDropdown, PDFRadioGroup, PDFRef,
 } from "pdf-lib";
 import { inspectPdfBytes } from "./index";
 import { parsePdf } from "./parser";
@@ -55,6 +56,44 @@ function validateSource(source: Uint8Array, signal?: AbortSignal) {
   abort(signal);
 }
 
+// PDF names may use hex escapes (e.g. /X#46A is /XFA). Raw byte matching
+// alone cannot prove that a form is free of active or signed structures.
+function rejectUnsupportedPdfObjects(pdf: PDFDocument) {
+  const blockedKeys = new Set([
+    "XFA", "JavaScript", "JS", "AA", "OpenAction", "Perms",
+    "ByteRange", "SigFlags", "Sig", "ObjStm",
+  ]);
+  const visited = new Set<PDFObject>();
+  const walk = (object: PDFObject, depth: number): void => {
+    if (object instanceof PDFRef) return; // Every indirect object is checked below.
+    if (depth > 64) fail("UNSUPPORTED_CAPABILITY", "Oggetti PDF troppo nidificati");
+    if (visited.has(object)) return;
+    visited.add(object);
+    if (object instanceof PDFStream) { walk(object.dict, depth + 1); return; }
+    if (object instanceof PDFArray) {
+      for (const item of object.asArray()) walk(item, depth + 1);
+      return;
+    }
+    if (object instanceof PDFDict) {
+      for (const [key, value] of object.entries()) {
+        const name = key.decodeText();
+        if (blockedKeys.has(name) ||
+            (value instanceof PDFName &&
+              ((name === "FT" && value.decodeText() === "Sig") ||
+                (name === "S" && value.decodeText() === "JavaScript") ||
+                (name === "Type" && value.decodeText() === "ObjStm")))) {
+          fail("UNSUPPORTED_CAPABILITY", "XFA, JavaScript, firme o azioni PDF non supportati");
+        }
+        walk(value, depth + 1);
+      }
+    }
+  };
+  const objects = pdf.context.enumerateIndirectObjects();
+  if (objects.length > 20_000) fail("PDF_LIMIT", "Troppi oggetti PDF");
+  for (const [, object] of objects) walk(object, 0);
+  walk(pdf.catalog, 0);
+}
+
 async function open(source: Uint8Array, signal?: AbortSignal) {
   validateSource(source, signal);
   let pdf: PDFDocument;
@@ -63,6 +102,7 @@ async function open(source: Uint8Array, signal?: AbortSignal) {
   } catch { fail("MALFORMED_PDF", "Impossibile interpretare il PDF"); }
   abort(signal);
   if (pdf.isEncrypted) fail("UNSUPPORTED_CAPABILITY", "PDF cifrato");
+  rejectUnsupportedPdfObjects(pdf);
   const pageCount = pdf.getPageCount();
   if (pageCount < 1 || pageCount > MAX_PAGES) fail("PDF_LIMIT", "Massimo 80 pagine");
   let inspection: ReturnType<typeof inspectPdfBytes>;
