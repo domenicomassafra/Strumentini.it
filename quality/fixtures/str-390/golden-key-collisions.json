@@ -1,0 +1,18 @@
+{
+  "title": "STR-390 composite key framing, decimal precision, duplicate cardinality and NULL isolation",
+  "date": "2026-10-20",
+  "keyCollision": {
+    "left": "a,b,value\na|b,c,L1\na,b|c,L2\n01,x,L3\nNULL,x,L4",
+    "right": "a,b,value\na|b,c,R1\na,b|c,R2\n1,x,R3\nNULL,x,R4",
+    "matched": 2
+  },
+  "ambiguous": {
+    "left": "id,value\nx,L1\nx,L2",
+    "right": "id,value\nx,R1\nx,R2",
+    "expandedRows": 4
+  },
+  "splitMerge": {
+    "parts": ["id,payload\n1,☕\n1,☕", "id,payload\n2,\"a,b\""],
+    "expected": "id,payload\n1,☕\n1,☕\n2,\"a,b\""
+  }
+}
