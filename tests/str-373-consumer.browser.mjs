@@ -12,13 +12,14 @@ const base = "http://127.0.0.1:" + port;
 const temp = mkdtempSync(join(tmpdir(), "pdf-text-133-"));
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { stdio: "ignore" });
 let browser;
+let page;
 
-function independentFixture() {
+function independentFixture(font = "Courier") {
   const runs = ["ALFA", "RESTO"].map((s) => "BT /F1 18 Tf 72 696 Td (" + s + ") Tj ET");
   const refs = [
     "<< /Type /Catalog /Pages 2 0 R >>",
     "<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 >>",
-    "<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /" + font + " >>",
     "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>",
     "<< /Length " + Buffer.byteLength(runs[0]) + " >>\nstream\n" + runs[0] + "\nendstream",
     "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>",
@@ -96,10 +97,11 @@ try {
   writeFileSync(join(temp, "input.pdf"), input);
   const before = independentPdf("input.pdf", ["ALFA", "RESTO"]);
   await serverReady();
-  browser = await chromium.launch({ headless: true, executablePath: "/usr/bin/google-chrome",
-    args: ["--no-sandbox", "--disable-dev-shm-usage"] });
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
-  const page = await context.newPage();
+  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
+  const context = browser.contexts()[0];
+  assert(context, "No existing Chrome automation browser context");
+  page = await context.newPage();
+  await page.setViewportSize({ width: 390, height: 844 });
   const errors = [];
   const offsite = [];
   const uploads = [];
@@ -125,6 +127,13 @@ try {
   assert.deepEqual(before, after, "Layout changed outside the expected glyph pixels");
   const editedPixels = await compareRenderedPixels(before);
   assert.deepEqual(readFileSync(join(temp, "input.pdf")), input);
+  const wrongFont = independentFixture("Helvetica");
+  writeFileSync(join(temp, "missing-font.pdf"), wrongFont);
+  assert.match(execFileSync("pdffonts", [join(temp, "missing-font.pdf")], { encoding: "utf8" }), /Helvetica/);
+  await form.locator('input[type="file"]').setInputFiles({ name: "missing-font.pdf", mimeType: "application/pdf", buffer: wrongFont });
+  await form.getByRole("button", { name: "Modifica e verifica PDF" }).click();
+  assert.match(await form.getByRole("alert").innerText(), /FONT|Courier/i);
+  assert.equal(await form.getByRole("link", { name: "Scarica PDF modificato" }).count(), 0);
   // Hold the real browser File read long enough to exercise an actual user cancellation.
   // This changes only the test page; the product still reads the complete original File.
   await page.evaluate(() => {
@@ -163,11 +172,11 @@ try {
   console.log(JSON.stringify({ verdict: "PDF133_COMPILED_BROWSER_PASS", inputBytes: input.length,
     outputBytes: output.length, pages: 2, sourceImmutable: true,
     independentOracle: "Poppler pdfinfo/pdftotext -bbox-layout/pdffonts",
-    text: ["BETA", "RESTO"], layoutsEqual: true, changedPixelsInOriginalTextBounds: editedPixels, malformedRefused: true, oversizedRefused: true,
+    text: ["BETA", "RESTO"], layoutsEqual: true, changedPixelsInOriginalTextBounds: editedPixels, missingFontRefused: true, malformedRefused: true, oversizedRefused: true,
     viewport: "390x844", offsiteRequests: offsite.length, uploads: uploads.length, jsErrors: errors.length, mobilePhysical: "NOT_RUN" }));
-  await context.close();
 } finally {
-  if (browser) await browser.close();
+  if (page && !page.isClosed()) await page.close();
+  // The CDP browser belongs to the MiniPC automation profile; leave it and other tabs open.
   server.kill();
   rmSync(temp, { recursive: true, force: true });
 }
