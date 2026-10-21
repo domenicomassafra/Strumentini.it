@@ -69,9 +69,11 @@ describe("STR-409 official annual source acceptance", () => {
   });
 
   it("keeps an unreleased future annual baseline outside today's audit", () => {
-    const base = ANNUAL_SOURCE_CHANGE_LOG_117.at(-1)!;
+    const base = ANNUAL_SOURCE_CHANGE_LOG_117.find((row) =>
+      row.entryId === "national-irpef-gross-subset:2026:IRPEF-2026-117-v1");
+    expect(base).toBeDefined();
     const future = {
-      ...base, entryId: "national-irpef-gross-subset:2027:TEST-2027-v1",
+      ...base!, entryId: "national-irpef-gross-subset:2027:TEST-2027-v1",
       taxYear: 2027, version: "TEST-2027-v1", checkedAt: "2027-01-02",
       effectiveFrom: "2027-01-01", effectiveTo: "2027-12-31",
     };
