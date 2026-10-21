@@ -21,6 +21,14 @@ export type DonorNotice366 = {
 
 export const DONOR_NOTICES_366: readonly DonorNotice366[] = [
   {
+    file: "he-301-MIT.txt",
+    packages: ["he@2.0.0"],
+    spdx: "MIT",
+    upstream: "https://github.com/mathiasbynens/he",
+    sha256: "483acb265f182907d1caf6cff9c16c96f31325ed23792832cc5d8b12d5f88c8a",
+    marker: "Mathias Bynens",
+  },
+  {
     file: "ipaddr-303-MIT.txt",
     packages: ["ipaddr.js@2.5.0"],
     spdx: "MIT",
