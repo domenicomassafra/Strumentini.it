@@ -15,8 +15,9 @@ describe("#274 portrait matting resource and PNG boundaries", () => {
     expect(digest("public/models/portrait-modnet/onnx/model_quantized.onnx")).toBe(PORTRAIT_MODEL_SHA256);
     expect(digest("public/models/portrait-modnet/config.json")).toBe("e144d8af9b1f09649785c77f592a76bbc69504ae02e43700663b2a9f00d9c8a2");
     expect(digest("public/models/portrait-modnet/preprocessor_config.json")).toBe("07d83634b1fdd20142ca6e3fe55ab92b558f56d1b0f005ff3a7926f1c9e1165d");
-    expect(digest("public/models/portrait-modnet/LICENSE")).toBe("c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4");
-    expect(digest("public/vendor/portrait-modnet/LICENSE-onnxruntime.txt")).toBe("2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c");
+    expect(digest("public/licenses/portrait-modnet-274-LICENSE.txt")).toBe("c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4");
+    expect(digest("public/licenses/onnxruntime-web-274-MIT.txt")).toBe("2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c");
+    expect(digest("public/licenses/transformers-274-Apache-2.0.txt")).toBe("cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30");
     expect(digest("node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.wasm")).toBe("06ba057753da3847e4c24f02d91ab133455b0817c69a44993a9a53a2146df9e3");
     expect(digest("node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.mjs")).toBe("c57ca56328877353a575e51bbca6f18450027d6c9bf2307a2cb2c41363b4de9f");
     const locked = JSON.parse(readFileSync(resolve(root, "package-lock.json"), "utf8"));

@@ -4,7 +4,11 @@ import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { expectedAssetDistribution366 } from "./donor-asset-distributions-366";
+import { expectedAssetDistribution366, pinnedModelRevision366 } from "./donor-asset-distributions-366";
+import { validModelSource366, versionAccepted366 } from "./donor-model-source-366";
+import { parseAssetPins366, type AssetPin366 } from "./donor-asset-pins-366";
+export { parseAssetPins366 };
+export type { AssetPin366 };
 import { knownSpdx366 as knownSpdx } from "./donor-spdx-366";
 import { isLocalAuthored366, verifyLocalAuthored366 } from "./donor-local-authored-366";
 import { verifiedFontPrimary366 } from "./donor-font-primary-366";
@@ -29,7 +33,6 @@ type LockEntry = {
 };
 type Lock = { lockfileVersion?: number; packages?: Record<string, LockEntry> };
 type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string> };
-export type AssetPin366 = { path: string; sha256: string; license: string; version: string; source: string };
 type Candidate = { name?: string; version?: string; license?: string; dist?: { integrity?: string; tarball?: string; shasum?: string }; dependencies?: Record<string, string> | null };
 type Row = { name: string; version: string; license: string; source: string; integrity: string; scope: "production" | "optional-runtime" };
 
@@ -204,6 +207,7 @@ function safeAssetPath(root: string, name: string): string | null {
 }
 function validAssetSource(asset: AssetPin366, root: string): boolean {
   if (asset.path.startsWith("public/fonts/")) return verifiedFontPrimary366(root, asset);
+  if (pinnedModelRevision366(asset.path)) return validModelSource366(asset);
   const distribution = expectedAssetDistribution366(asset.path);
   if (VENDORED_DIRS_366.some((dir) => asset.path.startsWith(dir + "/"))) {
     return !!distribution && validSource(distribution, asset.version, asset.source);
@@ -237,7 +241,7 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     pinned.add(asset.path);
     const authored = isLocalAuthored366(asset.path);
     if (!authored && !knownSpdx(asset.license)) failures.push(`UNKNOWN_ASSET_LICENSE ${asset.path}`);
-    if (!authored && !asset.path.startsWith("public/fonts/") && !/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/u.test(asset.version)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
+    if (!versionAccepted366(asset, authored)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
     if (!authored && !validAssetSource(asset, root)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
     // Do not allow arbitrary vendor paths to claim first-party provenance.
     if (!authored && (asset.license === "LOCAL_AUTHORED" || asset.version === "GIT" || asset.source.startsWith("git:"))) {
@@ -291,17 +295,6 @@ export function auditCandidate366(candidate: Candidate, lockEntry: LockEntry | n
     }
   }
   return { name, version, license: candidate.license ?? "UNKNOWN", integrity: candidate.dist?.integrity ?? "UNKNOWN", source: candidate.dist?.tarball ?? "UNKNOWN", decision: "NO_ADOPT" as const, failures };
-}
-
-export function parseAssetPins366(document: string): AssetPin366[] {
-  const match = document.match(/<!-- ASSET-PINS-366-BEGIN -->([\s\S]*?)<!-- ASSET-PINS-366-END -->/u);
-  if (!match?.[1]?.trim()) throw new Error("MISSING_ASSET_PIN_REGISTER");
-  return match[1].trim().split("\n").map((line) => {
-    const parts = line.split("\t");
-    if (parts.length !== 5) throw new Error(`INVALID_ASSET_PIN_LINE ${line}`);
-    const [path = "", sha256 = "", license = "", version = "", source = ""] = parts;
-    return { path, sha256, license, version, source };
-  });
 }
 
 export const VENDORED_DIRS_366 = [
