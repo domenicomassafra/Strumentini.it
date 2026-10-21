@@ -116,6 +116,38 @@ export const DONOR_NOTICES_366: readonly DonorNotice366[] = [
     sha256: "176b07a18c0bb3836aaeb61088fd0bf11a38f66e6f15e3fbda85faa225250d6e",
     marker: "Luke Page",
   },
+  {
+    file: "transformers-274-Apache-2.0.txt",
+    packages: ["@huggingface/transformers@4.3.1"],
+    spdx: "Apache-2.0",
+    upstream: "https://github.com/huggingface/transformers.js/tree/4.3.1",
+    sha256: "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    marker: "Apache License",
+  },
+  {
+    file: "onnxruntime-web-274-MIT.txt",
+    packages: ["onnxruntime-web@1.31.0-dev.20260914-8d85527a0"],
+    spdx: "MIT",
+    upstream: "https://github.com/microsoft/onnxruntime/tree/8d85527a0",
+    sha256: "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    marker: "Microsoft Corporation",
+  },
+  {
+    file: "portrait-modnet-274-LICENSE.txt",
+    packages: ["MODNet (ZHKKKe/MODNet) released checkpoints", "Xenova/modnet"],
+    spdx: "Apache-2.0",
+    upstream: "https://github.com/ZHKKKe/MODNet/tree/28165a451e4610c9d77cfdf925a94610bb2810fb",
+    sha256: "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    marker: "Apache License",
+  },
+  {
+    file: "portrait-modnet-274-ATTRIBUTION.txt",
+    packages: ["MODNet (ZHKKKe/MODNet) released checkpoints", "Xenova/modnet"],
+    spdx: "Apache-2.0",
+    upstream: "https://huggingface.co/Xenova/modnet/tree/fa2fa546052fba4c08921230a26cc69a333fca12",
+    sha256: "1e9d82b10bab525fd9c813de659e00c33c043b6fbd2cc120c7f5e605b5bfef61",
+    marker: "MODNet",
+  },
 ];
 
 const SOURCE_NOTICE_DIR = "public/licenses";
