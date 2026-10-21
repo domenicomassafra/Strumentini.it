@@ -87,7 +87,7 @@ async function verifyPdf(bytes, flattened) {
 }
 try {
   await ready();
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   const page = await context.newPage();
   const errors = [];
