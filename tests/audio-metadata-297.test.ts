@@ -81,6 +81,27 @@ describe("#297 — source signature and actual media vs independent ffprobe", ()
     expect(() => projectAudioMetadata297({ format: {}, common: {} } as never, "MP3")).toThrow(/UNRECOGNIZED/u);
   });
 
+  it("cancels an in-flight preflight Blob read without waiting for I/O", async () => {
+    class StalledReadBlob extends Blob {
+      override slice(): Blob { return { arrayBuffer: () => new Promise<ArrayBuffer>(() => {}) } as Blob; }
+    }
+    const controller = new AbortController();
+    const pending = inspectAudioMetadata297(new StalledReadBlob([new Uint8Array(64)]), controller.signal);
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+  });
+
+  it("enforces the five-second deadline during preflight Blob I/O", async () => {
+    class StalledReadBlob extends Blob {
+      override slice(): Blob { return { arrayBuffer: () => new Promise<ArrayBuffer>(() => {}) } as Blob; }
+    }
+    vi.useFakeTimers();
+    const pending = inspectAudioMetadata297(new StalledReadBlob([new Uint8Array(64)]));
+    const assertion = expect(pending).rejects.toThrow(/TIMEOUT/u);
+    await vi.advanceTimersByTimeAsync(AUDIO_METADATA_TIMEOUT_MS);
+    await assertion;
+  });
+
   it("rejects an already-aborted read before starting a worker", async () => {
     const controller = new AbortController();
     controller.abort();

@@ -1,59 +1,14 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { AudioJob231, AudioJobResult231, AudioPreviewJob036, AudioPreviewResult036 } from "../../../engines/browser-audio/timeline-worker-231";
 import { inspectAudioPcm16Source231 } from "../../../engines/browser-audio/timeline-231";
+import { executeAudioJob231 } from "../../../engines/browser-audio/execute-job-411";
+import { readMediaFile411 } from "../../../engines/media/read-file-411";
 import { createOutputArtifactDescriptor, type OutputArtifactDescriptor } from "../../../runtime/output-artifact";
 import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
 import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 
 const INPUT_LIMIT = 12 * 1024 * 1024;
 const TOTAL_LIMIT = 24 * 1024 * 1024;
-const BARS = 192;
-
-/** Owns exactly one disposable Worker and never publishes cancelled output. */
-function executeAudioJob231(job: AudioJob231 | AudioPreviewJob036, signal: AbortSignal): Promise<AudioJobResult231 | AudioPreviewResult036> {
-  if (signal.aborted) return Promise.reject(new DOMException("Montaggio annullato", "AbortError"));
-  if (typeof Worker === "undefined") return Promise.reject(new Error("AUDIO_231_WORKER_UNSUPPORTED: Web Worker non disponibile."));
-  return new Promise((resolve, reject) => {
-    let worker: Worker;
-    try { worker = new Worker(new URL("../../../engines/browser-audio/timeline-worker-231.ts", import.meta.url), { type: "module" }); }
-    catch (error) { reject(error); return; }
-    let settled = false;
-    let watchdog: ReturnType<typeof setTimeout> | undefined;
-    const finish = (error?: Error, result?: AudioJobResult231 | AudioPreviewResult036) => {
-      if (settled) return;
-      settled = true;
-      if (watchdog !== undefined) clearTimeout(watchdog);
-      signal.removeEventListener("abort", onAbort);
-      worker.terminate();
-      if (error) reject(error);
-      else if (result) resolve(result);
-      else reject(new Error("AUDIO_231_WORKER_FAILED: Nessun output verificabile."));
-    };
-    const onAbort = () => finish(new DOMException("Montaggio annullato", "AbortError"));
-    signal.addEventListener("abort", onAbort, { once: true });
-    worker.onmessage = (event: MessageEvent<AudioJobResult231 | AudioPreviewResult036 | { kind: "error"; message: string }>) => {
-      const response = event.data;
-      if (response?.kind === "error") { finish(new Error(response.message)); return; }
-      if (!response || response.kind !== (job.kind === "preview" ? "preview" : "done") ||
-          !response.preview || !Number.isFinite(response.preview.durationSeconds) ||
-          !Number.isSafeInteger(response.preview.outputBytes) || response.preview.outputBytes < 46 ||
-          !Array.isArray(response.sourceFormats) || response.sourceFormats.length !== job.sources.length ||
-          (response.kind === "done" && (!(response.wav instanceof ArrayBuffer) ||
-            response.wav.byteLength !== response.preview.outputBytes ||
-            !Array.isArray(response.peaks) || response.peaks.length !== BARS ||
-            response.peaks.some((peak) => !Number.isFinite(peak) || peak < 0 || peak > 1)))) {
-        finish(new Error("AUDIO_231_OUTPUT_VERIFY: Output Worker non coerente."));
-        return;
-      }
-      finish(undefined, response);
-    };
-    worker.onerror = () => finish(new Error("AUDIO_231_WORKER_FAILED: Elaborazione locale fallita."));
-    watchdog = setTimeout(() => finish(new Error("AUDIO_231_WORKER_TIMEOUT: Elaborazione oltre il tempo massimo.")), 60_000);
-    if (signal.aborted) { onAbort(); return; }
-    try { worker.postMessage(job, job.sources.slice()); }
-    catch (error) { finish(error instanceof Error ? error : new Error("AUDIO_231_WORKER_FAILED")); }
-  });
-}
 
 /**
  * Opt-in WAV PCM file processing workspace; #231 remains the bounded DSP.
@@ -72,6 +27,7 @@ export function AudioTimelinePanel231() {
   const [threshold, setThreshold] = useState("10");
   const [minimumFrames, setMinimumFrames] = useState("400");
   const [busy, setBusy] = useState(false);
+  const [progress411, setProgress411] = useState<{ phase: "read" | "frames"; completed: number; total: number } | null>(null);
   const [status, setStatus] = useState("Seleziona uno o due file WAV PCM16, poi avvia il montaggio locale.");
   const [rendered, setRendered] = useState<AudioJobResult231 | null>(null);
   const [previewed, setPreviewed] = useState<AudioPreviewResult036 | null>(null);
@@ -102,6 +58,7 @@ export function AudioTimelinePanel231() {
     generation.current++;
     pending.current?.abort(); pending.current = null;
     setBusy(false);
+    setProgress411(null);
     clearOutput();
     setFiles(next);
     setSecondFirst(false);
@@ -114,13 +71,24 @@ export function AudioTimelinePanel231() {
   function cancel() {
     generation.current++;
     pending.current?.abort(); pending.current = null;
-    setBusy(false); clearOutput();
+    setBusy(false); setProgress411(null); clearOutput();
     setStatus("AUDIO_231_CANCELLED: Montaggio interrotto; nessun output parziale disponibile.");
   }
   useEffect(() => () => {
     generation.current++;
     pending.current?.abort();
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+  }, []);
+  useEffect(() => {
+    const reportVisibility = () => {
+      if (document.hidden && pending.current) {
+        setStatus("MEDIA_411_SUSPENDED: Scheda in background; torna in primo piano o annulla e riprova.");
+      } else if (pending.current) {
+        setStatus("MEDIA_411_RESUMED: Scheda attiva; se il lavoro è fermo, annulla e riprova.");
+      }
+    };
+    document.addEventListener("visibilitychange", reportVisibility);
+    return () => document.removeEventListener("visibilitychange", reportVisibility);
   }, []);
   useEffect(() => {
     // Astro may render the initial checkbox before browser storage is ready.
@@ -159,14 +127,29 @@ export function AudioTimelinePanel231() {
     pending.current = controller;
     const op = ++generation.current;
     setBusy(true);
+    setProgress411(null);
     setStatus("Lettura WAV locale; nessun invio di dati in rete…");
     try {
       if (files.length > 2 || files.some((file) => !/\.wav$/iu.test(file.name) || file.size < 44 || file.size > INPUT_LIMIT) ||
           files.reduce((n, file) => n + file.size, 0) > TOTAL_LIMIT) {
         throw new Error("AUDIO_231_INPUT_LIMIT: solo 1–2 file WAV entro 12 MiB ciascuno.");
       }
-      const sources = await Promise.all(files.map((file) => file.arrayBuffer()));
+      const totalRead = files.reduce((n, file) => n + file.size, 0);
+      let previouslyRead = 0;
+      const sources: ArrayBuffer[] = [];
+      for (const file of files) {
+        const buffer = await readMediaFile411(file, {
+          maxBytes: INPUT_LIMIT, signal: controller.signal,
+          onProgress: (loaded) => {
+            if (controller.signal.aborted || op !== generation.current) return;
+            setProgress411({ phase: "read", completed: previouslyRead + loaded, total: totalRead });
+          },
+        });
+        sources.push(buffer);
+        previouslyRead += file.size;
+      }
       if (controller.signal.aborted || op !== generation.current) return;
+      setProgress411(null);
       const job: AudioJob231 | AudioPreviewJob036 = {
         kind: mode, sources,
         startSeconds: begin.trim() === "" ? Number.NaN : Number(begin),
@@ -179,7 +162,11 @@ export function AudioTimelinePanel231() {
         },
       };
       setStatus(mode === "preview" ? "Anteprima durata/silenzi nel Worker locale cancellabile…" : "Montaggio e analisi della waveform in un Worker locale cancellabile…");
-      const result = await executeAudioJob231(job, controller.signal);
+      const result = await executeAudioJob231(job, controller.signal, (completed, total) => {
+        if (!controller.signal.aborted && op === generation.current) {
+          setProgress411({ phase: "frames", completed, total });
+        }
+      });
       if (controller.signal.aborted || op !== generation.current) return;
       if (result.kind === "preview") {
         setPreviewed(result);
@@ -218,6 +205,7 @@ export function AudioTimelinePanel231() {
         setStatus(error instanceof Error ? error.message : "AUDIO_231_WORKER_FAILED");
       }
     } finally {
+      if (generation.current === op) setProgress411(null);
       if (pending.current === controller) pending.current = null;
       if (generation.current === op) setBusy(false);
     }
@@ -259,6 +247,11 @@ export function AudioTimelinePanel231() {
     </label>
     <p class="file-note">Inizialmente disattivato. Non scarica risultati già mostrati; puoi revocare il consenso. Il browser può bloccare i download: il comando manuale resta disponibile.</p>
     {downloadStatus !== "" && <p role="status" class="file-note" data-download-status339>{downloadStatus}</p>}
+    {busy && progress411 && <p class="file-note" data-media-progress411>
+      <progress value={progress411.completed} max={progress411.total}
+        aria-label={progress411.phase === "read" ? "Byte WAV letti" : "Frame WAV scritti"} />
+      {progress411.completed} / {progress411.total} {progress411.phase === "read" ? "byte letti realmente" : "frame PCM elaborati"}
+    </p>}
     <p role="status" aria-live="polite" data-audio-timeline-status>{status}</p>
     {previewed !== null && <section data-audio-036-preview aria-label="Anteprima tecnica prima dell'esportazione">
       <h4>Anteprima locale: nessun WAV ancora creato</h4>
