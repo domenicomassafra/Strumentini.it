@@ -74,6 +74,8 @@ async function main(): Promise<void> {
     androidReceiptPath: "quality/receipts/android-chrome-avd-277.json",
     iosReceipt: await json("quality/receipts/ios-safari-simulated-281.json"),
     iosReceiptPath: "quality/receipts/ios-safari-simulated-281.json",
+    rollbackReceipt: await json("quality/receipts/release/rollback.json"),
+    rollbackReceiptPath: "quality/receipts/release/rollback.json",
     distPageHashes: await distPageHashes420(async (route) => {
       try {
         return await readFile(resolve(ROOT, "dist", route, "index.html"));
