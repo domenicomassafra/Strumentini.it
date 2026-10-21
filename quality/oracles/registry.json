@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 273,
+  "entry_count": 274,
   "entries": [
     {
       "id": "cand-001",
@@ -12187,6 +12187,54 @@
       "unresolved_gaps": [
         "This is not general PDF repair; wider corrupted/hostile corpus not verified",
         "No Gold receipt or production deployment admission"
+      ]
+    },
+    {
+      "id": "cand-274",
+      "candidate": "Bounded P7M/CMS SignedData content extraction without authenticity claims",
+      "tool_family": "file-privacy",
+      "maintenance_class": "R",
+      "truth_sources": [
+        "rfc5652",
+        "openssl-cli",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "RFC 5652 §5 ContentInfo/SignedData/encapContentInfo.eContent, cross-checked with OpenSSL 3.5.5 openssl cms -sign/-verify on synthetic envelopes generated locally on 2026-10-21.",
+      "invariants": [
+        "only SignedData.encapContentInfo.eContent bytes are emitted",
+        "the extracted content can be readable while the signature is invalid",
+        "no code path reports a verified, authentic or legally valid signature",
+        "every DER length stays inside the buffer and every refusal has a stable code",
+        "zero network access and no execution or rendering of the payload"
+      ],
+      "adversarial_cases": [
+        "tampered eContent with an intact envelope",
+        "detached signature without eContent",
+        "truncated envelope",
+        "BER indefinite length",
+        "declared length beyond the buffer",
+        "ContentInfo that is not SignedData"
+      ],
+      "expected_output_strategy": "tests/regroom-str-176.test.ts compares extracted bytes with the independently signed OpenSSL corpus and asserts always-NOT_VERIFIED; scripts/acceptance-p7m-176.mjs reopens the downloaded file in compiled Chromium.",
+      "security_privacy_edges": [
+        "LOCAL only, network forbidden",
+        "bounded 16 MiB input and content, DER depth/node/certificate caps",
+        "no certificate trust, revocation or eIDAS evaluation",
+        "payload never executed or injected into the document"
+      ],
+      "portability_browser_edges": [
+        "Chromium 390px headless acceptance only; other engines and physical mobile devices remain unverified"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "OpenSSL 3.5.5 cms -sign/-verify generated the corpus and independently reported a content-verification failure on the tampered envelope while still writing its bytes.",
+        "role": "independent synthetic corpus proof, not a Gold receipt"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "No Gold receipt",
+        "No real Italian CA P7M, CAdES profile, multi-signer or timestamp corpus",
+        "No revocation, trust-list or eIDAS verification by design"
       ]
     }
   ]

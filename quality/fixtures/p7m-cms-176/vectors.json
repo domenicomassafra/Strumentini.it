@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "format": "P7M/CMS SignedData (RFC 5652)",
+  "source": "Synthetic local-only CMS envelopes produced with OpenSSL 3.5.5 on the MiniPC on 2026-10-21 (openssl req -x509 RSA-2048 self-signed + openssl cms -sign -binary -nodetach -outform DER/PEM). No third-party personal data, no real signature, zero upload.",
+  "expected": {
+    "pdf": {
+      "envelope": "documento-pdf.p7m",
+      "payload": "inner.pdf",
+      "bytes": 192,
+      "mimeType": "application/pdf",
+      "contentTypeOid": "1.2.840.113549.1.7.1",
+      "signers": 1,
+      "certificates": 1
+    },
+    "xml": {
+      "envelope": "documento-xml.p7m",
+      "payload": "inner.xml",
+      "bytes": 101,
+      "mimeType": "application/xml"
+    },
+    "pem": {
+      "envelope": "documento-pem.p7m",
+      "payload": "inner.pdf",
+      "encoding": "PEM"
+    },
+    "tampered": {
+      "envelope": "documento-manomesso.p7m",
+      "payloadBytes": 192,
+      "opensslOutcome": "CMS_verify: content verify error (verification failure) while the eContent is still written in full"
+    }
+  },
+  "refuse": [
+    "detached signature without encapsulated content (P7M_DETACHED)",
+    "truncated envelope (P7M_TRUNCATED)",
+    "BER indefinite length (P7M_INDEFINITE_LENGTH)",
+    "content that is not a SignedData envelope (P7M_CONTENT_INFO)"
+  ],
+  "notVerified": [
+    "digest and signature of every SignerInfo",
+    "certificate chain, trust anchor and eIDAS qualification",
+    "CRL/OCSP freshness, timestamp and validity at signing time",
+    "any claim of legal or authentic status"
+  ]
+}
