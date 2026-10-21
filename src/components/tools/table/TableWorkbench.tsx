@@ -279,7 +279,6 @@ export function TableWorkbench({ toolId, title: _title, description: _descriptio
 
   function setOption(key: string, value: OptionValue) {
     setOptions((current) => ({ ...current, [key]: value }));
-    setUndoText388(null);
     invalidate();
   }
 

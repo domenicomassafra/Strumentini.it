@@ -16,12 +16,21 @@ function shorten(value: string): string {
   return text;
 }
 
-function previewRows(text: string, delimiter: string): string[] {
+interface PreviewRow {
+  readonly cells: readonly string[];
+  readonly display: string;
+}
+
+function previewRows(text: string, delimiter: string): PreviewRow[] {
   const excerpt = text.slice(0, PREVIEW_CHARS);
   const parsed = Papa.parse<string[]>(excerpt, {
     delimiter, preview: PREVIEW_ROWS, dynamicTyping: false, skipEmptyLines: false,
   });
-  return parsed.data.slice(0, PREVIEW_ROWS).map(row => row.map(shorten).join(" · "));
+  return parsed.data.slice(0, PREVIEW_ROWS).map(cells => ({
+    cells,
+    // Quote each cell so embedded separators, quotes and newlines remain distinct.
+    display: cells.map(cell => JSON.stringify(shorten(cell))).join(" · "),
+  }));
 }
 
 export interface TableDiff388 {
@@ -33,11 +42,18 @@ export interface TableDiff388 {
 export function tableDiff388(source: string, output: string, delimiter: string): TableDiff388 {
   const before = previewRows(source, delimiter);
   const after = previewRows(output, delimiter);
-  const rows = Array.from({ length: Math.max(before.length, after.length) }, (_, index) => ({
-    before: before[index] ?? "—",
-    after: after[index] ?? "—",
-    changed: before[index] !== after[index],
-  }));
+  const rows = Array.from({ length: Math.max(before.length, after.length) }, (_, index) => {
+    const left = before[index];
+    const right = after[index];
+    return {
+      before: left?.display ?? "—",
+      after: right?.display ?? "—",
+      // Compare original cell values, before any preview-only shortening/joining.
+      changed: left === undefined || right === undefined
+        || left.cells.length !== right.cells.length
+        || left.cells.some((cell, position) => cell !== right.cells[position]),
+    };
+  });
   return {
     rows,
     truncated: source.length > PREVIEW_CHARS || output.length > PREVIEW_CHARS
