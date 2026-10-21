@@ -91,7 +91,10 @@ function trackPage(page, origin) {
   return tracker;
 }
 
-const sumBytes = (tracker, urls) => urls.reduce((total, url) => total + (tracker.sizes.get(url) ?? 0), 0);
+const sumBytes = (tracker, urls) =>
+  urls.length === 0 || !urls.every((url) => tracker.sizes.has(url))
+    ? null
+    : urls.reduce((total, url) => total + (tracker.sizes.get(url) ?? 0), 0);
 
 async function openReader(context, origin) {
   const page = await context.newPage();
@@ -143,6 +146,7 @@ async function decode(context, origin, file) {
   await picker.setInputFiles(source);
   assert.equal(await page.locator("form input[type='file']").first().evaluate((input) => input.files?.length ?? 0), 1);
   assert.equal(tracker.scripts.length, scriptsAtLoad, "no decoder chunk may load before submit");
+  assert(!tracker.scripts.some((url) => /zxing/iu.test(url)), "the ZXing chunk must not be requested before submit");
   const started = Date.now();
   await form.getByRole("button", { name: "Decodifica QR" }).click();
   await page.locator("pre.json-result").waitFor({ timeout: 30_000 });
@@ -218,10 +222,13 @@ async function runCase(name, options, runner) {
       constructor(...args) { super(...args); window.__qr279Workers.created += 1; }
     };
   });
+  process.stderr.write(`[qr279] start ${name}\n`);
   try {
     cases.push({ name, status: "PASS", ...(await runner(context)) });
+    process.stderr.write(`[qr279] pass  ${name}\n`);
   } catch (error) {
     cases.push({ name, status: "FAIL", error: error instanceof Error ? error.message : String(error) });
+    process.stderr.write(`[qr279] fail  ${name}: ${error instanceof Error ? error.message : String(error)}\n`);
   } finally {
     await context.close();
   }
