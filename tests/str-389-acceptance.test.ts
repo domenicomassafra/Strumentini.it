@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { spawnSync } from "node:child_process";
 import { zipSync } from "fflate";
-import { editWorkbookCell389 } from "../src/engines/table/workbook-formulas-389";
+import { editWorkbookCell389, expandWorkbook389 } from "../src/engines/table/workbook-formulas-389";
 import { exportXlsxWorkbook389, openXlsxWorkbook389 } from "../src/engines/table/workbook-xlsx-389";
 
 const office = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
@@ -67,6 +67,24 @@ describe("STR-389 independent review regressions", () => {
     const retyped = editWorkbookCell389(cleared, 1, 0, "3");
     expect(retyped.cells[1]![0]!.kind).toBe("number");
     expect(retyped.cells[1]![2]!.value).toBe("3.2");
+  });
+
+  it("updates a two-level dependency graph and exports stable cached values without mutating the input", () => {
+    const source = fixture();
+    const snapshot = Buffer.from(source);
+    const withRow = expandWorkbook389(openXlsxWorkbook389(source), "row");
+    const withDependent = editWorkbookCell389(withRow, 2, 0, "=C2*2", "formula");
+    expect(withDependent.cells[2]![0]!.value).toBe("0.6");
+    const edited = editWorkbookCell389(withDependent, 1, 1, "3", "number");
+    expect(edited.cells[1]![2]!.value).toBe("3.1");
+    expect(edited.cells[2]![0]!.value).toBe("6.2");
+    const exported = exportXlsxWorkbook389(source, edited);
+    expect(ooxml(exported).cells).toMatchObject({
+      B2: { formula: null, value: "3" },
+      C2: { formula: "A2+B2", value: "3.1" },
+      A3: { formula: "C2*2", value: "6.2" },
+    });
+    expect(Buffer.from(source)).toEqual(snapshot);
   });
 
   it("rejects date format stored in the default cell style index 0", () => {

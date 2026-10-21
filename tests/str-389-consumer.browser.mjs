@@ -1,5 +1,6 @@
 /** Compiled Astro + existing MiniPC automation-browser; no separate Chrome profile. */
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
@@ -32,6 +33,7 @@ try {
   assert.notEqual(patchFormula, original, "real fixture cell C2");
   parts["xl/worksheets/sheet1.xml"] = new TextEncoder().encode(patchFormula);
   const source = Buffer.from(zipSync(parts, { level: 6 }));
+  const originalSha = createHash("sha256").update(source).digest("hex");
   browser = await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 45_000 });
   context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   page = await context.newPage();
@@ -60,11 +62,84 @@ try {
   const bytes = await readFile(await download.path());
   const independent = await readXlsxFile(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
   assert.deepEqual(independent[0].data[1], ["00123", 6, 11]);
+  assert.equal(createHash("sha256").update(source).digest("hex"), originalSha, "first input bytes unchanged");
   const outputParts = unzipSync(bytes);
   assert.match(new TextDecoder().decode(outputParts["xl/worksheets/sheet1.xml"]), /<f>SUM\(B2:B3\)<\/f><v>11<\/v>/u);
   await editor.getByLabel("Cella B2").fill("=C2");
   await editor.getByRole("alert").getByText(/FORMULA_CYCLE/u).waitFor();
   assert.equal(await editor.getByRole("button", { name: "Scarica XLSX con formule" }).isDisabled(), true);
+  // Separate decimal fixture: stale cache, 15-digit result and semantic calcPr readback.
+  const decimalBlob = await writeXlsxFile([{
+    sheet: "Dati", data: [
+      [{ value: "A", type: String }, { value: "B", type: String }, { value: "Totale", type: String }],
+      [{ value: 0.1, type: Number }, { value: 0.2, type: Number }, { value: "stale", type: String }],
+    ],
+  }]).toBlob();
+  const decimalParts = unzipSync(new Uint8Array(await decimalBlob.arrayBuffer()));
+  const decimalXml = new TextDecoder().decode(decimalParts["xl/worksheets/sheet1.xml"]);
+  const withStaleCache = decimalXml.replace(/<c r="C2"[^>]*>[^]*?<\/c>/u, '<c r="C2"><f>A2+B2</f><v>999</v></c>');
+  assert.notEqual(withStaleCache, decimalXml, "stale formula fixture must be applied");
+  decimalParts["xl/worksheets/sheet1.xml"] = new TextEncoder().encode(withStaleCache);
+  const workbookXml = new TextDecoder().decode(decimalParts["xl/workbook.xml"]);
+  const calcXml = '<calcPr calcMode="manual" fullPrecision="0" calcId="191029"/>';
+  const withCalc = /<calcPr\b[^>]*\/>/u.test(workbookXml)
+    ? workbookXml.replace(/<calcPr\b[^>]*\/>/u, calcXml)
+    : workbookXml.replace("</workbook>", calcXml + "</workbook>");
+  assert.notEqual(withCalc, workbookXml, "calcPr fixture must be applied");
+  decimalParts["xl/workbook.xml"] = new TextEncoder().encode(withCalc);
+  const decimalSource = Buffer.from(zipSync(decimalParts, { level: 6 }));
+  const decimalSha = createHash("sha256").update(decimalSource).digest("hex");
+  await editor.getByLabel("Apri workbook .xlsx").setInputFiles({
+    name: "decimali.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: decimalSource,
+  });
+  await editor.getByLabel("Risultato C2").waitFor();
+  assert.equal(await editor.getByLabel("Risultato C2").innerText(), "0.3", "ignore stale cached 999 and round decimal");
+  const decimalDownload = page.waitForEvent("download");
+  await editor.getByRole("button", { name: "Scarica XLSX con formule" }).click();
+  const decimalSaved = await decimalDownload;
+  const decimalBytes = await readFile(await decimalSaved.path());
+  const decimalOutput = unzipSync(decimalBytes);
+  const decimalResult = new TextDecoder().decode(decimalOutput["xl/worksheets/sheet1.xml"]);
+  assert.match(decimalResult, /<f>A2\+B2<\/f><v>0\.3<\/v>/u);
+  const decimalCalc = new TextDecoder().decode(decimalOutput["xl/workbook.xml"]);
+  assert.match(decimalCalc, /fullPrecision="0"/u);
+  assert.match(decimalCalc, /calcId="191029"/u);
+  assert.match(decimalCalc, /calcMode="auto"/u);
+  const independentDecimal = await readXlsxFile(decimalBytes.buffer.slice(decimalBytes.byteOffset, decimalBytes.byteOffset + decimalBytes.byteLength));
+  assert.deepEqual(independentDecimal[0].data[1], [0.1, 0.2, 0.3]);
+  assert.equal(createHash("sha256").update(decimalSource).digest("hex"), decimalSha, "source XLSX bytes unchanged");
+
+  // Refuse macro and external relation packages through the compiled UI.
+  const unsafeCases = [
+    {
+      label: "macro",
+      expected: /Macro|macro/u,
+      path: "[Content_Types].xml",
+      transform: (xml) => xml.replace("spreadsheetml.sheet.main+xml", "ms-excel.sheet.macroEnabled.main+xml"),
+    },
+    {
+      label: "external",
+      expected: /remot|estern/iu,
+      path: "xl/_rels/workbook.xml.rels",
+      transform: (xml) => xml.replace("</Relationships>", '<Relationship Id="external" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLink" TargetMode="External" Target="https://remote.invalid/a.xlsx"/></Relationships>'),
+    },
+  ];
+  for (const unsafe of unsafeCases) {
+    const archive = unzipSync(decimalSource);
+    const oldXml = new TextDecoder().decode(archive[unsafe.path]);
+    const nextXml = unsafe.transform(oldXml);
+    assert.notEqual(nextXml, oldXml, unsafe.label + " fixture must be applied");
+    archive[unsafe.path] = new TextEncoder().encode(nextXml);
+    await editor.getByLabel("Apri workbook .xlsx").setInputFiles({
+      name: unsafe.label + ".xlsx",
+      mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      buffer: Buffer.from(zipSync(archive)),
+    });
+    await editor.getByRole("alert").getByText(unsafe.expected).waitFor();
+    assert.match(await editor.getByRole("alert").innerText(), /UNSUPPORTED_WORKBOOK/u);
+    assert.equal(await editor.getByRole("button", { name: "Scarica XLSX con formule" }).count(), 0);
+  }
+
   assert.deepEqual(errors, []);
   assert.deepEqual(requests.filter((request) => !request.url.startsWith(origin)), [], "nessun egress esterno");
   assert.deepEqual(requests.filter((request) => !["GET", "HEAD"].includes(request.method)), [], "nessun upload");
