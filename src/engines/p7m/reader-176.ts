@@ -235,6 +235,7 @@ export function extractP7m176(source: P7mSource176, signal?: AbortSignal): P7mEx
   const budget: Budget176 = { nodes: 0 };
 
   const root = readTlv(der, 0, der.byteLength, 0, budget);
+  if (root.contentEnd !== der.byteLength) reject("TRAILING_DATA");
   if (root.tagClass !== 0 || !root.constructed || root.tag !== 16) reject("CONTENT_INFO");
   const outer = children(der, root, 0, budget);
   if (outer.length !== 2) reject("CONTENT_INFO");

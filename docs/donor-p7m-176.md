@@ -6,6 +6,7 @@ Ambito approvato dall'owner il 20/10/2026: **solo estrazione** del contenuto P7M
 
 - [node-forge 1.4.0](https://www.npmjs.com/package/node-forge), già in `dependencies` (`1.4.0`, licenza dichiarata `BSD-3-Clause OR GPL-2.0`), non usato in `src/`. Provato il 21/10 sul corpus sintetico: `forge.pkcs7.messageFromAsn1` riconosce l'OID `1.2.840.113549.1.7.2` ma restituisce `signers: []` e `content` come accessor con `rawCapture`, cioè non è un estrattore bounded e non modella gli attributi CAdES. **Non adottato.**
 - [PKIjs 3.4.0](https://www.npmjs.com/package/pkijs), **BSD-3-Clause**: possibile donor per una futura verifica completa del profilo CAdES. Non adottato: richiederebbe una nuova dipendenza e un audit di licenza/provenance (dipendenza #126) per una funzione che l'ambito approvato non include.
+- [Python cryptography 46.0.5](https://github.com/pyca/cryptography/tree/06e120e682cb200e3f7050c02f0bcdac90c4c6ad) (tag 46.0.5, commit 06e120e682cb200e3f7050c02f0bcdac90c4c6ad; consultato il 21/10/2026), **Apache-2.0 OR BSD-3-Clause**, usato solo per creare il certificato sintetico scaduto e la busta in memoria (chiave privata mai scritta su disco).
 - [OpenSSL 3.5.5](https://docs.openssl.org/3.5/man1/openssl-cms/), **Apache-2.0**, usato **solo** per costruire e verificare il corpus sintetico sul MiniPC (nessun ruolo a runtime nel browser).
 - Specifica primaria: [RFC 5652 §5](https://datatracker.ietf.org/doc/html/rfc5652#section-5) (CMS SignedData e `encapContentInfo.eContent`), letta il 21/10/2026.
 
@@ -21,4 +22,4 @@ Il lettore DER bounded in `src/engines/p7m/reader-176.ts` (~350 righe, nessuna d
 
 ## Corpus e prove
 
-`quality/fixtures/p7m-cms-176/` contiene buste CMS sintetiche (PDF, XML, PEM, detached, manomessa, troncata, BER indefinito, non-firma) generate con OpenSSL sul MiniPC il 21/10/2026, con `cert.pem` pubblico del firmatario sintetico e nessuna chiave privata. Le prove eseguite sono in `tests/regroom-str-176.test.ts`, `scripts/acceptance-p7m-176.mjs` e nel commento di consegna della issue. Il corpus sintetico non attribuisce Gold, non prova P7M reali e non sostituisce una validazione legale.
+`quality/fixtures/p7m-cms-176/` contiene buste CMS sintetiche (PDF, XML, PEM, certificato sintetico scaduto, detached, manomessa, troncata, BER indefinito, non-firma) generate con OpenSSL e Python cryptography sul MiniPC il 21/10/2026, con `cert.pem` pubblico del firmatario sintetico e nessuna chiave privata. Le prove eseguite sono in `tests/p7m-extract-423.test.ts e tests/str-423-refusals.test.ts`, `tests/str-423-consumer.browser.mjs` e nel commento di consegna della issue. Il corpus sintetico non attribuisce Gold, non prova P7M reali e non sostituisce una validazione legale.

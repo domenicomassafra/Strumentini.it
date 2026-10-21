@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "format": "P7M/CMS SignedData (RFC 5652)",
-  "source": "Synthetic local-only CMS envelopes produced with OpenSSL 3.5.5 on the MiniPC on 2026-10-21 (openssl req -x509 RSA-2048 self-signed + openssl cms -sign -binary -nodetach -outform DER/PEM). No third-party personal data, no real signature, zero upload.",
+  "source": "Synthetic local-only CMS envelopes produced with OpenSSL 3.5.5 on the MiniPC on 2026-10-21 (openssl req -x509 RSA-2048 self-signed + openssl cms -sign -binary -nodetach -outform DER/PEM). No third-party personal data, no real signature, zero upload. Synthetic expired signer generated for regression via Python cryptography 46.0.5 (Apache-2.0 OR BSD-3-Clause), RSA-2048 key kept only in generator memory, fixed certificate validity 2018-2020.",
   "expected": {
     "pdf": {
       "envelope": "documento-pdf.p7m",
@@ -27,6 +27,13 @@
       "envelope": "documento-manomesso.p7m",
       "payloadBytes": 192,
       "opensslOutcome": "CMS_verify: content verify error (verification failure) while the eContent is still written in full"
+    },
+    "expired": {
+      "envelope": "documento-scaduto.p7m",
+      "certificate": "cert-scaduto.pem",
+      "payload": "inner.pdf",
+      "expires": "2020-01-01T00:00:00Z",
+      "signatureVerification": "NOT_VERIFIED"
     }
   },
   "refuse": [

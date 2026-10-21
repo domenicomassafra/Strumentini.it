@@ -125,3 +125,9 @@ describe("STR-423 P7M/CMS extraction without any authenticity claim", () => {
     expect(() => extractP7m176({ bytes: new Uint8Array(P7M_LIMITS_176.maxFileBytes + 1), fileName: "grande.p7m" })).toThrow(/P7M_LIMIT/u);
   });
 });
+
+it("refuses valid CMS DER followed by extra unparsed bytes", async () => {
+  const valid = await read("documento-pdf.p7m");
+  const withTrailer = concat([valid, new Uint8Array([0xde, 0xad])]);
+  expect(() => extractP7m176({ bytes: withTrailer, fileName: "trailer.p7m" })).toThrow("P7M_TRAILING_DATA");
+});
