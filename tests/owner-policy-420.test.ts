@@ -49,7 +49,7 @@ const browserReceipt = (overrides: Record<string, unknown> = {}) => ({
 const androidReceipt = (overrides: Record<string, unknown> = {}) => ({
   evidenceKind: "ANDROID_EMULATOR_CHROME_SIMULATED",
   physicalDeviceObserved: false,
-  build: { revision: SHA, route: "/tools/image-resize/", htmlSha256: TOOL_HTML },
+  build: { revision: SHA, route: "/tools/tool-a/", htmlSha256: TOOL_HTML },
   browser: { package: "com.android.chrome", userAgent: "Mozilla/5.0 (Linux; Android 15) Chrome/155.0.0.0 Mobile Safari/537.36" },
   operation: { androidPickerOpened: true, fileSelected: true, resizedInChrome: true, androidDownloadSaved: true },
   negative: { pickerCancelledWithoutSelection: true, corruptJpegRefused: true, offsiteRequests: 0 },
@@ -60,12 +60,12 @@ const androidReceipt = (overrides: Record<string, unknown> = {}) => ({
 const iosReceipt = (overrides: Record<string, unknown> = {}) => ({
   evidenceKind: "SIMULATED_DESKTOP_WEBKIT_MOBILE",
   physicalDeviceObserved: false,
-  build: { revision: SHA, pages: { "/tools/image-resize/": TOOL_HTML, "/tools/audio-generator/": AUDIO_HTML } },
-  routes: [{ route: "/tools/image-resize/", status: "PASS" }, { route: "/tools/audio-generator/", status: "PASS" }],
+  build: { revision: SHA, pages: { "/tools/tool-a/": TOOL_HTML, "/tools/tool-b/": AUDIO_HTML } },
+  routes: [{ route: "/tools/tool-a/", status: "PASS" }, { route: "/tools/tool-b/", status: "PASS" }],
   ...overrides,
 });
 
-const pages = { "tools/image-resize/": TOOL_HTML, "tools/audio-generator/": AUDIO_HTML };
+const pages = { "tools/tool-a/": TOOL_HTML, "tools/tool-b/": AUDIO_HTML };
 
 describe("owner release policy 20/10/2026 for Strumentini.it", () => {
   it("records the owner's words instead of reinterpreting them", () => {
@@ -118,7 +118,7 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
     });
     expect(physicalClaim.map((item) => item.code)).toContain("POLICY_MOBILE_ANDROID_KIND");
     const staleBytes = validateOwnerAndroidPolicy420({
-      receipt: androidReceipt({ build: { revision: SHA, route: "/tools/image-resize/", htmlSha256: "e".repeat(64) } }),
+      receipt: androidReceipt({ build: { revision: SHA, route: "/tools/tool-a/", htmlSha256: "e".repeat(64) } }),
       path: "android.json", revision: SHA, distPageHashes: pages,
     });
     expect(staleBytes.map((item) => item.code)).toContain("POLICY_MOBILE_ANDROID_SOURCE_STALE");
@@ -129,7 +129,7 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
 
   it("refuses an iOS receipt whose compiled page hashes no longer match the release", () => {
     const stale = validateOwnerIosPolicy420({
-      receipt: iosReceipt({ build: { revision: SHA, pages: { "/tools/image-resize/": "f".repeat(64) } } }),
+      receipt: iosReceipt({ build: { revision: SHA, pages: { "/tools/tool-a/": "f".repeat(64) } } }),
       path: "ios.json", revision: SHA, distPageHashes: pages,
     });
     expect(stale.map((item) => item.code)).toContain("POLICY_MOBILE_IOS_SOURCE_STALE");
