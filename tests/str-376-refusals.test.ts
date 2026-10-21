@@ -46,9 +46,24 @@ describe("STR-376: i moduli non supportati restano intatti", () => {
     Object.defineProperty(encodedKey, "encodedName", { value: encodedName });
     if (kind === "XFA") doc.getForm().acroForm.dict.set(encodedKey, PDFString.of("template"));
     else if (kind === "signature") doc.getForm().acroForm.dict.set(encodedKey, doc.context.obj(3));
-    else doc.catalog.set(encodedKey, doc.context.obj({ S: "JavaScript", JS: "app.alert('unsafe')" }));
+    else {
+      const action = doc.context.obj({});
+      const escapedJs = PDFName.of("test-hex-JS");
+      Object.defineProperty(escapedJs, "encodedName", { value: "/J#53" });
+      const escapedType = PDFName.of("test-hex-JavaScript");
+      Object.defineProperty(escapedType, "encodedName", { value: "/Java#53cript" });
+      action.set(PDFName.of("S"), escapedType);
+      action.set(escapedJs, PDFString.of("app.alert('unsafe')"));
+      doc.catalog.set(encodedKey, action);
+    }
     const source = await doc.save({ useObjectStreams: false, updateFieldAppearances: false });
-    expect(new TextDecoder("latin1").decode(source)).toContain(encodedName);
+    const serialized = new TextDecoder("latin1").decode(source);
+    expect(serialized).toContain(encodedName);
+    if (kind === "JavaScript") {
+      expect(serialized).toContain("/J#53");
+      expect(serialized).toContain("/Java#53cript");
+      expect(serialized).not.toMatch(/\/(?:OpenAction|JavaScript|JS)\b/);
+    }
     const unchanged = source.slice();
     await expect(inspectEditablePdfForm136(source)).rejects.toThrow(/UNSUPPORTED_CAPABILITY/);
     await expect(editPdfForm136(source, { nome: "Mario" }, font)).rejects.toThrow(/UNSUPPORTED_CAPABILITY/);
