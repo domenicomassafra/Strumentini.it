@@ -70,10 +70,30 @@ function signalEnergy(buffer: AudioBuffer): number {
   for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
     const samples = buffer.getChannelData(channel);
     let sum = 0;
-    for (let i = 0; i < samples.length; i += 16) sum += samples[i]! * samples[i]!;
-    power += sum / Math.ceil(samples.length / 16);
+    for (let i = 0; i < samples.length; i++) sum += samples[i]! * samples[i]!;
+    power += sum / samples.length;
   }
   return Math.sqrt(power / buffer.numberOfChannels);
+}
+
+/** Browser decode/resume can stall (notably when audio is suspended). Cancellation must settle. */
+function boundedStage424<T>(operation: Promise<T>, signal: AbortSignal, timeoutMs: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    let finished = false;
+    const onAbort = () => finish(new DOMException("Conversione annullata", "AbortError"));
+    const timeout = setTimeout(() => finish(new Error("AUDIO_424_TIMEOUT")), timeoutMs);
+    const finish = (error?: Error, value?: T) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timeout);
+      signal.removeEventListener("abort", onAbort);
+      if (error) reject(error);
+      else resolve(value as T);
+    };
+    signal.addEventListener("abort", onAbort, { once: true });
+    if (signal.aborted) onAbort();
+    operation.then((value) => finish(undefined, value), (error: unknown) => finish(error instanceof Error ? error : new Error("AUDIO_424_STAGE_FAILED")));
+  });
 }
 
 export interface TranscodedAudio424 {
@@ -112,14 +132,17 @@ export async function transcodeAudio424(
     const inputBytes = await sourceFile.arrayBuffer();
     if (signal.aborted) throw new DOMException("Conversione annullata", "AbortError");
     let decoded: AudioBuffer;
-    try { decoded = await context.decodeAudioData(inputBytes); }
-    catch { throw new Error("AUDIO_424_DECODE_UNSUPPORTED: il file audio non è decodificabile."); }
+    try { decoded = await boundedStage424(context.decodeAudioData(inputBytes), signal, 30_000); }
+    catch (error) {
+      if (signal.aborted || (error instanceof Error && error.message === "AUDIO_424_TIMEOUT")) throw error;
+      throw new Error("AUDIO_424_DECODE_UNSUPPORTED: il file audio non è decodificabile.");
+    }
     if (!Number.isFinite(decoded.duration) || decoded.duration < 0.15 || decoded.duration > MAX_SECONDS ||
         decoded.numberOfChannels < 1 || decoded.numberOfChannels > 2) {
       throw new Error("AUDIO_424_DURATION_LIMIT: da 0,15 a 60 secondi mono/stereo.");
     }
     if (signal.aborted) throw new DOMException("Conversione annullata", "AbortError");
-    await context.resume();
+    await boundedStage424(context.resume(), signal, 10_000);
     if (context.state !== "running") throw new Error("AUDIO_424_AUDIO_SUSPENDED");
     const destination = context.createMediaStreamDestination();
     destination.channelCount = decoded.numberOfChannels;
@@ -127,7 +150,8 @@ export async function transcodeAudio424(
     playback = context.createBufferSource();
     playback.buffer = decoded;
     playback.connect(destination);
-    recorder = new MediaRecorder(stream, { mimeType: requestedMime, audioBitsPerSecond: requestedBps });
+    try { recorder = new MediaRecorder(stream, { mimeType: requestedMime, audioBitsPerSecond: requestedBps }); }
+    catch { throw new Error("AUDIO_424_ENCODER_UNSUPPORTED: encoder non disponibile per questo formato/bitrate."); }
     const chosen = recorder.mimeType.toLowerCase().split(";")[0]?.trim();
     if (chosen !== requestedMime.split(";")[0]) throw new Error("AUDIO_424_ENCODER_MISMATCH");
     const chunks: Blob[] = [];
@@ -166,8 +190,11 @@ export async function transcodeAudio424(
     const recordedType = recorded.type.toLowerCase().split(";")[0]?.trim();
     if (recordedType !== requestedMime.split(";")[0]) throw new Error("AUDIO_424_CONTAINER_MISMATCH");
     let decodedOutput: AudioBuffer;
-    try { decodedOutput = await context.decodeAudioData(bytes.buffer.slice(0)); }
-    catch { throw new Error("AUDIO_424_PLAYBACK_UNVERIFIED: l'output non è decodificabile."); }
+    try { decodedOutput = await boundedStage424(context.decodeAudioData(bytes.buffer.slice(0)), signal, 30_000); }
+    catch (error) {
+      if (signal.aborted || (error instanceof Error && error.message === "AUDIO_424_TIMEOUT")) throw error;
+      throw new Error("AUDIO_424_PLAYBACK_UNVERIFIED: l'output non è decodificabile.");
+    }
     if (signal.aborted) throw new DOMException("Conversione annullata", "AbortError");
     if (Math.abs(decodedOutput.duration - decoded.duration) > Math.max(0.5, decoded.duration * 0.05)) {
       throw new Error("AUDIO_424_FIDELITY_FAILED: durata di uscita diversa dalla sorgente.");
