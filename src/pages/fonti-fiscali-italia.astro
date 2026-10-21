@@ -3,11 +3,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getItalySourcePackDecision } from "../reference-data/italy/source-packs";
 import { VERIFIED_IRPEF_EXCERPTS_117 as irpef, VERIFIED_FORFETTARIO_COEFFICIENTS_2025_117 as coeff, INVOICE_STAMP_REFERENCE_2024_117 as bollo } from "../reference-data/italy/fiscal-annual-117";
 import { diffFiscalBands409 } from "../reference-data/italy/fiscal-revisions-409";
-import { buildAnnualFiscalSourceReview117 } from "../reference-data/italy/annual-source-registry-117";
+import { ANNUAL_FISCAL_REVIEW_OWNER_117, buildAnnualFiscalSourceReview117 } from "../reference-data/italy/annual-source-registry-117";
+import { ANNUAL_SOURCE_CHANGE_LOG_117, auditAnnualSourceChangeLog117 } from "../reference-data/italy/annual-source-changelog-117";
 import { todayItaly158 } from "../reference-data/italy/freshness-158";
 const pack = getItalySourcePackDecision(117);
 const irpefDiff = diffFiscalBands409(irpef[0]!, irpef[1]!);
-const annualReview = buildAnnualFiscalSourceReview117(todayItaly158());
+const today = todayItaly158();
+const annualReview = buildAnnualFiscalSourceReview117(today);
+const changeAudit = auditAnnualSourceChangeLog117(today);
+const annualOwner = ANNUAL_FISCAL_REVIEW_OWNER_117;
 const shortHash = (value: string) => `${value.slice(0, 23)}…`;
 const yearRows = [...annualReview.rows].sort((a, b) => b.taxYear - a.taxYear || a.datasetId.localeCompare(b.datasetId));
 ---
@@ -32,13 +36,26 @@ const yearRows = [...annualReview.rows].sort((a, b) => b.taxYear - a.taxYear || 
     <section aria-label="Registro versioni fiscali" data-fiscal-versions409>
       <h2>Registro delle versioni IRPEF nazionali</h2>
       <p>Ogni calcolo identifica la propria versione delle regole; una rettifica con efficacia retroattiva deve aggiungere una versione distinta e richiedere una selezione esplicita, mantenendo accessibile il risultato basato sulla versione precedente.</p>
-      <div class="fiscal-scroll409" role="region" aria-label="Tabella versioni fiscali scorrevole" tabindex="0"><table><thead><tr><th>Anno</th><th>Versione</th><th>Vigenza</th><th>Verifica snapshot</th><th>Responsabile revisione fiscale</th></tr></thead><tbody>
+      <div class="fiscal-scroll409" role="region" aria-label="Tabella versioni fiscali scorrevole" tabindex="0"><table><thead><tr><th>Anno</th><th>Versione</th><th>Vigenza</th><th>Verifica snapshot</th><th>Approvazione fiscale</th></tr></thead><tbody>
         {irpef.map(entry => <tr data-fiscal-version409={entry.revisionId}><td>{entry.taxYear}</td><td><code>{entry.revisionId}</code></td>
           <td>{entry.effectiveFrom} / {entry.effectiveTo}</td><td>{entry.checkedAt}</td>
-          <td>{entry.reviewOwner ?? "Da nominare — approvazione fiscale non attestata"}</td></tr>)}
+          <td>{entry.reviewOwner ?? "Non attestata — nessun revisore fiscale qualificato ha firmato"}</td></tr>)}
       </tbody></table></div>
       <p data-fiscal-diff409>Confronto 2025 → 2026: {irpefDiff.changedBands.map(change => `fino a ${change.upToCents === null ? "oltre l'ultima soglia" : `${(change.upToCents / 100).toLocaleString("it-IT")} €`}: ${(change.previousBasisPoints ?? 0) / 100}% → ${(change.nextBasisPoints ?? 0) / 100}%`).join("; ")}. La legge 199/2025 modifica la seconda aliquota con decorrenza 2026; non è una rettifica retroattiva del 2025.</p>
       <p data-fiscal-amendments409>Rettifiche retroattive verificate e registrate: nessuna. L'eventuale revisione successiva richiede fonte ufficiale, data di efficacia, nuova versione e validazione del responsabile; il pacchetto fiscale annuale completo rimane bloccato.</p>
+    </section>
+    <section aria-label="Registro delle modifiche alle fonti annuali" data-annual-changelog117>
+      <h2>Registro delle modifiche e responsabile annuale</h2>
+      <p data-annual-owner117>Responsabile della revisione annuale delle fonti: <strong>{annualOwner.label}</strong>. Mandato: {annualOwner.mandate} Autorità ammesse: {annualOwner.officialAuthorities.join(", ")}. Cadenza: {annualOwner.cadence}. Approvazione fiscale professionale: <strong>{annualOwner.professionalApproval === "NOT_ATTESTED" ? "non attestata" : annualOwner.professionalApproval}</strong>.</p>
+      <p>Il registro è append-only: ogni revisione pubblicata resta immutabile. Una rettifica con efficacia retroattiva deve aggiungere una voce con <code>supersedesRevisionId</code>, una nuova fonte ufficiale con nuovo hash e un revisore nominato; non può riscrivere in silenzio un risultato storico.</p>
+      <div class="fiscal-scroll409" role="region" aria-label="Tabella modifiche fonti annuali scorrevole" tabindex="0"><table><thead><tr><th>Anno</th><th>Versione</th><th>Vigenza</th><th>Verificata il</th><th>Tipo</th><th>Precede</th><th>Impronte</th></tr></thead><tbody>
+        {ANNUAL_SOURCE_CHANGE_LOG_117.map(entry => <tr data-annual-change117={entry.entryId}>
+          <td>{entry.taxYear}</td><td><code>{entry.version}</code></td><td>{entry.effectiveFrom} / {entry.effectiveTo}</td>
+          <td>{entry.checkedAt}</td>
+          <td>{entry.amendmentKind === "YEAR_BASELINE" ? "Base annuale" : "Rettifica retroattiva"}</td>
+          <td>{entry.supersedesRevisionId ?? "—"}</td><td>{entry.sourceHashes.length} SHA-256</td></tr>)}
+      </tbody></table></div>
+      <p data-annual-changelog-audit117>Audit versioni al {changeAudit.asOf}: <strong>{changeAudit.ok ? "OK" : "NO_GO"}</strong>. Anni verificati: {changeAudit.checkedYears.join(", ")}. Non eseguiti alla data: {changeAudit.notRunYears.length > 0 ? changeAudit.notRunYears.join(", ") : "nessuno"}. Rettifiche retroattive registrate: {changeAudit.retroactiveAmendments.length}. {changeAudit.note}</p>
     </section>
     {irpef.map(year => <section class="fiscal-year">
       <h2>Anno fiscale {year.taxYear} — IRPEF nazionale lorda</h2>
