@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "ticket": 279,
+  "generator": "scripts/generate-qr-279-photo-fixtures.mjs",
+  "encoder": {
+    "package": "qrcode",
+    "version": "1.5.4",
+    "license": "MIT",
+    "independentOfProductEncoder": true
+  },
+  "raster": {
+    "package": "sharp",
+    "version": "0.35.5",
+    "license": "Apache-2.0"
+  },
+  "regeneration": "node scripts/generate-qr-279-photo-fixtures.mjs",
+  "fixtures": [
+    {
+      "file": "photo-ecm-279.jpg",
+      "payload": "https://esempio.it/zxing-279-mobile",
+      "errorCorrectionLevel": "M",
+      "matrixSize": 29,
+      "version": 3,
+      "maskPattern": 3,
+      "width": 536,
+      "height": 536,
+      "bytes": 25438,
+      "sha256": "34d66f0ec7f760ef4bf63aea9df771b3e85beba865835c2692d75d530aff062c",
+      "degradations": {
+        "rotateDegrees": 6.5,
+        "blurSigma": 0.9,
+        "contrast": 0.84,
+        "jpegQuality": 78,
+        "lightingGradient": true
+      }
+    },
+    {
+      "file": "photo-lowcontrast-279.jpg",
+      "payload": "STR-279 basso contrasto",
+      "errorCorrectionLevel": "Q",
+      "matrixSize": 29,
+      "version": 3,
+      "maskPattern": 1,
+      "width": 504,
+      "height": 504,
+      "bytes": 15125,
+      "sha256": "5410c616be9d2426a6cdd9effeee208ca79123c96b927e2fd9fd5af54b37dae9",
+      "degradations": {
+        "rotateDegrees": -11,
+        "blurSigma": 1.2,
+        "contrast": 0.52,
+        "jpegQuality": 70,
+        "lightingGradient": true
+      }
+    }
+  ]
+}
