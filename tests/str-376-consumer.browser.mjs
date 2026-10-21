@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { chromium } from "@playwright/test";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, PDFName, PDFString } from "pdf-lib";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const base = "http://127.0.0.1:18536";
@@ -33,6 +33,13 @@ async function fixture() {
   province.addOptions(["Bari", "Lecce"]);
   province.addToPage(first, { x: 24, y: 200, width: 100, height: 24 });
   return Buffer.from(await pdf.save({ useObjectStreams: false }));
+}
+async function unsafeFixture(kind) {
+  const doc = await PDFDocument.load(await fixture());
+  if (kind === "XFA") doc.getForm().acroForm.dict.set(PDFName.of("XFA"), PDFString.of("template"));
+  if (kind === "signature") doc.getForm().acroForm.dict.set(PDFName.of("SigFlags"), doc.context.obj(3));
+  if (kind === "JavaScript") doc.catalog.set(PDFName.of("OpenAction"), doc.context.obj({ S: "JavaScript", JS: "app.alert('unsafe')" }));
+  return Buffer.from(await doc.save({ useObjectStreams: false, updateFieldAppearances: false }));
 }
 function verifyPypdf(path, flattened) {
   const code = [
@@ -132,6 +139,21 @@ try {
   await verifyPdf(flattened, true);
   verifyPypdf(flattenedPath, true);
   await writeFile("/tmp/str136-consumer-flattened.pdf", flattened);
+  await page.getByRole("button", { name: "Ricomincia" }).click();
+  const upload = page.getByLabel("Modulo PDF da compilare");
+  assert.equal(await upload.inputValue(), "", "Reset must clear native file selection");
+  await upload.setInputFiles({ name: "modulo.pdf", mimeType: "application/pdf", buffer: source });
+  await page.locator("[data-form-fields-136]").waitFor({ timeout: 20000 });
+  for (const kind of ["XFA", "signature", "JavaScript"]) {
+    const rejected = await unsafeFixture(kind);
+    const snapshot = Buffer.from(rejected);
+    await upload.setInputFiles({ name: kind + ".pdf", mimeType: "application/pdf", buffer: rejected });
+    const alert = page.getByRole("alert");
+    await alert.waitFor({ timeout: 20000 });
+    assert.match(await alert.textContent(), /UNSUPPORTED_CAPABILITY/, kind + " must be refused");
+    assert.equal(await page.locator("[data-form-result-136]").count(), 0, "Rejected input cannot be downloaded");
+    assert.deepEqual(rejected, snapshot, "Browser must not mutate the source");
+  }
   assert.deepEqual(errors, [], "Browser errors or external requests");
   const heapAfter = await page.evaluate(() => performance.memory?.usedJSHeapSize ?? null);
   console.log(JSON.stringify({ status: "PASS", editableBytes: editable.byteLength, flattenedBytes: flattened.byteLength, offlineEditable: true, fields: 3, linkedWidgets: 2, viewport: 390, outsideRequests: 0, pageErrors: 0, elapsedMs: Math.round(performance.now()-begin), heapBefore, heapAfter }));

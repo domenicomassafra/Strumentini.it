@@ -14,6 +14,7 @@ export function PdfFormEditor136Tool() {
   const [error, setError] = useState("");
   const [downloadUrl, setDownloadUrl] = useState("");
   const [downloadSize, setDownloadSize] = useState(0);
+  const fileInput = useRef<HTMLInputElement | null>(null);
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
   const unicodeFont = useRef<Uint8Array | null>(null);
@@ -45,7 +46,7 @@ export function PdfFormEditor136Tool() {
     const ticket = generation.current;
     setFile(next); setInfo(null); setValues({}); setBusy(false); setFlatten(false);
     discardResult(); setError("");
-    if (!next) return;
+    if (!next) { if (fileInput.current) fileInput.current.value = ""; return; }
     if (next.size > MAX_SOURCE) { setError("PDF oltre 8 MiB: scegli un documento più piccolo."); return; }
     const active = new AbortController(); controller.current = active;
     setBusy(true);
@@ -103,7 +104,7 @@ export function PdfFormEditor136Tool() {
     <section class="tool-form-card">
       <p class="file-note">Compila un modulo PDF interattivo senza caricarlo online. Salva una copia con i campi ancora modificabili oppure scegli di appiattirli.</p>
       <label class="field"><span>Modulo PDF locale</span>
-        <input type="file" aria-label="Modulo PDF da compilare" accept=".pdf,application/pdf"
+        <input type="file" ref={fileInput} aria-label="Modulo PDF da compilare" accept=".pdf,application/pdf"
           onChange={(event) => void load(event.currentTarget.files?.[0] ?? null)} />
         <small>Fino a 8 MiB, 80 pagine e 120 campi. File e dati restano sul dispositivo.</small>
       </label>

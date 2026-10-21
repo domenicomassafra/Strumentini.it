@@ -178,6 +178,16 @@ export async function editPdfForm136(
     for (const spec of described) {
       const actual = fieldsAfter.find((field) => field.getName() === spec.name);
       if (!actual || actual.acroField.getWidgets().length !== spec.widgetCount) fail("MALFORMED_PDF", `Widget persi: ${spec.name}`);
+      if (actual.isReadOnly() !== spec.readOnly) fail("MALFORMED_PDF", `Protezione campo cambiata: ${spec.name}`);
+      const valueAfter = actual instanceof PDFTextField ? (actual.getText() ?? "")
+        : actual instanceof PDFCheckBox ? actual.isChecked()
+        : actual instanceof PDFDropdown ? (actual.getSelected()[0] ?? "")
+        : actual instanceof PDFRadioGroup ? (actual.getSelected() ?? "")
+        : undefined;
+      const expectedValue = Object.prototype.hasOwnProperty.call(updates, spec.name) ? updates[spec.name] : spec.value;
+      if (valueAfter === undefined || valueAfter !== expectedValue) {
+        fail("MALFORMED_PDF", `Valore campo perso o modificato: ${spec.name}`);
+      }
     }
   }
   let reopened: ReturnType<typeof inspectPdfBytes>;

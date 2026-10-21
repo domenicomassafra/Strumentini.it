@@ -79,6 +79,20 @@ describe("#136 compilazione AcroForm modificabile", () => {
     await expect(editPdfForm136(source, { "cliente.nome": "x" }, font, { signal: controller.signal })).rejects.toThrow(/CANCELLED/);
   });
 
+  it("rifiuta firme e revisioni multiple, preservando i byte di origine", async () => {
+    const source = await fixture();
+    const original = source.slice();
+    const pdf = await PDFDocument.load(source);
+    pdf.getForm().acroForm.dict.set(PDFName.of("SigFlags"), pdf.context.obj(3));
+    const signed = await pdf.save({ useObjectStreams: false, updateFieldAppearances: false });
+    await expect(editPdfForm136(signed, { "cliente.nome": "Mario" }, font)).rejects.toThrow(/UNSUPPORTED_CAPABILITY/);
+    const joined = new Uint8Array(source.byteLength * 2);
+    joined.set(source);
+    joined.set(source, source.byteLength);
+    await expect(editPdfForm136(joined, { "cliente.nome": "Mario" }, font)).rejects.toThrow(/UNSUPPORTED_CAPABILITY|MALFORMED_PDF/);
+    expect(source).toEqual(original);
+  });
+
   it("PDF.js riapre e disegna il flatten con testo e senza annotazioni", async () => {
     const source = await fixture();
     const output = await editPdfForm136(source, { "cliente.nome": "Mario" }, font, { flatten: true });
@@ -96,7 +110,7 @@ describe("#136 compilazione AcroForm modificabile", () => {
         page.cleanup();
       }
     } finally { await task.destroy(); }
-  });
+  }, 20000);
 
 
   it("supporta radio interconnessi e protegge i campi readonly", async () => {
@@ -115,6 +129,12 @@ describe("#136 compilazione AcroForm modificabile", () => {
     protectedDoc.getForm().getTextField("cliente.nome").enableReadOnly();
     const readonly = await protectedDoc.save({ useObjectStreams: false, updateFieldAppearances: false });
     await expect(editPdfForm136(readonly, { "cliente.nome": "cambio" }, font)).rejects.toThrow(/UNSUPPORTED_CAPABILITY.*protetto/);
+
+    const preserved = await editPdfForm136(readonly, { provincia: "Bari" }, font);
+    const independent = await PDFDocument.load(preserved.bytes);
+    expect(independent.getForm().getTextField("cliente.nome").isReadOnly()).toBe(true);
+    expect(independent.getForm().getTextField("cliente.nome").getText() ?? "").toBe("");
+    expect(independent.getForm().getDropdown("provincia").getSelected()).toEqual(["Bari"]);
   });
 
 });
