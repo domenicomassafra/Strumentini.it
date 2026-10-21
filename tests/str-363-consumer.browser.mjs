@@ -141,6 +141,8 @@ try {
           const response = await page.goto(origin + route, { waitUntil: "domcontentloaded", timeout: 40_000 });
           assert.equal(response?.status(), 200);
         }
+        await page.waitForFunction(() => [...document.querySelectorAll("astro-island")]
+          .every(island => !island.hasAttribute("ssr")), { timeout: 25_000 });
         await page.locator('input[type="file"]').first().waitFor({ timeout: 30_000 });
         await page.evaluate(installFrameProbe);
         await page.locator('input[type="file"]').first().setInputFiles({
@@ -193,6 +195,8 @@ try {
   // A browser cancellation and retry exercises the actual visible image tool. This is
   // supplementary to engine-level PDF/CSV cancellation tests, not an OS OOM claim.
   await page.goto(origin + "/tools/image-resize/", { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => [...document.querySelectorAll("astro-island")]
+    .every(island => !island.hasAttribute("ssr")), { timeout: 25_000 });
   const large = await fixture("image", "L");
   const largeHash = sha(large.bytes);
   await page.locator("#image-resize-file").setInputFiles({ name: large.name, mimeType: large.mime, buffer: large.bytes });
