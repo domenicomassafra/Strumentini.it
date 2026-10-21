@@ -23,24 +23,43 @@ export interface PrepublishStep404 {
   readonly publishes: boolean;
 }
 
-export function prepublishSteps404(expectedSha: string): readonly PrepublishStep404[] {
+/**
+ * Owner decision 20/10/2026 makes the automatic evidence (suite, browser matrix,
+ * simulator/emulator lanes, proven rollback) the release criterion. The strict
+ * per-tool Gold and physical-device admission stays available with
+ * STRUMENTINI_RELEASE_STRICT=1.
+ */
+export function releasePolicy420Enabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.STRUMENTINI_RELEASE_STRICT !== "1";
+}
+
+export function prepublishSteps404(expectedSha: string, policy420 = releasePolicy420Enabled()): readonly PrepublishStep404[] {
+  const admission: PrepublishStep404[] = policy420
+    ? [{
+        name: "owner-policy-automatic-admission", program: "node",
+        args: ["node_modules/tsx/dist/cli.mjs", "scripts/release-gate-420.ts", `--expected-sha=${expectedSha}`],
+        publishes: false,
+      }]
+    : [
+        {
+          name: "read-only-required-admission", program: "node",
+          args: ["node_modules/tsx/dist/cli.mjs", "scripts/validate-release.ts", "--no-write-receipt", "--require-ready", `--expected-sha=${expectedSha}`],
+          publishes: false,
+        },
+        // Production publishes the entire dist, so every catalog tool is in scope.
+        {
+          name: "scope-and-staging-rollback-admission", program: "node",
+          args: ["node_modules/tsx/dist/cli.mjs", "scripts/verify-release-scope-405.ts", "--all"],
+          publishes: false,
+        },
+      ];
   return [
     { name: "source-and-engine-tests", program: "npm", args: ["test", "--", "--maxWorkers=1"], publishes: false },
     { name: "python-ticket-oracle", program: "npm", args: ["run", "tickets:test"], publishes: false },
     { name: "astro-source-validation", program: "npm", args: ["run", "check"], publishes: false },
     { name: "cumulative-build", program: "npm", args: ["run", "build"], publishes: false },
     { name: "cloudflare-static-dry-run", program: "npm", args: ["run", "deploy:check"], publishes: false },
-    {
-      name: "read-only-required-admission", program: "node",
-      args: ["node_modules/tsx/dist/cli.mjs", "scripts/validate-release.ts", "--no-write-receipt", "--require-ready", `--expected-sha=${expectedSha}`],
-      publishes: false,
-    },
-    // Production publishes the entire dist, so every catalog tool is in scope.
-    {
-      name: "scope-and-staging-rollback-admission", program: "node",
-      args: ["node_modules/tsx/dist/cli.mjs", "scripts/verify-release-scope-405.ts", "--all"],
-      publishes: false,
-    },
+    ...admission,
     { name: "wrangler-production-deploy", program: "node_modules/.bin/wrangler", args: ["deploy"], publishes: true },
   ];
 }
@@ -109,6 +128,8 @@ export async function fingerprintPublicationAssets404(directory: string): Promis
  * before the ONLY publishing command. The boundary is tested with mocks. */
 export async function runPrepublish404(input: {
   expectedSha?: string | undefined;
+  /** Explicit override for tests and operators; defaults to the owner policy. */
+  policy420?: boolean | undefined;
   verifyRevision(): Promise<void>;
   snapshotAssets(): Promise<string>;
   runStep(step: PrepublishStep404): Promise<void>;
@@ -116,7 +137,7 @@ export async function runPrepublish404(input: {
   // Validate format before executing even a harmless external binary.
   assertReleaseRevision404({ expectedSha: input.expectedSha, currentSha: input.expectedSha ?? "" });
   await input.verifyRevision();
-  const steps = prepublishSteps404(input.expectedSha!);
+  const steps = prepublishSteps404(input.expectedSha!, input.policy420 ?? releasePolicy420Enabled());
   let builtAssets: string | undefined;
   for (const step of steps) {
     if (step.publishes) {

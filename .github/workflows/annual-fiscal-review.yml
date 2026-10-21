@@ -1,0 +1,74 @@
+name: Annual fiscal source review (#117)
+
+# Owner decision 20/10/2026: agents own the annual official fiscal sources and
+# the refresh is automatic. This schedule does not fetch or write tax values; it
+# fails closed when the current year has no checked official snapshot and opens
+# one tracked review issue so an agent can add the snapshot. Nothing is released
+# from here: the job only reads the repository and writes an issue.
+
+on:
+  schedule:
+    # First day of every month, 06:00 UTC (08:00 Rome in winter).
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/reference-data/italy/annual-source-registry-117.ts'
+      - 'src/reference-data/italy/fiscal-annual-117.ts'
+      - 'src/reference-data/italy/fiscal-annual-vat-117.ts'
+      - 'scripts/italy-annual-source-review-117.ts'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Annual official-source review
+        id: review
+        run: npx tsx scripts/italy-annual-source-review-117.ts --check
+      - name: Open or refresh the annual review issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          report="$(npx tsx scripts/italy-annual-source-review-117.ts --json || true)"
+          title='Revisione annuale fonti fiscali ufficiali (#117)'
+          body="$RUNNER_TEMP/annual-review.md"
+          {
+            echo 'Il controllo automatico delle fonti fiscali annuali non trova uno snapshot ufficiale verificato per un dataset che dichiara valori dell'"'"'anno corrente.'
+            echo
+            echo 'Fail-closed: nessun valore viene ereditato da un altro anno e nessuna aliquota viene inventata.'
+            echo
+            echo '```json'
+            echo "$report" | head -c 12000
+            echo '```'
+            echo
+            echo '## Cosa serve'
+            echo '- Aggiungere lo snapshot ufficiale dell'"'"'anno corrente (Agenzia delle Entrate, MEF, Gazzetta Ufficiale o Normattiva) con URL, data di verifica, versione, intervallo di vigenza e SHA-256 in `src/reference-data/italy/annual-source-registry-117.ts` e nei moduli sorgente già esistenti.'
+            echo '- Eseguire `npx tsx scripts/italy-annual-source-review-117.ts --check` e `npx vitest run tests/annual-source-registry-117.test.ts --maxWorkers=1`.'
+            echo '- Se la fonte ufficiale non esiste o non è convalidabile, mantenere il dataset dichiarato non determinato e aggiornare la issue.'
+            echo
+            echo "Run: $RUN_URL"
+          } > "$body"
+          existing="$(gh issue list --state open --search "in:title \"$title\"" --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -n 1)"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file "$body"
+          else
+            gh issue create --title "$title" --body-file "$body" --label enhancement
+          fi

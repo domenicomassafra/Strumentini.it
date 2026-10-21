@@ -34,6 +34,21 @@ export type {
 export { ITALIAN_IDENTITY_DOCUMENT_RULES } from "./identity-document-expiry";
 export type { ItalianIdentityDocumentKind, ItalianIdentityDocumentRules } from "./identity-document-expiry";
 export {
+  ANNUAL_FISCAL_SOURCE_ROWS_117,
+  OFFICIAL_FISCAL_SOURCE_HOSTS_117,
+  assertAnnualFiscalSourceReview117,
+  assertOfficialFiscalSource117,
+  buildAnnualFiscalSourceReview117,
+  getAnnualFiscalSourceRows117,
+  isOfficialFiscalSourceUrl117,
+  listAnnualFiscalSourceYears117,
+} from "./annual-source-registry-117";
+export type {
+  AnnualFiscalCoverage117,
+  AnnualFiscalSourceReview117,
+  AnnualFiscalSourceRow117,
+} from "./annual-source-registry-117";
+export {
   FATTURAPA_TECHNICAL_CURRENT,
   INPS_CONTRIBUTIONS_2026,
   ITALY_NATIONAL_HOLIDAYS_2026,

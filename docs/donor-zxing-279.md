@@ -115,15 +115,95 @@ La verifica del 20 ottobre con CSP `script-src 'self'` più hash degli
 script inline Astro e `connect-src 'none'` ha letto correttamente tutti
 e tre gli input; il probe `/api/auth/session` dell'app,
 separato dal decoder, è stato bloccato dalla CSP di prova. La CSP senza
-gli hash blocca l'idratazione Astro esistente. L'avvio di Playwright
-WebKit è scaduto due volte senza produrre un risultato;
-**Safari mobile NON_VERIFICATO** (manca una prova reale).
+gli hash blocca l'idratazione Astro esistente.
 
-**Gate di ammissione:** [issue #126](https://github.com/domenicomassafra/strumentini-it/issues/126)
-è stata riaperta per questioni di diritti più ampie; il gate tecnico sul
-donor QR ora è `VERIFIED_METADATA`. Il merge `0120bdbd` ha eliminato i tre
-errori OCR preesistenti visti prima del riallineamento. Safari mobile fisico
-resta **NON_VERIFICATO** e non c'è ammissione release o promozione Gold.
+## Verifica mobile del 21 ottobre 2026
+
+La decisione owner del 20/10 («basta simulatore ed emulatore») chiude il
+criterio Safari mobile sul piano dell'engine, non del dispositivo fisico.
+La lane automatica è `scripts/acceptance-qr-reader-279.mjs`
+(`npm run acceptance:qr-reader:mobile`), costruita sulla stessa struttura
+di `scripts/acceptance-ios-safari-sim-281.mjs`: server statico sul `dist`,
+Playwright WebKit **26.6** con profilo `iPhone 17`, ricevuta in
+`quality/receipts/ios-safari-simulated-279.json`. La ricevuta dichiara
+`evidenceKind: SIMULATED_DESKTOP_WEBKIT_MOBILE` e
+`physicalDeviceObserved: false`.
+
+Fixture indipendenti: `quality/fixtures/qr-contract/photo-ecm-279.jpg`
+(536×536, EC M, `https://esempio.it/zxing-279-mobile`) e
+`photo-lowcontrast-279.jpg` (504×504, EC Q, `STR-279 basso contrasto`),
+prodotte da `scripts/generate-qr-279-photo-fixtures.mjs` con l'encoder
+indipendente `qrcode@1.5.4` (MIT) e degradazioni fotografiche fatte con
+`sharp@` (rotazione, blur, contrasto ridotto, luce non uniforme). Il
+manifest `qr-279-photo-manifest.json` ne fissa payload, livello EC e
+SHA-256. Il test `tests/qr-zxing-photo-279.test.ts` verifica che il decoder
+nativo **rifiuti** entrambe e che il fallback ZXing le legga: la lane
+esercita davvero il percorso donor, non il decoder interno.
+
+Esiti WebKit 26.6 (MiniPC, `dist` di questo commit): **7/7 PASS**.
+
+- `iphone17-photo-ecm`: payload esatto, `Livello M`, `Maschera: non
+determinata`, `Versione: non determinata dall'immagine`, `Byte UTF-8: 35`,
+avviso «Testo riconosciuto dal decoder ZXing» e avviso maschera, zero
+richieste offsite, zero richieste non-GET, zero errori JS, overflow 0.
+- `iphone17-photo-lowcontrast`: payload esatto a `Livello Q`.
+- `viewport-390x844` e `viewport-1280x844`: payload esatto, overflow 0
+(regressione 390 px).
+- `iphone17-csp-strict`: con `script-src 'self'` più hash degli script
+inline e `connect-src 'none'` il decoder funziona e non produce errori.
+- `iphone17-refuses-oversized-input`: PNG 2400×1800 (4,32 MP) rifiutato con
+«supera il limite di 4 megapixel», nessun payload mostrato.
+- `iphone17-refuses-blank-image`: immagine vuota rifiutata con «Non
+riconosco un codice QR», nessun payload.
+
+Misure della lane: ai 22 script richiesti dal caricamento non si aggiunge
+alcun chunk del decoder; dopo il submit arrivano `zxing-adapter` (1.762 B)
+e i due chunk `esm` (26.911 B + 454.127 B). Decodifica misurata 0,45–1,4 s
+per caso. Nessun Worker creato (l'adapter usa il canvas del thread
+principale) e nessun accesso alla fotocamera. La memoria resta una **stima
+di policy** (fixture + RGBA decodificato ≈ 1,17 MB contro il tetto di
+16 MB), non un picco misurato: WebKit non espone il picco per scheda. La
+cancellazione non ha un controllo nella UI: è coperta dal test unitario
+`AbortError` in `tests/qr-zxing-279.test.ts`.
+
+Limiti dichiarati nella ricevuta: WebKit emulato su desktop, non Safari su
+dispositivo fisico e non Safari dentro il simulatore iOS. Su questo host
+non esiste `Simulator.app` (installazione Xcode 27 senza
+`Contents/Developer/Applications`) e SafariDriver 26.6.2 rifiuta la
+capability `safari:useSimulator` con `session not created: The 'macOS'
+platform is incompatible with requested capability: safari:useSimulator`:
+una sessione Safari dentro il simulatore non è quindi pilotabile, e nessuna
+parità di dispositivo fisico viene dichiarata.
+
+Safari reale, prova aggiuntiva: `scripts/acceptance-qr-reader-279-safari.mjs`
+guida **Safari.app 26.6.2** del Mac Studio via SafariDriver
+(`safaridriver --enable`) sul `dist` servito in locale, finestra 390×844.
+Entrambe le foto sono state lette: payload esatto, `Livello M` e `Livello Q`,
+`Maschera: non determinata`, i due avvisi, chunk `zxing-adapter` richiesto
+solo dopo il submit, zero richieste offsite, overflow 0, 0,26–0,83 s.
+Ricevuta `quality/receipts/safari-webdriver-279.json`, schermate
+`safari-279-qr-reader-390.png` e `safari-279-qr-reader-390-lowcontrast.png`.
+Due limiti sono registrati nella ricevuta: è Safari desktop in una finestra
+da 390 px e non iOS; e l'iniezione file nativa di SafariDriver produce un
+file che la pagina non riesce a leggere (`arrayBuffer` →
+`NotReadableError`, `createImageBitmap` → `InvalidStateError`), per cui gli
+stessi byte della fixture vengono allegati con `DataTransfer` dopo aver
+verificato **in pagina** il loro SHA-256 contro il manifest. Con byte
+illeggibili la UI mostra un errore tipizzato e nessun risultato: nessuna
+lettura inventata.
+
+**Gate di ammissione (riverificato il 21 ottobre su `main`
+`9609c01b95bb1f9f75f7672056569dd863ecf273`):**
+`tsx scripts/donor-provenance-366.ts --check` restituisce
+`VERIFIED_METADATA` con zero failures; i quattro testi legali installati
+coincidono **byte per byte** con `public/licenses/zxing-279-*` (4/4); la
+suite QR mirata passa **42/42** e `npm run build` produce 309 pagine con
+`build inspection PASS`. L'[issue #126](https://github.com/domenicomassafra/strumentini-it/issues/126)
+resta aperta per altri donor (heic-to, mediabunny, PDFStudio/QPDF) e non
+per questo pacchetto: il gate QR-specifico è soddisfatto, mentre la
+clearance legale complessiva del prodotto non è oggetto di questo ticket.
+Nessuna promozione Gold, nessuna ammissione di release e nessun deploy:
+restano i gate separati.
 Rollback:
 rimuovere l'import e l'adapter `zxing-adapter.ts`, le due dipendenze dirette
 e i loro testi legali; `decodeQrFromRaster` è preservato.
