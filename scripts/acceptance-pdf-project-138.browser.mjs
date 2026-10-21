@@ -57,6 +57,12 @@ try {
   // Reuse the existing automation browser. Do not launch a competing profile.
   browser = await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 30_000 });
   context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+  const pageErrors = [];
+  context.on("page", (tab) => {
+    tab.on("pageerror", (error) => pageErrors.push(error.message));
+    tab.on("console", (message) => { if (message.type() === "error") pageErrors.push(message.text()); });
+  });
+  context.on("requestfailed", (request) => pageErrors.push(`${request.url()}: ${request.failure()?.errorText}`));
   let page = await context.newPage();
   const offsite = [];
   context.on("request", (request) => {
@@ -86,7 +92,14 @@ try {
   assert.equal((await page.goto(origin + "/tools/pdf-page-reorder/"))?.status(), 200);
   await page.getByLabel("PDF da modificare").setInputFiles({ name: "progetto138.pdf", mimeType: "application/pdf", buffer: input });
   const order = page.locator("[data-pdf-order-status]");
-  await order.filter({ hasText: /4 pagine/u }).waitFor();
+  try {
+    await order.filter({ hasText: /4 pagine/u }).waitFor();
+  } catch (error) {
+    const body = await page.locator("body").innerText().catch(() => "<body unavailable>");
+    await page.screenshot({ path: "/tmp/str138-browser-debug.png", fullPage: true }).catch(() => {});
+    console.error("STR138_BROWSER_DIAGNOSTIC", JSON.stringify({ body: body.slice(-3000), pageErrors }));
+    throw error;
+  }
   await page.getByRole("button", { name: "Inverti ordine" }).click();
   await order.filter({ hasText: /4, 3, 2, 1/u }).waitFor();
   await page.getByRole("button", { name: "Annulla modifica" }).click();
