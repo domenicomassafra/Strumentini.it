@@ -15,6 +15,8 @@ const missingResources = [];
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", "http://127.0.0.1");
+    // Chromium may request the legacy favicon even though Astro declares /favicon.svg.
+    if (url.pathname === "/favicon.ico") return res.writeHead(204).end();
     const path = resolve(root, "." + decodeURIComponent(url.pathname), url.pathname.endsWith("/") ? "index.html" : "");
     const rel = relative(root, path);
     if (rel === ".." || rel.startsWith(".." + sep) || path === root) return res.writeHead(403).end();
@@ -132,7 +134,7 @@ try {
   assert.equal(await canvas.count(), 0);
   assert.deepEqual(uploads, [], "No image data was posted remotely");
   assert.deepEqual(missingResources.filter((url) => /\.(?:js|mjs|css)(?:\?|$)/u.test(url)), [], "All compiled scripts and styles must resolve locally");
-  assert.deepEqual(errors, [], "No unhandled browser errors");
+  assert.deepEqual(errors, [], `No unhandled browser errors; 404 routes: ${JSON.stringify(missingResources)}`);
   console.log("PASS STR-381 compiled browser consumer: real canvas S/M/L, order/visibility/opacity, PNG pixel oracle, immutable File SHA-256, bounded refusal and no uploads");
 } finally {
   await browser?.close();
