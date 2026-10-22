@@ -1,0 +1,39 @@
+name: STR-391 compiled browser consumer
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/str-391-compiled-consumer.yml'
+      - 'src/engines/table/pipeline-391.ts'
+      - 'src/components/tools/table/DataPipeline391.tsx'
+      - 'src/pages/tools/csv-join.astro'
+      - 'tests/str-391-*'
+      - 'tests/fixtures/str-391.ts'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: str-391-browser-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  compiled-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify exact acceptance and refusal suites
+        run: npx vitest run tests/str-391-acceptance.test.ts tests/str-391-refusals.test.ts --maxWorkers=1
+      - name: Compile static site
+        run: npm run build
+      - name: Replay, download, cancel and verify source integrity in Chromium
+        run: node tests/str-391-consumer.browser.mjs
