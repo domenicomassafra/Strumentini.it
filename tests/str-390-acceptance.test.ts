@@ -6,6 +6,21 @@ const precision = { leftKeyColumns: [0], rightKeyColumns: [0], keyPrecision: "de
 const comparing = { ...precision, leftCompareColumns: [1], rightCompareColumns: [1] };
 
 describe("STR-390 acceptance: explicit keyed relations", () => {
+  it("applies the implicit NULL token to both text and decimal joins, while allowing an explicit opt-out", () => {
+    for (const keyPrecision of ["text", "decimal-exact"] as const) {
+      const options = { leftKeyColumns: [0], rightKeyColumns: [0], keyPrecision };
+      const left = "id,value\nNULL,left";
+      const right = "id,value\nNULL,right";
+      expect(joinCsvTexts390(left, right, { ...options, nullKeyPolicy: "never-match" }).matchedRows).toBe(0);
+      expect(joinCsvTexts390(left, right, { ...options, nullKeyPolicy: "match" }).table.rows)
+        .toEqual([["NULL", "left", "NULL", "right"]]);
+    }
+    const literal = joinCsvTexts390("id,value\nNULL,left", "id,value\nNULL,right", {
+      leftKeyColumns: [0], rightKeyColumns: [0], keyPrecision: "text", nullTokens: [], nullKeyPolicy: "never-match",
+    });
+    expect(literal.matchedRows).toBe(1);
+  });
+
   it("does not join a numeric key to the configured NULL token, even when NULL matching is selected", () => {
     const left = "id,value\n00,left-valid";
     const right = "id,value\n0,right-null";

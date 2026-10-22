@@ -5,6 +5,24 @@ import { compareTables390, joinCsvTexts390 } from "../src/engines/table/relation
 const opts = { leftKeyColumns: [0], rightKeyColumns: [0], keyPrecision: "decimal-exact" as const, nullTokens: ["0"], emptyAsNull: false };
 
 describe("STR-390 refusals: precision and duplicate identity", () => {
+  it("rejects duplicate whitespace and blank NULL keys before join, including decimal mode", () => {
+    const left = "id,value\n ,A\n,B";
+    const right = "id,value\n,C";
+    for (const keyPrecision of ["text", "decimal-exact"] as const) {
+      const options = {
+        leftKeyColumns: [0], rightKeyColumns: [0], keyPrecision,
+        nullTokens: [], emptyAsNull: true, nullKeyPolicy: "match" as const,
+      };
+      expect(() => joinCsvTexts390(left, right, { ...options, duplicatePolicy: "reject" }))
+        .toThrow(/AMBIGUOUS_JOIN_KEYS/u);
+      const expanded = joinCsvTexts390(left, right, { ...options, duplicatePolicy: "expand" });
+      expect(expanded.table.rows).toEqual([[" ", "A", "", "C"], ["", "B", "", "C"]]);
+      expect(joinCsvTexts390(left, right, { ...options, nullKeyPolicy: "never-match" }).matchedRows).toBe(0);
+    }
+    expect(left).toBe("id,value\n ,A\n,B");
+    expect(right).toBe("id,value\n,C");
+  });
+
   it("refuses duplicate numeric identities introduced by normalization", () => {
     expect(() => joinCsvTexts390("id,value\n00,A\n000,B", "id,value\n00,C", opts)).toThrow(/AMBIGUOUS_JOIN_KEYS/u);
     const expanded = joinCsvTexts390("id,value\n00,A\n000,B", "id,value\n00,C", { ...opts, duplicatePolicy: "expand" });
