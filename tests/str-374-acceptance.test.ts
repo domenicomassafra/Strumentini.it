@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PDFDocument, degrees } from "pdf-lib";
+import { PDFDict, PDFDocument, PDFHexString, PDFName, degrees } from "pdf-lib";
 import { createPdfAnnotations134 } from "../src/engines/pdf/annotations-134";
 
 async function fixture(form = false): Promise<Uint8Array> {
@@ -45,22 +45,30 @@ describe("STR-374 durable PDF annotations", () => {
     }
   }, 20_000);
 
-  it("keeps previously saved annotations when reopening and adding another comment", async () => {
+  it("keeps distinct annotation names when exporting twice on the same page", async () => {
     const source = await fixture();
     const first = await createPdfAnnotations134(source, [
       { page: 1, kind: "highlight", x: 20, y: 40, width: 90, height: 15, comment: "First annotation" },
     ], "fixture.pdf");
     const second = await createPdfAnnotations134(first.bytes, [
-      { page: 2, kind: "note", x: 35, y: 65, width: 22, height: 22, comment: "Second annotation" },
+      { page: 1, kind: "note", x: 35, y: 65, width: 22, height: 22, comment: "Second annotation" },
     ], "fixture.pdf");
+    const saved = await PDFDocument.load(second.bytes);
+    const entries = saved.getPage(0).node.Annots();
+    expect(entries?.size()).toBe(2);
+    const names = Array.from({ length: entries!.size() }, (_, index) => {
+      const dictionary = saved.context.lookup(entries!.get(index), PDFDict);
+      return dictionary.lookup(PDFName.of("NM"), PDFHexString)?.decodeText();
+    });
+    expect(names.every((name) => typeof name === "string" && name.length > 0)).toBe(true);
+    expect(new Set(names).size).toBe(2);
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
     const loading = pdfjs.getDocument({ data: second.bytes.slice(), stopAtErrors: true });
     try {
       const pdf = await loading.promise;
       const a = await (await pdf.getPage(1)).getAnnotations();
-      const b = await (await pdf.getPage(2)).getAnnotations();
       expect(a.some((mark) => mark.contentsObj?.str === "First annotation")).toBe(true);
-      expect(b.some((mark) => mark.contentsObj?.str === "Second annotation")).toBe(true);
+      expect(a.some((mark) => mark.contentsObj?.str === "Second annotation")).toBe(true);
     } finally { await loading.destroy(); }
   });
 

@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 import { setTimeout as sleep } from "node:timers/promises";
 import { chromium } from "@playwright/test";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { PDFDocument, degrees } from "pdf-lib";
 
 const port = 19434;
 const origin = "http://127.0.0.1:" + port;
@@ -22,8 +23,18 @@ let serverLogs = "";
 for (const stream of [server.stdout, server.stderr]) stream.on("data", (buffer) => { serverLogs += buffer.toString(); });
 let browser;
 const sourcePath = "quality/fixtures/pdf-gold/simple-2page.pdf";
-const source = await readFile(sourcePath);
+const originalSource = await readFile(sourcePath);
+const input = await PDFDocument.load(originalSource);
+input.getPage(1).setCropBox(18, 24, 240, 300);
+input.getPage(1).setRotation(degrees(90));
+const source = Buffer.from(await input.save({ useObjectStreams: false }));
+const unchangedInput = Buffer.from(source);
 assert.equal(source.subarray(0, 5).toString(), "%PDF-");
+function assertRectNear(actual, expected, description) {
+  assert(actual && actual.length === 4, description + ": missing /Rect");
+  expected.forEach((value, index) => assert(Math.abs(actual[index] - value) < 1,
+    `${description}: /Rect[${index}] is ${actual[index]}, expected ${value}`));
+}
 try {
   let ready = false;
   for (let i = 0; i < 160; i++) {
@@ -86,6 +97,21 @@ try {
       await page.keyboard.press("Enter");
     }
     assert.match(await editor.locator('[role="status"]').last().innerText(), /2 annotazioni/u);
+    // A second position uses a different display rotation and zoom. Its PDF rectangle
+    // is calculated from the fixture's known CropBox, not from the editor viewport.
+    const beforeSecondRotation = await editor.locator("img").getAttribute("src");
+    await editor.getByRole("combobox", { name: "Ruota anteprima" }).selectOption("270");
+    await editor.getByRole("combobox", { name: "Zoom anteprima" }).selectOption("0.75");
+    await page.waitForFunction((previous) => {
+      const img = document.querySelector('[data-pdf-annotations-134] img');
+      return img && img.complete && img.naturalWidth > 0 && img.getAttribute("src") !== previous;
+    }, beforeSecondRotation, { timeout: 30_000 });
+    await editor.getByRole("radio", { name: "Evidenzia" }).check();
+    for (const [field, value] of [["x", "10"], ["y", "30"], ["w", "20"], ["h", "15"]]) {
+      await editor.getByRole("spinbutton", { name: field + " percentuale" }).fill(value);
+    }
+    await editor.getByRole("button", { name: "Aggiungi con coordinate" }).click();
+    assert.match(await editor.locator('[role="status"]').last().innerText(), /3 annotazioni/u);
     await page.screenshot({ path: "/tmp/str134-" + width + ".png", fullPage: true });
     await editor.getByRole("button", { name: "Salva PDF annotato e verifica" }).click();
     await page.locator('[data-result-action="download"]').first().waitFor({ timeout: 35_000 });
@@ -94,7 +120,8 @@ try {
     const download = await downloadEvent;
     const output = await readFile(await download.path());
     assert.equal(output.subarray(0, 5).toString(), "%PDF-");
-    assert.deepEqual(await readFile(sourcePath), source, "Original PDF fixture must remain byte-for-byte unchanged");
+    assert.deepEqual(source, unchangedInput, "Uploaded PDF must remain byte-for-byte unchanged");
+    assert.deepEqual(await readFile(sourcePath), originalSource, "Original fixture must remain byte-for-byte unchanged");
     const task = getDocument({ data: new Uint8Array(output) });
     try {
       const pdf = await task.promise;
@@ -102,8 +129,13 @@ try {
       const firstAnnotations = await (await pdf.getPage(1)).getAnnotations();
       const secondAnnotations = await (await pdf.getPage(2)).getAnnotations();
       assert(firstAnnotations.some((a) => a.subtype === "Highlight"), "Page-one highlight must be a real PDF annotation");
-      assert(secondAnnotations.some((a) => a.subtype === "Text" && a.contentsObj?.str === "Nota persistente #134"),
-        "Page-two comment must survive rotation, zoom and download");
+      const note = secondAnnotations.find((a) => a.subtype === "Text" && a.contentsObj?.str === "Nota persistente #134");
+      assert(note, "Page-two comment must survive rotation, zoom and download");
+      assertRectNear(note.rect, width === 390 ? [104.4, 99, 126.4, 121] : [138, 84, 160, 106],
+        "Note from rotated view at 150% zoom");
+      const highlight = secondAnnotations.find((a) => a.subtype === "Highlight");
+      assertRectNear(highlight?.rect, [42, 189, 90, 234], "Highlight from upright view at 75% zoom");
+      assert.equal((await pdf.getPage(2)).rotate, 90);
     } finally { await task.destroy(); }
     assert.deepEqual(pageErrors, [], "Browser JavaScript errors");
     assert.deepEqual(egress, [], "Unexpected network egress");
@@ -114,7 +146,7 @@ try {
       sourceRequests: performance.getEntriesByType("resource").filter((e) => e.name.includes("pdf")).length,
     }));
     assert(metrics.renderedPixels > 0 && metrics.renderedPixels <= 960 * 1200, "Canvas memory budget");
-    reports.push({ width, outputBytes: output.length, annotations: 2, ...metrics, screenshot: "/tmp/str134-" + width + ".png" });
+    reports.push({ width, outputBytes: output.length, annotations: 3, ...metrics, screenshot: "/tmp/str134-" + width + ".png" });
     await context.close();
   }
   process.stdout.write(JSON.stringify({ ok: true, results: reports }) + "\n");
