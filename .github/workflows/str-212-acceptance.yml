@@ -20,6 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 2
       - name: Verify integration checkout uses the current PR head
         env:
           EXPECTED_PR_HEAD: ${{ github.event.pull_request.head.sha }}
