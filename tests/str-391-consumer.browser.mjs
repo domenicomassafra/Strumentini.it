@@ -59,7 +59,7 @@ try {
     const bytes = await readFile(await csvDownload.path());
     assert.equal(sha(bytes), firstHash);
     const rows = JSON.parse(execFileSync("python3", ["-c", "import csv,json,sys;print(json.dumps(list(csv.reader(open(sys.argv[1],encoding='utf-8',newline=''))),ensure_ascii=False))", await csvDownload.path()], { encoding: "utf8" }));
-    assert.deepEqual(rows, [["id", "gruppo", "id_right", "tag"], ["1", "si", "1", "α"], ["3", "si", "3", "γ"]]);
+    assert.deepEqual(rows, [["id", "gruppo", "id_right", "tag_right"], ["1", "si", "1", "α"], ["3", "si", "3", "γ"]]);
 
     const recipePromise = page.waitForEvent("download");
     await page.locator("[data-str391-save]").click();

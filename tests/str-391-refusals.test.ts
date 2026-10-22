@@ -27,7 +27,7 @@ describe("STR-391: refusals preserve both source inputs and prior result", () =>
     await expect(runPipeline391(badColumn, source)).rejects.toThrow("INVALID_COLUMN");
     expect(source.left).toBe(left391);
     expect(source.right).toBe(right391);
-    expect(previous.output).toBe("id,gruppo,id_right,tag\n1,si,1,α\n3,si,3,γ");
+    expect(previous.output).toBe("id,gruppo,id_right,tag_right\n1,si,1,α\n3,si,3,γ");
     const altered = { ...recipe391, expected: { sourceSha256: previous.sourceSha256, outputSha256: "0".repeat(64) } };
     await expect(runPipeline391(altered, source)).rejects.toThrow("PIPELINE_REPLAY_HASH_MISMATCH");
   });

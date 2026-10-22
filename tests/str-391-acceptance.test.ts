@@ -7,7 +7,7 @@ const sha = (text: string) => createHash("sha256").update(text, "utf8").digest("
 
 describe("STR-391: chain filter → join → CSV export and exact replay", () => {
   it("matches an independently specified CSV oracle with SHA-256 of exact bytes", async () => {
-    const expected = "id,gruppo,id_right,tag\n1,si,1,α\n3,si,3,γ";
+    const expected = "id,gruppo,id_right,tag_right\n1,si,1,α\n3,si,3,γ";
     const sources = { left: left391, right: right391 };
     const first = await runPipeline391(recipe391, sources);
     expect(first.output).toBe(expected);
@@ -33,7 +33,7 @@ describe("STR-391: chain filter → join → CSV export and exact replay", () =>
       { kind: "export", format: "csv" },
     ] };
     const result = await runPipeline391(recipe, { left: left391, right: right391 });
-    expect(result.output).toBe("id,gruppo,id_right,tag\n1,si,1,α\n3,si,3,γ");
+    expect(result.output).toBe("id,gruppo,id_right,tag_right\n1,si,1,α\n3,si,3,γ");
     expect(result.trace.map((step) => step.outputRows)).toEqual([2, 3, 2, 2]);
   });
 });
