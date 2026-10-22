@@ -18,6 +18,16 @@ describe("STR-015 — TFR lordo e rivalutazione", () => {
     expect(out).toMatchObject({ status: "PARTIAL", grossTotalCents: null, totalRevaluationCents: null, missingFoiYears: [2024] });
     expect(out.accruedGrossCents).toBeGreaterThan(0);
   });
+  it("FOI negativo: la rivalutazione mantiene la quota fissa dell'1,5% (dicembre 2020)", () => {
+    // FOI dicembre 2019 = 102,5; dicembre 2020 = 102,3. TFR ufficiale dicembre 2020: 1,500000%.
+    const out = calculateTfr15(parseTfrRows15("2019;27000;\n2020;27000;-0,1951219512"));
+    expect(out.lines[1]).toMatchObject({ revaluationPercent: 1.5, revaluationCents: 2798, yearEndGrossCents: 375798 });
+  });
+  it("riproduce il coefficiente dicembre 2025 con FOI dicembre/dicembre derivato da ISTAT", () => {
+    const out = calculateTfr15(parseTfrRows15("2024;27000;\n2025;27000;1,08153078"));
+    expect(out.lines[1]?.revaluationPercent).toBeCloseTo(2.311148, 6);
+    expect(out.lines[1]?.revaluationCents).toBe(4310);
+  });
   it("riduzione 0 esenzione esplicita e input errati rifiutati", () => {
     expect(calculateTfr15(parseTfrRows15("2025;13500;"), 0).accruedGrossCents).toBe(100000);
     expect(() => calculateTfr15(parseTfrRows15("2023;20000;\n2025;20000;1"))).toThrow(/anni completi/u);
