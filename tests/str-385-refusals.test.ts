@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import { IDBFactory, FDBObjectStore } from "fake-indexeddb";
+import { IDBFactory, IDBObjectStore } from "fake-indexeddb";
 import {
   openImageProject385,
   saveImageProject385,
@@ -81,7 +81,7 @@ describe("STR-385 refusal and original preservation", () => {
     const next = await saveImageProject385({ ...input(), previous: saved, transform: { ...initial, contrast: 20 } });
     await expect(saveImageProject385({ ...input(), previous: saved })).rejects.toMatchObject({ code: "PROJECT_CHANGED" });
     const before = await rawValue(saved.id);
-    vi.spyOn(FDBObjectStore.prototype, "put").mockImplementationOnce(() => { throw new DOMException("Full", "QuotaExceededError"); });
+    vi.spyOn(IDBObjectStore.prototype, "put").mockImplementationOnce(() => { throw new DOMException("Full", "QuotaExceededError"); });
     await expect(saveImageProject385({ ...input(), previous: next, transform: { ...initial, brightness: 30 } })).rejects.toMatchObject({ code: "STORAGE_FULL" });
     expect(await rawValue(saved.id)).toEqual(before);
     expect((await openImageProject385(saved.id)).transform.contrast).toBe(20);

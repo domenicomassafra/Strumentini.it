@@ -69,3 +69,9 @@ Provenance clearance remains **NO_GO**: `npx tsx scripts/donor-provenance-366.ts
 ## #272 — exifr 7.1.3, metadati immagine locali (2026-10-19)
 
 Dettagli del donor MIT, tarball/SRI/commit, gate, fixture positive ICC/IPTC e privacy GPS: [donor-exifr-272.md](donor-exifr-272.md). Nessun deploy o ammissione release da questo ticket.
+
+## #144 — STR-385 project history e persistenza immagine (2026-10-22)
+
+Nessun donor runtime nuovo: usa la History e la pipeline PNG di `src/engines/image/transform-workspace.ts` e IndexedDB/transaction API native ([MDN](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB), fonte controllata 22/10/2026). Il gap custom è il salvataggio opt-in del file originale con parametri trasformazione, schema v1 e revisione CAS atomica, non presenti nell'adapter IndexedDB generico del repository.
+
+Donor soltanto **dev/test**: [`fake-indexeddb@6.2.5`](https://github.com/dumbmatter/fakeIndexedDB/tree/v6.2.5), tag fissato al commit `65f2c04e242550e86f86fcdff17cbee81ae96604`, licenza Apache-2.0, dependency registrata in `package-lock.json` con integrità npm. Usa il donor installato senza modificarne i sorgenti; nessuna nuova licenza copyleft introdotta, nessun deploy/autorizzazione release.
