@@ -4,6 +4,7 @@ import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import type { Pdf243Field, Pdf243Mode, Pdf243Plan } from "../../../engines/pdf/fill-overlays-243";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { pdfFillOverlaysManifest } from "../../../tools/pdf-fill-overlays/manifest";
+import { ResultPrimaryAnswer, ResultInterpretation, ToolResultPanel } from "../shared";
 
 export function PdfFillOverlays243Tool() {
   const [file, setFile] = useState<File | null>(null);
@@ -207,12 +208,15 @@ export function PdfFillOverlays243Tool() {
       </button>
       {working ? <button type="button" onClick={invalidate}>Annulla elaborazione</button> : null}
     </div>
-    {plan && resultUrl && <section data-243-result class="result-panel" data-state="success">
+    {plan && resultUrl && <ToolResultPanel eyebrow="PDF appiattito" placeholder="Elabora il PDF." state="success">
+      <div data-243-result>
+      <ResultPrimaryAnswer label="Pagina elaborata">{plan.page}</ResultPrimaryAnswer>
       <p role="status">PDF appiattito: pagina {plan.page}, {plan.mode === "text-field" ? `campo ${plan.fieldName}` : `regione ${plan.x}, ${plan.y}, ${plan.width}×${plan.height} pt`}.</p>
-      <p>Il contenuto originale è stato preservato, le annotazioni e i widget non sono presenti nell'output. Il documento non è più modificabile come modulo.</p>
+      <ResultInterpretation state="warning">Il contenuto originale è stato preservato, le annotazioni e i widget non sono presenti nell'output. Il documento non è più modificabile come modulo.</ResultInterpretation>
       {resultPreview && <img data-243-output-preview src={resultPreview}
         alt="Pagina PDF esportata, riaperta e disegnata da PDF.js" style={{ display: "block", maxWidth: "min(100%, 300px)" }} />}
       <a href={resultUrl} download="pdf-overlay-flattened.pdf">Scarica PDF appiattito</a>
-    </section>}
+      </div>
+    </ToolResultPanel>}
   </form>;
 }

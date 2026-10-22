@@ -39,6 +39,40 @@ describe("legacy primary-result detector", () => {
     ]);
   });
 
+  it("rejects a new manually authored primary output even with real consumer selectors", () => {
+    const source = [
+      "export function NewTool() {",
+      "  return <form><section data-new-result className='gutter result-panel' data-state='success'>",
+      "    <a download='example.pdf' href={url}>Scarica PDF</a>",
+      "  </section></form>;",
+      "}",
+    ].join("\n");
+    const findings = auditLegacyPrimaryOutputSource("src/components/tools/NewTool.tsx", source);
+    expect(findings).toEqual([expect.objectContaining({ pathClass: "manual-result-panel" })]);
+    expect(() => assertNoLegacyPrimaryOutputs(findings)).toThrow(/NewTool\.tsx/u);
+  });
+
+  it.each(["before", "after"] as const)(
+    "rejects a manual primary result %s a secondary raw details block",
+    (position) => {
+      const primary = "<section class='result-panel gutter'><a download='result.pdf'>Scarica PDF</a></section>";
+      const secondary = "<details data-result-secondary-raw><summary>Dati grezzi</summary><pre>Debug</pre></details>";
+      const source = position === "before" ? `${primary}${secondary}` : `${secondary}${primary}`;
+      const findings = auditLegacyPrimaryOutputSource("Adjacent.tsx", source);
+      expect(findings).toEqual([expect.objectContaining({ pathClass: "manual-result-panel" })]);
+      expect(() => assertNoLegacyPrimaryOutputs(findings)).toThrow(/Adjacent\.tsx/u);
+    },
+  );
+
+  it("allows a manual raw representation only inside its secondary container", () => {
+    const source = [
+      "<div data-result-secondary-raw>",
+      "  <section class='result-panel'><pre>Debug</pre></section>",
+      "</div>",
+    ].join("\n");
+    expect(auditLegacyPrimaryOutputSource("Secondary.tsx", source)).toEqual([]);
+  });
+
   it("allows an explicitly secondary raw/debug representation", () => {
     const source = [
       "<ToolResultPanel eyebrow='x' placeholder='x'>",
