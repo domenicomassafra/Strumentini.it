@@ -38,11 +38,15 @@ jobs:
         with:
           python-version: '3.13.9'
       - run: npm ci
-      - name: Install pinned Chromium and system dependencies
-        run: npx playwright install --with-deps chromium
+      - name: Install pinned Chromium/WebKit and system dependencies
+        run: npx playwright install --with-deps chromium webkit
       - name: Build the static consumer
         run: npm run build
       - name: Verify JPEG alpha refusal and opaque JPEG download
         run: node tests/image-compression-047-jpeg-alpha-built.browser.mjs
       - name: Verify PNG, WebP, SVG, alpha and downloads
+        run: node tests/image-compression-047-webp-svg-built.browser.mjs
+      - name: Verify PNG/SVG downloads and WebP capability on WebKit
+        env:
+          STR_047_BROWSER: webkit
         run: node tests/image-compression-047-webp-svg-built.browser.mjs

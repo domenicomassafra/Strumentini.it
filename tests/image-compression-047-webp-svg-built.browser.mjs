@@ -3,11 +3,13 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { chromium } from "@playwright/test";
+import { chromium, webkit } from "@playwright/test";
 import { gzipSync } from "fflate";
 import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
+const browserName = process.env.STR_047_BROWSER ?? "chromium";
+assert(["chromium", "webkit"].includes(browserName), "Only verified browser engines are supported");
 const port = Number(process.env.STR_047_SVG_BUILT_PORT ?? 18583);
 const origin = "http://127.0.0.1:" + port;
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
@@ -45,7 +47,7 @@ async function ready() {
 let browser;
 try {
   await ready();
-  browser = await chromium.launch({ headless: true });
+  browser = await (browserName === "webkit" ? webkit : chromium).launch({ headless: true });
   const page = await browser.newPage({ acceptDownloads: true, viewport: { width: 390, height: 844 } });
   const errors = [], offsite = [];
   page.on("pageerror", e => errors.push(e.message));
@@ -84,31 +86,44 @@ try {
   await form.getByLabel("Qualità, se supportata").fill("0.6");
   await form.locator('input[type="file"]').setInputFiles({ name: "alpha.webp", mimeType: "image/webp", buffer: webpOriginal });
   await form.getByRole("button", { name: "Esegui in locale" }).click();
-  await page.locator(".result-panel[data-state='success']").waitFor({ timeout: 30000 });
-  const savingWebp = page.waitForEvent("download");
-  await page.locator('[data-result-class="image"] a[download]').first().click();
-  const webpDownload = await savingWebp;
-  assert.equal(webpDownload.suggestedFilename(), "alpha-compressed.webp");
-  const webpBytes = await readFile(await webpDownload.path());
-  assert(webpBytes.length < webpOriginal.length, "Lossy WebP did not shrink the noisy lossless fixture");
-  assert.equal(webpBytes.toString("ascii", 0, 4), "RIFF");
-  assert.equal(webpBytes.toString("ascii", 8, 12), "WEBP");
-  assert.equal(webpBytes.readUInt32LE(4) + 8, webpBytes.length);
-  const chunks = [];
-  for (let at = 12; at + 8 <= webpBytes.length;) {
-    const count = webpBytes.readUInt32LE(at + 4);
-    assert(count <= webpBytes.length - at - 8);
-    chunks.push(webpBytes.toString("ascii", at, at + 4));
-    at += 8 + count + (count & 1);
-  }
-  assert(chunks.includes("VP8 "), "Browser WebP lossy output is not VP8");
-  assert(!chunks.includes("VP8L"), "Browser returned unchanged lossless subtype");
-  assert.equal((await sharp(webpBytes).metadata()).format, "webp");
-  const expectedAlpha = await sharp(webpOriginal).ensureAlpha().raw().toBuffer();
-  const actualAlpha = await sharp(webpBytes).ensureAlpha().raw().toBuffer();
-  assert.equal(actualAlpha.length, expectedAlpha.length);
-  for (let i = 3; i < actualAlpha.length; i += 4) {
-    assert.equal(actualAlpha[i], expectedAlpha[i], "WebP alpha changed at pixel " + i / 4);
+  const webpState = await Promise.race([
+    page.locator(".result-panel[data-state='success']").waitFor({ timeout: 30000 }).then(() => "success"),
+    page.locator(".result-panel[data-state='error']").waitFor({ timeout: 30000 }).then(() => "error"),
+  ]);
+  let webpSummary;
+  if (webpState === "error") {
+    assert.equal(browserName, "webkit", "Chromium must encode the supported WebP output");
+    const message = await page.locator(".result-panel[data-state='error']").innerText();
+    assert.match(message, /ENCODE_FAILED|OUTPUT_VALIDATION_FAILED|could not encode|expected image\/webp/iu);
+    assert.equal(await page.locator('[data-result-class="image"] a[download]').count(), 0, "Unsupported WebP must not download a mislabeled PNG");
+    webpSummary = "WebKit WebP unsupported: explicit refusal and no download";
+  } else {
+    const savingWebp = page.waitForEvent("download");
+    await page.locator('[data-result-class="image"] a[download]').first().click();
+    const webpDownload = await savingWebp;
+    assert.equal(webpDownload.suggestedFilename(), "alpha-compressed.webp");
+    const webpBytes = await readFile(await webpDownload.path());
+    assert(webpBytes.length < webpOriginal.length, "Lossy WebP did not shrink the noisy lossless fixture");
+    assert.equal(webpBytes.toString("ascii", 0, 4), "RIFF");
+    assert.equal(webpBytes.toString("ascii", 8, 12), "WEBP");
+    assert.equal(webpBytes.readUInt32LE(4) + 8, webpBytes.length);
+    const chunks = [];
+    for (let at = 12; at + 8 <= webpBytes.length;) {
+      const count = webpBytes.readUInt32LE(at + 4);
+      assert(count <= webpBytes.length - at - 8);
+      chunks.push(webpBytes.toString("ascii", at, at + 4));
+      at += 8 + count + (count & 1);
+    }
+    assert(chunks.includes("VP8 "), "Browser WebP lossy output is not VP8");
+    assert(!chunks.includes("VP8L"), "Browser returned unchanged lossless subtype");
+    assert.equal((await sharp(webpBytes).metadata()).format, "webp");
+    const expectedAlpha = await sharp(webpOriginal).ensureAlpha().raw().toBuffer();
+    const actualAlpha = await sharp(webpBytes).ensureAlpha().raw().toBuffer();
+    assert.equal(actualAlpha.length, expectedAlpha.length);
+    for (let i = 3; i < actualAlpha.length; i += 4) {
+      assert.equal(actualAlpha[i], expectedAlpha[i], "WebP alpha changed at pixel " + i / 4);
+    }
+    webpSummary = `WebP VP8 download ${webpOriginal.length}→${webpBytes.length} B with Sharp/RIFF/alpha`;
   }
 
   const svgForm = page.locator("[data-svg-compression-47] form");
@@ -139,7 +154,7 @@ try {
   assert.equal(await page.locator('[data-svg-optimized="true"]').count(), 0);
   assert.deepEqual(errors, []);
   assert.deepEqual(offsite, []);
-  console.log("PASS #81 built PNG IDAT download " + pngOriginal.length + "→" + pngBytes.length + " B exact; WebP VP8 download " + webpOriginal.length + "→" + webpBytes.length + " B with Sharp/RIFF/alpha; SVG raw " + Buffer.byteLength(svg) + "→" + svgOutput.length + " B; gzip " + gzipOriginal + "→" + gzipOutput + " B, two previews, Sharp reopen, unsafe reject, zero offsite requests");
+  console.log("PASS #81 " + browserName + " built PNG IDAT download " + pngOriginal.length + "→" + pngBytes.length + " B exact; " + webpSummary + "; SVG raw " + Buffer.byteLength(svg) + "→" + svgOutput.length + " B; gzip " + gzipOriginal + "→" + gzipOutput + " B, two previews, Sharp reopen, unsafe reject, zero offsite requests");
 } finally {
   if (browser) await browser.close();
   server.kill("SIGTERM");
