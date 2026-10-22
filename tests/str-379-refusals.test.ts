@@ -12,7 +12,10 @@ import { deletePdfProject138, inspectPdfProjects138, loadPdfProject138, savePdfP
 async function sourcePdf(): Promise<File> {
   const pdf = await PDFDocument.create();
   pdf.addPage([300, 420]);
-  return new File([await pdf.save()], "progetto.pdf", { type: "application/pdf" });
+  const bytes = await pdf.save();
+  const buffer = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(buffer).set(bytes);
+  return new File([buffer], "progetto.pdf", { type: "application/pdf" });
 }
 
 async function rawRecord(storeName: "projects" | "pdf", id: string): Promise<Record<string, unknown> | undefined> {
