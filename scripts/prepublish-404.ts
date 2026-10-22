@@ -12,6 +12,7 @@ import { lstat, open, readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { assertReleaseRevision404 } from "./validate-release";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 
 const execFileAsync = promisify(execFile);
 const ROOT = resolve(import.meta.dirname, "..");
@@ -159,10 +160,9 @@ async function git(...args: string[]): Promise<string> {
 }
 
 async function verifyReleaseCandidate404(expectedSha: string): Promise<void> {
-  const [currentSha, originMainSha, dirty, remoteMain] = await Promise.all([
+  const [currentSha, originMainSha, remoteMain] = await Promise.all([
     git("rev-parse", "HEAD"),
     git("rev-parse", "refs/remotes/origin/main"),
-    git("status", "--porcelain"),
     // Fetch-less current remote identity: no local stale origin/main can
     // authorize publishing after another commit lands on GitHub.
     git("ls-remote", "--exit-code", "origin", "refs/heads/main"),
@@ -173,7 +173,7 @@ async function verifyReleaseCandidate404(expectedSha: string): Promise<void> {
   }
   assertReleaseRevision404({
     expectedSha, currentSha, githubSha: process.env.GITHUB_SHA || undefined,
-    githubRef: process.env.GITHUB_REF || undefined, dirty: dirty.length !== 0,
+    githubRef: process.env.GITHUB_REF || undefined, dirty: inspectReleaseWorkingTree162(ROOT).dirty,
   });
 }
 

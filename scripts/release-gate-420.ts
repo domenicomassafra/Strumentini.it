@@ -15,6 +15,7 @@ import { resolve } from "node:path";
 import type { ReleaseFinding } from "../src/release/validation";
 import { OWNER_RELEASE_POLICY_420, assessOwnerPolicy420, distPageHashes420 } from "../src/release/owner-policy-420";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const RECEIPT = "quality/receipts/release/validation-420.json";
@@ -60,7 +61,8 @@ function canonicalValidation(expectedSha: string | undefined): {
 async function main(): Promise<void> {
   const expectedSha = flag("expected-sha");
   const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
-  const dirty = execFileSync("git", ["status", "--porcelain"], { cwd: ROOT, encoding: "utf8" }).trim().length > 0;
+  const worktree = inspectReleaseWorkingTree162(ROOT);
+  const dirty = worktree.dirty;
   const sourceFingerprint = await currentEvidenceSourceFingerprint(ROOT);
   const canonical = canonicalValidation(expectedSha);
 
@@ -108,6 +110,7 @@ async function main(): Promise<void> {
     revision,
     sourceFingerprint,
     workingTreeDirty: dirty,
+    regeneratedEvidencePaths: worktree.evidencePaths,
     status,
     counts,
     policy: {

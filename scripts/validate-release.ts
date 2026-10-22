@@ -20,6 +20,7 @@ import {
   validateRelease,
 } from "../src/release/validation";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 import { verifyCurrentGithubMain404 } from "./lib/current-remote-main-404";
 export { assertCurrentRemoteMain404 } from "./lib/current-remote-main-404";
 import { inspectGoldBinding347, type AuditGoldResult347 } from "./audit-gold-source-binding-347";
@@ -268,6 +269,7 @@ export function mergeReleaseGoldAudit347(
 
 async function main(): Promise<void> {
   const revision = await git("rev-parse", "HEAD").catch(() => "unknown");
+  const worktree = inspectReleaseWorkingTree162(root);
   const expectedShaArgs = process.argv.slice(2).filter((arg) => arg.startsWith("--expected-sha="));
   if (expectedShaArgs.length > 1 || (process.env.GITHUB_ACTIONS === "true" && requireReady && expectedShaArgs.length !== 1)) {
     throw new Error("RELEASE_404_EXACT_SHA_REQUIRED_FOR_CI_ADMISSION");
@@ -279,11 +281,11 @@ async function main(): Promise<void> {
       currentSha: revision,
       githubSha: process.env.GITHUB_SHA || undefined,
       githubRef: process.env.GITHUB_REF || undefined,
-      dirty: (await git("status", "--porcelain")).length > 0,
+      dirty: worktree.dirty,
     });
   }
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
-  const workingTreeDirty = (await git("status", "--porcelain").catch(() => "")).length > 0;
+  const workingTreeDirty = worktree.dirty;
   const expectedToolCount = await loadExpectedToolCount();
   const catalog = await loadCatalog();
   const manifestFiles = (await relativeFiles(resolve(root, "src/tools"))).filter((path) => path.endsWith("/manifest.ts"));
@@ -329,10 +331,8 @@ async function main(): Promise<void> {
   const goldAudit = await inspectGoldBinding347(root).catch((error: unknown) =>
     error instanceof Error ? error : new Error(String(error)));
   const result = mergeReleaseGoldAudit347(releaseResult, goldAudit);
-  // Last source-identity check just before accepting a GitHub Actions
-  // admission result. A dispatch queued against a former main is NO_GO even
-  // if its GITHUB_SHA still agrees with HEAD. No receipt is written by this
-  // read-only workflow. An external deployer could still bypass the workflow.
+  // Recheck remote main at admission: a stale dispatch remains NO_GO even
+  // when GITHUB_SHA matches HEAD. This workflow writes no receipt.
   if (process.env.GITHUB_ACTIONS === "true" && requireReady) {
     const expectedSha = expectedShaArgs[0]!.slice("--expected-sha=".length);
     await verifyCurrentGithubMain404(expectedSha);
@@ -341,7 +341,7 @@ async function main(): Promise<void> {
       currentSha: await git("rev-parse", "HEAD"),
       githubSha: process.env.GITHUB_SHA || undefined,
       githubRef: process.env.GITHUB_REF || undefined,
-      dirty: (await git("status", "--porcelain")).length > 0,
+      dirty: inspectReleaseWorkingTree162(root).dirty,
     });
   }
   const checkStatus = (prefixes: readonly string[], checked: boolean): "PASS" | "FAIL" | "BLOCKED" | "NOT_RUN" => {

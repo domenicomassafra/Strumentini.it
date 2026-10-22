@@ -26,6 +26,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { buildStagingRollbackReceipt420, STAGING_ROLLBACK_ORIGIN_420 } from "../src/release/staging-rollback-observations";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 import {
   STAGING_PUBLIC_TURNSTILE_KEY,
   assertStagingConfig,
@@ -74,7 +75,7 @@ async function waitForHome(expected: string, label: string): Promise<string> {
 }
 function assertClean(): { revision: string; sourceFingerprint: Promise<string> } {
   const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
-  const dirty = execFileSync("git", ["status", "--porcelain"], { cwd: ROOT, encoding: "utf8" }).trim().length > 0;
+  const dirty = inspectReleaseWorkingTree162(ROOT).dirty;
   if (dirty) throw new Error("STAGING_ROLLBACK_DIRTY_WORKTREE");
   return { revision, sourceFingerprint: currentEvidenceSourceFingerprint(ROOT) };
 }

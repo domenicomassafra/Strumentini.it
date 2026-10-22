@@ -88,7 +88,7 @@
   "scripts/gold/local-jobs-certify.ts": 27255,
   "scripts/gold/marketing-media-certify.ts": 31132,
   "scripts/gold/text-data-certify.ts": 25758,
-  "scripts/validate-release.ts": 20379,
+  "scripts/validate-release.ts": 20268,
   "scripts/validator/audit-397.ts": 20759,
   "spikes/heavy-local-feasibility/src/main.js": 26516,
   "src/components/catalog/CatalogDirectory.astro": 32152,
