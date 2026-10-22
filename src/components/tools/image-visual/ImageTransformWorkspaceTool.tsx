@@ -1,15 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import {
   applyImageTransformPixels,
-  commitImageTransform,
-  createImageTransformHistory,
   defaultImageTransformState,
   normalizeImageTransformState,
   readImageTransformSource,
-  resetImageTransform,
   transformPreflight,
-  undoImageTransform,
-  type ImageTransformHistory,
   type ImageTransformState,
   type ImageRedactionMode,
   type PixelFrame,
@@ -20,6 +15,15 @@ import {
   type PerspectiveCorners,
   type PerspectivePoint,
 } from "../../../engines/image/advanced-workspace";
+import {
+  commitImageProject385,
+  createImageProjectHistory385,
+  redoImageProject385,
+  resetImageProject385,
+  undoImageProject385,
+  type ImageProjectHistory385,
+} from "../../../engines/image/project-history-385";
+import { ImageProjectError385, type ImageProjectOpen385, type ImageProjectReference385 } from "../../../engines/image/project-storage-385";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import {
   gutterStateFor,
@@ -34,6 +38,9 @@ import {
   useToolOperation,
 } from "../shared";
 import { ImageResultV2, prepareImageResult, type PreparedImageResult } from "./ImageResultV2";
+import { ImageProjectControls385 } from "./ImageProjectControls385";
+import { clamp, contentPoint, cropMoved, transformedContentDimensions } from "./ImageTransformInteractions";
+import { drawPerspectiveBoundary, fullPerspectiveCorners, previewPixelData } from "./ImageTransformPerspectivePreview";
 
 interface DragState {
   readonly pointerId: number;
@@ -56,90 +63,15 @@ interface PerspectiveDragState {
   readonly corner: PerspectiveCornerKey;
 }
 
-function clamp(value: number, minimum: number, maximum: number): number {
-  return Math.max(minimum, Math.min(maximum, value));
-}
-
 function nextQuarterTurn(value: QuarterTurn): QuarterTurn {
   return value === 0 ? 90 : value === 90 ? 180 : value === 180 ? 270 : 0;
-}
-
-function cropMoved(state: ImageTransformState, source: PixelFrame, deltaX: number, deltaY: number): ImageTransformState {
-  return {
-    ...state,
-    crop: {
-      ...state.crop,
-      x: clamp(Math.round(state.crop.x + deltaX), 0, source.width - state.crop.width),
-      y: clamp(Math.round(state.crop.y + deltaY), 0, source.height - state.crop.height),
-    },
-  };
-}
-
-function transformedContentDimensions(state: ImageTransformState): { width: number; height: number } {
-  return state.rotate === 90 || state.rotate === 270
-    ? { width: state.crop.height, height: state.crop.width }
-    : { width: state.crop.width, height: state.crop.height };
-}
-
-function contentPoint(event: PointerEvent, canvas: HTMLCanvasElement, source: PixelFrame, state: ImageTransformState): { x: number; y: number } | null {
-  const rect = canvas.getBoundingClientRect();
-  if (rect.width <= 0 || rect.height <= 0) return null;
-  const normalized = normalizeImageTransformState(state, source.width, source.height);
-  const dimensions = transformedContentDimensions(normalized);
-  const canvasX = (event.clientX - rect.left) * canvas.width / rect.width;
-  const canvasY = (event.clientY - rect.top) * canvas.height / rect.height;
-  const x = Math.floor(canvasX - normalized.border);
-  const y = Math.floor(canvasY - normalized.border);
-  if (x < 0 || y < 0 || x >= dimensions.width || y >= dimensions.height) return null;
-  return { x, y };
-}
-
-function previewPixelData(canvas: HTMLCanvasElement, frame: PixelFrame): void {
-  canvas.width = frame.width;
-  canvas.height = frame.height;
-  const context = canvas.getContext("2d");
-  if (context === null) return;
-  const data = context.createImageData(frame.width, frame.height);
-  data.data.set(frame.data);
-  context.putImageData(data, 0, 0);
-}
-
-function fullPerspectiveCorners(source: PixelFrame): PerspectiveCorners {
-  return {
-    topLeft: { x: 0, y: 0 },
-    topRight: { x: source.width - 1, y: 0 },
-    bottomRight: { x: source.width - 1, y: source.height - 1 },
-    bottomLeft: { x: 0, y: source.height - 1 },
-  };
-}
-
-function drawPerspectiveBoundary(canvas: HTMLCanvasElement, source: PixelFrame, corners: PerspectiveCorners): void {
-  previewPixelData(canvas, source);
-  const context = canvas.getContext("2d");
-  if (context === null) return;
-  const points = [corners.topLeft, corners.topRight, corners.bottomRight, corners.bottomLeft] as const;
-  context.save();
-  context.strokeStyle = "#ff2d55";
-  context.fillStyle = "#ff2d55";
-  context.lineWidth = Math.max(1, Math.min(source.width, source.height) / 250);
-  context.beginPath();
-  context.moveTo(points[0].x, points[0].y);
-  for (const point of points.slice(1)) context.lineTo(point.x, point.y);
-  context.closePath();
-  context.stroke();
-  const radius = Math.max(3, Math.min(source.width, source.height) / 60);
-  for (const point of points) {
-    context.beginPath();
-    context.arc(point.x, point.y, radius, 0, Math.PI * 2);
-    context.fill();
-  }
-  context.restore();
 }
 
 export function ImageTransformWorkspaceTool() {
   const [file, setFile] = useState<File | null>(null);
   const [source, setSource] = useState<PixelFrame | null>(null);
-  const [history, setHistory] = useState<ImageTransformHistory | null>(null);
+  const [history, setHistory] = useState<ImageProjectHistory385 | null>(null);
+  const [savedProject, setSavedProject] = useState<ImageProjectReference385 | null>(null);
   const [draft, setDraft] = useState<ImageTransformState | null>(null);
   const [previewError, setPreviewError] = useState("");
   const [preflightNote, setPreflightNote] = useState("");
@@ -195,7 +127,7 @@ export function ImageTransformWorkspaceTool() {
     if (source === null || history === null) return;
     try {
       const normalized = normalizeImageTransformState(next, source.width, source.height);
-      setHistory(commitImageTransform(history, normalized));
+      setHistory(commitImageProject385(history, normalized));
       setDraft(null);
       invalidateExport();
       setPreviewError("");
@@ -211,6 +143,7 @@ export function ImageTransformWorkspaceTool() {
     setFile(selected);
     setSource(null);
     setHistory(null);
+    setSavedProject(null);
     setDraft(null);
     setPerspectiveCorners(null);
     setPreviewError("");
@@ -229,7 +162,7 @@ export function ImageTransformWorkspaceTool() {
       const decodedPreflight = transformPreflight(selected.size);
       setPreflightNote(decodedPreflight.state === "degraded" ? decodedPreflight.reasons.join(" ") : "Decodifica immagine supportata; elaborazione ed export restano locali.");
       setSource(frame);
-      setHistory(createImageTransformHistory(defaultImageTransformState(frame.width, frame.height)));
+      setHistory(createImageProjectHistory385(defaultImageTransformState(frame.width, frame.height)));
       setPerspectiveCorners(fullPerspectiveCorners(frame));
     } catch (error) {
       if (loadSequence.current !== sequence) return;
@@ -310,14 +243,21 @@ export function ImageTransformWorkspaceTool() {
 
   function undo(): void {
     if (history === null) return;
-    setHistory(undoImageTransform(history));
+    setHistory(undoImageProject385(history));
+    setDraft(null);
+    invalidateExport();
+  }
+
+  function redo(): void {
+    if (history === null) return;
+    setHistory(redoImageProject385(history));
     setDraft(null);
     invalidateExport();
   }
 
   function resetTransforms(): void {
     if (history === null) return;
-    setHistory(resetImageTransform(history));
+    setHistory(resetImageProject385(history));
     setDraft(null);
     invalidateExport();
   }
@@ -327,6 +267,7 @@ export function ImageTransformWorkspaceTool() {
     setFile(null);
     setSource(null);
     setHistory(null);
+    setSavedProject(null);
     setDraft(null);
     setPerspectiveCorners(null);
     setPreviewError("");
@@ -334,6 +275,23 @@ export function ImageTransformWorkspaceTool() {
     setInteractionMode("crop");
     setWorkspaceMode("transform");
     operation.reset();
+  }
+
+  async function openSavedProject(project: ImageProjectOpen385): Promise<void> {
+    const sequence = ++loadSequence.current;
+    const frame = await readImageTransformSource(project.original);
+    if (sequence !== loadSequence.current) throw new ImageProjectError385("PROJECT_CHANGED");
+    if (frame.width !== project.width || frame.height !== project.height) throw new ImageProjectError385("UNSUPPORTED_SCHEMA");
+    const initial = createImageProjectHistory385(defaultImageTransformState(frame.width, frame.height));
+    setFile(project.original);
+    setSource(frame);
+    setHistory(commitImageProject385(initial, project.transform));
+    setSavedProject({ id: project.id, name: project.name, revision: project.revision });
+    setWorkspaceMode("transform");
+    setPerspectiveCorners(fullPerspectiveCorners(frame));
+    setDraft(null);
+    setPreviewError("");
+    invalidateExport();
   }
 
   async function submit(event: Event): Promise<void> {
@@ -557,11 +515,14 @@ export function ImageTransformWorkspaceTool() {
 
             <ToolActions>
               <button type="button" onClick={undo} disabled={historyCount === 0 || operation.isRunning}>Annulla ultima modifica</button>
+              <button type="button" onClick={redo} disabled={!history?.future.length || operation.isRunning}>Ripeti modifica</button>
               <button type="button" onClick={resetTransforms} disabled={historyCount === 0 || operation.isRunning}>Ripristina trasformazioni</button>
             </ToolActions>
             </div>
           </>
         )}
+
+        <ImageProjectControls385 file={file} source={source} history={history} previous={savedProject} editable={workspaceMode === "transform"} onSaved={setSavedProject} onOpen={openSavedProject} />
 
         {preflightNote !== "" && <p class="file-note" role="status">{preflightNote}</p>}
         <InlineError message={previewError || operation.error} />
