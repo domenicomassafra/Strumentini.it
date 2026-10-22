@@ -202,7 +202,8 @@ for (const [name, engine] of Object.entries(engines)) {
       const onlineResultUrl = await page.locator('[data-portrait-274] img').getAttribute('src');
       await context.setOffline(true);
       try {
-        await page.locator('input[type="file"]').setInputFiles(resolve(`tests/fixtures/portrait-modnet-274/portrait-pexels-${samples[0]}.jpg`));
+        // Reuse the selected File. WebKit may fail to materialize a new
+        // Playwright-injected File once its browser context is offline.
         await page.getByRole("button", { name: /Avvia/u }).click();
         await page.waitForFunction(() => /PNG RGBA decodificato|Rimozione sfondo non disponibile|Tempo limite/.test(document.querySelector('[data-portrait-274] [role="status"]')?.textContent ?? ""), null, { timeout: 30_000 });
         const offlineStatus = await page.locator('[data-portrait-274] [role="status"]').textContent();
