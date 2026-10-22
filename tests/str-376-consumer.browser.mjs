@@ -7,7 +7,7 @@ import { PDFDocument, PDFName, PDFString } from "pdf-lib";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const base = "http://127.0.0.1:18536";
-const server = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "18536"], { stdio: "pipe" });
+const server = spawn("./node_modules/.bin/astro", ["preview", "--host", "127.0.0.1", "--port", "18536", "--strictPort"], { stdio: "pipe" });
 let browser;
 let log = "";
 server.stdout.on("data", (bytes) => { log += bytes.toString(); });
