@@ -6,6 +6,7 @@ on:
       - '.github/workflows/str-391-compiled-consumer.yml'
       - 'src/engines/table/pipeline-391.ts'
       - 'src/components/tools/table/DataPipeline391.tsx'
+      - 'src/components/tools/csv-join/CsvJoinTool.tsx'
       - 'src/pages/tools/csv-join.astro'
       - 'tests/str-391-*'
       - 'tests/fixtures/str-391.ts'
