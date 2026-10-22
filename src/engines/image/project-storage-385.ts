@@ -1,6 +1,5 @@
 import {
   normalizeImageTransformState,
-  transformPreflight,
   type ImageTransformState,
 } from "./transform-workspace";
 
@@ -58,8 +57,7 @@ function record(value: unknown): StoredProject385 {
       !(raw.original instanceof Blob) || raw.original.size === 0 || raw.original.size > MAX_SOURCE_BYTES ||
       typeof raw.mime !== "string" || !["image/png", "image/jpeg", "image/webp"].includes(raw.mime) ||
       raw.original.type !== raw.mime) return fail();
-  const check = transformPreflight(raw.original.size, Number(raw.width) * Number(raw.height));
-  if (!Number.isInteger(raw.width) || !Number.isInteger(raw.height) || check.state === "unsupported") return fail();
+  if (!Number.isInteger(raw.width) || !Number.isInteger(raw.height)) return fail();
   let transform: ImageTransformState;
   try {
     transform = normalizeImageTransformState(raw.transform as ImageTransformState, raw.width as number, raw.height as number);
@@ -150,8 +148,7 @@ export async function saveImageProject385(input: {
   const name = input.name.trim();
   if (!name || name.length > MAX_NAME || !input.original.name || input.original.name.length > 255 ||
       !["image/png", "image/jpeg", "image/webp"].includes(input.original.type) ||
-      input.original.size === 0 || input.original.size > MAX_SOURCE_BYTES ||
-      transformPreflight(input.original.size, input.width * input.height).state === "unsupported") {
+      input.original.size === 0 || input.original.size > MAX_SOURCE_BYTES) {
     throw new ImageProjectError385("INVALID_PROJECT");
   }
   let transform: ImageTransformState;
