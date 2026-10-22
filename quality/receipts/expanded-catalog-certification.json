@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 14
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 253,
-    "releaseBlockedCount": 20,
+    "releaseEligibleGoldCount": 252,
+    "releaseBlockedCount": 21,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 273,
     "fixtureBoundCount": 273,
@@ -14776,12 +14776,12 @@
       "maintenanceClass": "H",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/expanded-local/image-compression.gold.json",
-      "releaseGate": "PASS",
-      "goldEligible": true,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
       "implementation": {
         "manifest": {
           "path": "src/tools/image-compression/manifest.ts",
-          "sha256": "719138745357a6c95891d783acfd9f6d04f6a40fec8dde4ee6f94080779cfdcd"
+          "sha256": "3b975ca8f0e1159e6db73930f6cb131f41dec0c327a9e256b004f53b4daad4eb"
         },
         "module": {
           "path": "src/tools/image-compression/module.ts",
@@ -14794,7 +14794,8 @@
         "testFiles": [
           "tests/ephemeral-file-handoff-337.test.ts",
           "tests/image-resize-engine.test.ts",
-          "tests/image-visual-tools.test.ts"
+          "tests/image-visual-tools.test.ts",
+          "tests/str-028-acceptance.test.ts"
         ]
       },
       "oracle": {
@@ -14902,7 +14903,9 @@
           "status": "PASS"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
+      ],
       "coverageGaps": []
     },
     {
@@ -15210,7 +15213,8 @@
           "tests/image-format-matrix.test.ts",
           "tests/image-resize-engine.test.ts",
           "tests/image-upgrade-cluster.test.ts",
-          "tests/image-visual-tools.test.ts"
+          "tests/image-visual-tools.test.ts",
+          "tests/str-028-acceptance.test.ts"
         ]
       },
       "oracle": {

@@ -27,7 +27,7 @@ class LocalWindow028 {
   removeEventListener(_: string, fn: (event: MessageEvent) => void) { this.listeners.delete(fn); }
   setTimeout() { return 1; }
   clearTimeout() {}
-  postMessage(data: unknown, origin: string) { this.peer?.emit(data, this, origin); }
+  postMessage(data: unknown, origin: string) { if (this.peer) this.emit(data, this.peer, origin); }
   emit(data: unknown, source: LocalWindow028, origin: string) {
     for (const fn of [...this.listeners]) fn({ data, source: source as unknown as Window, origin } as MessageEvent);
   }
