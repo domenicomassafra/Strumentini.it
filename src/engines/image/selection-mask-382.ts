@@ -140,13 +140,15 @@ export async function renderImageSelectionLocal382(input: unknown, signal?: Abor
   if (typeof input !== "object" || input === null) throw new ImageVisualError("INVALID_INPUT", "Selection input is required");
   const record = input as Record<string, unknown>;
   const file = assertFile(record.file);
+  // Inspect the encoded dimensions before allocating a decoded bitmap.
+  const header = await readHeader(file, signal);
+  sourceDimensions(header.width, header.height);
   const source = await readImageTransformSource(file.blob, signal, progress);
   const selection = record.selection as ImageSelection382;
   const mode = record.mode as SelectionMode382;
   progress?.({ phase: "transform", label: "Applying alpha-preserving image selection" });
   const pixels = selectImagePixels382(source, selection, mode, signal);
   const blob = await outputBlob(pixelFrameToCanvas(pixels), "image/png", undefined, pixels.width, pixels.height, signal, progress);
-  const header = await readHeader(file, signal);
   return {
     blob, filename: `${normalizeName(file.name)}-${mode === "crop" ? "selezione" : "maschera"}.png`,
     outputMime: "image/png" as const, inputMime: header.mime, width: pixels.width, height: pixels.height,

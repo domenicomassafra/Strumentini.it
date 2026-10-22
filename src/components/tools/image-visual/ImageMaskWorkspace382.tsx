@@ -7,8 +7,11 @@ import {
   type ImageSelection382,
   type SelectionPoint382,
   type SelectionMode382,
+  SELECTION_MAX_PIXELS_382,
 } from "../../../engines/image/selection-mask-382";
+import { readHeader } from "../../../engines/image/operations";
 import { readImageTransformSource, type PixelFrame } from "../../../engines/image/transform-workspace";
+import { assertFile } from "../../../engines/image/visual";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import {
   gutterStateFor, InlineError, ToolActions, ToolCancelButton, ToolOperation,
@@ -103,10 +106,11 @@ export function ImageMaskWorkspace382() {
     if (selected === null) return;
     setLoading(true);
     try {
+      const header = await readHeader(assertFile(selected));
+      if (header.width * header.height > SELECTION_MAX_PIXELS_382) throw new Error("PIXEL_LIMIT: Selezione limitata a 4 MP su questo editor.");
       const frame = await readImageTransformSource(selected);
       if (version !== loadVersion.current) return;
-      // Respect the same conservative memory guard used by the pixel operation.
-      if (frame.width * frame.height > 4_000_000) throw new Error("PIXEL_LIMIT: Selezione limitata a 4 MP su questo editor.");
+      if (frame.width * frame.height > SELECTION_MAX_PIXELS_382) throw new Error("PIXEL_LIMIT: Selezione limitata a 4 MP su questo editor.");
       setSource(frame);
       setSelection(initialSelection(frame));
     } catch (caught) {
