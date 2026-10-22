@@ -12,6 +12,7 @@ import { lstat, open, readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { assertReleaseRevision404 } from "./validate-release";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 
 const execFileAsync = promisify(execFile);
 const ROOT = resolve(import.meta.dirname, "..");
@@ -132,6 +133,7 @@ export async function runPrepublish404(input: {
   policy420?: boolean | undefined;
   verifyRevision(): Promise<void>;
   snapshotAssets(): Promise<string>;
+  snapshotEvidence(): Promise<string>;
   runStep(step: PrepublishStep404): Promise<void>;
 }): Promise<void> {
   // Validate format before executing even a harmless external binary.
@@ -139,17 +141,26 @@ export async function runPrepublish404(input: {
   await input.verifyRevision();
   const steps = prepublishSteps404(input.expectedSha!, input.policy420 ?? releasePolicy420Enabled());
   let builtAssets: string | undefined;
+  let admittedEvidence: string | undefined;
   for (const step of steps) {
     if (step.publishes) {
       if (!builtAssets) throw new Error("RELEASE_404_ASSET_SNAPSHOT_MISSING");
+      if (!admittedEvidence) throw new Error("RELEASE_404_EVIDENCE_SNAPSHOT_MISSING");
       await input.verifyRevision();
       const currentAssets = await input.snapshotAssets();
       if (currentAssets !== builtAssets) throw new Error("RELEASE_404_ASSET_CHANGED_AFTER_BUILD");
+      if (await input.snapshotEvidence() !== admittedEvidence) {
+        throw new Error("RELEASE_404_EVIDENCE_CHANGED_AFTER_ADMISSION");
+      }
     }
     await input.runStep(step);
     if (step.name === "cumulative-build") {
       builtAssets = await input.snapshotAssets();
       if (!/^[a-f0-9]{64}$/u.test(builtAssets)) throw new Error("RELEASE_404_ASSET_SNAPSHOT_INVALID");
+    }
+    if (step.name === "owner-policy-automatic-admission" || step.name === "scope-and-staging-rollback-admission") {
+      admittedEvidence = await input.snapshotEvidence();
+      if (!/^[a-f0-9]{64}$/u.test(admittedEvidence)) throw new Error("RELEASE_404_EVIDENCE_SNAPSHOT_INVALID");
     }
   }
 }
@@ -159,10 +170,9 @@ async function git(...args: string[]): Promise<string> {
 }
 
 async function verifyReleaseCandidate404(expectedSha: string): Promise<void> {
-  const [currentSha, originMainSha, dirty, remoteMain] = await Promise.all([
+  const [currentSha, originMainSha, remoteMain] = await Promise.all([
     git("rev-parse", "HEAD"),
     git("rev-parse", "refs/remotes/origin/main"),
-    git("status", "--porcelain"),
     // Fetch-less current remote identity: no local stale origin/main can
     // authorize publishing after another commit lands on GitHub.
     git("ls-remote", "--exit-code", "origin", "refs/heads/main"),
@@ -173,7 +183,7 @@ async function verifyReleaseCandidate404(expectedSha: string): Promise<void> {
   }
   assertReleaseRevision404({
     expectedSha, currentSha, githubSha: process.env.GITHUB_SHA || undefined,
-    githubRef: process.env.GITHUB_REF || undefined, dirty: dirty.length !== 0,
+    githubRef: process.env.GITHUB_REF || undefined, dirty: inspectReleaseWorkingTree162(ROOT).dirty,
   });
 }
 
@@ -195,6 +205,7 @@ async function main(): Promise<void> {
     expectedSha,
     verifyRevision: () => verifyReleaseCandidate404(expectedSha),
     snapshotAssets: () => fingerprintPublicationAssets404(resolve(ROOT, "dist")),
+    snapshotEvidence: () => fingerprintPublicationAssets404(resolve(ROOT, "quality/receipts")),
     runStep: executeStep404,
   });
 }
