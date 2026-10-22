@@ -34,7 +34,7 @@ describe("#366 distributed donor notices", () => {
     for (const [pkg, file] of [
       ["papaparse@5.7.0", "papaparse-126-MIT.txt"],
       ["hash-wasm@4.12.0", "hash-wasm-126-MIT.txt"],
-    ]) {
+    ] as const) {
       expect(DONOR_NOTICES_366.find((notice) => notice.packages.includes(pkg))).toMatchObject({
         file, spdx: "MIT",
       });
