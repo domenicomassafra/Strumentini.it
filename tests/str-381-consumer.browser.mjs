@@ -15,8 +15,6 @@ const missingResources = [];
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", "http://127.0.0.1");
-    // Chromium may request the legacy favicon even though Astro declares /favicon.svg.
-    if (url.pathname === "/favicon.ico") return res.writeHead(204).end();
     const path = resolve(root, "." + decodeURIComponent(url.pathname), url.pathname.endsWith("/") ? "index.html" : "");
     const rel = relative(root, path);
     if (rel === ".." || rel.startsWith(".." + sep) || path === root) return res.writeHead(403).end();
@@ -132,9 +130,19 @@ try {
   await page.getByRole("alert").waitFor();
   assert.match(await page.getByRole("alert").innerText(), /PIXEL_LIMIT/u);
   assert.equal(await canvas.count(), 0);
+  await page.getByRole("button", { name: "Azzera livelli" }).click();
+  assert.equal(await page.locator("#layers-381-files").evaluate((input) => input.files.length), 0, "Reset releases selected original files");
+  await files(2, 1);
+  await assertPixel([0, 0, 255, 255]);
   assert.deepEqual(uploads, [], "No image data was posted remotely");
-  assert.deepEqual(missingResources.filter((url) => /\.(?:js|mjs|css)(?:\?|$)/u.test(url)), [], "All compiled scripts and styles must resolve locally");
-  assert.deepEqual(errors, [], `No unhandled browser errors; 404 routes: ${JSON.stringify(missingResources)}`);
+  // Auth session is an optional Cloudflare backend route, intentionally absent from the static build.
+  // The editor must work without it. Every other 404 and every JS error remains a test failure.
+  const unexpectedMissing = missingResources.filter((url) => url !== "/api/auth/session");
+  assert.deepEqual(unexpectedMissing, [], "No missing compiled assets or unexpected routes");
+  const expectedAuth404s = missingResources.length - unexpectedMissing.length;
+  const ignoredConsole404s = errors.filter((message) => message === "Failed to load resource: the server responded with a status of 404 (Not Found)");
+  assert.ok(ignoredConsole404s.length <= expectedAuth404s, "Each allowed console 404 must match an absent auth session request");
+  assert.deepEqual(errors.filter((message) => !ignoredConsole404s.includes(message)), [], "No unhandled browser errors");
   console.log("PASS STR-381 compiled browser consumer: real canvas S/M/L, order/visibility/opacity, PNG pixel oracle, immutable File SHA-256, bounded refusal and no uploads");
 } finally {
   await browser?.close();

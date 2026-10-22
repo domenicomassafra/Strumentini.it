@@ -17,6 +17,7 @@ export function ImageLayers381Tool() {
   const [error, setError] = useState("");
   const [result, setResult] = useState<PreparedImageResult | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
   const requestRef = useRef(0);
   const revisionRef = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
@@ -53,6 +54,7 @@ export function ImageLayers381Tool() {
     revisionRef.current += 1;
     abortRef.current?.abort();
     abortRef.current = null;
+    if (fileRef.current !== null) fileRef.current.value = "";
     setLayers([]);
     setSize(null);
     setResult(null);
@@ -135,8 +137,8 @@ export function ImageLayers381Tool() {
   return <section data-str-381="layers" aria-label="Editor immagini a livelli">
     <p>Componi fino a {IMAGE_LAYER_381_LIMITS.maxLayers} immagini sul dispositivo, senza inviarle in rete. Il primo file stabilisce la dimensione del canvas; l’elenco va dal fondo al primo piano.</p>
     <label htmlFor="layers-381-files">Immagini locali (PNG, JPEG, WebP)</label>
-    <input id="layers-381-files" type="file" multiple accept="image/png,image/jpeg,image/webp" onChange={chooseFiles} disabled={busy} />
-    <button type="button" onClick={reset} disabled={busy && layers.length === 0}>Azzera livelli</button>
+    <input ref={fileRef} id="layers-381-files" type="file" multiple accept="image/png,image/jpeg,image/webp" onChange={chooseFiles} disabled={busy} />
+    <button type="button" onClick={reset}>Azzera livelli</button>
     {busy && <p role="status">Elaborazione locale in corso…</p>}
     {(error || composition.error) && <p role="alert">{error || composition.error}</p>}
     {size !== null && <>
