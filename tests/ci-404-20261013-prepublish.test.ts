@@ -76,7 +76,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
       run.push(step.name);
       if (step.name === "read-only-required-admission") throw new Error("BLOCKED: GOLD_RECEIPT_MISSING; PHYSICAL_DEVICE_EVIDENCE_MISSING");
     };
-    await expect(runPrepublish404({ expectedSha: SHA, policy420: false, verifyRevision: async () => {}, snapshotAssets: goodAssets, runStep: actual })).rejects.toThrow(/GOLD_RECEIPT_MISSING/u);
+    await expect(runPrepublish404({ expectedSha: SHA, policy420: false, verifyRevision: async () => {}, snapshotAssets: goodAssets, snapshotEvidence: goodAssets, runStep: actual })).rejects.toThrow(/GOLD_RECEIPT_MISSING/u);
     expect(run.at(-1)).toBe("read-only-required-admission");
     expect(run).not.toContain("wrangler-production-deploy");
     const steps = prepublishSteps404(SHA, false);
@@ -88,7 +88,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
   it("requires the full deployed scope and a proven staging rollback even after cumulative admission", async () => {
     const calls: string[] = [];
     await expect(runPrepublish404({
-      expectedSha: SHA, policy420: false, verifyRevision: async () => {}, snapshotAssets: goodAssets,
+      expectedSha: SHA, policy420: false, verifyRevision: async () => {}, snapshotAssets: goodAssets, snapshotEvidence: goodAssets,
       runStep: async (step) => {
         calls.push(step.name);
         if (step.name === "scope-and-staging-rollback-admission") throw new Error("STAGING_CANARY_NOT_RUN");
@@ -103,7 +103,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
   it("refuses absent SHA, stale revision and any failing cumulative stage before deployment", async () => {
     for (const expectedSha of [undefined, "", "main", SHA.slice(0, 8), "0".repeat(40)]) {
       const run: string[] = [];
-      await expect(runPrepublish404({ expectedSha, snapshotAssets: goodAssets, verifyRevision: async () => {
+      await expect(runPrepublish404({ expectedSha, snapshotAssets: goodAssets, snapshotEvidence: goodAssets, verifyRevision: async () => {
         if (expectedSha === "0".repeat(40)) throw new Error("RELEASE_404_SHA_MISMATCH");
       }, runStep: async (step) => { run.push(step.name); } })).rejects.toThrow();
       expect(run).toEqual([]);
@@ -112,7 +112,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
     for (const failed of steps.filter((step) => !step.publishes)) {
       const run: string[] = [];
       await expect(runPrepublish404({
-        expectedSha: SHA, verifyRevision: async () => {}, snapshotAssets: goodAssets,
+        expectedSha: SHA, verifyRevision: async () => {}, snapshotAssets: goodAssets, snapshotEvidence: goodAssets,
         runStep: async (step) => { run.push(step.name); if (step.name === failed.name) throw new Error("NO_GO"); },
       })).rejects.toThrow("NO_GO");
       expect(run).not.toContain("wrangler-production-deploy");
@@ -122,6 +122,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
     await expect(runPrepublish404({
       expectedSha: SHA,
       snapshotAssets: goodAssets,
+      snapshotEvidence: goodAssets,
       verifyRevision: async () => { verifications++; if (verifications === 2) throw new Error("MAIN SHA CHANGED"); },
       runStep: async (step) => { calls.push(step.name); },
     })).rejects.toThrow(/SHA CHANGED/u);
@@ -134,6 +135,7 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
     let verified = 0;
     await runPrepublish404({ expectedSha: SHA, verifyRevision: async () => { verified++; },
       snapshotAssets: goodAssets,
+      snapshotEvidence: goodAssets,
       runStep: async (step) => { steps.push(step.name); },
     });
     expect(verified).toBe(2);
@@ -152,11 +154,29 @@ describe("#404 opt-in guarded publish: fail closed without provider access", () 
       policy420: false,
       verifyRevision: async () => {},
       snapshotAssets: async () => createHash("sha256").update(outputBytes).digest("hex"),
+      snapshotEvidence: goodAssets,
       runStep: async (step) => {
         calls.push(step.name);
         if (step.name === "read-only-required-admission") outputBytes = "unreviewed-mutated-artifact";
       },
     })).rejects.toThrow("RELEASE_404_ASSET_CHANGED_AFTER_BUILD");
+    expect(calls).not.toContain("wrangler-production-deploy");
+  });
+
+  it("refuses regenerated receipt bytes changed after successful release admission", async () => {
+    let receiptBytes = "observed-on-this-release";
+    let verifications = 0;
+    const calls: string[] = [];
+    await expect(runPrepublish404({
+      expectedSha: SHA,
+      verifyRevision: async () => {
+        if (++verifications === 2) receiptBytes = "replaced-after-admission";
+      },
+      snapshotAssets: goodAssets,
+      snapshotEvidence: async () => createHash("sha256").update(receiptBytes).digest("hex"),
+      runStep: async (step) => { calls.push(step.name); },
+    })).rejects.toThrow("RELEASE_404_EVIDENCE_CHANGED_AFTER_ADMISSION");
+    expect(calls).toContain("owner-policy-automatic-admission");
     expect(calls).not.toContain("wrangler-production-deploy");
   });
 
