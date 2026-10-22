@@ -213,6 +213,10 @@ for (const [name, engine] of Object.entries(engines)) {
       } finally {
         await context.setOffline(false);
       }
+      await page.getByRole('button', { name: 'Libera memoria del modello' }).click();
+      assert.match(await page.locator('[data-portrait-274] [role="status"]').textContent(), /Memoria del modello liberata/u);
+      assert.equal(await page.locator('[data-portrait-274] img').count(), 1,
+        `${name} freeing model memory must retain the generated PNG for download`);
     }
     await context.close();
     const denied = await browser.newContext();

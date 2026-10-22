@@ -108,8 +108,8 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     const verified = roundtrip.width === width && roundtrip.height === height;
     roundtrip.close();
     if (!verified) throw new Error("PNG_READBACK_FAILED");
-    self.postMessage({ kind: "result", bytes: result, width, height, transparent, mixed, opaque }, { transfer: [result] });
     await segmenter.dispose();
+    self.postMessage({ kind: "result", bytes: result, width, height, transparent, mixed, opaque }, { transfer: [result] });
   } catch (error) {
     self.postMessage({ kind: "error", code: error instanceof Error ? error.message.slice(0, 100) : "UNKNOWN_ERROR" });
   } finally {

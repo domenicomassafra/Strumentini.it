@@ -48,12 +48,20 @@ export function PortraitMattingPanel274() {
   }
 
   function choose(next: File | null) {
-    cancel(); clearResult(); setFile(next);
+    if (busy) cancel();
+    else generation.current++;
+    clearResult(); setFile(next);
     setStatus("Pronto: premi Avvia per caricare modello e WASM dal sito.");
   }
 
+  function freeModelMemory() {
+    generation.current++;
+    stop();
+    setStatus("Memoria del modello liberata. Il PNG già creato rimane scaricabile.");
+  }
+
   async function start() {
-    if (!file || worker.current) return;
+    if (!file || busy) return;
     const id = ++generation.current;
     setBusy(true); clearResult(); setStatus("Validazione locale dell'immagine…");
     try {
@@ -97,7 +105,10 @@ export function PortraitMattingPanel274() {
       }
       preload.current = null;
       if (generation.current !== id) return;
-      const instance = new Worker(new URL("../../../engines/image/portrait-modnet-worker-274.ts", import.meta.url), { type: "module" });
+      // Keep the already loaded Worker while this page remains open. Starting a
+      // fresh module Worker would require network access even after its model
+      // files were cached, making the next offline run fail before inference.
+      const instance = worker.current ?? new Worker(new URL("../../../engines/image/portrait-modnet-worker-274.ts", import.meta.url), { type: "module" });
       worker.current = instance;
       instance.onerror = () => {
         if (generation.current !== id) return;
@@ -111,7 +122,9 @@ export function PortraitMattingPanel274() {
           stop(); setBusy(false); setStatus(readableError(message.code));
         }
         if (message.kind === "result") {
-          stop(); setBusy(false);
+          if (timeout.current !== null) clearTimeout(timeout.current);
+          timeout.current = null;
+          setBusy(false);
           const url = URL.createObjectURL(new Blob([message.bytes], { type: "image/png" }));
           resultUrl.current = url;
           setResult({ url, width: message.width, height: message.height, transparent: message.transparent, mixed: message.mixed, opaque: message.opaque });
@@ -135,6 +148,7 @@ export function PortraitMattingPanel274() {
     {file && <p>Input: {file.name} ({file.size.toLocaleString("it-IT")} byte)</p>}
     <div class="tool-actions"><button type="button" disabled={!file || busy} onClick={() => void start()}>Avvia (autorizzo il download locale)</button>
       {busy && <button type="button" onClick={cancel}>Annulla e libera memoria</button>}
+      {!busy && worker.current && <button type="button" onClick={freeModelMemory}>Libera memoria del modello</button>}
     </div>
     <p role="status" aria-live="polite">{status}</p>
     {result && <section aria-label="Risultato PNG trasparente"><h3>PNG RGBA · {result.width}×{result.height}</h3>
