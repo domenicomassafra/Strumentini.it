@@ -26,6 +26,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          # Pull requests otherwise check out the synthetic merge commit.
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Require exact PR head before building and exercising consumers
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
       - uses: actions/setup-node@v4
         with:
           node-version: '26'
