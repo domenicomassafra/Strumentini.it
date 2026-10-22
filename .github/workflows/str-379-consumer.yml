@@ -1,0 +1,44 @@
+name: STR-379 compiled PDF project consumer (#138)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/str-379-consumer.yml'
+      - 'scripts/acceptance-pdf-project-138.browser.mjs'
+      - 'tests/str-379-consumer.browser.mjs'
+      - 'src/components/tools/pdf/PdfPageWorkspace372.tsx'
+      - 'src/engines/pdf/project-history-138.ts'
+      - 'src/workbench/pdf-project-138.ts'
+      - 'src/workbench/saved-pdf-341.ts'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compiled-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Require exact tested source revision
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get install -y --no-install-recommends poppler-utils
+      - run: npm run build
+      - name: Verify compiled browser, IndexedDB restore, export and refusal
+        env:
+          STR138_BROWSER_MODE: launch
+        run: node tests/str-379-consumer.browser.mjs

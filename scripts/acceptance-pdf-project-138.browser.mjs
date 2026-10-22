@@ -14,6 +14,7 @@ const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "1
 const temp = mkdtempSync(join(tmpdir(), "pdf-project138-"));
 let browser;
 let context;
+const runnerBrowser = process.env.STR138_BROWSER_MODE === "launch";
 async function ready() {
   for (let i = 0; i < 120; i++) {
     if (server.exitCode !== null) throw new Error("Static consumer not running");
@@ -54,8 +55,10 @@ async function persisted(page) {
 }
 try {
   await ready();
-  // Reuse the existing automation browser. Do not launch a competing profile.
-  browser = await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 30_000 });
+  // GitHub Actions owns an isolated Chromium instance; MiniPC reuses its shared browser.
+  browser = runnerBrowser
+    ? await chromium.launch({ headless: true })
+    : await chromium.connectOverCDP("http://127.0.0.1:17629", { timeout: 30_000 });
   context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
   const pageErrors = [];
   context.on("page", (tab) => {
@@ -272,9 +275,11 @@ try {
   }));
 } finally {
   await context?.close();
-  // Browser.close() on a CDP attachment can terminate the shared Chrome process.
-  // Close this Playwright client's connection without sending Browser.close.
-  if (browser) browser._connection.close();
+  // Only close a browser we launched. Keep the MiniPC's shared CDP Chrome alive.
+  if (browser) {
+    if (runnerBrowser) await browser.close();
+    else browser._connection.close();
+  }
   server.kill();
   rmSync(temp, { recursive: true, force: true });
 }
