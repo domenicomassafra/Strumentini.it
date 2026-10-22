@@ -1,14 +1,17 @@
 /** Independent real-browser acceptance for editable PDF form export (#136). */
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
-import { chromium } from "@playwright/test";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { openPdf136Cdp } from "./str-376-cdp-client.mjs";
 import { PDFDocument, PDFName, PDFString } from "pdf-lib";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const base = "http://127.0.0.1:18536";
 const server = spawn("./node_modules/.bin/astro", ["preview", "--host", "127.0.0.1", "--port", "18536", "--strictPort"], { stdio: "pipe" });
-let browser;
+let client;
+let temporary;
 let log = "";
 server.stdout.on("data", (bytes) => { log += bytes.toString(); });
 server.stderr.on("data", (bytes) => { log += bytes.toString(); });
@@ -20,6 +23,9 @@ async function ready() {
   }
   throw Error("Preview unavailable: " + log);
 }
+const policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'";
+const errors = [];
+const externalRequests = [];
 async function fixture() {
   const pdf = await PDFDocument.create();
   const first = pdf.addPage([360, 420]);
@@ -87,78 +93,59 @@ async function verifyPdf(bytes, flattened) {
 }
 try {
   await ready();
-  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
-  const page = await context.newPage();
-  const errors = [];
-  page.on("pageerror", (err) => errors.push(err.message));
-  page.on("request", (request) => {
-    if (!request.url().startsWith(base) && !request.url().startsWith("blob:") && !request.url().startsWith("data:")) {
-      errors.push("External request " + request.url());
-    }
-  });
-  // Exercise the same user flow under a restrictive CSP while remaining fully local.
-  const policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'";
-  await page.route(base + "/tools/pdf-form-inspector/", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, headers: { ...response.headers(), "content-security-policy": policy } });
-  });
-  const navigation = await page.goto(base + "/tools/pdf-form-inspector/", { waitUntil: "networkidle" });
-  assert.equal(navigation.status(), 200);
-  assert.equal(navigation.headers()["content-security-policy"], policy);
-  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), "390px overflow");
-  const heapBefore = await page.evaluate(() => performance.memory?.usedJSHeapSize ?? null);
+  temporary = await mkdtemp(join(tmpdir(), "str136-consumer-"));
+  client = await openPdf136Cdp({ base, directory: temporary, policy, errors, externalRequests });
+  assert(await client.evaluate("document.documentElement.scrollWidth <= innerWidth + 2"), "390px overflow");
+  const heapBefore = await client.evaluate("performance.memory?.usedJSHeapSize ?? null");
   const begin = performance.now();
   const source = await fixture();
-  await page.getByLabel("Modulo PDF da compilare").setInputFiles({ name: "modulo.pdf", mimeType: "application/pdf", buffer: source });
-  await page.locator("[data-form-fields-136]").waitFor({ timeout: 20000 });
-  assert.equal(await page.locator("[data-form-fields-136] input[type=text]").count(), 1);
-  await page.locator("[data-form-fields-136] input[type=text]").fill("Città di Bari – € 42");
-  await page.locator("[data-form-fields-136] input[type=checkbox]").first().check();
-  await page.locator("[data-form-fields-136] select").selectOption("Lecce");
-  await context.setOffline(true);
-  let pending = page.waitForEvent("download", { timeout: 30000 });
-  await page.getByRole("button", { name: "Compila e verifica PDF" }).click();
-  await page.locator("[data-form-result-136]").waitFor({ timeout: 30000 });
-  await page.getByRole("link", { name: "Scarica PDF verificato" }).click();
-  let downloaded = await pending;
-  const editablePath = await downloaded.path();
-  const editable = await readFile(editablePath);
-  await verifyPdf(editable, false);
-  verifyPypdf(editablePath, false);
-  await writeFile("/tmp/str136-consumer-editable.pdf", editable);
-  await context.setOffline(false);
-  await page.locator("[data-form-fields-136] input[type=checkbox]").last().check();
-  pending = page.waitForEvent("download", { timeout: 30000 });
-  await page.getByRole("button", { name: "Compila e verifica PDF" }).click();
-  await page.locator("[data-form-result-136]").waitFor({ timeout: 30000 });
-  await page.getByRole("link", { name: "Scarica PDF verificato" }).click();
-  downloaded = await pending;
-  const flattenedPath = await downloaded.path();
-  const flattened = await readFile(flattenedPath);
-  await verifyPdf(flattened, true);
-  verifyPypdf(flattenedPath, true);
-  await writeFile("/tmp/str136-consumer-flattened.pdf", flattened);
-  await page.getByRole("button", { name: "Ricomincia" }).click();
-  const upload = page.getByLabel("Modulo PDF da compilare");
-  assert.equal(await upload.inputValue(), "", "Reset must clear native file selection");
-  await upload.setInputFiles({ name: "modulo.pdf", mimeType: "application/pdf", buffer: source });
-  await page.locator("[data-form-fields-136]").waitFor({ timeout: 20000 });
+  const original = Buffer.from(source);
+  await client.upload(source, "original.pdf");
+  await client.waitFor('!!document.querySelector("[data-form-fields-136]")', "editable fields");
+  assert.equal(await client.evaluate('document.querySelectorAll("[data-form-fields-136] input[type=text]").length'), 1);
+  await client.select("[data-form-fields-136] input[type=text]", "Città di Bari – € 42");
+  await client.click("[data-form-fields-136] input[type=checkbox]");
+  await client.select("[data-form-fields-136] select", "Lecce", "change");
+  await client.offline(true);
+  await client.click('[data-form-fields-136] button[type=submit]');
+  await client.waitFor('!!document.querySelector("[data-form-result-136] a[download]")', "editable export", 30000);
+  const editable = await client.download();
+  await verifyPdf(editable.bytes, false);
+  verifyPypdf(editable.path, false);
+  await writeFile("/tmp/str136-consumer-editable.pdf", editable.bytes);
+  await client.offline(false);
+  await client.click("[data-form-fields-136] label.field:last-of-type input[type=checkbox]");
+  assert.equal(await client.evaluate('document.querySelector("[data-form-fields-136] label.field:last-of-type input[type=checkbox]").checked'), true);
+  await client.click('[data-form-fields-136] button[type=submit]');
+  await client.waitFor('document.querySelector("[data-form-result-136] a[download]")?.download.includes("appiattito")', "flattened export", 30000);
+  const flattened = await client.download();
+  await verifyPdf(flattened.bytes, true);
+  verifyPypdf(flattened.path, true);
+  await writeFile("/tmp/str136-consumer-flattened.pdf", flattened.bytes);
+  await client.click('[data-form-fields-136] button[type=button]');
+  assert.equal(await client.evaluate('document.querySelector("[data-pdf-form-editor-136] input[type=file]").value'), "", "Reset must clear native file selection");
+  await client.upload(source, "reset-original.pdf");
+  await client.waitFor('!!document.querySelector("[data-form-fields-136]")', "fields after reset");
   for (const kind of ["XFA", "signature", "JavaScript"]) {
     const rejected = await unsafeFixture(kind);
     const snapshot = Buffer.from(rejected);
-    await upload.setInputFiles({ name: kind + ".pdf", mimeType: "application/pdf", buffer: rejected });
-    const alert = page.getByRole("alert");
-    await alert.waitFor({ timeout: 20000 });
-    assert.match(await alert.textContent(), /UNSUPPORTED_CAPABILITY/, kind + " must be refused");
-    assert.equal(await page.locator("[data-form-result-136]").count(), 0, "Rejected input cannot be downloaded");
-    assert.deepEqual(rejected, snapshot, "Browser must not mutate the source");
+    await client.upload(rejected, kind + ".pdf");
+    await client.waitFor('document.querySelector("[data-pdf-form-editor-136] [role=alert]")?.textContent.includes("UNSUPPORTED_CAPABILITY")', kind + " refusal");
+    assert.equal(await client.evaluate('document.querySelectorAll("[data-form-result-136]").length'), 0, "Rejected PDF must not generate download");
+    assert.deepEqual(rejected, snapshot, "Rejected source changed: " + kind);
   }
-  assert.deepEqual(errors, [], "Browser errors or external requests");
-  const heapAfter = await page.evaluate(() => performance.memory?.usedJSHeapSize ?? null);
-  console.log(JSON.stringify({ status: "PASS", editableBytes: editable.byteLength, flattenedBytes: flattened.byteLength, offlineEditable: true, fields: 3, linkedWidgets: 2, viewport: 390, outsideRequests: 0, pageErrors: 0, elapsedMs: Math.round(performance.now()-begin), heapBefore, heapAfter }));
-  await context.close();
+  assert.deepEqual(source, original, "Source PDF changed");
+  assert.deepEqual(errors, [], "Unexpected Chrome page errors");
+  assert.deepEqual(externalRequests, [], "Offline-locality violation");
+  const heapAfter = await client.evaluate("performance.memory?.usedJSHeapSize ?? null");
+  console.log(JSON.stringify({
+    status: "PASS", editableBytes: editable.bytes.length, flattenedBytes: flattened.bytes.length,
+    offlineEditable: true, fields: 3, linkedWidgets: 2, viewport: 390, outsideRequests: 0, pageErrors: 0,
+    cspIntercepts: client.cspCount, elapsedMs: Math.round(performance.now() - begin),
+    heapBefore, heapAfter, chrome: "managed MiniPC CDP17629 temporary context",
+  }));
 } finally {
-  await browser?.close();
+  await client?.close();
+  if (temporary) await rm(temporary, { recursive: true, force: true });
   server.kill("SIGTERM");
 }
