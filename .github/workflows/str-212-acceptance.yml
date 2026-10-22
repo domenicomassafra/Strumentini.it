@@ -20,6 +20,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Verify integration checkout uses the current PR head
+        env:
+          EXPECTED_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # The browser acceptance exercises GitHub's synthetic integration
+          # merge with the current target main, including the exact PR head.
+          git merge-base --is-ancestor "$EXPECTED_PR_HEAD" HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
       - uses: actions/setup-node@v4
         with:
           node-version: '26'
