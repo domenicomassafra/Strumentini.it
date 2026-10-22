@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium, firefox]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,20 +50,48 @@ jobs:
           node-version: '26'
           cache: npm
       - run: npm ci
-      # The Ubuntu Actions image already ships WebKit's runtime libraries;
-      # asking apt for them can hang on a temporarily unresponsive mirror.
-      # Keep WebKit executable installation independent of apt availability.
       - name: Install Playwright browser
-        run: |
-          if [ "${{ matrix.browser }}" = "webkit" ]; then
-            npx playwright install webkit
-          else
-            npx playwright install --with-deps "${{ matrix.browser }}"
-          fi
+        run: npx playwright install --with-deps "${{ matrix.browser }}"
       - run: npm run build
       - name: Decode real MODNet RGBA output, independent alpha oracle, CSP and cache
         env:
           BROWSER: ${{ matrix.browser }}
+        run: |
+          ./node_modules/.bin/astro preview --host 127.0.0.1 --port 4327 > "$RUNNER_TEMP/portrait-274-preview.log" 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail --output /dev/null http://127.0.0.1:4327/laboratorio/scontorno-ritratti/; then
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat "$RUNNER_TEMP/portrait-274-preview.log"
+            exit 1
+          fi
+          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp
+  webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    # The Playwright 1.63.0 image contains the WebKit libraries missing from
+    # ubuntu-latest. It also avoids apt mirrors that stalled the prior job.
+    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Decode WebKit MODNet RGBA output with offline warm-cache
+        env:
+          BROWSER: webkit
         run: |
           ./node_modules/.bin/astro preview --host 127.0.0.1 --port 4327 > "$RUNNER_TEMP/portrait-274-preview.log" 2>&1 &
           preview_pid=$!
