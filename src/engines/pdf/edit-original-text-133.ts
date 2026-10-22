@@ -61,14 +61,19 @@ function geometries(model: PdfDocumentModel): string[] {
     const dict = pageDictionary(page);
     const info = ["MediaBox", "CropBox"].map((key) => {
       const raw = dict.entries.get(key) ?? page.inherited[key];
+      if (raw === undefined && key === "CropBox") return null;
       const result = raw === undefined ? null : arrayOrNull(model, raw)?.items.map(numberValue);
-      if (key === "MediaBox" && (!result || result.length !== 4 || result.some((v) => v === null))) {
-        return refuse("MediaBox mancante");
+      if (!result || result.length !== 4 || result.some((value) => value === null)
+          || result[2]! <= result[0]! || result[3]! <= result[1]!) {
+        return refuse("LAYOUT: " + key + " mancante, invalido o degenerato");
       }
-      return result ?? null;
+      return result;
     });
-    const rotation = numberValue(dict.entries.get("Rotate") ?? page.inherited.Rotate) ?? 0;
-    const unit = numberValue(dict.entries.get("UserUnit")) ?? 1;
+    const rotationValue = dict.entries.get("Rotate") ?? page.inherited.Rotate;
+    const unitValue = dict.entries.get("UserUnit");
+    const rotation = rotationValue === undefined ? 0 : numberValue(rotationValue);
+    const unit = unitValue === undefined ? 1 : numberValue(unitValue);
+    if (rotation === null || unit === null) return refuse("LAYOUT: Rotate o UserUnit non numerico");
     if (rotation !== 0 || unit !== 1) return refuse("pagine ruotate o UserUnit non supportati");
     return JSON.stringify([info, rotation, unit]);
   });
