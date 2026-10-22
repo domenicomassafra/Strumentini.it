@@ -1,0 +1,48 @@
+name: Image compression browser acceptance
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/image-compression-browser-81.yml'
+      - 'src/engines/image/**'
+      - 'src/components/tools/image-visual/**'
+      - 'tests/image-compression-*'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/image-compression-browser-81.yml'
+      - 'src/engines/image/**'
+      - 'src/components/tools/image-visual/**'
+      - 'tests/image-compression-*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: image-compression-browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  built-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13.9'
+      - run: npm ci
+      - name: Install pinned Chromium and system dependencies
+        run: npx playwright install --with-deps chromium
+      - name: Build the static consumer
+        run: npm run build
+      - name: Verify JPEG alpha refusal and opaque JPEG download
+        run: node tests/image-compression-047-jpeg-alpha-built.browser.mjs
+      - name: Verify PNG, WebP, SVG, alpha and downloads
+        run: node tests/image-compression-047-webp-svg-built.browser.mjs

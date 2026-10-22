@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { gzipSync } from "node:zlib";
 import { chromium } from "@playwright/test";
+import { gzipSync } from "fflate";
 import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
@@ -112,11 +112,13 @@ try {
   const svgOutput = await readFile(await svgDownload.path());
   assert(svgOutput.length < Buffer.byteLength(svg));
   assert.match(svgOutput.toString("utf8"), /^<svg\b/u);
+  // SVG UI reports fflate's actual gzip payload bytes, not zlib's potentially
+  // different output size for the same uncompressed bytes.
   const gzipOriginal = gzipSync(Buffer.from(svg), { level: 9 }).length;
   const gzipOutput = gzipSync(svgOutput, { level: 9 }).length;
   const details = await page.locator('[data-svg-optimized="true"]').innerText();
-  assert(details.includes(String(gzipOriginal)), "Missing original gzip byte count");
-  assert(details.includes(String(gzipOutput)), "Missing optimized gzip byte count");
+  assert(details.includes(`${Buffer.byteLength(svg)} byte · gzip ${gzipOriginal} byte`), "Incorrect original gzip byte count");
+  assert(details.includes(`${svgOutput.length} byte · gzip ${gzipOutput} byte`), "Incorrect output gzip byte count");
   const opened = await sharp(svgOutput).metadata();
   assert.deepEqual([opened.width, opened.height], [96, 64]);
   await svgForm.locator('input[type="file"]').setInputFiles({ name: "unsafe.svg", mimeType: "image/svg+xml", buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><script>alert(1)</script></svg>') });
