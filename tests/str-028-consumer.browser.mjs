@@ -75,7 +75,7 @@ try {
   await bad.locator('fieldset[data-image-compression-hydration-gate]:not([disabled])').waitFor();
   await bad.locator('form input[type="file"]').first().setInputFiles({ name: "broken.png", mimeType: "image/png", buffer: Buffer.from([1, 2, 3]) });
   await bad.getByRole("button", { name: "Esegui in locale" }).first().click();
-  await bad.locator('[role="alert"]').first().waitFor({ timeout: 20_000 });
+  await bad.locator('[data-tool-error]').waitFor({ timeout: 20_000 });
   assert.equal(await bad.locator('a[download]').count(), 0);
   assert.deepEqual(outside, [], "no remote processing or upload");
   assert.deepEqual(errors, [], "no uncaught browser exception");
