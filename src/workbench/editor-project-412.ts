@@ -119,11 +119,13 @@ export async function newEditorProject412(input: NewEditorProject412): Promise<E
 export async function migratePdfProject138To412(raw: unknown): Promise<EditorProject412> {
   if (!object(raw) || raw.schemaVersion !== 1 || raw.mime !== "application/pdf" ||
       typeof raw.id !== "string" || !UUID.test(raw.id) || !validDate(raw.createdAt) ||
-      typeof raw.name !== "string" || !(raw.bytes instanceof Uint8Array) ||
+      typeof raw.name !== "string" || !SAFE_NAME.test(raw.name) ||
+      !(raw.bytes instanceof Uint8Array) || raw.bytes.byteLength > MAX_FILE ||
       raw.byteLength !== raw.bytes.byteLength || typeof raw.sha256 !== "string" ||
       !HASH.test(raw.sha256) || typeof raw.historySha256 !== "string" ||
       !HASH.test(raw.historySha256) || !object(raw.history) ||
       raw.history.version !== 1 || !Array.isArray(raw.history.states) ||
+      raw.history.states.length < 1 || raw.history.states.length > 40 ||
       !Number.isSafeInteger(raw.history.index) || (raw.history.index as number) < 0 ||
       (raw.history.index as number) >= raw.history.states.length ||
       !Number.isSafeInteger(raw.pages) || (raw.pages as number) < 1) reject("INVALID_LEGACY_PDF");
@@ -209,7 +211,8 @@ export async function importEditorProject412(zip: Uint8Array): Promise<EditorPro
   if (!object(manifest) || !Array.isArray(manifest.files)) reject("INVALID_MANIFEST");
   const files = manifest.files.map((value: unknown, i: number) => {
     if (!object(value) || value.path !== `files/${i}`) reject("INVALID_MANIFEST");
-    return { ...value, bytes: entries[`files/${i}`] };
+    const { path: _archivePath, ...file } = value;
+    return { ...file, bytes: entries[`files/${i}`] };
   });
   if (Object.keys(entries).length !== files.length + 2) reject("EXTRA_ARCHIVE_FILES");
   return openEditorProject412({ ...manifest, files, stateBytes });
