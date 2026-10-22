@@ -1,6 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { ImageVisualTool } from "./ImageVisualTool";
 import { SvgCompression47Tool } from "./SvgCompression47Tool";
+import { ImageFamilyCapabilities028 } from "./ImageFamilyCapabilities028";
 
 export function ImageCompressionTool() {
   const [hydrated, setHydrated] = useState(false);
@@ -19,6 +20,7 @@ export function ImageCompressionTool() {
     >
       <ImageVisualTool toolId="image-compression" />
       <SvgCompression47Tool />
+      <ImageFamilyCapabilities028 />
     </fieldset>
   );
 }

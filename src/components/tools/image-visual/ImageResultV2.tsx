@@ -1,8 +1,9 @@
 import { ImageMetadataGps272, metadataRows272 } from "./ImageMetadataDetail272";
 import { asRecord, numberField, stringField, formatBytes, displayValue, detailRows, metadataGroupsLabel, collectionRows, copyPayload } from "./image-result-fields";
+import { imageMetrics } from "./image-result-metrics";
 import type { ComponentChildren } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
-import { canOfferPngCompressionHandoff337, startPngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
+import { canOfferImageCompressionHandoff028, startImageCompressionHandoff028 } from "../../../runtime/ephemeral-file-handoff-337";
 import { verifyGeneratedArtifact } from "../../../runtime/artifact-verifier";
 import { createFileResultItem, createFileResultWorkspace } from "../../../runtime/file-result";
 import type { OutputArtifactDescriptor } from "../../../runtime/output-artifact";
@@ -259,17 +260,6 @@ function workspaceFor(toolId: ImageResultToolId, outputs: readonly VerifiedImage
   }), { location: "LOCAL", network: "forbidden" });
 }
 
-function imageMetrics(output: VerifiedImageOutput | undefined, sourceFiles: readonly File[]): readonly { label: string; value: ComponentChildren }[] {
-  if (output === undefined) return [];
-  return [
-    ...(output.width !== undefined && output.height !== undefined ? [{ label: "Dimensioni risultato", value: `${output.width} × ${output.height} px` }] : []),
-    { label: "Formato verificato", value: output.artifact.verification.verifiedMime ?? output.artifact.mime },
-    { label: "Dimensione risultato", value: formatBytes(output.artifact.byteLength) },
-    ...(sourceFiles.length > 0 ? [{ label: "Dimensione ingresso", value: formatBytes(sourceFiles.reduce((total, file) => total + file.size, 0)) }] : []),
-    { label: "Verifica artifact", value: output.artifact.download.ready ? "Firma/contenitore coerenti: download abilitato" : "Verifica non superata: download bloccato" },
-  ];
-}
-
 function semanticImageRows(toolId: ImageResultToolId, raw: ImageResultValue): readonly { label: string; value: ComponentChildren }[] {
   if (toolId === "image-compression" && (raw.compressionMode === "png-palette-exact" || raw.compressionMode === "png-palette-lossy")) {
     return [
@@ -421,20 +411,21 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
     const comparisonMode = toolId === "color-blindness-image-simulation"
       ? stringField(result.raw.modeLabel) ?? stringField(result.raw.mode) ?? "modalità selezionata"
       : undefined;
-    const canSendPng = toolId !== "image-compression" && canOfferPngCompressionHandoff337(primary?.artifact);
-    function sendPngToCompression() {
-      if (!canSendPng || primary === undefined) return;
+    const canSendImage = toolId !== "image-compression" && canOfferImageCompressionHandoff028(primary?.artifact);
+    const isPngHandoff = primary?.artifact.mime === "image/png";
+    function sendImageToCompression() {
+      if (!canSendImage || primary === undefined) return;
       pendingPngHandoff.current?.();
       pendingPngHandoff.current = null;
-      const transfer = startPngCompressionHandoff337(primary.artifact, (status) => {
-        if (status === "received") setActionStatus("PNG consegnato alla compressione nella nuova scheda. Avvio manuale richiesto.");
+      const transfer = startImageCompressionHandoff028(primary.artifact, (status) => {
+        if (status === "received") setActionStatus("Immagine consegnata alla compressione nella nuova scheda. Avvio manuale richiesto.");
         if (status === "expired") setActionStatus("Passaggio scaduto dopo 30 secondi. Ripeti l'azione se necessario.");
         if (status === "cancelled") setActionStatus("Passaggio annullato. L'immagine originale è ancora disponibile.");
-        if (status === "unavailable") setActionStatus("La destinazione non ha accettato il PNG. Il file originale resta disponibile.");
+        if (status === "unavailable") setActionStatus("La destinazione non ha accettato l'immagine. Il file originale resta disponibile.");
       });
       if (transfer.opened) {
         pendingPngHandoff.current = transfer.cancel;
-        setActionStatus("Passaggio PNG locale in corso…");
+        setActionStatus("Passaggio immagine locale in corso…");
       } else setActionStatus(transfer.reason);
     }
     return (
@@ -488,8 +479,8 @@ export function ImageResultV2({ toolId, result, sourceFiles = [], onReset, onRet
             }}
           />
         </div>
-        {canSendPng && <button type="button" data-png-compression-handoff-337 onClick={sendPngToCompression}>Comprimi questo PNG in un altro strumento</button>}
-        {canSendPng && actionStatus !== "" && <p role="status" data-png-handoff-status-337>{actionStatus}</p>}
+        {canSendImage && <button type="button" data-image-compression-handoff-028 {...(isPngHandoff ? { "data-png-compression-handoff-337": "" } : {})} onClick={sendImageToCompression}>Comprimi questa immagine in un altro strumento</button>}
+        {canSendImage && actionStatus !== "" && <p role="status" data-image-handoff-status-028 {...(isPngHandoff ? { "data-png-handoff-status-337": "" } : {})}>{actionStatus}</p>}
         <ResultActions actions={actions} onAction={{
           ...(primary === undefined ? {} : { download: () => downloadVerified(primary) }),
           ...(onRetry === undefined ? {} : { retry: onRetry }),

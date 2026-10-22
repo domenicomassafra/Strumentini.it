@@ -1,0 +1,28 @@
+name: STR-028 compiled consumer
+on:
+  pull_request:
+    paths:
+      - 'src/engines/image/**'
+      - 'src/runtime/ephemeral-file-handoff-337.ts'
+      - 'src/components/tools/image-visual/**'
+      - 'src/tools/image-compression/**'
+      - 'src/tools/image-format-conversion/**'
+      - 'tests/str-028-*'
+      - '.github/workflows/str-028-consumer.yml'
+permissions:
+  contents: read
+jobs:
+  compiled-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx vitest run tests/str-028-acceptance.test.ts tests/str-028-refusals.test.ts --maxWorkers=1
+      - run: npm run check && npm run build
+      - run: node tests/str-028-consumer.browser.mjs
