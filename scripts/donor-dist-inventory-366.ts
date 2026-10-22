@@ -19,6 +19,19 @@ function digest(path: string): string {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
 }
 
+/** Rolldown emits source-free compiler helpers and thin export facades.
+ * Refuse other unmapped JS, including any changed helper implementation. */
+function knownGeneratedChunk366(path: string, code: string, files: ReadonlySet<string>): boolean {
+  if (Buffer.byteLength(code) > 3_000) return false;
+  const facade = code.match(/^import\{[^}]+\}from["']\.\/([^"']+\.js)["'];export\{[^}]+\};?$/u);
+  if (facade) return files.has(`_astro/${facade[1]}`);
+  if (/^_astro\/preload-helper\.[\w-]+\.js$/u.test(path)) {
+    return code.includes("modulepreload") && code.includes("document.createElement") && code.includes("export{");
+  }
+  return /^_astro\/rolldown-runtime\.[\w-]+\.js$/u.test(path) &&
+    code.includes("Object.create") && code.includes("getOwnPropertyDescriptor") && code.includes("CommonJS");
+}
+
 /** Built assets must have a pinned source; generated ONNX Runtime assets must
  * match the exact npm installation that Astro copies in astro.config.mjs. */
 export function auditDistributedAssets366(
@@ -79,7 +92,10 @@ export function auditDistributedAssets366(
   const scripts = [...files].filter((path) => path.startsWith("_astro/") && path.endsWith(".js"));
   if (!scripts.length) failures.push("MISSING_BUNDLED_SCRIPTS");
   for (const script of scripts) {
-    if (!files.has(script + ".map")) failures.push(`UNMAPPED_DISTRIBUTED_SCRIPT ${script}`);
+    if (!files.has(script + ".map") &&
+        !knownGeneratedChunk366(script, readFileSync(resolve(dist, script), "utf8"), files)) {
+      failures.push(`UNMAPPED_DISTRIBUTED_SCRIPT ${script}`);
+    }
   }
   for (const mapPath of files) {
     if (!mapPath.startsWith("_astro/") || !mapPath.endsWith(".js.map")) continue;

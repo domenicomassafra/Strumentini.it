@@ -52,6 +52,17 @@ describe("#126 actual static distribution provenance", () => {
       const audit = () => auditDistributedAssets366(root, pins, packages, lock);
       expect(audit().failures).toEqual([]);
 
+      writeFileSync(join(root, "dist/_astro/facade.js"),
+        'import{n as e}from"./tool.js";export{e as PublicTool};');
+      writeFileSync(join(root, "dist/_astro/preload-helper.abc.js"),
+        'var x=document.createElement("link");var y="modulepreload";export{x as t};');
+      writeFileSync(join(root, "dist/_astro/rolldown-runtime.abc.js"),
+        'var x=Object.create,y=Object.getOwnPropertyDescriptor;var z="CommonJS";export{x as t};');
+      expect(audit().failures).toEqual([]);
+      writeFileSync(join(root, "dist/_astro/other.js"), "var unreviewedExternalSource=1;");
+      expect(audit().failures).toContain("UNMAPPED_DISTRIBUTED_SCRIPT _astro/other.js");
+      rmSync(join(root, "dist/_astro/other.js"));
+
       writeFileSync(join(root, "node_modules/onnxruntime-web/package.json"),
         JSON.stringify({ name: packageRow.name, version: "0.0.0", license: packageRow.license }));
       expect(audit().failures).toContain(
