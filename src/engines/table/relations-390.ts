@@ -12,8 +12,9 @@ export interface KeyPolicy390 {
   readonly caseSensitive?: boolean;
 }
 
-function isNull(value: string, policy: KeyPolicy390): boolean {
-  return (policy.emptyAsNull === true && value === "") || (policy.nullTokens ?? ["NULL"]).includes(value);
+function isNull(value: string, policy: KeyPolicy390, trimEmpty = false): boolean {
+  return (policy.emptyAsNull === true && (trimEmpty ? value.trim() === "" : value === ""))
+    || (policy.nullTokens ?? ["NULL"]).includes(value);
 }
 
 function decimalKey(value: string, policy: KeyPolicy390): string {
@@ -39,7 +40,7 @@ function validateShape(table: CsvTable, side: string): void {
   if (table.rows.some((row) => row.length !== table.header.length)) throw new Error(`RAGGED_${side}_ROWS: all records must match the header width`);
 }
 
-function makeKeyTable(table: CsvTable, columns: readonly number[], policy: KeyPolicy390, side: string): CsvTable {
+function makeKeyTable(table: CsvTable, columns: readonly number[], policy: KeyPolicy390, side: string, trimEmpty = false): CsvTable {
   validateShape(table, side);
   if (columns.length === 0 || new Set(columns).size !== columns.length || columns.some((column) => !Number.isInteger(column) || column < 0 || column >= table.header.length)) {
     throw new Error(`INVALID_${side}_KEY_COLUMNS`);
@@ -53,16 +54,16 @@ function makeKeyTable(table: CsvTable, columns: readonly number[], policy: KeyPo
   while (nullTokens.some((token) => token.startsWith(`\u0000str390:${suffix}:`))) suffix += 1;
   const prefix = `\u0000str390:${suffix}:`;
   return { ...table, rows: table.rows.map((row) => row.map((value, index) =>
-    keys.has(index) && !isNull(value, policy) && (policy.keyPrecision ?? "text") !== "text"
+    keys.has(index) && !isNull(value, policy, trimEmpty) && (policy.keyPrecision ?? "text") !== "text"
       ? prefix + decimalKey(value, policy) : value)) };
 }
 
-function keyedDuplicates(table: CsvTable, columns: readonly number[], policy: KeyPolicy390, nullKeyPolicy: "match" | "never-match") {
+function keyedDuplicates(table: CsvTable, columns: readonly number[], policy: KeyPolicy390, nullKeyPolicy: "match" | "never-match", trimEmpty = false) {
   const seen = new Map<string, number[]>();
   table.rows.forEach((row, offset) => {
     const values = columns.map((column) => row[column] ?? "");
-    if (nullKeyPolicy === "never-match" && values.some((value) => isNull(value, policy))) return;
-    const key = JSON.stringify(values.map((value) => isNull(value, policy) ? null : policy.caseSensitive === false ? value.toLowerCase() : value));
+    if (nullKeyPolicy === "never-match" && values.some((value) => isNull(value, policy, trimEmpty))) return;
+    const key = JSON.stringify(values.map((value) => isNull(value, policy, trimEmpty) ? null : policy.caseSensitive === false ? value.toLowerCase() : value));
     const entries = seen.get(key) ?? [];
     entries.push(offset + 2);
     seen.set(key, entries);
@@ -75,17 +76,20 @@ export interface JoinOptions390 extends TableJoinOptions, KeyPolicy390 {
 }
 
 export function joinTables390(left: CsvTable, right: CsvTable, options: JoinOptions390) {
-  const transformedLeft = makeKeyTable(left, options.leftKeyColumns, options, "LEFT");
-  const transformedRight = makeKeyTable(right, options.rightKeyColumns, options, "RIGHT");
+  // The native join trims empty keys but defaults nullTokens to []. Apply the
+  // adapter's explicit default to both preflight and materialization.
+  const policy = { ...options, nullTokens: options.nullTokens ?? ["NULL"] };
+  const transformedLeft = makeKeyTable(left, policy.leftKeyColumns, policy, "LEFT", true);
+  const transformedRight = makeKeyTable(right, policy.rightKeyColumns, policy, "RIGHT", true);
   const nullKeyPolicy = options.nullKeyPolicy ?? "never-match";
-  const duplicateLeft = keyedDuplicates(transformedLeft, options.leftKeyColumns, options, nullKeyPolicy);
-  const duplicateRight = keyedDuplicates(transformedRight, options.rightKeyColumns, options, nullKeyPolicy);
+  const duplicateLeft = keyedDuplicates(transformedLeft, policy.leftKeyColumns, policy, nullKeyPolicy, true);
+  const duplicateRight = keyedDuplicates(transformedRight, policy.rightKeyColumns, policy, nullKeyPolicy, true);
   if ((options.duplicatePolicy ?? "reject") === "reject" && (duplicateLeft.length > 0 || duplicateRight.length > 0)) {
     throw new Error(`AMBIGUOUS_JOIN_KEYS: ${duplicateLeft.length} duplicate keys on the left and ${duplicateRight.length} on the right. Select Cartesian expansion explicitly or remove duplicates.`);
   }
   if (!(["reject", "expand"] as const).includes(options.duplicatePolicy ?? "reject")) throw new Error("INVALID_DUPLICATE_POLICY");
   if ((options.keyPrecision ?? "text") === "text") {
-    return { ...joinCsvTables(left, right, { ...options, nullKeyPolicy }), duplicateLeft, duplicateRight, duplicatePolicy: options.duplicatePolicy ?? "reject", keyPrecision: "text" as const };
+    return { ...joinCsvTables(left, right, { ...policy, nullKeyPolicy }), duplicateLeft, duplicateRight, duplicatePolicy: options.duplicatePolicy ?? "reject", keyPrecision: "text" as const };
   }
 
   // Reuse the bounded join engine and restore every original key and cell using source
@@ -95,7 +99,7 @@ export function joinTables390(left: CsvTable, right: CsvTable, options: JoinOpti
   const mark = (table: CsvTable, name: string): CsvTable => ({
     ...table, header: [...table.header, name], rows: table.rows.map((row, index) => [...row, String(index + 1)]),
   });
-  const joined = joinCsvTables(mark(transformedLeft, leftMarker), mark(transformedRight, rightMarker), { ...options, nullKeyPolicy });
+  const joined = joinCsvTables(mark(transformedLeft, leftMarker), mark(transformedRight, rightMarker), { ...policy, nullKeyPolicy });
   const leftWidth = left.header.length;
   const rightWidth = right.header.length;
   const header = joined.table.header.filter((_, index) => index !== leftWidth && index !== leftWidth + 1 + rightWidth);
@@ -117,15 +121,16 @@ export interface CompareOptions390 extends TableCompareOptions, KeyPolicy390 {
 }
 
 export function compareTables390(left: CsvTable, right: CsvTable, options: CompareOptions390) {
-  const leftPrepared = makeKeyTable(left, options.leftKeyColumns, options, "LEFT");
-  const rightPrepared = makeKeyTable(right, options.rightKeyColumns, options, "RIGHT");
+  const policy = { ...options, emptyAsNull: options.emptyAsNull ?? true };
+  const leftPrepared = makeKeyTable(left, policy.leftKeyColumns, policy, "LEFT");
+  const rightPrepared = makeKeyTable(right, policy.rightKeyColumns, policy, "RIGHT");
   if ((options.nullKeyPolicy ?? "reject") === "reject" && [
     ...left.rows.map((row) => options.leftKeyColumns.map((column) => row[column] ?? "")),
     ...right.rows.map((row) => options.rightKeyColumns.map((column) => row[column] ?? "")),
-  ].some((key) => key.some((value) => isNull(value, options)))) {
+  ].some((key) => key.some((value) => isNull(value, policy)))) {
     throw new Error("NULL_COMPARE_KEY: row identity is unknown for NULL keys; choose NULL matching explicitly or provide non-NULL identifiers");
   }
-  const result = compareCsvTables(leftPrepared, rightPrepared, options);
+  const result = compareCsvTables(leftPrepared, rightPrepared, policy);
   if ((options.keyPrecision ?? "text") === "text") return { ...result, keyPrecision: "text" as const };
   const originalKey = (leftRow: number, rightRow: number) => {
     const row = leftRow > 0 ? left.rows[leftRow - 2] : right.rows[rightRow - 2];

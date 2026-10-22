@@ -5,6 +5,22 @@ import { compareTables390, joinCsvTexts390 } from "../src/engines/table/relation
 const opts = { leftKeyColumns: [0], rightKeyColumns: [0], keyPrecision: "decimal-exact" as const, nullTokens: ["0"], emptyAsNull: false };
 
 describe("STR-390 refusals: precision and duplicate identity", () => {
+  it("rejects implicit empty compare identities before the native diff, unless matching is selected", () => {
+    for (const keyPrecision of ["text", "decimal-exact"] as const) {
+      const left = parseCsvTable("id,value\n,old");
+      const right = parseCsvTable("id,value\n,new");
+      const options = {
+        leftKeyColumns: [0], rightKeyColumns: [0], leftCompareColumns: [1], rightCompareColumns: [1],
+        keyPrecision,
+      };
+      expect(() => compareTables390(left, right, options)).toThrow(/NULL_COMPARE_KEY/u);
+      const allowed = compareTables390(left, right, { ...options, nullKeyPolicy: "match" });
+      expect([allowed.changedRows, allowed.removedRows, allowed.addedRows]).toEqual([1, 0, 0]);
+      expect(allowed.changedCells[0]?.leftValue).toBe("old");
+      expect(allowed.changedCells[0]?.rightValue).toBe("new");
+    }
+  });
+
   it("rejects duplicate whitespace and blank NULL keys before join, including decimal mode", () => {
     const left = "id,value\n ,A\n,B";
     const right = "id,value\n,C";
