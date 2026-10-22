@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { composeImageLayers381, IMAGE_LAYER_381_LIMITS, type ImageLayer381 } from "../../../engines/image/layer-compositor-381";
 import { preflightLayerImages381 } from "../../../engines/image/layer-input-381";
-import { readImageTransformSource, type PixelFrame } from "../../../engines/image/transform-workspace";
+import { pixelFrameToCanvas, readImageTransformSource, type PixelFrame } from "../../../engines/image/transform-workspace";
 import { ImageResultV2, prepareImageResult, type PreparedImageResult } from "./ImageResultV2";
 
 interface LayerEntry extends ImageLayer381 {
@@ -20,6 +20,11 @@ export function ImageLayers381Tool() {
   const requestRef = useRef(0);
   const revisionRef = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => () => {
+    requestRef.current += 1;
+    abortRef.current?.abort();
+  }, []);
 
   const composition = useMemo((): { frame: PixelFrame | null; error: string } => {
     if (size === null || layers.length === 0) return { frame: null, error: "" };
@@ -107,13 +112,14 @@ export function ImageLayers381Tool() {
 
   async function exportPng() {
     const frame = composition.frame;
-    const canvas = canvasRef.current;
-    if (frame === null || canvas === null) return;
+    if (frame === null) return;
     const at = requestRef.current;
     const revision = revisionRef.current;
     setBusy(true);
     setError("");
     try {
+      // Encode from the same RGBA frame used by preview, even if a paint effect is still pending.
+      const canvas = pixelFrameToCanvas(frame);
       const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob((value) => value ? resolve(value) : reject(new Error("PNG non esportabile")), "image/png");
       });

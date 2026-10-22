@@ -17,10 +17,12 @@ const server = createServer(async (req, res) => {
     const path = resolve(root, "." + decodeURIComponent(url.pathname), url.pathname.endsWith("/") ? "index.html" : "");
     const rel = relative(root, path);
     if (rel === ".." || rel.startsWith(".." + sep) || path === root) return res.writeHead(403).end();
+    const data = await readFile(path);
     res.writeHead(200, { "Content-Type": types[extname(path)] ?? "application/octet-stream" });
-    res.end(await readFile(path));
+    res.end(data);
   } catch {
-    res.writeHead(404).end();
+    if (!res.headersSent) res.writeHead(404);
+    res.end();
   }
 });
 await new Promise((accept, reject) => {
@@ -33,7 +35,8 @@ const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
 let browser;
 try {
   browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, acceptDownloads: true });
+  const page = await context.newPage();
   const errors = [];
   const uploads = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -76,7 +79,7 @@ try {
   };
 
   // S: actual canvas alpha/color changes, order and visibility, then the exported PNG.
-  await files(2, 1);
+  const smallInputs = await files(2, 1);
   await assertPixel([0, 0, 255, 255]);
   await page.getByRole("slider", { name: "Opacità livello 2" }).evaluate((slider) => {
     slider.value = "50";
@@ -100,6 +103,11 @@ try {
   assert.equal(output.info.width, 2);
   assert.equal(output.info.height, 1);
   assert.deepEqual([...output.data.subarray(0, 4)], [128, 0, 128, 255], "Export PNG equals the actual canvas pixel oracle");
+  const originalHashesAfter = await page.locator("#layers-381-files").evaluate(async (input) => Promise.all(Array.from(input.files).map(async (file) => {
+    const hash = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+    return Array.from(new Uint8Array(hash)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  })));
+  assert.deepEqual(originalHashesAfter, smallInputs.map(sha), "Input files unchanged after edits and export");
 
   // M/L: same real route, decode and canvas composition without network egress.
   for (const side of [128, 1024]) {
