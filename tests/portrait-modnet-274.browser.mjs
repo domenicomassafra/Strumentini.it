@@ -197,6 +197,8 @@ for (const [name, engine] of Object.entries(engines)) {
       await page.waitForFunction(() => /PNG RGBA decodificato|Rimozione sfondo non disponibile|Tempo limite/.test(document.querySelector('[data-portrait-274] [role="status"]')?.textContent ?? ""), null, { timeout: 135_000 });
       const warmCacheStatus = await page.locator('[data-portrait-274] [role="status"]').textContent();
       assert.match(warmCacheStatus, /PNG RGBA decodificato/u, `${name} must reuse same-origin warm model cache without refetch`);
+      assert.equal(await page.getByRole('button', { name: 'Libera memoria del modello' }).count(), 1,
+        `${name} must hydrate the updated Worker reuse controls`);
       console.log(`PASS ${name} warm-cache inference with model network blocked`);
       // A real browser-offline state also blocks Worker code and WASM requests.
       // This is stronger than intercepting only /models/** and catches missing
@@ -209,7 +211,9 @@ for (const [name, engine] of Object.entries(engines)) {
         await page.getByRole("button", { name: /Avvia/u }).click();
         await page.waitForFunction(() => /PNG RGBA decodificato|Rimozione sfondo non disponibile|Tempo limite/.test(document.querySelector('[data-portrait-274] [role="status"]')?.textContent ?? ""), null, { timeout: 30_000 });
         const offlineStatus = await page.locator('[data-portrait-274] [role="status"]').textContent();
-        assert.match(offlineStatus, /PNG RGBA decodificato/u, `${name} warmed runtime must infer while the browser context is offline`);
+        const lastRunInput = await page.locator('[data-portrait-274]').getAttribute('data-last-run-input');
+        assert.match(offlineStatus, /PNG RGBA decodificato/u,
+          `${name} warmed runtime must infer while the browser context is offline (input path=${lastRunInput})`);
         assert.notEqual(await page.locator('[data-portrait-274] img').getAttribute('src'), onlineResultUrl,
           `${name} offline inference must produce a fresh PNG after the online result`);
         console.log(`PASS ${name} warmed-page inference in browser offline mode`);
