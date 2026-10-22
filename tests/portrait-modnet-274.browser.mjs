@@ -11,6 +11,7 @@ const samples = ["5965592", "774909", "220453"];
 // Independently inspected, conservative interior person/background points on the
 // source photographs. This is a limited binary oracle, not a pixel-perfect matte.
 const annotation = JSON.parse(readFileSync(resolve("tests/fixtures/portrait-modnet-274/annotation-points.json"), "utf8"));
+const manuallyTraced = JSON.parse(readFileSync(resolve("tests/fixtures/portrait-modnet-274/manual-regions.json"), "utf8"));
 
 const engines = process.argv.includes("--chromium-only") ? { chromium }
   : process.argv.includes("--firefox-only") ? { firefox }
@@ -104,6 +105,64 @@ for (const [name, engine] of Object.entries(engines)) {
         const noAbilityBaseline = Math.max(pixels.foregroundAlpha.length, pixels.backgroundAlpha.length) / total;
         assert.ok(accuracy >= 0.875 && accuracy > noAbilityBaseline + 0.2,
           `Independent person/background point oracle failed: ${photo} accuracy=${accuracy}, no-capacity baseline=${noAbilityBaseline}, samples=${JSON.stringify(pixels)}`);
+        if (manuallyTraced[photo]) {
+          // This dense oracle is traced on the source photograph. A confidence
+          // gap excludes ambiguous individual hair strands from the two cores;
+          // explicit scanlines separately exercise hairline transitions.
+          const scored = await page.evaluate(async (reference) => {
+            const response = await fetch(document.querySelector('[data-portrait-274] img').src);
+            const bitmap = await createImageBitmap(await response.blob());
+            const canvas = document.createElement('canvas');
+            canvas.width = bitmap.width; canvas.height = bitmap.height;
+            const context = canvas.getContext('2d', { willReadFrequently: true });
+            context.drawImage(bitmap, 0, 0); bitmap.close();
+            const image = context.getImageData(0, 0, canvas.width, canvas.height).data;
+            const alpha = (x, y) => image[(y * canvas.width + x) * 4 + 3];
+            const within = (x, y, polygon) => {
+              let found = false;
+              for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                const [xi, yi] = polygon[i]; const [xj, yj] = polygon[j];
+                if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) found = !found;
+              }
+              return found;
+            };
+            let foregroundCount = 0; let backgroundCount = 0;
+            let foregroundHit = 0; let backgroundHit = 0; let absoluteError = 0;
+            for (let y = 0; y < canvas.height; y += 4) for (let x = 0; x < canvas.width; x += 4) {
+              const fg = within(x, y, reference.foregroundCore);
+              const bg = reference.backgroundCore.some((polygon) => within(x, y, polygon));
+              if (fg && bg) throw new Error('Human oracle labels overlap');
+              if (fg) { foregroundCount++; foregroundHit += alpha(x, y) >= 180 ? 1 : 0; absoluteError += 255 - alpha(x, y); }
+              if (bg) { backgroundCount++; backgroundHit += alpha(x, y) <= 32 ? 1 : 0; absoluteError += alpha(x, y); }
+            }
+            const hairline = reference.hairline.map(({ y, left, right }) => {
+              const line = Array.from({ length: canvas.width }, (_, x) => alpha(x, y));
+              return { y, left: line.findIndex((a) => a >= 128),
+                right: line.findLastIndex((a) => a >= 128),
+                partial: line.filter((a) => a > 0 && a < 255).length,
+                leftRange: left, rightRange: right };
+            });
+            return { width: canvas.width, height: canvas.height,
+              foregroundCount, backgroundCount,
+              foregroundRecall: foregroundHit / foregroundCount,
+              backgroundRecall: backgroundHit / backgroundCount,
+              balancedAccuracy: (foregroundHit / foregroundCount + backgroundHit / backgroundCount) / 2,
+              meanAbsoluteAlphaError: absoluteError / (foregroundCount + backgroundCount), hairline };
+          }, manuallyTraced[photo]);
+          console.log(`METRICS ${name} ${photo} independent manual alpha oracle: ${JSON.stringify(scored)}`);
+          assert.equal(scored.width, manuallyTraced[photo].width);
+          assert.equal(scored.height, manuallyTraced[photo].height);
+          assert.ok(scored.foregroundCount >= 10_000 && scored.backgroundCount >= 10_000, `Not a dense oracle: ${JSON.stringify(scored)}`);
+          assert.ok(scored.foregroundRecall >= 0.85 && scored.backgroundRecall >= 0.90 && scored.balancedAccuracy >= 0.90,
+            `Dense manual foreground/background oracle failed: ${JSON.stringify(scored)}`);
+          assert.ok(scored.meanAbsoluteAlphaError <= 45, `Dense alpha error too high: ${JSON.stringify(scored)}`);
+          for (const scan of scored.hairline) {
+            assert.ok(scan.left >= scan.leftRange[0] && scan.left <= scan.leftRange[1], `Left hairline differs from manual trace: ${JSON.stringify(scan)}`);
+            assert.ok(scan.right >= scan.rightRange[0] && scan.right <= scan.rightRange[1], `Right hairline differs from manual trace: ${JSON.stringify(scan)}`);
+            assert.ok(scan.partial >= 2, `Hairline must contain a graded alpha transition: ${JSON.stringify(scan)}`);
+          }
+          console.log(`PASS ${name} ${photo} dense manual alpha oracle vs constant-foreground/background baseline 50% ${JSON.stringify(scored)}`);
+        }
         assert.ok(network.length === 0, "No offsite network after opt-in");
         assert.deepEqual(cspViolations, [], `${name} CSP violation during real inference: ${cspViolations.join("; ")}`);
         assert.ok(assetRequests.length > 0 && assetRequests.every(([method]) => method === "GET"), "Only same-origin GET model and runtime assets");

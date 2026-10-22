@@ -3,6 +3,7 @@ import { analyzeOoxmlPackage } from "../ooxml/package";
 import { rebuildOoxmlPackage } from "../ooxml/package-codec";
 import { cleanOfficeMetadata, extractDocxSemantics, extractPptxOutline, generateDocxFromSemanticText, inspectOfficeStructure } from "../ooxml/office-semantics";
 import { csvToXlsx, markdownTableToXlsx, xlsxToCsv } from "../table/spreadsheet-interchange";
+import { exportXlsxWorkbook389, openXlsxWorkbook389 } from "../table/workbook-xlsx-389";
 import type { OfficeLocalRequest, OfficeLocalResult } from "./worker-protocol";
 
 const scope = self as unknown as {
@@ -47,6 +48,19 @@ scope.onmessage = async (event) => {
       post(jobId, { type: "resource", action: "reserve", resourceId: "csv-output", bytes: new TextEncoder().encode(result.csv).byteLength });
       post(jobId, { type: "progress", progress: { kind: "determinate", fraction: 1, phase: "complete" } });
       post(jobId, { type: "success", result: { kind: "spreadsheet-read", result } });
+      return;
+    }
+    if (payload.kind === "xlsx-workbook-open") {
+      const result = openXlsxWorkbook389(payload.bytes);
+      post(jobId, { type: "progress", progress: { kind: "determinate", fraction: 1, phase: "complete" } });
+      post(jobId, { type: "success", result: { kind: "xlsx-workbook-open", result } });
+      return;
+    }
+    if (payload.kind === "xlsx-workbook-export") {
+      const bytes = exportXlsxWorkbook389(payload.bytes, payload.workbook);
+      post(jobId, { type: "resource", action: "reserve", resourceId: "xlsx-workbook-output", bytes: bytes.byteLength });
+      post(jobId, { type: "progress", progress: { kind: "determinate", fraction: 1, phase: "complete" } });
+      post(jobId, { type: "success", result: { kind: "xlsx-workbook-export", bytes } }, [bytes]);
       return;
     }
     if (payload.kind === "ooxml-analyze") {

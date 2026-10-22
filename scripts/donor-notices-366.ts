@@ -21,6 +21,22 @@ export type DonorNotice366 = {
 
 export const DONOR_NOTICES_366: readonly DonorNotice366[] = [
   {
+    file: "papaparse-126-MIT.txt",
+    packages: ["papaparse@5.7.0"],
+    spdx: "MIT",
+    upstream: "https://github.com/mholt/PapaParse",
+    sha256: "99aa68e4b42758b09828a46515f70369e5463458ab7a990189f641af2b8d9b4e",
+    marker: "Matthew Holt",
+  },
+  {
+    file: "hash-wasm-126-MIT.txt",
+    packages: ["hash-wasm@4.12.0"],
+    spdx: "MIT",
+    upstream: "https://github.com/Daninet/hash-wasm",
+    sha256: "c14dea172f72f2714284a0ac2ab1b00b5352a01409d58255a46227ffc541debd",
+    marker: "Dani Bir",
+  },
+  {
     file: "he-301-MIT.txt",
     packages: ["he@2.0.0"],
     spdx: "MIT",

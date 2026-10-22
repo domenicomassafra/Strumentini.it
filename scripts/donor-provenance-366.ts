@@ -14,6 +14,7 @@ import { isLocalAuthored366, verifyLocalAuthored366 } from "./donor-local-author
 import { verifiedFontPrimary366 } from "./donor-font-primary-366";
 import { verifyPrimarySource366 } from "./verify-primary-source-366";
 import { auditForbiddenCodecs126 } from "./forbidden-codecs-126";
+import { auditPublicRuntime366 } from "./donor-public-runtime-366";
 
 const semver = createRequire(import.meta.url)("semver") as {
   validRange: (range: string) => string | null;
@@ -220,7 +221,7 @@ function validAssetSource(asset: AssetPin366, root: string): boolean {
     url.pathname.endsWith(`-${asset.version}.tgz`) &&
     url.pathname.includes("/-/");
 }
-function allFiles(root: string, dir: string): string[] {
+export function allFiles(root: string, dir: string): string[] {
   const absolute = safeAssetPath(root, dir);
   if (!absolute || !existsSync(absolute)) return [];
   return readdirSync(absolute, { withFileTypes: true }).flatMap((entry) => {
@@ -260,15 +261,23 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     if (digest !== asset.sha256) failures.push(`ASSET_HASH_MISMATCH ${asset.path}`);
   }
   for (const dir of dirs) {
-    if (!safeAssetPath(root, dir) || !existsSync(resolve(root, dir)) ||
-      !lstatSync(resolve(root, dir)).isDirectory()) {
-      if ((dir === "public/models" || dir === "public/vendor") && !existsSync(resolve(root, dir))) continue;
-      failures.push(`MISSING_ASSET_DIRECTORY ${dir}`);
-      continue;
+    const absolute = safeAssetPath(root, dir);
+    try {
+      if (absolute && lstatSync(absolute).isDirectory()) {
+        for (const path of allFiles(root, dir)) {
+          if (!pinned.has(path)) failures.push(`UNPINNED_ASSET ${path}`);
+        }
+        continue;
+      }
     }
-    for (const path of allFiles(root, dir)) {
-      if (!pinned.has(path)) failures.push(`UNPINNED_ASSET ${path}`);
+    catch (error) {
+      if ((dir === "public/models" || dir === "public/vendor") &&
+          (error as NodeJS.ErrnoException).code === "ENOENT") continue;
     }
+    failures.push(`MISSING_ASSET_DIRECTORY ${dir}`);
+  }
+  if (dirs.includes("public/models")) {
+    failures.push(...auditPublicRuntime366(allFiles(root, "public"), pinned));
   }
   return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, files: assets.length, rows: assets, failures };
 }
