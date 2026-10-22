@@ -40,7 +40,7 @@ try {
       getComputedStyle(element).backgroundImage);
     assert.match(preview, /linear-gradient\(90deg.*rgb\(0, 0, 0\).*rgb\(255, 255, 255\)/u);
     await result.getByRole("button", { name: "Copia CSS" }).click();
-    await result.getByRole("status").getByText("CSS copiato.").waitFor();
+    await result.locator('p[role="status"]').filter({ hasText: "CSS copiato." }).waitFor();
     assert.equal(await page.evaluate(() => navigator.clipboard.readText()), css, "Clipboard differs from preview");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), true,
       "Unexpected 390px horizontal overflow");
