@@ -213,7 +213,7 @@ function startFileHandoff337(
   rejection: string,
   onStatus: ((status: EphemeralHandoffStatus337) => void) | undefined,
   environment: EphemeralHandoffEnvironment337,
-  format = target.format,
+  format: string = target.format,
 ): EphemeralHandoffStart337 {
   if (!accepts(artifact)) return { opened: false, reason: rejection };
   const token = environment.createToken?.() ?? crypto.randomUUID();
