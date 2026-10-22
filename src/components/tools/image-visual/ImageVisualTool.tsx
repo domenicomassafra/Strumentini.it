@@ -322,7 +322,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
             )}
           </fieldset>
         )}
-        {toolId === "image-format-conversion" && <p class="file-note">Input: SVG statico con policy restrittiva, JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. SVG produce PNG/JPEG/WebP o PDF raster-backed, NON un PDF vettoriale. HEIC/HEIF usa un decoder locale lazy; per GIF viene convertito solo il primo frame. I metadati container non vengono conservati. La modalità SVG è in validazione (Partial), non certificata Gold.</p>}
+        {toolId === "image-format-conversion" && <p class="file-note">Input: SVG statico, JPG, PNG, WebP, AVIF statico, HEIC e GIF. SVG esporta raster, non PDF vettoriale. AVIF/HEIC richiedono decoder nativo e firma valida; HEIC non certificato. GIF: solo primo frame, animazione persa; GIF animato separato. Metadati non conservati. SVG: Partial, non Gold.</p>}
         {mime === "image/png" && (toolId === "image-format-conversion" || (toolId === "image-compression" && !batchMode)) && (
           <div {...(toolId === "image-compression" ? { "data-download-compression339": "" } : { "data-download-png339": "" })}>
             <label class="field">
