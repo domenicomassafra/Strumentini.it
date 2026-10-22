@@ -9,6 +9,8 @@ import {
 } from "../../../engines/pdf/project-history-138";
 import { deletePdfProject138, inspectPdfProjects138, loadPdfProject138, savePdfProject138, type PdfProjectSummary138 } from "../../../workbench/pdf-project-138";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
+import { PdfAnnotationEditor134 } from "./PdfAnnotationEditor134";
+import { PdfProjectControls138 } from "./PdfProjectControls138";
 
 interface Thumbnail { page: number; url?: string; error?: string }
 
@@ -29,6 +31,7 @@ export function PdfPageWorkspace372() {
   const [start, setStart] = useState(0);
   const [target, setTarget] = useState("1");
   const [images, setImages] = useState<Thumbnail[]>([]);
+  const [showAnnotator, setShowAnnotator] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
@@ -83,6 +86,7 @@ export function PdfPageWorkspace372() {
       restoringHistory.current = saved.history;
       setSession(null);
       setHistory(null);
+      setShowAnnotator(false);
       setFile(saved.file);
       setStart(0);
       setResult(null);
@@ -115,6 +119,7 @@ export function PdfPageWorkspace372() {
     restoringHistory.current = null;
     setHistory(null);
     setStart(0);
+    setShowAnnotator(false);
     setError("");
     setResult(null);
     setBusy(false);
@@ -129,6 +134,7 @@ export function PdfPageWorkspace372() {
     restoringHistory.current = null;
     setHistory(null);
     setStart(0);
+    setShowAnnotator(false);
     setResult(null);
     setError(next && next.size > PDF_LIMITS.maxBytes
       ? "PDF troppo grande: massimo 25 MiB. Il file originale non è stato modificato."
@@ -258,23 +264,11 @@ export function PdfPageWorkspace372() {
   return (
     <section class="tool-operation" data-pdf-workspace-372>
       <section class="tool-form-card">
-        <p class="file-note">Organizza localmente un PDF, tocca le miniature per selezionare le pagine, spostale e scarica una nuova copia. Il file originale rimane invariato.</p>
-        <section aria-label="Progetti PDF locali" data-pdf-project-138>
-          <p class="file-note">Progetti PDF salvati solo su questo dispositivo, su richiesta. Ogni salvataggio crea una copia, senza sovrascrivere progetti precedenti.</p>
-          {projects.length > 0 && <div class="actions">
-            <label class="field"><span>Progetto da riprendere</span>
-              <select aria-label="Progetto da riprendere" value={projectId} disabled={busy || projectBusy}
-                onChange={(event) => setProjectId(event.currentTarget.value)}>
-                {projects.map((project) => <option key={project.id} value={project.id}>{project.name} · {new Date(project.createdAt).toLocaleString("it-IT")}</option>)}
-              </select>
-            </label>
-            <button type="button" onClick={() => void resumeProject()} disabled={!projectId || busy || projectBusy}>Riprendi progetto</button>
-            <button type="button" data-delete-pdf-project onClick={() => void deleteSelectedProject()}
-              disabled={!projectId || busy || projectBusy}>Elimina progetto selezionato</button>
-          </div>}
-          {unreadableProjects > 0 && <p role="status">Alcuni progetti non sono leggibili o superano i limiti: restano conservati senza modifiche.</p>}
-          {projectMessage && <p role="status" data-pdf-project-message>{projectMessage}</p>}
-        </section>
+        <p class="file-note">Organizza e annota un PDF locale, riordina o estrai pagine e scarica una nuova copia. Le annotazioni vengono esportate separatamente dal riordino; la cronologia del progetto riguarda ordine, selezione e modalità. L'originale rimane invariato.</p>
+        <PdfProjectControls138 projects={projects} selectedId={projectId}
+          onSelect={setProjectId} disabled={busy || projectBusy}
+          unreadableProjects={unreadableProjects} message={projectMessage}
+          onResume={() => void resumeProject()} onDelete={() => void deleteSelectedProject()} />
         <label class="field"><span>PDF da modificare</span>
           <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={busy} aria-label="PDF da modificare" />
           <small>Massimo 25 MiB, 200 pagine. Quattro miniature per volta; nessun caricamento su server.</small>
@@ -333,6 +327,12 @@ export function PdfPageWorkspace372() {
               })}
             </ol>
           </section>
+          <div class="actions">
+            <button type="button" onClick={() => setShowAnnotator((opened) => !opened)} disabled={busy} aria-expanded={showAnnotator}>
+              {showAnnotator ? "Chiudi editor annotazioni" : "Evidenzia, commenta e annota le pagine"}
+            </button>
+          </div>
+          {showAnnotator && file && <PdfAnnotationEditor134 file={file} pageCount={order.length} initialPage={selected[0] ?? order[0] ?? 1} />}
           <fieldset class="field">
             <legend>Risultato da creare</legend>
             <label><input type="radio" name="workspace-mode-372" checked={mode === "reorder"} disabled={busy} onChange={() => applyEdit({ order, selected, mode: "reorder" })} /> Riordina tutte le pagine</label>

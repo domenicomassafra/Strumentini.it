@@ -1,0 +1,50 @@
+name: STR-374 annotation and project consumers (#134)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/str-374-pdf-annotations.yml'
+      - 'tests/str-374-consumer.browser.mjs'
+      - 'tests/str-379-consumer.browser.mjs'
+      - 'scripts/acceptance-pdf-project-138.browser.mjs'
+      - 'src/components/tools/pdf/PdfPageWorkspace372.tsx'
+      - 'src/components/tools/pdf/PdfProjectControls138.tsx'
+      - 'src/components/tools/pdf/PdfAnnotationEditor134.tsx'
+      - 'src/engines/pdf/annotations-134.ts'
+      - 'src/engines/pdf/project-history-138.ts'
+      - 'src/workbench/pdf-project-138.ts'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium-consumers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Require exact source revision
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get install -y --no-install-recommends poppler-utils
+      - run: npm run build
+      - name: Test rotated annotations, A/B restore and PDF project history
+        env:
+          STR134_BROWSER_MODE: launch
+          STR138_BROWSER_MODE: launch
+        run: |
+          node tests/str-374-consumer.browser.mjs
+          node tests/str-379-consumer.browser.mjs
