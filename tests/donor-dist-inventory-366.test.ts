@@ -57,7 +57,7 @@ describe("#126 actual static distribution provenance", () => {
       writeFileSync(join(root, "dist/_astro/preload-helper.abc.js"),
         'var x=document.createElement("link");var y="modulepreload";export{x as t};');
       writeFileSync(join(root, "dist/_astro/rolldown-runtime.abc.js"),
-        'var x=Object.create,y=Object.getOwnPropertyDescriptor;var z="CommonJS";export{x as t};');
+        'var x=Object.create,y=Object.getOwnPropertyDescriptor;var z="rolldown.rs/in-depth/bundling-cjs";export{x as t};');
       expect(audit().failures).toEqual([]);
       writeFileSync(join(root, "dist/_astro/other.js"), "var unreviewedExternalSource=1;");
       expect(audit().failures).toContain("UNMAPPED_DISTRIBUTED_SCRIPT _astro/other.js");

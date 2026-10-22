@@ -29,7 +29,8 @@ function knownGeneratedChunk366(path: string, code: string, files: ReadonlySet<s
     return code.includes("modulepreload") && code.includes("document.createElement") && code.includes("export{");
   }
   return /^_astro\/rolldown-runtime\.[\w-]+\.js$/u.test(path) &&
-    code.includes("Object.create") && code.includes("getOwnPropertyDescriptor") && code.includes("CommonJS");
+    code.includes("Object.create") && code.includes("getOwnPropertyDescriptor") &&
+    code.includes("rolldown.rs/in-depth/bundling-cjs");
 }
 
 /** Built assets must have a pinned source; generated ONNX Runtime assets must
