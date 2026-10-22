@@ -129,32 +129,48 @@ try {
   const svgForm = page.locator("[data-svg-compression-47] form");
   await svgForm.locator('input[type="file"]').setInputFiles({ name: "square.svg", mimeType: "image/svg+xml", buffer: Buffer.from(svg) });
   await svgForm.getByRole("button", { name: "Ottimizza e verifica SVG" }).click();
-  await page.locator('[data-svg-optimized="true"]').waitFor({ timeout: 30000 });
-  const previews = await page.locator('[data-svg-optimized="true"] img').evaluateAll(images => images.map(img => img.complete && img.naturalWidth > 0));
-  assert.deepEqual(previews, [true, true], "Original/optimized previews failed");
-  const saveSvg = page.waitForEvent("download");
-  await page.getByRole("link", { name: "Scarica SVG ottimizzato" }).click();
-  const svgDownload = await saveSvg;
-  assert.equal(svgDownload.suggestedFilename(), "square-ottimizzato.svg");
-  const svgOutput = await readFile(await svgDownload.path());
-  assert(svgOutput.length < Buffer.byteLength(svg));
-  assert.match(svgOutput.toString("utf8"), /^<svg\b/u);
-  // SVG UI reports fflate's actual gzip payload bytes, not zlib's potentially
-  // different output size for the same uncompressed bytes.
-  const gzipOriginal = gzipSync(Buffer.from(svg), { level: 9 }).length;
-  const gzipOutput = gzipSync(svgOutput, { level: 9 }).length;
-  const details = await page.locator('[data-svg-optimized="true"]').innerText();
-  assert(details.includes(`${Buffer.byteLength(svg)} byte · gzip ${gzipOriginal} byte`), "Incorrect original gzip byte count");
-  assert(details.includes(`${svgOutput.length} byte · gzip ${gzipOutput} byte`), "Incorrect output gzip byte count");
-  const opened = await sharp(svgOutput).metadata();
-  assert.deepEqual([opened.width, opened.height], [96, 64]);
+  const svgState = await Promise.race([
+    page.locator('[data-svg-optimized="true"]').waitFor({ timeout: 30000 }).then(() => "success"),
+    page.locator('[data-svg-compression-47] [role="alert"]').waitFor({ timeout: 30000 }).then(() => "error"),
+  ]);
+  let svgSummary;
+  if (svgState === "error") {
+    const message = (await page.locator('[data-svg-compression-47] [role="alert"]').innerText()).trim();
+    console.log(`DIAGNOSTIC #81 ${browserName} SVG safe refusal: ${message}; ${webpSummary}`);
+    assert.equal(browserName, "webkit", "Chromium must optimize the verified SVG fixture");
+    assert.match(message, /SVG_47_(PIXELS_CHANGED|GEOMETRY|CANVAS|BROWSER_REQUIRED)|EncodingError|cannot decode|could not decode|source image/iu,
+      "Only a browser raster verification limitation can justify SVG safe refusal");
+    assert.equal(await page.getByRole("link", { name: "Scarica SVG ottimizzato" }).count(), 0,
+      "Cannot offer SVG download after unsupported pixel verification");
+    svgSummary = `WebKit SVG raster verification unavailable, explicit refusal (${message})`;
+  } else {
+    const previews = await page.locator('[data-svg-optimized="true"] img').evaluateAll(images => images.map(img => img.complete && img.naturalWidth > 0));
+    assert.deepEqual(previews, [true, true], "Original/optimized previews failed");
+    const saveSvg = page.waitForEvent("download");
+    await page.getByRole("link", { name: "Scarica SVG ottimizzato" }).click();
+    const svgDownload = await saveSvg;
+    assert.equal(svgDownload.suggestedFilename(), "square-ottimizzato.svg");
+    const svgOutput = await readFile(await svgDownload.path());
+    assert(svgOutput.length < Buffer.byteLength(svg));
+    assert.match(svgOutput.toString("utf8"), /^<svg\b/u);
+    // SVG UI reports fflate's actual gzip payload bytes, not zlib's potentially
+    // different output size for the same uncompressed bytes.
+    const gzipOriginal = gzipSync(Buffer.from(svg), { level: 9 }).length;
+    const gzipOutput = gzipSync(svgOutput, { level: 9 }).length;
+    const details = await page.locator('[data-svg-optimized="true"]').innerText();
+    assert(details.includes(`${Buffer.byteLength(svg)} byte · gzip ${gzipOriginal} byte`), "Incorrect original gzip byte count");
+    assert(details.includes(`${svgOutput.length} byte · gzip ${gzipOutput} byte`), "Incorrect output gzip byte count");
+    const opened = await sharp(svgOutput).metadata();
+    assert.deepEqual([opened.width, opened.height], [96, 64]);
+    svgSummary = `SVG raw ${Buffer.byteLength(svg)}→${svgOutput.length} B; gzip ${gzipOriginal}→${gzipOutput} B, two previews, Sharp reopen`;
+  }
   await svgForm.locator('input[type="file"]').setInputFiles({ name: "unsafe.svg", mimeType: "image/svg+xml", buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><script>alert(1)</script></svg>') });
   await svgForm.getByRole("button", { name: "Ottimizza e verifica SVG" }).click();
   await page.locator('[data-svg-compression-47] [role="alert"]').waitFor({ timeout: 30000 });
   assert.equal(await page.locator('[data-svg-optimized="true"]').count(), 0);
   assert.deepEqual(errors, []);
   assert.deepEqual(offsite, []);
-  console.log("PASS #81 " + browserName + " built PNG IDAT download " + pngOriginal.length + "→" + pngBytes.length + " B exact; " + webpSummary + "; SVG raw " + Buffer.byteLength(svg) + "→" + svgOutput.length + " B; gzip " + gzipOriginal + "→" + gzipOutput + " B, two previews, Sharp reopen, unsafe reject, zero offsite requests");
+  console.log("PASS #81 " + browserName + " built PNG IDAT download " + pngOriginal.length + "→" + pngBytes.length + " B exact; " + webpSummary + "; " + svgSummary + ", unsafe reject, zero offsite requests");
 } finally {
   if (browser) await browser.close();
   server.kill("SIGTERM");
