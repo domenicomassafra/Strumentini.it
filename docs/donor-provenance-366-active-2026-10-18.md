@@ -1,5 +1,7 @@
 # #366 — Active dependency and asset license/provenance boundary
 
+**2026-10-21, STR-296:** [WebAV 1.2.8 candidate provenance](donor-webav-296-2026-10-21.md) recorded with upstream/npm pins, MIT/BSD transitives, missing bundle↔source attestation and a functional **NO_ADOPT**. No WebAV package is installed; production conversion remains retired.
+
 **2026-10-19, #126 owner option B:** The runtime no longer imports or redistributes `heic-to@1.6.5` (LGPL-3.0), `mediabunny@1.61.3` (MPL-2.0), or `pdfstudio@0.4.0` / embedded QPDF WASM. Historical NO_GO observations below are retained with their original timestamps. The revised `scripts/donor-provenance-366.ts --check` returns **VERIFIED_METADATA / exit 0**, with 30 pinned assets, 459 non-dev packages, eight installed optional-runtime packages, zero failed evidence checks and all eight old candidates **NO_ADOPT**. This audits known active codecs and source identity, not blanket legal clearance for every third-party dependency. See [#126 removal and consumer effects](codec-removal-126-2026-10-19.md).
 
 PDF password protection/unlocking and MP4/video→GIF transcoding have been retired, with visible product notices; HEIC/HEIF is decoded only if the browser supports it natively via `createImageBitmap`. The MIT `gifenc@1.0.3` donor is retained but the former video→GIF worker no longer invokes it. LGPL/MPL entries in the npm graph from build-time sharp/libvips and lightningcss require actual static-bundle inspection; a lockfile license list alone cannot prove what gets shipped.
