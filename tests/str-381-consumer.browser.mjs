@@ -11,6 +11,7 @@ const root = resolve("dist");
 const html = await readFile(resolve(root, "tools/image-crop/index.html"), "utf8");
 assert.match(html, /image-crop/u, "Compiled image editor route must exist");
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json" };
+const missingResources = [];
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", "http://127.0.0.1");
@@ -21,6 +22,7 @@ const server = createServer(async (req, res) => {
     res.writeHead(200, { "Content-Type": types[extname(path)] ?? "application/octet-stream" });
     res.end(data);
   } catch {
+    missingResources.push(req.url);
     if (!res.headersSent) res.writeHead(404);
     res.end();
   }
@@ -40,6 +42,7 @@ try {
   const errors = [];
   const uploads = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await page.route("**/*", (route) => {
     const request = route.request();
     if (request.method() !== "GET" && request.method() !== "HEAD") uploads.push(request.url());
@@ -47,7 +50,11 @@ try {
     return route.abort();
   });
   await page.goto(origin + "/tools/image-crop/", { waitUntil: "domcontentloaded" });
+  await page.locator("astro-island:has([data-381-open]):not([ssr])").waitFor({ timeout: 20_000 }).catch(async (cause) => {
+    throw new Error(`Image editor hydration failed: ${cause.message}; browser errors: ${JSON.stringify(errors)}; missing assets: ${JSON.stringify(missingResources)}`);
+  });
   await page.locator("[data-381-open]").click();
+  await page.locator('[data-str-381="layers"]').waitFor({ timeout: 10_000 });
   const canvas = page.locator("[data-381-canvas]");
   const pixel = () => canvas.evaluate((node) => [...node.getContext("2d").getImageData(0, 0, 1, 1).data]);
   const assertPixel = async (expected) => {
@@ -124,6 +131,7 @@ try {
   assert.match(await page.getByRole("alert").innerText(), /PIXEL_LIMIT/u);
   assert.equal(await canvas.count(), 0);
   assert.deepEqual(uploads, [], "No image data was posted remotely");
+  assert.deepEqual(missingResources.filter((url) => /\.(?:js|mjs|css)(?:\?|$)/u.test(url)), [], "All compiled scripts and styles must resolve locally");
   assert.deepEqual(errors, [], "No unhandled browser errors");
   console.log("PASS STR-381 compiled browser consumer: real canvas S/M/L, order/visibility/opacity, PNG pixel oracle, immutable File SHA-256, bounded refusal and no uploads");
 } finally {
