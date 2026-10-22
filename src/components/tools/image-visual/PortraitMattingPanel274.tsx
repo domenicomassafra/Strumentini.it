@@ -23,9 +23,13 @@ export function PortraitMattingPanel274() {
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const generation = useRef(0);
   const resultUrl = useRef<string | null>(null);
+  const validatedInput = useRef<{ file: File; width: number; height: number } | null>(null);
+  const warmedFile = useRef<File | null>(null);
 
   function stop() {
     worker.current?.terminate(); worker.current = null;
+    warmedFile.current = null;
+    validatedInput.current = null;
     preload.current?.abort(); preload.current = null;
     if (timeout.current !== null) clearTimeout(timeout.current);
     timeout.current = null;
@@ -50,6 +54,10 @@ export function PortraitMattingPanel274() {
   function choose(next: File | null) {
     if (busy) cancel();
     else generation.current++;
+    if (next !== file) {
+      warmedFile.current = null;
+      validatedInput.current = null;
+    }
     clearResult(); setFile(next);
     setStatus("Pronto: premi Avvia per caricare modello e WASM dal sito.");
   }
@@ -67,12 +75,21 @@ export function PortraitMattingPanel274() {
     try {
       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("UNSUPPORTED_IMAGE");
       if (file.size < 64 || file.size > PORTRAIT_MAX_FILE_BYTES) throw new Error("FILE_SIZE_LIMIT");
-      const image = await createImageBitmap(file);
-      const { width, height } = image;
-      image.close();
+      // WebKit cannot decode a Blob using createImageBitmap after a context
+      // switches offline. Reuse the dimensions and decoded pixels that this
+      // same live Worker verified during its previous successful inference.
+      const reuse = worker.current !== null && warmedFile.current === file && validatedInput.current?.file === file;
+      let dimensions = validatedInput.current;
+      if (!reuse || !dimensions) {
+        const image = await createImageBitmap(file);
+        dimensions = { file, width: image.width, height: image.height };
+        image.close();
+      }
+      const { width, height } = dimensions;
       checkPortraitInput(file.size, width, height, (navigator as Navigator & { deviceMemory?: number }).deviceMemory);
       if (generation.current !== id) return;
-      const bytes = await file.arrayBuffer();
+      validatedInput.current = dimensions;
+      const bytes = reuse ? null : await file.arrayBuffer();
       if (generation.current !== id) return;
       const preloadController = new AbortController();
       preload.current = preloadController;
@@ -125,13 +142,15 @@ export function PortraitMattingPanel274() {
           if (timeout.current !== null) clearTimeout(timeout.current);
           timeout.current = null;
           setBusy(false);
+          warmedFile.current = file;
           const url = URL.createObjectURL(new Blob([message.bytes], { type: "image/png" }));
           resultUrl.current = url;
           setResult({ url, width: message.width, height: message.height, transparent: message.transparent, mixed: message.mixed, opaque: message.opaque });
           setStatus("PNG RGBA decodificato e verificato localmente. Controlla visivamente capelli, contorni e sfondi complessi.");
         }
       };
-      instance.postMessage({ kind: "start", bytes, mime: file.type, memoryGB: (navigator as Navigator & { deviceMemory?: number }).deviceMemory }, [bytes]);
+      if (bytes) instance.postMessage({ kind: "start", bytes, mime: file.type, memoryGB: (navigator as Navigator & { deviceMemory?: number }).deviceMemory }, [bytes]);
+      else instance.postMessage({ kind: "start", reuse: true, mime: file.type, memoryGB: (navigator as Navigator & { deviceMemory?: number }).deviceMemory });
       setStatus("Caricamento dal sito: download autorizzato, nessuna immagine inviata in rete…");
     } catch (error) {
       if (generation.current !== id) return;

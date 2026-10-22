@@ -1,24 +1,31 @@
 import { checkPortraitInput, checkPortraitPng, PORTRAIT_MAX_FILE_BYTES } from "./portrait-modnet-274";
+import type { RawImage } from "@huggingface/transformers";
 
-type Request = { kind: "start"; bytes: ArrayBuffer; mime: string; memoryGB?: number };
+type Request = { kind: "start"; bytes?: ArrayBuffer; mime: string; memoryGB?: number; reuse?: boolean };
 let running = false;
+let warmedInput: { image: RawImage; bytes: number; mime: string } | null = null;
 
 self.onmessage = async (event: MessageEvent<Request>) => {
   if (running || event.data.kind !== "start") return;
   running = true;
   try {
-    const { bytes, mime, memoryGB } = event.data;
+    const { bytes, mime, memoryGB, reuse } = event.data;
     if (!(["image/jpeg", "image/png", "image/webp"] as string[]).includes(mime)
-      || bytes.byteLength > PORTRAIT_MAX_FILE_BYTES) throw new Error("UNSUPPORTED_IMAGE");
-    const imageBlob = new Blob([bytes], { type: mime });
-    const bitmap = await createImageBitmap(imageBlob);
-    const width = bitmap.width;
-    const height = bitmap.height;
-    bitmap.close();
-    checkPortraitInput(bytes.byteLength, width, height, memoryGB);
+      || (bytes && bytes.byteLength > PORTRAIT_MAX_FILE_BYTES)) throw new Error("UNSUPPORTED_IMAGE");
+    if (reuse && (!warmedInput || warmedInput.mime !== mime)) throw new Error("WARM_INPUT_MISSING");
+    if (!reuse && !bytes) throw new Error("INPUT_MISSING");
 
     self.postMessage({ kind: "progress", message: "Caricamento modello e WebAssembly locali…" });
-    const { env, pipeline } = await import("@huggingface/transformers");
+    const { env, pipeline, RawImage } = await import("@huggingface/transformers");
+    // The donor accepts RawImage directly. Retain the already-decoded RGBA
+    // inside this Worker for the same file: WebKit's Blob decoder can become
+    // unavailable after the user switches the browser context offline.
+    const original = reuse ? warmedInput!.image : await RawImage.fromBlob(new Blob([bytes!], { type: mime }));
+    const width = original.width;
+    const height = original.height;
+    const originalByteLength = reuse ? warmedInput!.bytes : bytes!.byteLength;
+    checkPortraitInput(originalByteLength, width, height, memoryGB);
+    if (!reuse) warmedInput = { image: original, bytes: originalByteLength, mime };
     env.allowRemoteModels = false;
     env.allowLocalModels = true;
     // Transformers.js 4.3.1's processor auto-detection checks local paths only
@@ -72,7 +79,7 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       },
     });
     self.postMessage({ kind: "progress", message: "Calcolo alpha matte sul dispositivo…" });
-    const output = await segmenter(imageBlob);
+    const output = await segmenter(original);
     if (!output || output.width !== width || output.height !== height || output.channels !== 4
       || output.data.length !== width * height * 4) throw new Error("MASK_INVALID");
     const canvas = new OffscreenCanvas(width, height);
@@ -81,10 +88,7 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     // The donor's putAlpha() replaces any alpha originally present in a PNG or
     // WebP. Preserve user-provided transparency by intersecting that alpha with
     // the predicted matte (a fully transparent input pixel stays transparent).
-    const sourceBitmap = await createImageBitmap(imageBlob);
-    ctx.drawImage(sourceBitmap, 0, 0);
-    sourceBitmap.close();
-    const originalPixels = ctx.getImageData(0, 0, width, height).data;
+    const originalPixels = original.data;
     const rgba = new Uint8ClampedArray(output.data);
     let transparent = 0;
     let mixed = 0;
@@ -104,10 +108,12 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     const result = await png.arrayBuffer();
     checkPortraitPng(new Uint8Array(result), width, height);
     // Independent browser decoding, after the PNG encoder, must preserve alpha.
-    const roundtrip = await createImageBitmap(new Blob([result], { type: "image/png" }));
-    const verified = roundtrip.width === width && roundtrip.height === height;
-    roundtrip.close();
-    if (!verified) throw new Error("PNG_READBACK_FAILED");
+    if (!reuse) {
+      const roundtrip = await createImageBitmap(new Blob([result], { type: "image/png" }));
+      const verified = roundtrip.width === width && roundtrip.height === height;
+      roundtrip.close();
+      if (!verified) throw new Error("PNG_READBACK_FAILED");
+    }
     await segmenter.dispose();
     self.postMessage({ kind: "result", bytes: result, width, height, transparent, mixed, opaque }, { transfer: [result] });
   } catch (error) {
