@@ -1,6 +1,8 @@
 export interface PersistenceAdapter {
   get<T>(key: string): Promise<T | undefined>;
   put<T>(key: string, value: T): Promise<void>;
+  /** Atomic create-only write; supported by the native IndexedDB add operation. */
+  add?<T>(key: string, value: T): Promise<void>;
   delete(key: string): Promise<void>;
 }
 
@@ -16,6 +18,10 @@ export function createMemoryPersistence(): PersistenceAdapter {
       return value === undefined ? undefined : clone(value as T);
     },
     async put<T>(key: string, value: T) {
+      values.set(key, clone(value));
+    },
+    async add<T>(key: string, value: T) {
+      if (values.has(key)) throw new Error("Persistence key already exists");
       values.set(key, clone(value));
     },
     async delete(key: string) {
@@ -81,6 +87,9 @@ export function createIndexedDbPersistence(
     },
     async put<T>(key: string, value: T) {
       await request("readwrite", (store) => store.put(value, key));
+    },
+    async add<T>(key: string, value: T) {
+      await request("readwrite", (store) => store.add(value, key));
     },
     async delete(key: string) {
       await request("readwrite", (store) => store.delete(key));
