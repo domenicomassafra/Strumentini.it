@@ -4,7 +4,7 @@ import { calculateTfr15, parseTfrRows15, TFR_15_SOURCES, type TfrEstimate15 } fr
 const euro = (cents: number) => new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(cents / 100);
 
 export function TfrCalculator15() {
-  const [annual, setAnnual] = useState("2023;30000;\n2024;32000;1,1\n2025;35000;1,08");
+  const [annual, setAnnual] = useState("2023;30000;\n2024;32000;1,09335576\n2025;35000;1,08153078");
   const [reduction, setReduction] = useState("0,5");
   const [result, setResult] = useState<TfrEstimate15 | null>(null);
   const [error, setError] = useState("");
@@ -24,7 +24,7 @@ export function TfrCalculator15() {
         <label>Retribuzione lorda utile per anno (formato: anno; euro; variazione percentuale indice FOI dicembre su dicembre)
           <textarea rows={7} value={annual} onInput={(event) => { setAnnual(event.currentTarget.value); setResult(null); }} aria-describedby="tfr-help" />
         </label>
-        <p id="tfr-help">Una riga per ogni anno completo e consecutivo. La prima variazione FOI è ignorata: il TFR maturato nello stesso anno non si rivaluta. Il valore FOI va preso dai dati ISTAT dell'anno scelto; gli esempi sono dimostrativi.</p>
+        <p id="tfr-help">Una riga per ogni anno completo e consecutivo. La prima variazione FOI è ignorata: il TFR maturato nello stesso anno non si rivaluta. Le retribuzioni nell'esempio sono fittizie; le variazioni FOI di dicembre 2024 e 2025 derivano dagli indici ISTAT (120,2/118,9 e 121,5/120,2). Inserisci le variazioni del periodo effettivo: il calcolatore non le recupera automaticamente.</p>
         <label>Riduzione IVS in percentuale sulla retribuzione utile (0–0,50%; dipende dalle esenzioni applicabili)
           <input type="text" inputMode="decimal" value={reduction} onInput={(event) => { setReduction(event.currentTarget.value); setResult(null); }} />
         </label>
@@ -43,7 +43,8 @@ export function TfrCalculator15() {
           {result.lines.map((line) => <tr key={line.year}><th scope="row">{line.year}</th><td>{euro(line.annualAccrualCents)}</td><td>{line.foiGrowthPercent === null ? "—" : `${line.foiGrowthPercent}%`}</td><td>{line.revaluationPercent === null ? "—" : `${line.revaluationPercent.toFixed(6)}%`}</td><td>{line.revaluationCents === null ? "?" : euro(line.revaluationCents)}</td><td>{line.yearEndGrossCents === null ? "?" : euro(line.yearEndGrossCents)}</td></tr>)}
         </tbody></table></div>
       </section>}
-      <p>Formula: quota annua = retribuzione utile / 13,5 − riduzione IVS applicabile; rivalutazione sul fondo precedente = 1,5% + 75% dell'aumento FOI annuale (dicembre/dicembre), con capitalizzazione. L'esempio è una simulazione: non considera frazioni di anno, anticipazioni, imposta sostitutiva sulla rivalutazione, fondi pensione, trasferimenti o tassazione finale. Il lordo stimato non è un saldo ufficiale del datore di lavoro.</p>
+      <p>Formula: quota annua = retribuzione utile / 13,5 − riduzione IVS applicabile; rivalutazione sul fondo precedente = 1,5% + 75% dell'aumento FOI annuale (dicembre/dicembre), con componente FOI posta a zero se negativa, e capitalizzazione. L'esempio è una simulazione: non considera frazioni di anno, anticipazioni, imposta sostitutiva sulla rivalutazione, fondi pensione, trasferimenti o tassazione finale. Il lordo stimato non è un saldo ufficiale del datore di lavoro.</p>
+      <p>La tassazione separata non è stimabile dal solo lordo qui calcolato. La <a href="/tools/calcoli-fiscali-italia/#tfr134-title">simulazione fiscale TFR distinta</a> permette una valutazione puramente indicativa solo con dati storici documentati e non sostituisce il conteggio di liquidazione.</p>
       <p>Fonti: {TFR_15_SOURCES.map((source, index) => <span key={source.url}>{index > 0 ? " · " : ""}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.authority}: {source.title}</a></span>)} · <a href="https://www.istat.it/" target="_blank" rel="noopener noreferrer">ISTAT (indice FOI, verifica l'anno di riferimento)</a>.</p>
     </section>
   );
