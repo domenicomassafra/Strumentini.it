@@ -42,12 +42,17 @@ try {
   assert.equal(response?.status(), 200);
   await page.locator("summary").filter({ hasText: "Regolazioni avanzate" }).click();
   const editor = page.locator("[data-str-383]");
-  await editor.locator("[data-str-383-file]").waitFor();
+  const picker = editor.locator("[data-str-383-file]");
+  await picker.waitFor();
+  const browserInputHash = async () => sha(Buffer.from(await picker.evaluate(async (element) =>
+    Array.from(new Uint8Array(await element.files[0].arrayBuffer()))
+  )));
   // Reference fixture has only IHDR/IDAT/IEND, no embedded profile or EXIF.
   // Each input pixel is opaque [64,128,192,255].
   const source = await readFile("tests/fixtures/str-383-srgb-2x2.png");
   const sourceHash = sha(source);
-  await editor.locator("[data-str-383-file]").setInputFiles({ name: "source.png", mimeType: "image/png", buffer: source });
+  await picker.setInputFiles({ name: "source.png", mimeType: "image/png", buffer: source });
+  assert.equal(await browserInputHash(), sourceHash, "Browser received the exact source bytes");
   await page.waitForFunction(() => {
     const editor = document.querySelector("[data-str-383]");
     return editor?.querySelectorAll('input[type="number"]')[0]?.value === "2";
@@ -77,18 +82,19 @@ try {
   assert.deepEqual(output.bytes, [137, 80, 78, 71, 13, 10, 26, 10]);
   assert.deepEqual(output.size, [1, 1]);
   assert.deepEqual(output.rgba, [0, 128, 255, 255], "Independent PNG decoded pixel oracle");
-  assert.equal(sha(source), sourceHash, "Source original bytes unchanged");
+  assert.equal(await browserInputHash(), sourceHash, "Browser File remains byte-identical after editing");
 
   for (const [name, buffer] of [
     ["icc.jpg", await readFile("tests/fixtures/image-exifr-272/jpeg-icc-iptc.jpg")],
     ["exif.png", await readFile("quality/fixtures/image-metadata-segments/with-exif.png")],
   ]) {
-    const unchanged = sha(buffer);
-    await editor.locator("[data-str-383-file]").setInputFiles({ name, mimeType: name.endsWith("jpg") ? "image/jpeg" : "image/png", buffer });
+    await picker.setInputFiles({ name, mimeType: name.endsWith("jpg") ? "image/jpeg" : "image/png", buffer });
+    assert.equal(await browserInputHash(), sha(buffer), "Refusal fixture was loaded intact");
     await editor.getByRole("button", { name: "Applica regolazioni" }).click();
-    await editor.getByRole("alert").getByText(/Profilo colore o orientamento non verificabile/u).waitFor();
+    await editor.getByRole("alert").waitFor();
+    assert.match(await editor.getByRole("alert").textContent(), /Profilo colore o orientamento non verificabile/u);
     assert.equal(await editor.locator("[data-str-383-result]").count(), 0);
-    assert.equal(sha(buffer), unchanged);
+    assert.equal(await browserInputHash(), sha(buffer), "Refused file remains byte-identical in browser");
   }
   assert.deepEqual(uploads, [], "No user image uploaded");
   assert.deepEqual(errors, [], "No uncaught browser errors");
