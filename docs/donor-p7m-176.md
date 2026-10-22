@@ -10,7 +10,7 @@ Ambito approvato dall'owner il 20/10/2026: **solo estrazione** del contenuto P7M
 - [OpenSSL 3.5.5](https://docs.openssl.org/3.5/man1/openssl-cms/), **Apache-2.0**, usato **solo** per costruire e verificare il corpus sintetico sul MiniPC (nessun ruolo a runtime nel browser).
 - Specifica primaria: [RFC 5652 §5](https://datatracker.ietf.org/doc/html/rfc5652#section-5) (CMS SignedData e `encapContentInfo.eContent`), letta il 21/10/2026.
 
-Il lettore DER bounded in `src/engines/p7m/reader-176.ts` (~350 righe, nessuna dipendenza nuova) è il gap minimo: legge solo `ContentInfo → SignedData → encapContentInfo → eContent` e rifiuta tutto il resto. Nessuna licenza LGPL/MPL/GPL/AGPL è stata introdotta.
+Il lettore DER bounded in `src/engines/p7m/reader-176.ts` (nessuna dipendenza nuova) è il gap minimo: legge solo `ContentInfo → SignedData → encapContentInfo → eContent` e rifiuta tutto il resto. Nessuna licenza LGPL/MPL/GPL/AGPL è stata introdotta.
 
 ## Comportamento e limiti
 
@@ -22,4 +22,4 @@ Il lettore DER bounded in `src/engines/p7m/reader-176.ts` (~350 righe, nessuna d
 
 ## Corpus e prove
 
-`quality/fixtures/p7m-cms-176/` contiene buste CMS sintetiche (PDF, XML, PEM, certificato sintetico scaduto, detached, manomessa, troncata, BER indefinito, non-firma) generate con OpenSSL e Python cryptography sul MiniPC il 21/10/2026, con `cert.pem` pubblico del firmatario sintetico e nessuna chiave privata. Le prove eseguite sono in `tests/p7m-extract-423.test.ts e tests/str-423-refusals.test.ts`, `tests/str-423-consumer.browser.mjs` e nel commento di consegna della issue. Il corpus sintetico non attribuisce Gold, non prova P7M reali e non sostituisce una validazione legale.
+`quality/fixtures/p7m-cms-176/` contiene buste CMS sintetiche (PDF, XML, PEM, certificato sintetico scaduto, detached, manomessa, troncata, BER indefinito, non-firma) generate con OpenSSL e Python cryptography sul MiniPC il 21/10/2026, con `cert.pem` pubblico del firmatario sintetico e nessuna chiave privata. Le prove previste sono in `tests/p7m-extract-423.test.ts`, `tests/str-423-refusals.test.ts`, `tests/str-423-consumer.browser.mjs` e nei commenti della issue. Il corpus sintetico non attribuisce Gold, non prova P7M reali e non sostituisce una validazione legale.

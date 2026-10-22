@@ -12215,7 +12215,7 @@
         "declared length beyond the buffer",
         "ContentInfo that is not SignedData"
       ],
-      "expected_output_strategy": "tests/regroom-str-176.test.ts compares extracted bytes with the independently signed OpenSSL corpus and asserts always-NOT_VERIFIED; scripts/acceptance-p7m-176.mjs reopens the downloaded file in compiled Chromium.",
+      "expected_output_strategy": "tests/p7m-extract-423.test.ts and tests/str-423-refusals.test.ts compare extracted bytes with the independently signed OpenSSL corpus and assert always-NOT_VERIFIED; tests/str-423-consumer.browser.mjs reopens the downloaded file in compiled Chromium.",
       "security_privacy_edges": [
         "LOCAL only, network forbidden",
         "bounded 16 MiB input and content, DER depth/node/certificate caps",

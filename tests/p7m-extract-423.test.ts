@@ -121,7 +121,8 @@ describe("STR-423 P7M/CMS extraction without any authenticity claim", () => {
     expect(network).not.toHaveBeenCalled();
     const abort = new AbortController();
     abort.abort();
-    expect(() => extractP7m176({ bytes: await read("documento-pdf.p7m"), fileName: "documento-pdf.p7m" }, abort.signal)).toThrow(/P7M_CANCELLED/u);
+    const valid = await read("documento-pdf.p7m");
+    expect(() => extractP7m176({ bytes: valid, fileName: "documento-pdf.p7m" }, abort.signal)).toThrow(/P7M_CANCELLED/u);
     expect(() => extractP7m176({ bytes: new Uint8Array(P7M_LIMITS_176.maxFileBytes + 1), fileName: "grande.p7m" })).toThrow(/P7M_LIMIT/u);
   });
 });

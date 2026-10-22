@@ -37,7 +37,9 @@ export function P7mExtractTool() {
   }
   function download() {
     if (!extraction) return;
-    const url = URL.createObjectURL(new Blob([extraction.content], { type: extraction.mimeType }));
+    const bytes = new Uint8Array(extraction.content.byteLength);
+    bytes.set(extraction.content);
+    const url = URL.createObjectURL(new Blob([bytes.buffer], { type: extraction.mimeType }));
     const anchor = document.createElement("a");
     anchor.href = url;
     anchor.download = extraction.fileName;
