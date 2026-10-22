@@ -57,6 +57,14 @@ try {
       assert.match(entry.href, /^https:\/\//u);
       assert.match(entry.hash, /^sha256:[a-f0-9]{16}…$/u);
     }
+    assert.deepEqual([...new Set(parsed.map((entry) => entry.year))].sort(), [2024, 2025, 2026]);
+    assert.equal(parsed.some((entry) => entry.year === 2027), false, "unsupported 2027 remains absent");
+    assert.equal(parsed.every((entry) => {
+      const host = new URL(entry.href).hostname;
+      return ["normattiva.it", "gazzettaufficiale.it", "agenziaentrate.gov.it",
+        "finanze.gov.it", "giustiziatributaria.gov.it"]
+        .some((official) => host === official || host.endsWith(`.${official}`));
+    }), true, "all consumer links point at official fiscal sources");
     assert.deepEqual([...new Set(parsed.map((entry) => entry.authority))].sort(),
       ["Agenzia delle Entrate", "Gazzetta Ufficiale", "Ministero dell'Economia e delle Finanze — Documentazione Economica e Finanziaria", "Normattiva"]);
     const review = await page.locator("[data-annual-review117]").innerText();
