@@ -1,0 +1,84 @@
+---
+import {
+  buildIrpefWorkedExamples398,
+  buildNotDeterminedExamples398,
+  buildVatWorkedExamples398,
+  formatEuro398,
+  formatPercent398,
+} from "../../reference-data/italy/fiscal-examples-398";
+
+const irpefExamples = buildIrpefWorkedExamples398();
+const vatExamples = buildVatWorkedExamples398();
+const notDetermined = buildNotDeterminedExamples398();
+const operationLabel = (operation: string) => operation === "add" ? "IVA aggiunta all'imponibile" : "IVA scorporata dal totale";
+---
+<section class="fiscal-examples398" aria-labelledby="fiscal-examples398-title" data-fiscal-examples398>
+  <h2 id="fiscal-examples398-title">Esempi versionati IVA e IRPEF</h2>
+  <p>Ogni esempio dichiara l'anno fiscale, la versione delle regole, la data di verifica e la formula completa: gli importi mostrati sono l'aritmetica che i motori locali hanno eseguito, non un valore copiato da un altro anno.</p>
+
+  <h3>IRPEF nazionale lorda</h3>
+  {irpefExamples.map((example) => (
+    <article class="fiscal-example398" data-irpef-example398={example.id}>
+      <h4>Anno {example.taxYear} — imponibile {formatEuro398(example.taxableIncomeCents)}</h4>
+      <p class="fiscal-example-meta398">Versione <code>{example.revisionId}</code> · verificata il <time datetime={example.checkedAt}>{example.checkedAt}</time></p>
+      <div class="fiscal-scroll398" role="region" aria-label={`Scomposizione IRPEF ${example.taxYear} su ${formatEuro398(example.taxableIncomeCents)}`} tabindex="0">
+        <table>
+          <thead><tr><th>Scaglione</th><th>Porzione imponibile</th><th>Aliquota</th><th>Imposta</th></tr></thead>
+          <tbody>
+            {example.bands.map((band) => (
+              <tr data-irpef-band398><td>{band.label}</td><td>{formatEuro398(band.taxableBandCents)}</td>
+                <td>{formatPercent398(band.rateBasisPoints)}</td><td>{formatEuro398(band.taxCents)}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p data-irpef-formula398><strong>Formula:</strong> {example.formula}</p>
+      <p class="fiscal-example-limit398">{example.limitation}</p>
+      <p class="fiscal-example-sources398">Fonte della versione: {example.sourceUrls.map((url, index) => (
+        <span>{index > 0 ? " · " : ""}<a href={url} target="_blank" rel="noopener noreferrer">documento ufficiale {index + 1}</a></span>
+      ))}</p>
+    </article>
+  ))}
+
+  <h3>IVA — finestra ufficiale dichiarata dall'utente</h3>
+  <p>Gli esempi IVA restano dentro la sola finestra in cui la Tabella A ufficiale è provata: <strong>{vatExamples[0]?.window}</strong>. Categoria e data sono scelte dall'utente; il modulo non classifica automaticamente merci o servizi.</p>
+  <div class="fiscal-scroll398" role="region" aria-label="Tabella esempi IVA versionati scorrevole" tabindex="0">
+    <table>
+      <thead><tr><th>Esempio</th><th>Riferimento legale</th><th>Aliquota</th><th>Operazione</th><th>Imponibile</th><th>IVA</th><th>Totale</th></tr></thead>
+      <tbody>
+        {vatExamples.map((example) => (
+          <tr data-vat-example398={example.id} data-vat-rate398={example.ratePercent}>
+            <td>{example.transactionDate} — {operationLabel(example.operation)}</td>
+            <td>{example.legalReference}</td>
+            <td>{formatPercent398(example.ratePercent * 100)}</td>
+            <td>{example.operation === "add" ? "aggiunta" : "scorporo"}</td>
+            <td>{formatEuro398(example.netCents)}</td>
+            <td>{formatEuro398(example.vatCents)}</td>
+            <td>{formatEuro398(example.grossCents)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <ul class="fiscal-example-formulas398">
+    {vatExamples.map((example) => (
+      <li data-vat-formula398={example.id}><code>{example.formula}</code></li>
+    ))}
+  </ul>
+
+  <h3>Casi non determinati — nessun calcolo inventato</h3>
+  <p>Quando l'anno, la data o le addizionali non hanno una fonte dichiarata, l'esempio resta esplicitamente non determinato e non eredita valori da un altro anno.</p>
+  <ul>
+    {notDetermined.map((entry) => (
+      <li data-not-determined398={entry.id}><strong>{entry.label}:</strong> non determinato — <span>{entry.reason}</span></li>
+    ))}
+  </ul>
+</section>
+<style>
+  .fiscal-examples398{margin:32px 0}.fiscal-examples398 .fiscal-example398{border:1px solid var(--border);border-radius:14px;padding:16px;margin:16px 0}
+  .fiscal-examples398 h4{margin:0 0 6px}.fiscal-examples398 p{line-height:1.6}.fiscal-examples398 table{width:100%;border-collapse:collapse}
+  .fiscal-examples398 th,.fiscal-examples398 td{text-align:left;padding:8px;border-bottom:1px solid var(--border)}
+  .fiscal-scroll398{max-width:100%;overflow-x:auto}.fiscal-scroll398 table{min-width:640px}
+  .fiscal-examples398 .fiscal-example-meta398,.fiscal-examples398 .fiscal-example-sources398,.fiscal-examples398 .fiscal-example-limit398{font-size:.9rem;color:var(--text-muted)}
+  .fiscal-examples398 .fiscal-example-formulas398 code{overflow-wrap:anywhere}
+</style>

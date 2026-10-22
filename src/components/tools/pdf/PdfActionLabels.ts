@@ -1,0 +1,27 @@
+import type { PdfResultToolId } from "../../../tools/pdf-result-declarations";
+
+export const PDF_ACTION_IT: Readonly<Record<PdfResultToolId, string>> = {
+  "pdf-merge": "Unisci PDF",
+  "pdf-split": "Dividi PDF",
+  "pdf-page-reorder": "Riordina pagine",
+  "pdf-rotate": "Ruota pagine",
+  "pdf-page-delete-extract": "Applica operazione alle pagine",
+  "images-to-pdf": "Crea PDF",
+  "pdf-to-images": "Converti PDF in immagini",
+  "pdf-text-extraction": "Estrai testo",
+  "pdf-metadata-inspector": "Analizza PDF",
+  "pdf-metadata-remover": "Rimuovi metadati",
+  "pdf-page-size-inspector": "Analizza dimensioni pagine",
+  "pdf-page-count-verifier": "Verifica numero pagine",
+  "pdf-password-check-remove": "Controlla cifratura",
+  "pdf-flatten": "Appiattisci PDF",
+  "pdf-form-inspector": "Analizza moduli",
+  "pdf-link-extractor": "Estrai collegamenti",
+  "pdf-image-extractor": "Estrai immagini",
+  "pdf-compare-lite": "Confronta PDF",
+  "pdf-repair": "Ripara puntatore PDF",
+  "pdf-compression-lite": "Crea copia alleggerita",
+  "document-handoff-manifest": "Crea manifest",
+  "pdf-multi-text-search": "Cerca nei PDF",
+  "pdf-to-markdown": "Esporta Markdown",
+};

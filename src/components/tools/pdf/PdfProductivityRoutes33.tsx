@@ -9,7 +9,7 @@ export const PDF_PRODUCTIVITY_ROUTES_33 = [
   { id: "pdf-n-up", label: "Impagina più pagine per foglio", note: "Anteprima e ordine delle pagine controllati" },
   { id: "pdf-booklet-interleave", label: "Booklet e intercala fronte/retro", note: "L'ordine di stampa è mostrato prima dell'esportazione" },
   { id: "printable-pdf-from-text", label: "TXT, Markdown, HTML o CSV in PDF", note: "Stampa semantica locale, non fedeltà Office DOCX/XLSX/PPTX" },
-  { id: "pdf-to-markdown", label: "PDF in Markdown o DOCX testuale", note: "Solo testo estratto; non ricostruisce il layout originale" },
+  { id: "pdf-to-markdown", label: "PDF in Markdown o DOCX editabile", note: "DOCX con testo e tabelle a griglia esplicita; layout originale non garantito" },
   { id: "pdf-tables-to-xlsx", label: "Tabelle PDF in XLSX", note: "Solo griglie selezionate e verificabili, con anteprima" },
   { id: "pdf-to-images", label: "Pagine PDF in immagini o PPTX", note: "Le slide PPTX sono immagini, non elementi modificabili" },
   { id: "images-to-pdf", label: "Immagini in PDF", note: "Ordine e geometria espliciti, conversioni locali supportate" },

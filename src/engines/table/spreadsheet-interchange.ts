@@ -3,7 +3,9 @@ import { inflateSync } from "fflate";
 import { formatMarkdownTable } from "../text-writing";
 import { parseXmlDocument, type XmlElement } from "../developer-web/structured-repair";
 import { analyzeOoxmlPackage, OOXML_PACKAGE_LIMITS, OoxmlPackageError, type OoxmlZipEntry } from "../ooxml/package";
-import { parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
+import { isPotentialCsvFormula, parseCsvTable, serializeCsvTable, type CsvTable } from "./csv";
+import { csvCell387, readColumnTypes387 } from "./spreadsheet-cell-fidelity-387";
+import { hasLossyWorksheetFeatures387, refuseLossyWorkbook387, workbookWorksheetTarget387 } from "./spreadsheet-style-refusal-387";
 import { assertSpreadsheetTableBounds370 } from "./spreadsheet-table-bounds-370";
 
 export const SPREADSHEET_INTERCHANGE_LIMITS = {
@@ -59,6 +61,7 @@ export interface SpreadsheetReadResult {
   readonly selectedSheet: string;
   readonly rows: number;
   readonly columns: number;
+  readonly columnTypes: readonly (SpreadsheetColumnType | "mixed")[];
   readonly policy: "xlsx-values-to-safe-csv";
 }
 
@@ -189,20 +192,7 @@ export async function markdownTableToXlsx(
   return tableToXlsx({ header: formatted.table.headers, rows: formatted.table.rows, delimiter: ",", warnings: [] }, options);
 }
 
-function csvCell(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  if (value instanceof Date) {
-    if (!Number.isFinite(value.getTime())) fail("XLSX_READ_FAILED", "Workbook contains an invalid date value.");
-    return value.toISOString().slice(0, 10);
-  }
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value);
-  fail("XLSX_READ_FAILED", "Workbook contains an unsupported cell value.");
-}
-
-// This is an archive *preflight*, not macro extraction or sanitization. The
-// existing OOXML analyzer walks the real ZIP central directory and local
-// headers without inflating workbook cells, bounding member counts, names,
-// expanded sizes and ratios before the general-purpose Excel reader runs.
+// ZIP preflight bounds members, names, expanded sizes and ratios before Excel parsing.
 const MAX_CONTENT_TYPES_XML_BYTES = 128 * 1024;
 const contentTypesDecoder = new TextDecoder("utf-8", { fatal: true });
 
@@ -316,26 +306,9 @@ function assertFaithfulXlsxNumericCells(xml: string): void {
   }
 }
 
-function workbookWorksheetTarget(target: string): string {
-  // OPC Targets are relative to xl/workbook.xml unless rooted at the package
-  // root. Never silently drop an encoded/external/escaping worksheet target.
-  if (/[\\?#%]/u.test(target) || /^[A-Za-z][\w+.-]*:/u.test(target)) {
-    fail("XLSX_READ_FAILED", "Unsupported XLSX worksheet relationship target.");
-  }
-  const segments = target.startsWith("/") ? [] : ["xl"];
-  for (const segment of target.split("/")) {
-    if (segment === "" || segment === ".") continue;
-    if (segment === "..") {
-      if (segments.length === 0) fail("XLSX_READ_FAILED", "XLSX worksheet target escapes the package root.");
-      segments.pop();
-    } else segments.push(segment);
-  }
-  const path = segments.join("/");
-  if (!/^xl\/.+\.xml$/iu.test(path)) fail("XLSX_READ_FAILED", "Unsupported XLSX worksheet relationship path.");
-  return path;
-}
-
-function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
+function assertSafeXlsxArchive(bytes: ArrayBuffer, strictEditing = false): void {
+  const workbookWorksheetTarget = (target: string) => workbookWorksheetTarget387(target,
+    (reason) => fail("XLSX_READ_FAILED", reason));
   let packageAnalysis: ReturnType<typeof analyzeOoxmlPackage>;
   try {
     packageAnalysis = analyzeOoxmlPackage(bytes);
@@ -352,10 +325,7 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
     fail("XLSX_READ_FAILED", "XLSX ZIP preflight failed.");
   }
   if (packageAnalysis.kind !== "xlsx") fail("XLSX_READ_FAILED", "Input ZIP is not an XLSX workbook.");
-  // Workbook-to-workbook dependencies can retain remote targets and stale
-  // external value caches invisible in the extracted CSV. The generic reader
-  // silently discards these parts. Refuse before decoding workbook cells;
-  // ordinary worksheet hyperlink relationships are inert and remain allowed.
+  // Refuse external workbook caches/links that CSV loses; worksheet hyperlinks are inert.
   if (packageAnalysis.entries.some((entry) => /^xl\/externalLinks\//iu.test(entry.path))) {
     fail("UNSUPPORTED_XLSX_FEATURE", "External workbook dependencies are not supported in CSV import.");
   }
@@ -386,14 +356,8 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
       fail("UNSUPPORTED_XLSX_FEATURE", "Excel external workbook relationships are not supported in CSV import.");
     }
   }
-  // read-excel-file returns cached formula values (which may be forged or
-  // stale) and blank cells for uncached formulas. Neither is a verified result.
-  // Chart-series <c:f> are cell-range references, NOT cached worksheet-cell
-  // formulas; reading all xl XML caused real chart-bearing workbooks to be
-  // rejected. Identify actual worksheet parts from both the OPC content-type
-  // manifest and workbook relationships, including hidden/relocated sheets.
-  // Require referenced worksheet parts to agree with the manifest, fail closed
-  // on missing parts, and inspect them before the generic workbook reader.
+  // Cached worksheet formulas are untrusted, but chart references are not cell formulas.
+  // Match declared worksheet parts to relationships, including hidden/relocated sheets.
   const sheetContentType = /\.spreadsheetml\.worksheet\+xml$/iu;
   const worksheetParts = new Set<string>();
   for (const child of contentTypes.children) {
@@ -404,6 +368,9 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
     worksheetParts.add(workbookWorksheetTarget(part));
   }
   const archivedParts = new Map(packageAnalysis.entries.map((entry) => [entry.path, entry]));
+  if (strictEditing) refuseLossyWorkbook387(packageAnalysis.entries,
+    (entry) => readBoundedXlsxXml(bytes, entry, 256 * 1024),
+    (reason) => fail("UNSUPPORTED_XLSX_FEATURE", reason));
   if (!relationships) fail("XLSX_READ_FAILED", "Missing XLSX workbook relationships for worksheet validation.");
   let worksheetRelationCount = 0;
   for (const child of relationships.children) {
@@ -423,6 +390,9 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
     const entry = archivedParts.get(part);
     if (!entry) fail("XLSX_READ_FAILED", "Declared XLSX worksheet part is missing from the archive.");
     const worksheetXml = readBoundedXlsxXml(bytes, entry, OOXML_PACKAGE_LIMITS.maxEntryUncompressedBytes);
+    if (strictEditing && hasLossyWorksheetFeatures387(worksheetXml)) {
+      fail("UNSUPPORTED_XLSX_FEATURE", "Worksheet rules cannot be preserved by editing.");
+    }
     if (containsActualXlsxFormulaTag(worksheetXml)) {
       fail("UNSUPPORTED_XLSX_FEATURE", "Workbook formulas and their unverified cached results cannot be imported as CSV.");
     }
@@ -432,11 +402,11 @@ function assertSafeXlsxArchive(bytes: ArrayBuffer): void {
 
 export async function xlsxToCsv(
   bytes: ArrayBuffer,
-  options: { readonly sheet?: string | number; readonly delimiter?: string } = {},
+  options: { readonly sheet?: string | number; readonly delimiter?: string; readonly refuseFormulaLikeText?: boolean; readonly strictEditing?: boolean } = {},
 ): Promise<SpreadsheetReadResult> {
   if (!(bytes instanceof ArrayBuffer)) fail("INVALID_INPUT", "XLSX input must be an ArrayBuffer.");
   assertInputBytes(bytes.byteLength);
-  assertSafeXlsxArchive(bytes);
+  assertSafeXlsxArchive(bytes, options.strictEditing === true);
   let sheets: Array<{ sheet: string; data: unknown[][] }>;
   try {
     const { default: readXlsxFile } = await import("read-excel-file/universal");
@@ -458,8 +428,16 @@ export async function xlsxToCsv(
     selected = sheets.find(({ sheet }) => sheet === options.sheet);
   }
   if (selected === undefined) fail("SHEET_NOT_FOUND", `Requested sheet was not found. Available sheets: ${sheetNames.join(", ")}.`);
-  const rows = selected.data.map((row) => row.map(csvCell));
-  if (rows.length === 0) return { csv: "", sheetNames, selectedSheet: selected.sheet, rows: 0, columns: 0, policy: "xlsx-values-to-safe-csv" };
+  if (options.strictEditing && selected.data[0]?.some((value) =>
+    value !== null && value !== undefined && value !== "" && typeof value !== "string")) {
+    fail("UNSUPPORTED_XLSX_FEATURE", "Numeric, date or Boolean workbook headers cannot survive value-only editing.");
+  }
+  if (options.refuseFormulaLikeText && selected.data.some((row) =>
+    row.some((cell) => typeof cell === "string" && isPotentialCsvFormula(cell)))) {
+    fail("UNSUPPORTED_XLSX_FEATURE", "Workbook contains formula-like text; editing would alter the literal value.");
+  }
+  const rows = selected.data.map((row) => row.map((value) => csvCell387(value, (reason) => fail("XLSX_READ_FAILED", reason))));
+  if (rows.length === 0) return { csv: "", sheetNames, selectedSheet: selected.sheet, rows: 0, columns: 0, columnTypes: [], policy: "xlsx-values-to-safe-csv" };
   const [header = [], ...body] = rows;
   const delimiter = options.delimiter ?? ",";
   if (![",", ";", "\t", "|"].includes(delimiter)) fail("INVALID_INPUT", "CSV delimiter must be comma, semicolon, tab or pipe.");
@@ -471,6 +449,7 @@ export async function xlsxToCsv(
     selectedSheet: selected.sheet,
     rows: body.length,
     columns: header.length,
+    columnTypes: readColumnTypes387(selected.data, header.length),
     policy: "xlsx-values-to-safe-csv",
   };
 }

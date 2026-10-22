@@ -4,12 +4,17 @@ import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { expectedAssetDistribution366 } from "./donor-asset-distributions-366";
+import { expectedAssetDistribution366, pinnedModelRevision366 } from "./donor-asset-distributions-366";
+import { validModelSource366, versionAccepted366 } from "./donor-model-source-366";
+import { parseAssetPins366, type AssetPin366 } from "./donor-asset-pins-366";
+export { parseAssetPins366 };
+export type { AssetPin366 };
 import { knownSpdx366 as knownSpdx } from "./donor-spdx-366";
 import { isLocalAuthored366, verifyLocalAuthored366 } from "./donor-local-authored-366";
 import { verifiedFontPrimary366 } from "./donor-font-primary-366";
+import { verifyPrimarySource366 } from "./verify-primary-source-366";
+import { auditForbiddenCodecs126 } from "./forbidden-codecs-126";
 
-// Use pinned semver for actual dependency constraints.
 const semver = createRequire(import.meta.url)("semver") as {
   validRange: (range: string) => string | null;
   satisfies: (version: string, range: string) => boolean;
@@ -28,7 +33,6 @@ type LockEntry = {
 };
 type Lock = { lockfileVersion?: number; packages?: Record<string, LockEntry> };
 type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string> };
-export type AssetPin366 = { path: string; sha256: string; license: string; version: string; source: string };
 type Candidate = { name?: string; version?: string; license?: string; dist?: { integrity?: string; tarball?: string; shasum?: string }; dependencies?: Record<string, string> | null };
 type Row = { name: string; version: string; license: string; source: string; integrity: string; scope: "production" | "optional-runtime" };
 
@@ -67,9 +71,7 @@ function resolveDependency(name: string, from: string, entries: Record<string, L
 function resolvePeerDependency(name: string, from: string, entries: Record<string, LockEntry>): string | null {
   let at = from;
   while (true) {
-    // Each package-lock path is a sequence of node_modules package boundaries.
-    // Skip the consumer's own descendants and (for scoped packages) @scope
-    // folders; only an actual ancestor's node_modules can supply its peer.
+    // Only ancestor node_modules can satisfy peers: skip descendants and scope folders.
     const boundary = at.lastIndexOf("node_modules/");
     if (boundary === -1) return null;
     const ancestor = at.slice(0, boundary);
@@ -173,9 +175,7 @@ export function auditLockedPackages366(lock: Lock, manifest: Manifest) {
   for (const [name, spec] of Object.entries(manifest.dependencies ?? {})) {
     const target = entries[`node_modules/${name}`];
     if (!target) failures.push(`MISSING_DIRECT ${name}`);
-    // A direct runtime dependency is necessarily production code even when a
-    // lockfile erroneously marks its node dev/devOptional. Such a marker would
-    // otherwise exclude it from every license, source and integrity check.
+    // A direct runtime dependency stays production, even if incorrectly marked devOptional.
     else if (target.dev || target.devOptional) {
       failures.push(`DEV_ONLY_DIRECT ${name} -> node_modules/${name}`);
     }
@@ -207,6 +207,7 @@ function safeAssetPath(root: string, name: string): string | null {
 }
 function validAssetSource(asset: AssetPin366, root: string): boolean {
   if (asset.path.startsWith("public/fonts/")) return verifiedFontPrimary366(root, asset);
+  if (pinnedModelRevision366(asset.path)) return validModelSource366(asset);
   const distribution = expectedAssetDistribution366(asset.path);
   if (VENDORED_DIRS_366.some((dir) => asset.path.startsWith(dir + "/"))) {
     return !!distribution && validSource(distribution, asset.version, asset.source);
@@ -240,7 +241,7 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     pinned.add(asset.path);
     const authored = isLocalAuthored366(asset.path);
     if (!authored && !knownSpdx(asset.license)) failures.push(`UNKNOWN_ASSET_LICENSE ${asset.path}`);
-    if (!authored && !asset.path.startsWith("public/fonts/") && !/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/u.test(asset.version)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
+    if (!versionAccepted366(asset, authored)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
     if (!authored && !validAssetSource(asset, root)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
     // Do not allow arbitrary vendor paths to claim first-party provenance.
     if (!authored && (asset.license === "LOCAL_AUTHORED" || asset.version === "GIT" || asset.source.startsWith("git:"))) {
@@ -261,6 +262,7 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
   for (const dir of dirs) {
     if (!safeAssetPath(root, dir) || !existsSync(resolve(root, dir)) ||
       !lstatSync(resolve(root, dir)).isDirectory()) {
+      if ((dir === "public/models" || dir === "public/vendor") && !existsSync(resolve(root, dir))) continue;
       failures.push(`MISSING_ASSET_DIRECTORY ${dir}`);
       continue;
     }
@@ -295,19 +297,8 @@ export function auditCandidate366(candidate: Candidate, lockEntry: LockEntry | n
   return { name, version, license: candidate.license ?? "UNKNOWN", integrity: candidate.dist?.integrity ?? "UNKNOWN", source: candidate.dist?.tarball ?? "UNKNOWN", decision: "NO_ADOPT" as const, failures };
 }
 
-export function parseAssetPins366(document: string): AssetPin366[] {
-  const match = document.match(/<!-- ASSET-PINS-366-BEGIN -->([\s\S]*?)<!-- ASSET-PINS-366-END -->/u);
-  if (!match?.[1]?.trim()) throw new Error("MISSING_ASSET_PIN_REGISTER");
-  return match[1].trim().split("\n").map((line) => {
-    const parts = line.split("\t");
-    if (parts.length !== 5) throw new Error(`INVALID_ASSET_PIN_LINE ${line}`);
-    const [path = "", sha256 = "", license = "", version = "", source = ""] = parts;
-    return { path, sha256, license, version, source };
-  });
-}
-
 export const VENDORED_DIRS_366 = [
-  "public/ocr-246", "public/fonts", "src/engines/video/vendor", "src/engines/pdf/vendor",
+  "public/ocr-246", "public/fonts", "src/engines/video/vendor", "public/models", "public/vendor",
 ];
 
 export function auditRepository366(root: string) {
@@ -316,9 +307,13 @@ export function auditRepository366(root: string) {
   const pins = parseAssetPins366(readFileSync(resolve(root, "docs/donor-provenance-366-2026-10-11.md"), "utf8"));
   const packages = auditLockedPackages366(lock, manifest);
   const assets = auditVendoredAssets366(root, pins, VENDORED_DIRS_366);
+  const primary = verifyPrimarySource366(root);
   const snapshots = JSON.parse(readFileSync(resolve(root, "docs/audit-2026-10-10/donor-packages.json"), "utf8")) as Candidate[];
   const candidates = snapshots.map((item) => auditCandidate366(item, lock.packages?.[`node_modules/${item.name}`] ?? null, lock));
-  return { status: packages.failures.length || assets.failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, packages, assets, candidates };
+  const forbidden = auditForbiddenCodecs126(root, lock, manifest);
+  const rights = primary.failures.length === 0 && primary.unresolved === 0 ? [] : ["PRIMARY_ASSET_RIGHTS_NOT_VERIFIED"];
+  const failures = [...packages.failures, ...assets.failures, ...primary.failures, ...rights, ...forbidden];
+  return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, packages, assets, primary, candidates, failures };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -332,6 +327,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     optionalRuntimePackages: report.packages.optionalInstalled.length,
     assetFiles: report.assets.files, donorCandidates: report.candidates.map(({ name, version, license, decision, failures }) =>
       ({ name, version, license, decision, failures })),
-    failures: [...report.packages.failures, ...report.assets.failures] }, null, 2));
+    failures: report.failures }, null, 2));
   if (process.argv.includes("--check") && report.status === "NO_GO") process.exitCode = 1;
 }

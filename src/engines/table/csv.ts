@@ -71,7 +71,7 @@ export interface CsvColumnMapResult {
 }
 
 export class CsvCleanerError extends Error {
-  constructor(readonly code: "PARSE_ERROR" | "FILE_TOO_LARGE" | "SEMANTIC_MISMATCH" | "CANCELLED", message: string) {
+  constructor(readonly code: "PARSE_ERROR" | "INVALID_ENCODING" | "FILE_TOO_LARGE" | "SEMANTIC_MISMATCH" | "CANCELLED", message: string) {
     super(message);
     this.name = "CsvCleanerError";
   }
@@ -169,6 +169,14 @@ export function serializeCsvTable(table: Pick<CsvTable, "header" | "rows" | "del
   // expression-like prefixes; accept only an exact unsigned decimal after '-'.
   const dangerousFormula = /^(?:[=+@\t\r]|-(?!\d+(?:\.\d+)?$))/u;
   return Papa.unparse([table.header, ...table.rows], { delimiter: table.delimiter, newline: "\n", escapeFormulae: dangerousFormula });
+}
+
+/** Refusal policy for editing/importing a cell that could execute in a CSV consumer. */
+export function isPotentialCsvFormula(value: string): boolean {
+  if (/^[\t\r\n\u0000-\u001f\u007f]/u.test(value)) return true;
+  const trimmed = value.trimStart();
+  return /^[=+@]/u.test(trimmed) ||
+    (/^-/u.test(trimmed) && !/^-\d+(?:\.\d+)?$/u.test(trimmed));
 }
 
 function validateColumnIndexes(indexes: readonly number[], columnCount: number, code: string): number[] {
@@ -306,7 +314,19 @@ export async function readBlobText(
   if (blob.size > CSV_HARD_FILE_BYTES) throw new CsvCleanerError("FILE_TOO_LARGE", "File exceeds the 50 MiB hard limit.");
   if (signal?.aborted) throw new CsvCleanerError("CANCELLED", "Operation cancelled");
   const reader = blob.stream().getReader();
-  const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
+  // Invalid legacy-encoded bytes must never be silently replaced with U+FFFD
+  // and subsequently exported as if the original CSV had been preserved.
+  const decoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+  const decode = (chunk?: Uint8Array, stream = false): string => {
+    try {
+      return decoder.decode(chunk, { stream });
+    } catch (error) {
+      if (error instanceof TypeError) {
+        throw new CsvCleanerError("INVALID_ENCODING", "CSV contains invalid UTF-8. Convert its encoding explicitly before editing or export.");
+      }
+      throw error;
+    }
+  };
   let read = 0;
   let output = "";
   try {
@@ -318,12 +338,15 @@ export async function readBlobText(
       const chunk = await reader.read();
       if (chunk.done) break;
       read += chunk.value.byteLength;
-      output += decoder.decode(chunk.value, { stream: true });
+      output += decode(chunk.value, true);
       onProgress?.(blob.size === 0 ? 1 : Math.min(1, read / blob.size));
     }
-    output += decoder.decode();
+    output += decode();
     onProgress?.(1);
     return output;
+  } catch (error) {
+    await reader.cancel().catch(() => undefined);
+    throw error;
   } finally {
     reader.releaseLock();
   }

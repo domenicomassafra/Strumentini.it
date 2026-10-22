@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-23",
-  "entry_count": 270,
+  "entry_count": 273,
   "entries": [
     {
       "id": "cand-001",
@@ -12048,6 +12048,146 @@
       "cross_check": { "usable": true, "implementation": "Hand-calculated annual gross and reserve fixture", "role": "Independent exact numeric and missing-data baseline" },
       "confidence": "medium",
       "unresolved_gaps": ["Full-month precision, tax, funds, advances and partial employment periods excluded", "Real employment ledger and physical devices unverified", "No Gold receipt"]
+    },
+    {
+      "id": "cand-271",
+      "candidate": "Browser-only EML/MSG offline viewer with inert HTML and guarded attachment downloads",
+      "tool_family": "file-privacy",
+      "maintenance_class": "H",
+      "truth_sources": [
+        "rfc5322",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Hand-authored MIME multipart fixture, .msg sample from Apache-2.0 upstream with pinned SHA-256.",
+      "invariants": [
+        "email bytes stay local",
+        "HTML rendered only as text",
+        "active attachment extensions cannot be exported",
+        "all downloads use inert extension",
+        "supported raw EML and MSG can be reopened"
+      ],
+      "adversarial_cases": [
+        "multipart nesting",
+        "tracker image and script",
+        "path traversal and executables",
+        "malformed MIME boundary",
+        "wrong MSG signature",
+        "oversized and canceled input"
+      ],
+      "expected_output_strategy": "Literal fixture assertions in tests/regroom-str-421.test.ts, independently recognized OLE v2 signature and original byte/reopen parity; no Gold certification asserted.",
+      "security_privacy_edges": [
+        "no remote image fetches",
+        "12 MiB input cap and 6 MiB attachment cap",
+        "100 MIME parts and 40 attachments maximum",
+        "unsupported MSG embedded attachment export refused"
+      ],
+      "portability_browser_edges": [
+        "browser modern Web APIs required",
+        "no physical-device certification claimed"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "Unix file signature check for Apache-licensed .msg corpus plus byte-identical download reparse",
+        "role": "independent signature/source check and consumer readback"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "No Gold receipt",
+        "Broader MSG variant/mobile corpus not independently certified"
+      ]
+    },
+    {
+      "id": "cand-272",
+      "candidate": "EPUB3 offline text reader and chapter export",
+      "tool_family": "file-privacy",
+      "maintenance_class": "R",
+      "truth_sources": [
+        "epub-3.3",
+        "pkware-appnote",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic EPUB3 ZIP with uncompressed mimetype, META-INF/container.xml, OPF package/spine, XHTML navigation and UTF-8 chapter text.",
+      "invariants": [
+        "spine order determines chapter navigation",
+        "only decoded inert text may be copied or downloaded",
+        "no file member triggers network requests or active document execution",
+        "ZIP central/local bounds and decompression quotas checked before materialization"
+      ],
+      "adversarial_cases": [
+        "ZIP bomb",
+        "path traversal",
+        "script and SVG",
+        "remote hyperlink, image and navigation",
+        "DTD/ENTITY",
+        "wrong MIME or missing spine resources"
+      ],
+      "expected_output_strategy": "tests/regroom-str-422.test.ts validates fflate and independently Python-zipfile-packed EPUB3 fixture pairs; scripts/acceptance-epub-422.mjs tests compiled browser navigation, TXT download, fail-closed scripting and zero external requests; no Gold receipt.",
+      "security_privacy_edges": [
+        "LOCAL only",
+        "bounded 8 MiB EPUB input and aggregate text budget",
+        "DRM/encrypted resources rejected",
+        "only inert text emitted"
+      ],
+      "portability_browser_edges": [
+        "Chromium 390px emulator acceptance; physical mobile devices and other browser engines remain unverified"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "Python standard-library zipfile + ElementTree fixture and independent Chromium browser output reopen",
+        "role": "independent synthetic corpus proof, not a Gold receipt"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "No Gold receipt",
+        "No DRM support",
+        "No real iOS/Android physical verification"
+      ]
+    },
+    {
+      "id": "cand-273",
+      "candidate": "Bounded PDF classic xref pointer recovery with byte-preserving independently verified pages",
+      "tool_family": "pdf",
+      "maintenance_class": "H",
+      "truth_sources": [
+        "iso-pdf2",
+        "fixture-policy"
+      ],
+      "standard_or_official_example": "Synthetic one-page ISO PDF generated with pdf-lib: only final startxref numeric offset is corrupted, all objects and streams remain byte-identical.",
+      "invariants": [
+        "original input byte array remains unchanged",
+        "only the numeric final startxref pointer changes",
+        "independent PDF.js page text, page dimensions and annotations agree before/after",
+        "repaired bytes independently reopen with pdf-lib",
+        "zero silently dropped pages or loss claims"
+      ],
+      "adversarial_cases": [
+        "bad signature, ambiguous trailer or multiple xref",
+        "encrypted, incremental, signed and ObjStm/XRef stream refused",
+        "shadowed, misindexed and unindexed objects refused",
+        "above 4 MiB or 40 pages refused",
+        "pre-aborted and malformed inputs refused"
+      ],
+      "expected_output_strategy": "tests/regroom-str-418.test.ts generates its own positive PDF and negative corruption cases; independent pdfjs-dist and pdf-lib reopen; Poppler and real browser download acceptance required before closing STR-418.",
+      "security_privacy_edges": [
+        "all processing local within 4 MiB input and output budget",
+        "20-second disposable Worker timeout and abort",
+        "raw PDF text never sent in Worker failure details",
+        "only classic unencrypted single-table documents supported"
+      ],
+      "portability_browser_edges": [
+        "browser Worker required for bounded execution",
+        "physical iOS and Android tests not certified"
+      ],
+      "cross_check": {
+        "usable": true,
+        "implementation": "pdfjs-dist readback and pdf-lib parse, plus Poppler pdfinfo/pdftotext acceptance",
+        "role": "independent syntactic and visible-content verification of a narrow recovery profile"
+      },
+      "confidence": "medium",
+      "unresolved_gaps": [
+        "This is not general PDF repair; wider corrupted/hostile corpus not verified",
+        "No Gold receipt or production deployment admission"
+      ]
     }
   ]
 }

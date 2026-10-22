@@ -11,25 +11,25 @@ const fingerprint = "a".repeat(64);
 const revision = "b".repeat(40);
 
 describe("#415 auditable claim/limit/proof map", () => {
-  it("covers every one of the 270 live catalog routes with actual jobs and independent-proof pending statuses", async () => {
+  it("covers every one of the 273 live catalog routes with actual jobs and independent-proof pending statuses", async () => {
     const current = await auditCurrentProofMap415(resolve(import.meta.dirname, ".."));
-    expect(current.entries).toHaveLength(270);
-    expect(new Set(current.entries.map(row => row.route)).size).toBe(270);
+    expect(current.entries).toHaveLength(273);
+    expect(new Set(current.entries.map(row => row.route)).size).toBe(273);
     expect(current.entries.map(row => row.toolId).toSorted()).toEqual(catalog.map(tool => tool.id).toSorted());
     expect(current.entries.every(row => row.jobs.length > 0 && row.inputs.length > 0 && row.source.manifestPresent && row.source.pagePresent)).toBe(true);
     expect(current.entries.every(row => row.currentProof !== "VERIFIED" || row.currentReceipt?.startsWith("quality/receipts/"))).toBe(true);
-    expect(current.summary.verified + current.summary.pending).toBe(270);
+    expect(current.summary.verified + current.summary.pending).toBe(273);
     expect(current.summary.sourceErrors).toBe(0);
     // Historical Gold is explicitly NOT a current source-bound receipt.
     expect(current.summary.verified).toBe(0);
-    expect(current.summary.pending).toBe(270);
+    expect(current.summary.pending).toBe(273);
     const csv = current.entries.find(row=>row.toolId === "csv-dedupe")!;
     expect(csv.limits).toContainEqual({kind:"handoff-accepts",maxBytes:10*1024*1024,format:"csv"});
     expect(csv.historicalIndexReceipt).toBe("quality/receipts/table-ops/csv-dedupe.gold.json");
     expect(csv.currentReceipt).toBeNull();
     const pdf = current.entries.find(row=>row.toolId === "pdf-merge")!;
     expect(pdf.limitsStatus).toBe("PENDING_RUNTIME_LIMIT_ATTESTATION");
-  }, 20_000); // Hashing 270 live source manifests/receipts can exceed 5s on shared CI CPUs.
+  }, 20_000); // Hashing 271 live source manifests/receipts can exceed 5s on shared CI CPUs.
 
   it("refuses missing or duplicate routes, aliasing, missing jobs and forged current quality candidate", () => {
     expect(() => createProofMap415([catalog[0]!, catalog[0]!], new Map(), new Map())).toThrow();

@@ -1,5 +1,10 @@
 import { planVideoTargetSize } from "./target-size";
-import { VIDEO_234_LIMITS } from "./video-transform-234";
+// Historical budgeting constraints retained for offline receipt validation
+// after the #126 removal of the Mediabunny conversion worker.
+const VIDEO_234_LIMITS = {
+  minTrimSeconds: 0.4, maxDurationSeconds: 12,
+  minBitrateBps: 180_000, maxBitrateBps: 3_000_000,
+} as const;
 
 /**
  * Compression strategy for #38. These are encoder *requests*, not promises

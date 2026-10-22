@@ -16,6 +16,12 @@ permissions:
 # paid service, cloud deploy, receipt generation or release promotion occurs here.
 # Physical, independent security and release-readiness gates stay NOT_RUN until
 # externally evidenced; source CI green does NOT mean release ready.
+# controlcenter#413: native concurrency cancels a superseded run for the same PR
+# or main ref instead of queueing it behind the newer commit. A manual release
+# admission is never cancelled by a later dispatch, so both still execute.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 jobs:
   changed-source:
     if: github.event_name == 'pull_request'
@@ -96,6 +102,7 @@ jobs:
       # timeouts caused by unrelated tests competing for the same runner CPU;
       # all existing acceptance assertions and timeouts remain unchanged.
       - run: npm test -- --maxWorkers=1
+      - run: npm run test:workerd
       - run: npm run tickets:test
       - run: npm run check
       - run: npm run build

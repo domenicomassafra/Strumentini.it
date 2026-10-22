@@ -14,11 +14,13 @@ import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResu
 import { PdfThumbnailPicker } from "./PdfThumbnailPicker";
 import { PdfVisualOrder } from "./PdfVisualOrder";
 import { PdfMergeOrganizer } from "./PdfMergeOrganizer";
-import { parsePdfPageGroups, parsePdfPageSelection } from "../../../engines/pdf/page-selection";
+import { parsePdfPageGroups, parsePdfPageReorder, parsePdfPageSelection } from "../../../engines/pdf/page-selection";
 import type { PdfMergePageRef } from "../../../engines/pdf/merge-page-plan";
 import type { PdfCompareResult } from "../../../engines/pdf";
 import { PdfVisualCompare } from "./PdfVisualCompare";
+import { PDF_ACTION_IT } from "./PdfActionLabels";
 import { PdfFormAuditDetails } from "./PdfFormAuditDetails";
+import { PdfPasswordOptions417, passwordActionLabel417 } from "./PdfPasswordOptions417";
 import type { PdfFormAnnotationAudit, PdfFlattenVerification } from "../../../engines/pdf";
 import { PdfTextExportDownloads53 } from "./PdfTextExportDownloads53";
 import type { PdfTextExportMode53, ScopedPdfTextExport53 } from "../../../engines/pdf/text-export-53";
@@ -37,31 +39,6 @@ export interface PdfToolProps {
   readonly optionMode?: OptionMode;
   readonly accept?: string;
 }
-
-const PDF_ACTION_IT: Readonly<Record<PdfToolId, string>> = {
-  "pdf-merge": "Unisci PDF",
-  "pdf-split": "Dividi PDF",
-  "pdf-page-reorder": "Riordina pagine",
-  "pdf-rotate": "Ruota pagine",
-  "pdf-page-delete-extract": "Applica operazione alle pagine",
-  "images-to-pdf": "Crea PDF",
-  "pdf-to-images": "Converti PDF in immagini",
-  "pdf-text-extraction": "Estrai testo",
-  "pdf-metadata-inspector": "Analizza PDF",
-  "pdf-metadata-remover": "Rimuovi metadati",
-  "pdf-page-size-inspector": "Analizza dimensioni pagine",
-  "pdf-page-count-verifier": "Verifica numero pagine",
-  "pdf-password-check-remove": "Controlla cifratura",
-  "pdf-flatten": "Appiattisci PDF",
-  "pdf-form-inspector": "Analizza moduli",
-  "pdf-link-extractor": "Estrai collegamenti",
-  "pdf-image-extractor": "Estrai immagini",
-  "pdf-compare-lite": "Confronta PDF",
-  "pdf-compression-lite": "Crea copia alleggerita",
-  "document-handoff-manifest": "Crea manifest",
-  "pdf-multi-text-search": "Cerca nei PDF",
-  "pdf-to-markdown": "Esporta Markdown",
-};
 
 function parseNumbers(value: string): number[] {
   return value.split(/[\s,;]+/u).filter(Boolean).map(Number).filter((item) => Number.isInteger(item) && item > 0);
@@ -90,7 +67,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const [rotation, setRotation] = useState("90");
   const [deleteMode, setDeleteMode] = useState<"delete" | "extract">("extract");
   const [passwordMode, setPasswordMode] = useState<"check" | "remove" | "protect">("check");
-  const [pdfPassword, setPdfPassword] = useState("");
+  const [pdfPassword417, setPdfPassword417] = useState("");
   const [textExtractionMode, setTextExtractionMode] = useState<PdfTextExportMode53>("content-order");
   const [textExports, setTextExports] = useState<{ file: File; pageExpression: string; mode: PdfTextExportMode53; exported: ScopedPdfTextExport53 } | null>(null);
   const [imageDedupe, setImageDedupe] = useState(true);
@@ -222,6 +199,17 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     return () => URL.revokeObjectURL(url);
   }, [files, optionMode]);
 
+  useEffect(() => {
+    if (optionMode !== "order" || files[0] === undefined) return;
+    let active = true;
+    void files[0].arrayBuffer().then(async (bytes) => {
+      const { inspectPdfBytes } = await import("../../../engines/pdf");
+      const count = inspectPdfBytes(new Uint8Array(bytes)).pageCount;
+      if (active) setSelectionPageCount(count);
+    }).catch(() => { if (active) setSelectionPageCount(0); });
+    return () => { active = false; };
+  }, [files, optionMode]);
+
   function choose(event: Event, index = 0) {
     const input = event.currentTarget as HTMLInputElement;
     const selected = input.files === null ? [] : [...input.files];
@@ -280,10 +268,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     if (optionMode === "groups") return toolId === "pdf-split" && pdfSplitMode === "size-limit"
       ? { file: files[0], maxPartKiB: Number(pdfSplitMaxKiB) }
       : { file: files[0], groups };
-    if (optionMode === "order") return { file: files[0], order: parseNumbers(order) };
     if (optionMode === "rotation") return { file: files[0], pages, rotation: Number(rotation) };
     if (optionMode === "delete-extract") return { file: files[0], pages, mode: deleteMode };
-    if (optionMode === "password") return { file: files[0], mode: passwordMode, ...(passwordMode !== "check" && pdfPassword.length > 0 ? { password: pdfPassword } : {}) };
+    if (optionMode === "password") return { file: files[0], mode: passwordMode, password: pdfPassword417 };
     if (optionMode === "text-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), mode: textExtractionMode };
     if (optionMode === "image-extraction") return { file: files[0], ...(pages.trim() === "" ? {} : { pages: parseNumbers(pages) }), dedupe: imageDedupe };
     if (optionMode === "pdf-to-markdown") return { file: files[0] };
@@ -399,7 +386,11 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         recordCompletedTool(toolId);
         return;
       }
-      const run = await toolRuntime.run(toolId, buildInput(), {}, abortController.signal);
+      const input = optionMode === "order" && files[0] !== undefined
+        ? { file: files[0], order: parsePdfPageReorder(order,
+            (await import("../../../engines/pdf")).inspectPdfBytes(new Uint8Array(await files[0].arrayBuffer())).pageCount) }
+        : buildInput();
+      const run = await toolRuntime.run(toolId, input, {}, abortController.signal);
       if (!run.ok) {
         if (run.code === "CANCELLED") throw new DOMException(run.message, "AbortError");
         throw new Error(run.message);
@@ -416,7 +407,6 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         : friendlyToolErrorIt(caught));
       setStatus("idle");
     } finally {
-      if (optionMode === "password") setPdfPassword("");
       if (controller.current === abortController) controller.current = null;
     }
   }
@@ -443,7 +433,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     setRotation("90");
     setDeleteMode("extract");
     setPasswordMode("check");
-    setPdfPassword("");
+    setPdfPassword417("");
     setTextExtractionMode("content-order");
     setTextExports(null);
     setImageDedupe(true);
@@ -506,6 +496,15 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     }
   }
   const visibleSelectedPages = [...new Set(selectionGroups.flat())];
+  let reorderPreview: number[] = [];
+  let reorderError = "";
+  if (optionMode === "order" && selectionPageCount > 0 && order.trim() !== "") {
+    try {
+      reorderPreview = parsePdfPageSelection(order, selectionPageCount);
+    } catch (caught) {
+      reorderError = caught instanceof Error ? caught.message : "Ordine delle pagine non valido";
+    }
+  }
   let rotationPages: number[] = [];
   let rotationError = "";
   if (optionMode === "rotation" && selectionPageCount > 0 && pages.trim() !== "") {
@@ -547,8 +546,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const publicCopy = TOOL_COPY_IT[toolId];
   const publicTitle = publicCopy?.name ?? toolId;
   const publicDescription = publicCopy?.summary ?? "";
-  const actionLabel = optionMode === "password" && passwordMode === "remove" ? "Crea PDF senza cifratura"
-    : optionMode === "password" && passwordMode === "protect" ? "Crea PDF protetto AES-256" : PDF_ACTION_IT[toolId];
+  const actionLabel = optionMode === "password" ? passwordActionLabel417(passwordMode) : PDF_ACTION_IT[toolId];
   const comparison = result !== null && toolId === "pdf-compare-lite" && result.raw.comparison !== null
     && typeof result.raw.comparison === "object" && "alignment" in result.raw.comparison
     ? result.raw.comparison as unknown as PdfCompareResult : null;
@@ -686,7 +684,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         ) : optionMode === "groups" ? (
           <label class="field"><span>Gruppi di pagine</span><input value={groups} onInput={(event) => { setGroups(event.currentTarget.value); setResult(null); }} placeholder="1-2; 3-4" disabled={isWorking} /></label>
         ) : null}
-        {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
+        {optionMode === "order" && <label class="field"><span>Nuovo ordine delle pagine</span><input value={order} onInput={(event) => { setOrder(event.currentTarget.value); setOrderHistory([]); setResult(null); }} placeholder="3, 1, 2" disabled={isWorking} /></label>}
         {optionMode === "rotation" && <div class="field-grid"><label class="field"><span>Pagine</span><input value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="1-3, 5" disabled={isWorking} /></label><label class="field"><span>Rotazione</span><select value={rotation} onChange={(event) => { setRotation(event.currentTarget.value); setResult(null); }} disabled={isWorking}><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label></div>}
         {optionMode === "rotation" && files[0] !== undefined && (
           <div class="actions" data-pdf-rotation-helpers>
@@ -751,23 +749,21 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             )}
           </section>
         )}
-        {optionMode === "password" && <>
-          <label class="field"><span>Modalità</span><select value={passwordMode} onChange={(event) => { setPasswordMode(event.currentTarget.value as "check" | "remove" | "protect"); setPdfPassword(""); setResult(null); }} disabled={isWorking}><option value="check">Controlla soltanto la cifratura</option><option value="protect">Proteggi con password AES-256</option><option value="remove">Crea una copia PDF senza cifratura</option></select></label>
-          {passwordMode === "remove" && <label class="field"><span>Password del PDF (se protetto)</span><input type="password" autoComplete="off" maxLength={256} value={pdfPassword} onInput={(event) => { setPdfPassword(event.currentTarget.value); setResult(null); }} disabled={isWorking} aria-label="Password per sbloccare il PDF" /><small>Inserisci la password autorizzata del PDF cifrato. Senza password viene copiata solo una sorgente già non cifrata. Elaborazione locale in Worker, nessuna password inviata o salvata.</small></label>}
-          {passwordMode === "protect" && <label class="field"><span>Nuova password di apertura PDF</span><input type="password" autoComplete="new-password" minLength={8} maxLength={128} required value={pdfPassword} onInput={(event) => { setPdfPassword(event.currentTarget.value); setResult(null); }} disabled={isWorking} aria-label="Nuova password per proteggere il PDF" /><small>Da 8 a 128 caratteri. Il file è cifrato con AES-256 e richiederà questa password per aprirsi. Salvala in un luogo sicuro: non viene memorizzata o inviata a server. La cifratura non impedisce la copia del contenuto a chi conosce la password.</small></label>}
-        </>}
+        {optionMode === "password" && <PdfPasswordOptions417 file={files[0]} mode={passwordMode} password={pdfPassword417} disabled={isWorking}
+          onMode={(next) => { setPasswordMode(next); setPdfPassword417(""); setResult(null); }}
+          onPassword={(next) => { setPdfPassword417(next); setResult(null); }} />}
         {(optionMode === "order" || optionMode === "rotation") && files[0] !== undefined && (
           <div class="field" data-pdf-preview-toggle>
             <button type="button" onClick={() => setShowThumbnails((current) => !current)} disabled={isWorking}>{showThumbnails ? "Chiudi miniature pagine" : "Apri miniature pagine (facoltativo)"}</button>
             {showThumbnails && (
               <PdfThumbnailPicker
                 file={files[0]}
-                selectedPages={optionMode === "order" ? parseNumbers(order) : rotationPages}
+                selectedPages={optionMode === "order" ? reorderPreview : rotationPages}
                 previewRotation={optionMode === "rotation" ? Number(rotation) as 0 | 90 | 180 | 270 : 0}
                 {...(optionMode === "rotation" ? { onPageCount: (count: number) => setSelectionPageCount(count) } : {})}
                 onPickPage={(page) => {
                   if (optionMode === "order") {
-                    const chosen = parseNumbers(order);
+                    const chosen = reorderPreview;
                     updateVisualOrder(chosen.includes(page) ? chosen.filter((value) => value !== page) : [...chosen, page]);
                   } else {
                     const next = rotationPages.includes(page) ? rotationPages.filter((value) => value !== page) : [...rotationPages, page].sort((a, b) => a - b);
@@ -780,15 +776,17 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             {optionMode === "order" ? <small>Seleziona ogni pagina una sola volta nell'ordine desiderato. Il motore rifiuta sequenze incomplete.</small> : <small>Le pagine selezionate mostrano la rotazione scelta; clicca di nuovo per deselezionarle.</small>}
           </div>
         )}
-        {optionMode === "order" && !isWorking && parseNumbers(order).length > 0 && (
-          new Set(parseNumbers(order)).size !== parseNumbers(order).length
-            ? <p role="alert">L'ordine contiene numeri di pagina duplicati. Correggili prima di utilizzare l'organizzatore visuale.</p>
-            : <PdfVisualOrder order={parseNumbers(order)} onChange={updateVisualOrder} undo={undoVisualOrder} canUndo={orderHistory.length > 0} />
+        {optionMode === "order" && !isWorking && (
+          reorderError !== ""
+            ? <p role="alert">{reorderError}</p>
+            : reorderPreview.length > 0
+              ? <PdfVisualOrder order={reorderPreview} onChange={updateVisualOrder} undo={undoVisualOrder} canUndo={orderHistory.length > 0} />
+              : null
         )}
         {optionMode === "text-extraction" && (
           <div class="field-grid">
-            <label class="field"><span>Pagine (facoltativo)</span><input aria-label="Pagine da estrarre" value={pages} onInput={(event) => setPages(event.currentTarget.value)} placeholder="es. 1, 3-5 · vuoto = tutte" disabled={isWorking} /></label>
-            <label class="field"><span>Modalità testo</span><select aria-label="Modalità estrazione testo" value={textExtractionMode} onChange={(event) => setTextExtractionMode(event.currentTarget.value as PdfTextExportMode53)} disabled={isWorking}><option value="content-order">Ordine degli operatori, testo compatto</option><option value="operator-lines">Ordine degli operatori, una stringa per riga</option><option value="visual-lines">Righe per posizione visiva (PDF.js, semplice)</option></select><small>La modalità visuale ordina per coordinata dall'alto, poi da sinistra. Su colonne/tabelle non determina la corretta lettura semantica; testo ruotato non supportato e rifiutato.</small></label>
+            <label class="field"><span>Pagine (facoltativo)</span><input aria-label="Pagine da estrarre" value={pages} onInput={(event) => { setPages(event.currentTarget.value); setResult(null); }} placeholder="es. 1, 3-5 · vuoto = tutte" disabled={isWorking} /></label>
+            <label class="field"><span>Modalità testo</span><select aria-label="Modalità estrazione testo" value={textExtractionMode} onChange={(event) => { setTextExtractionMode(event.currentTarget.value as PdfTextExportMode53); setResult(null); }} disabled={isWorking}><option value="content-order">Ordine degli operatori, testo compatto</option><option value="operator-lines">Ordine degli operatori, una stringa per riga</option><option value="visual-lines">Righe per posizione visiva (PDF.js, semplice)</option></select><small>La modalità visuale ordina dall'alto a sinistra; non ricostruisce il senso di colonne/tabelle e rifiuta testo ruotato.</small></label>
           </div>
         )}
         {optionMode === "image-extraction" && (

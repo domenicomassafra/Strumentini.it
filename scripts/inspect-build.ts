@@ -3,10 +3,15 @@ import { basename, join, relative, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
 import { groups } from "../src/catalog/groups";
 import { publicIndexPaths } from "../src/seo/public-discovery";
+import { auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
 
 const root = resolve(import.meta.dirname, "..");
 const updateBaseline = process.argv.includes("--update-baseline");
 const dist = resolve(root, "dist");
+const noticeFailures = auditDistributedNotices366(dist);
+if (noticeFailures.length > 0) {
+  throw new Error(`Distributed donor notices are incomplete: ${noticeFailures.join("; ")}`);
+}
 const pagePath = resolve(dist, "tools/business-day/index.html");
 const page = await readFile(pagePath, "utf8");
 
@@ -84,7 +89,9 @@ for (const previewPath of previewOnlyPaths) {
         preview.includes("risultato parziale")
     : previewPath === fiscalBoundedPath
       ? preview?.includes('data-fiscal-t1') &&
-        preview.includes("Stipendio netto annuo") &&
+        preview.includes("Residuo nazionale parziale da RAL") &&
+        preview.includes("netto in busta paga resta non determinato") &&
+        !preview.includes("Netto annuo illustrativo") &&
         preview.includes("Regime forfettario annuale") &&
         preview.includes("2025 — fonti verificate") &&
         preview.includes("TFR maturato e rivalutazione") &&
@@ -247,6 +254,7 @@ console.log(
   `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
     `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
     `${pageMetadata.length} unique metadata page(s), ${sitemapLocations.length} sitemap entry(ies); ` +
+    `${DONOR_NOTICES_366.length} distributed donor notice(s); ` +
     `${discoveryUrlMode}; ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );

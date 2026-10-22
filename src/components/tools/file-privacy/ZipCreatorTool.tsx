@@ -1,5 +1,5 @@
-import { FilePrivacyTool } from "./FilePrivacyTool";
+import { ArchiveSafe416Tool } from "./ArchiveSafe416Tool";
 
 export function ZipCreatorTool() {
-  return <FilePrivacyTool operation="zip-creator" title="ZIP creator" description="Create a bounded store-method ZIP entirely in memory." />;
+  return <ArchiveSafe416Tool />;
 }

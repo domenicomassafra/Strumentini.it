@@ -23,6 +23,7 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // Both Cloudflare deploy contracts can route the Worker or bind D1, so
   // staging config is just as review-sensitive as the production contract.
   if (path === "wrangler.jsonc" || path === "worker/wrangler.staging.jsonc") return ["worker-auth", "d1", "ci"];
+  if (path === "vitest.workerd.config.ts" || /^tests\/workerd\//u.test(path)) return ["worker-auth", "d1"];
   // The staging publisher and its refusal test can change deployment targets;
   // never reduce an isolated edit to generic shared-source checks.
   if (path === "scripts/deploy-staging-328.ts" || path === "tests/deploy-staging-328.test.ts") return ["worker-auth", "d1", "ci"];

@@ -1,15 +1,9 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
+import { STR421_TOOL_COPY_IT } from "./tool-copy-str421";
+import { EPUB422_TOOL_COPY_IT } from "./tool-copy-epub-422";
+import { STR418_TOOL_COPY_IT } from "./tool-copy-str418";
 
-/**
- * Copy pubblica canonica di Strumentini.it.
- *
- * Gli identificatori, i token di protocollo e i termini tecnici standard
- * (JSON, CSV, PDF, SHA-256, MIME, UUID...) restano invariati. Nome,
- * descrizione e attività esposte all'utente sono invece sempre in italiano.
- *
- * Le vecchie parole chiave inglesi dei manifest vengono conservate soltanto
- * nell'indice tecnico di ricerca: non sono renderizzate nell'interfaccia.
- */
+/** Copy pubblica: nomi e descrizioni in italiano; identificatori tecnici invariati. */
 export interface ItalianToolCopy {
   readonly name: string;
   readonly summary: string;
@@ -17,6 +11,9 @@ export interface ItalianToolCopy {
 }
 
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
+  ...STR421_TOOL_COPY_IT,
+  ...EPUB422_TOOL_COPY_IT,
+  ...STR418_TOOL_COPY_IT,
   "tfr-calculator": {
     name: "Calcola TFR lordo e rivalutazione",
     summary: "Stima per anno la quota TFR e la rivalutazione FOI del fondo, distinguendo gli importi con ipotesi esplicite.",
@@ -29,15 +26,6 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
   "age-date-anniversary": {
     name: "Calcola età e prossimo anniversario",
     summary: "Calcola anni, mesi e giorni trascorsi e mostra la data del prossimo anniversario.",
-  },
-  "ai-code-fence-bundle": {
-    name: "Blocchi di codice AI → file ZIP",
-    summary: "Trasforma in locale i code fence incollati in file con nomi sicuri e deterministici, mostra l'albero previsto e scarica lo ZIP esatto.",
-    searchTerms: ["chatgpt codice in file", "code fence zip", "blocchi codice in file", "risposta ai zip", "markdown code files"],
-  },
-  "archive-checksum-manifest": {
-    name: "Checksum di un archivio",
-    summary: "Calcola gli SHA-256 di un archivio ZIP o di più file e crea un elenco verificabile da conservare o condividere.",
   },
   "aspect-ratio-calculator": {
     name: "Calcola proporzioni immagine",
@@ -638,11 +626,6 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     name: "Confronta due PDF",
     summary: "Confronta due PDF per pagine, dimensioni, rotazioni e testo che lo strumento riesce a estrarre.",
   },
-  "pdf-compression-lite": {
-    name: "Alleggerisci un PDF",
-    summary: "Crea una copia più pulita rimuovendo metadati e riducendo contenuti testuali non compressi quando possibile.",
-    searchTerms: ["comprimi pdf", "compressione pdf", "riduci peso pdf"],
-  },
   "pdf-flatten": {
     name: "Rimuovi elementi interattivi dal PDF",
     summary: "Crea una copia del PDF senza collegamenti interattivi e moduli che lo strumento supporta.",
@@ -737,8 +720,8 @@ export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
     searchTerms: ["testo in pdf", "markdown in pdf", "html in pdf", "csv in pdf", "crea pdf da testo"],
   },
   "pdf-password-check-remove": {
-    name: "Controlla e sblocca PDF con password",
-    summary: "Controlla la cifratura e crea una copia senza protezione solo con una password valida autorizzata, in locale e senza tentare di indovinarla.",
+    name: "Proteggi o sblocca PDF",
+    summary: "AES-256 locale per proteggere PDF; sblocco dei soli file supportati con password valida. AES-128 non supportato.",
   },
   "pdf-rotate": {
     name: "Ruota PDF",

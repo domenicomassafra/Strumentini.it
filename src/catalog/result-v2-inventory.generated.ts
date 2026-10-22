@@ -1552,6 +1552,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
+    "toolId": "eml-msg-viewer",
+    "engine": "file-privacy",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "EmlMsgViewerTool",
+      "source": "src/components/tools/EmlMsgViewerTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "download",
+        "reset",
+        "provenance"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "engineering-unit-converter",
     "engine": "business-math",
     "rendererSeam": {
@@ -1588,6 +1607,26 @@ export const resultV2Inventory = [
       ]
     },
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md"
+  },
+  {
+    "toolId": "epub-reader",
+    "engine": "file-privacy",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "EpubReaderTool",
+      "source": "src/components/tools/EpubReaderTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "copy",
+        "download",
+        "reset",
+        "provenance"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
   },
   {
     "toolId": "everyday-cost-calculator",
@@ -3524,9 +3563,9 @@ export const resultV2Inventory = [
     "toolId": "pdf-page-reorder",
     "engine": "pdf",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "PdfTool",
-      "source": "src/components/tools/pdf/PdfTool.tsx"
+      "kind": "bespoke",
+      "component": "PdfPageReorderTool",
+      "source": "src/components/tools/PdfPageReorderTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",
@@ -3571,6 +3610,25 @@ export const resultV2Inventory = [
       "class": "validator",
       "capabilities": [
         "copy",
+        "retry",
+        "reset"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md"
+  },
+  {
+    "toolId": "pdf-repair",
+    "engine": "pdf",
+    "rendererSeam": {
+      "kind": "shared",
+      "component": "PdfTool",
+      "source": "src/components/tools/pdf/PdfTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "pdf",
+      "capabilities": [
+        "download",
         "retry",
         "reset"
       ]
@@ -5287,9 +5345,9 @@ export const resultV2Inventory = [
     "toolId": "zip-creator",
     "engine": "file-privacy",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "FilePrivacyTool",
-      "source": "src/components/tools/file-privacy/FilePrivacyTool.tsx"
+      "kind": "bespoke",
+      "component": "ZipCreatorTool",
+      "source": "src/components/tools/file-privacy/ZipCreatorTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",

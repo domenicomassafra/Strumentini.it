@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "format": "EPUB3",
+  "source": "Synthetic local-only EPUB3 assembled by the tests with fflate and reopened independently with zipfile.",
+  "expected": {
+    "title": "Libro di prova",
+    "chapterIds": [
+      "c1",
+      "c2"
+    ],
+    "chapterTitles": [
+      "Inizio",
+      "Fine"
+    ],
+    "chapterText": [
+      "Città & montagna.",
+      "Testo offline."
+    ]
+  },
+  "refuse": [
+    "script",
+    "remote image and navigation",
+    "SVG and Javascript assets",
+    "external CSS",
+    "entity/DOCTYPE",
+    "path traversal",
+    "ZIP expansion bomb",
+    "bad mimetype or spine"
+  ]
+}
