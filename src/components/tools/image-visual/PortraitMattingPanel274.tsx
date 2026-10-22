@@ -167,7 +167,7 @@ export function PortraitMattingPanel274() {
     }
   }
 
-  return <section class="tool-surface" data-portrait-274 aria-label="Laboratorio rimozione sfondo ritratto">
+  return <section class="tool-surface" data-portrait-274 data-offline-runtime="input-cache-v5" aria-label="Laboratorio rimozione sfondo ritratto">
     <h2>Rimozione sfondo ritratti · esperimento locale</h2>
     <p>Solo persone e ritratti. MODNet costruisce un alpha matte per capelli e bordi tramite Transformers.js e WASM. Non è un modello per oggetti generici. Il file resta nel browser; modello quantizzato (6,6 MB) e runtime (circa 14 MB) si scaricano solo dopo Avvia, dallo stesso sito, e possono restare nella cache HTTP. Anche offline funziona soltanto dopo aver caricato gli asset in cache; la disponibilità dipende dalla cache del browser.</p>
     <p>JPG, PNG o WebP fino a 8 MiB, massimo 1600 px per lato e {PORTRAIT_MAX_PIXELS.toLocaleString("it-IT")} pixel. Richiede WebAssembly e memoria disponibile; i browser con RAM dichiarata inferiore a 4 GiB vengono rifiutati. Puoi interrompere il Worker; nessun fallback verso servizi remoti.</p>
