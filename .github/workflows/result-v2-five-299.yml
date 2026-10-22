@@ -1,0 +1,62 @@
+name: Result v2 five browser consumers (#299)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/result-v2-five-299.yml'
+      - 'tests/css-design-helper-result-v2-299.browser.mjs'
+      - 'src/components/tools/CssDesignHelperTool.tsx'
+      - 'src/components/tools/pdf/PdfBookletInterleave251Tool.tsx'
+      - 'src/components/tools/pdf/PdfFillOverlays243Tool.tsx'
+      - 'src/components/tools/pdf/PdfNUpTool.tsx'
+      - 'src/components/tools/pdf/PdfVisualSignature241Tool.tsx'
+      - 'src/quality/legacy-result-primary.ts'
+      - 'tests/legacy-result-primary.test.ts'
+
+permissions:
+  contents: read
+
+# Independent Chromium acceptance on a compiled PR artifact. No deploy, Gold
+# promotion or replacement of checked-in evidence; release gates stay separate.
+jobs:
+  compiled-consumers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Reject legacy manual primary outputs
+        run: |
+          npm run result-v2:legacy-zero
+          npx vitest run tests/legacy-result-primary.test.ts --maxWorkers=1
+      - run: npm run build
+      - name: Form, Result v2, preview, download and PDF.js acceptance
+        run: |
+          set -euo pipefail
+          python3 -m http.server 18543 --bind 127.0.0.1 --directory dist > "$RUNNER_TEMP/result-v2-299-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail --output /dev/null http://127.0.0.1:18543/tools/css-design-helper/; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat "$RUNNER_TEMP/result-v2-299-http.log"
+            exit 1
+          fi
+          STR299_ORIGIN=http://127.0.0.1:18543 node tests/css-design-helper-result-v2-299.browser.mjs
+          PDF243_DEV_BASE=http://127.0.0.1:18543 npx tsx scripts/acceptance-pdf-fill-overlays-243.ts
+          PDF241_PUBLIC_ORIGIN=http://127.0.0.1:18543 PDF241_BROWSER=chromium npx tsx tests/pdf-visual-signature-ui-241.browser.ts
+          npx tsx scripts/acceptance-pdf-booklet-interleave-251.ts
+          npx tsx tests/pdf-n-up-250.browser.ts
