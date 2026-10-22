@@ -4,10 +4,24 @@ import { catalog } from "../src/generated/catalog";
 import { groups } from "../src/catalog/groups";
 import { publicIndexPaths } from "../src/seo/public-discovery";
 import { auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
+import { auditLockedPackages366, parseAssetPins366 } from "./donor-provenance-366";
+import { auditDistributedAssets366 } from "./donor-dist-inventory-366";
 
 const root = resolve(import.meta.dirname, "..");
 const updateBaseline = process.argv.includes("--update-baseline");
 const dist = resolve(root, "dist");
+const lock = JSON.parse(await readFile(resolve(root, "package-lock.json"), "utf8"));
+const manifest = JSON.parse(await readFile(resolve(root, "package.json"), "utf8"));
+const packages366 = auditLockedPackages366(lock, manifest);
+if (packages366.failures.length > 0) {
+  throw new Error(`Distributed donor lockfile metadata unverified: ${packages366.failures.join("; ")}`);
+}
+const pins366 = parseAssetPins366(await readFile(resolve(root, "docs/donor-provenance-366-2026-10-11.md"), "utf8"));
+const distribution366 = auditDistributedAssets366(root, pins366,
+  [...packages366.rows, ...packages366.optionalInstalled], lock.packages);
+if (distribution366.failures.length > 0) {
+  throw new Error(`Distributed donor inventory unverified: ${distribution366.failures.join("; ")}`);
+}
 const noticeFailures = auditDistributedNotices366(dist);
 if (noticeFailures.length > 0) {
   throw new Error(`Distributed donor notices are incomplete: ${noticeFailures.join("; ")}`);
@@ -255,6 +269,7 @@ console.log(
     `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
     `${pageMetadata.length} unique metadata page(s), ${sitemapLocations.length} sitemap entry(ies); ` +
     `${DONOR_NOTICES_366.length} distributed donor notice(s); ` +
+    `${distribution366.verifiedFiles} pinned distribution file(s), ${distribution366.bundledPackages.length} mapped npm donor(s); ` +
     `${discoveryUrlMode}; ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );

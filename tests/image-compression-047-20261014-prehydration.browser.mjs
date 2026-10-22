@@ -61,7 +61,7 @@ try {
         });
         assert.equal((await page.goto(`${origin}/tools/image-compression/`, { waitUntil: "commit" }))?.status(), 200);
         const island = page.locator('astro-island[component-export="ImageCompressionTool"]');
-        const form = island.locator("form");
+        const form = island.locator("form:has([data-png-lossless-47])");
         const guard = island.locator("[data-image-compression-hydration-gate]");
         const palette = form.locator("[data-png-palette-47] select");
         await palette.waitFor({ timeout: 10_000 });

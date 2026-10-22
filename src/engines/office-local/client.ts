@@ -29,7 +29,8 @@ function requestInputBytes(request: OfficeLocalRequest): number {
 }
 
 function assertRequestBounds(request: OfficeLocalRequest, inputBytes: number): void {
-  if (request.kind === "csv-to-xlsx" || request.kind === "markdown-to-xlsx" || request.kind === "xlsx-to-csv") {
+  if (request.kind === "csv-to-xlsx" || request.kind === "markdown-to-xlsx" || request.kind === "xlsx-to-csv" ||
+      request.kind === "xlsx-workbook-open" || request.kind === "xlsx-workbook-export") {
     if (inputBytes > SPREADSHEET_INTERCHANGE_LIMITS.maxInputBytes) {
       throw new SpreadsheetInterchangeError("FILE_TOO_LARGE", `Spreadsheet input exceeds the ${SPREADSHEET_INTERCHANGE_LIMITS.maxInputBytes}-byte local limit.`);
     }
@@ -53,7 +54,9 @@ function estimatedWorkingSet(request: OfficeLocalRequest): number {
     return inputBytes + analysis.totalUncompressedBytes * 2 + OOXML_PACKAGE_LIMITS.maxInputBytes;
   }
   if (request.kind === "ooxml-analyze" || request.kind === "office-structure" || request.kind === "docx-extract" || request.kind === "pptx-outline") return inputBytes * 4 + 4 * 1024 * 1024;
-  if (request.kind === "xlsx-to-csv") return inputBytes * 8 + 8 * 1024 * 1024;
+  if (request.kind === "xlsx-to-csv" || request.kind === "xlsx-workbook-open" || request.kind === "xlsx-workbook-export") {
+    return inputBytes * 8 + 8 * 1024 * 1024;
+  }
   if (request.kind === "docx-generate") return inputBytes * 6 + 8 * 1024 * 1024;
   return inputBytes * 6 + SPREADSHEET_INTERCHANGE_LIMITS.maxOutputBytes + 8 * 1024 * 1024;
 }

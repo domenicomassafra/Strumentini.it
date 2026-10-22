@@ -30,6 +30,17 @@ describe("#366 distributed donor notices", () => {
     const notice = DONOR_NOTICES_366.find((entry) => entry.packages.includes("ipaddr.js@2.5.0"));
     expect(notice).toMatchObject({ file: "ipaddr-303-MIT.txt", spdx: "MIT" });
   });
+  it("ships byte-pinned MIT notices for the runtime packages found in the distributed bundle", () => {
+    for (const [pkg, file] of [
+      ["papaparse@5.7.0", "papaparse-126-MIT.txt"],
+      ["hash-wasm@4.12.0", "hash-wasm-126-MIT.txt"],
+    ] as const) {
+      expect(DONOR_NOTICES_366.find((notice) => notice.packages.includes(pkg))).toMatchObject({
+        file, spdx: "MIT",
+      });
+    }
+    expect(auditDonorNotices366(root)).toEqual([]);
+  });
 
   it("fails closed when a registered notice is absent from the build", () => {
     const empty = mkdtempSync(join(tmpdir(), "notices-366-"));

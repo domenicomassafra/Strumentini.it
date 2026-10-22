@@ -2,6 +2,7 @@ import { PDFDocument } from "pdf-lib";
 import { mutatePdf, type PdfArtifact } from "./index";
 import { strictPdfPageNumbers } from "./page-selection";
 import { PDF_LIMITS } from "./types";
+import { copyAnnotatedPages380, hasSourceAnnotations380, verifyPdfSourceBoundExport380 } from "./source-bound-export-380";
 
 export type PdfWorkspaceMode372 = "reorder" | "selected";
 
@@ -40,15 +41,29 @@ export async function runPdfPageWorkspace372(
   const chosen = mode === "reorder" ? validOrder : validOrder.filter((page) => selected.includes(page));
   if (chosen.length < 1) throw new Error("INVALID_INPUT: Seleziona almeno una pagina da esportare");
   abort(signal);
-  const artifact = (await mutatePdf(copy, mode === "reorder"
-    ? { kind: "reorder", order: validOrder, filename }
-    : { kind: "extract", pages: chosen, filename }, signal))[0];
+  const containsAnnotations = hasSourceAnnotations380(copy);
+  const annotatedBytes = containsAnnotations ? await copyAnnotatedPages380(copy, chosen) : null;
+  const artifact = annotatedBytes === null
+    ? (await mutatePdf(copy, mode === "reorder"
+        ? { kind: "reorder", order: validOrder, filename }
+        : { kind: "extract", pages: chosen, filename }, signal))[0]
+    : {
+        bytes: annotatedBytes,
+        blob: new Blob([Uint8Array.from(annotatedBytes)], { type: "application/pdf" }),
+        filename: filename.replace(/\.pdf$/iu, "").slice(0, 115) + "-annotated-pages.pdf",
+        mime: "application/pdf" as const,
+        pageCount: chosen.length,
+      };
   if (artifact === undefined || artifact.bytes.byteLength < 8 || artifact.bytes.byteLength > PDF_LIMITS.maxOutputBytes) {
     throw new Error("PDF_LIMIT: Nessun risultato PDF integro prodotto");
   }
+  // The generic page writer flattens annotations. Copy annotated pages with
+  // pdf-lib and require exact annotation/text readback before returning a file.
+  const bytes = artifact.bytes;
+  await verifyPdfSourceBoundExport380(copy, bytes, { kind: "page-transfer", sourcePages: chosen }, signal);
   abort(signal);
   // Independent parser checks exact sequence and page geometry after writing.
-  const reopened = await PDFDocument.load(artifact.bytes.slice(), { ignoreEncryption: false, updateMetadata: false });
+  const reopened = await PDFDocument.load(bytes.slice(), { ignoreEncryption: false, updateMetadata: false });
   if (reopened.getPageCount() !== chosen.length) throw new Error("PDF_VERIFY: Il numero di pagine non coincide");
   const sourcePages = original.getPages();
   const outputPages = reopened.getPages();

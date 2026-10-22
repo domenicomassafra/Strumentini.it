@@ -34,6 +34,18 @@ export function PdfAnnotationEditor134({ file, pageCount, initialPage }: { file:
   const active = useRef<AbortController | null>(null);
 
   useEffect(() => { setPage(initialPage); }, [initialPage]);
+  // A file change invalidates every page coordinate and pending annotation result.
+  // The workspace also closes this editor when choosing or resuming a project.
+  useEffect(() => {
+    active.current?.abort();
+    active.current = null;
+    pointerStart.current = null;
+    setMarks([]);
+    setResult(null);
+    setError("");
+    setBusy(false);
+    setComment("");
+  }, [file]);
   useEffect(() => {
     let closed = false;
     let loading: ReturnType<typeof import("pdfjs-dist").getDocument> | null = null;
