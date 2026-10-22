@@ -1,4 +1,4 @@
-import { PDFDocument, PDFHexString, PDFName } from "pdf-lib";
+import { PDFDict, PDFDocument, PDFHexString, PDFName, PDFString } from "pdf-lib";
 import { PDF_LIMITS, type PdfArtifact } from "./types";
 import { auditPdfFormAnnotations } from "./form-annotation-audit";
 import { dictionaryOrNull, nameValue, parsePdf } from "./parser";
@@ -49,13 +49,30 @@ export async function createPdfAnnotations134(
   const pages = document.getPages();
   if (pages.length === 0 || pages.length > PDF_LIMITS.maxPages) throw new Error("PDF_LIMIT: Numero pagine non supportato");
   const previousCount = audit.annotationCount;
-  for (const [index, mark] of marks.entries()) {
+  // /NM must be unique among annotations on each page, including ones saved in
+  // earlier exports. Read the existing dictionaries before assigning new names.
+  const namesByPage = pages.map((page) => {
+    const names = new Set<string>();
+    const existing = page.node.Annots();
+    if (existing) for (let i = 0; i < existing.size(); i++) {
+      const dictionary = document.context.lookupMaybe(existing.get(i), PDFDict);
+      const name = dictionary?.lookupMaybe(PDFName.of("NM"), PDFString, PDFHexString);
+      if (name) names.add(name.decodeText());
+    }
+    return names;
+  });
+  for (const mark of marks) {
     cancel(signal);
     if (!mark || !["highlight", "rectangle", "note"].includes(mark.kind) ||
         !Number.isInteger(mark.page) || mark.page < 1 || mark.page > pages.length) {
       throw new Error("PDF_ANNOTATIONS: Pagina o tipo annotazione non valido");
     }
     const page = pages[mark.page - 1]!;
+    const names = namesByPage[mark.page - 1]!;
+    let suffix = 1;
+    while (names.has("STR134-" + suffix)) suffix++;
+    const name = "STR134-" + suffix;
+    names.add(name);
     const crop = page.getCropBox();
     const nums = [mark.x, mark.y, mark.width, mark.height];
     if (nums.some((n) => !Number.isFinite(n)) || mark.width < 2 || mark.height < 2 ||
@@ -87,7 +104,7 @@ export async function createPdfAnnotations134(
       F: 4, P: page.ref, AP: { N: appearanceRef },
       Contents: PDFHexString.fromText(comment),
       T: PDFHexString.fromText("Strumentini.it"),
-      NM: PDFHexString.fromText("STR134-" + (index + 1)),
+      NM: PDFHexString.fromText(name),
       M: PDFHexString.fromText(new Date().toISOString()),
       C: note ? [1, 0.85, 0.22] : highlight ? [1, 0.82, 0] : [0.1, 0.43, 0.84],
       ...(note ? { Name: PDFName.of("Comment") } :
