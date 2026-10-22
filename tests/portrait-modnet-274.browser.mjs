@@ -149,6 +149,7 @@ for (const [name, engine] of Object.entries(engines)) {
               balancedAccuracy: (foregroundHit / foregroundCount + backgroundHit / backgroundCount) / 2,
               meanAbsoluteAlphaError: absoluteError / (foregroundCount + backgroundCount), hairline };
           }, manuallyTraced[photo]);
+          console.log(`METRICS ${name} ${photo} independent manual alpha oracle: ${JSON.stringify(scored)}`);
           assert.equal(scored.width, manuallyTraced[photo].width);
           assert.equal(scored.height, manuallyTraced[photo].height);
           assert.ok(scored.foregroundCount >= 10_000 && scored.backgroundCount >= 10_000, `Not a dense oracle: ${JSON.stringify(scored)}`);
