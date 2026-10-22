@@ -1,0 +1,20 @@
+{
+  "source": "Pexels portrait 774909, original image at 768x1152; manually traced from the photograph on 2026-10-22, independent of MODNet output",
+  "note": "Conservative interior/background polygons and approximate hairline crossing ranges; unknown contour pixels are excluded. This is not a pixel-perfect full-frame reference matte.",
+  "774909": {
+    "width": 768,
+    "height": 1152,
+    "foregroundCore": [[340,245],[420,247],[473,270],[515,323],[531,381],[555,445],[565,515],[563,590],[563,680],[560,742],[627,817],[662,926],[675,1135],[88,1135],[96,916],[148,809],[193,752],[187,652],[176,573],[165,487],[173,405],[190,328],[241,277]],
+    "backgroundCore": [
+      [[0,0],[767,0],[767,150],[0,150]],
+      [[0,151],[75,151],[75,759],[0,759]],
+      [[706,151],[767,151],[767,749],[706,749]]
+    ],
+    "hairline": [
+      {"y":350,"left":[85,205],"right":[520,640]},
+      {"y":460,"left":[65,205],"right":[540,668]},
+      {"y":550,"left":[65,207],"right":[550,670]},
+      {"y":675,"left":[90,210],"right":[555,690]}
+    ]
+  }
+}
