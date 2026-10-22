@@ -8,12 +8,14 @@ let warmedInput: { image: RawImage; bytes: number; mime: string } | null = null;
 self.onmessage = async (event: MessageEvent<Request>) => {
   if (running || event.data.kind !== "start") return;
   running = true;
+  let stage = "validate";
   try {
     const { bytes, mime, memoryGB, reuse } = event.data;
     if (!(["image/jpeg", "image/png", "image/webp"] as string[]).includes(mime)
       || (bytes && bytes.byteLength > PORTRAIT_MAX_FILE_BYTES)) throw new Error("UNSUPPORTED_IMAGE");
     if (reuse && (!warmedInput || warmedInput.mime !== mime)) throw new Error("WARM_INPUT_MISSING");
     if (!reuse && !bytes) throw new Error("INPUT_MISSING");
+    stage = "decode-input";
     const imageBlob = reuse ? null : new Blob([bytes!], { type: mime });
     if (imageBlob) {
       // Reject oversized decoded dimensions before allocating the full RGBA
@@ -24,10 +26,12 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     }
 
     self.postMessage({ kind: "progress", message: "Caricamento modello e WebAssembly locali…" });
+    stage = "load-runtime";
     const { env, pipeline, RawImage } = await import("@huggingface/transformers");
     // The donor accepts RawImage directly. Retain the already-decoded RGBA
     // inside this Worker for the same file: WebKit's Blob decoder can become
     // unavailable after the user switches the browser context offline.
+    stage = "prepare-input";
     const original = reuse ? warmedInput!.image : await RawImage.fromBlob(imageBlob!);
     const width = original.width;
     const height = original.height;
@@ -82,6 +86,7 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       wasm: `${self.location.origin}/vendor/portrait-modnet/ort-wasm-simd-threaded.wasm`,
     };
     wasm.numThreads = 1;
+    stage = "open-model";
     const segmenter = await pipeline("background-removal", "portrait-modnet", {
       device: "wasm", dtype: "q8", local_files_only: true,
       progress_callback: (value) => {
@@ -96,6 +101,7 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     // shared across those reads and its image processor may mutate it. Passing
     // an OffscreenCanvas yields two independent RawImage copies without ever
     // involving a Blob decoder (required for offline WebKit).
+    stage = "infer";
     const output = await segmenter(canvas);
     if (!output || output.width !== width || output.height !== height || output.channels !== 4
       || output.data.length !== width * height * 4) throw new Error("MASK_INVALID");
@@ -118,11 +124,15 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     }
     if (transparent + mixed === 0 || opaque + mixed === 0) throw new Error("MASK_DEGENERATE");
     ctx.putImageData(new ImageData(rgba, width, height), 0, 0);
+    stage = "encode-png";
     const png = await canvas.convertToBlob({ type: "image/png" });
+    stage = "read-png";
     const result = await png.arrayBuffer();
+    stage = "verify-png";
     checkPortraitPng(new Uint8Array(result), width, height);
     // Independent browser decoding, after the PNG encoder, must preserve alpha.
     if (!reuse) {
+      stage = "readback-png";
       const roundtrip = await createImageBitmap(new Blob([result], { type: "image/png" }));
       const verified = roundtrip.width === width && roundtrip.height === height;
       roundtrip.close();
@@ -131,7 +141,12 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     await segmenter.dispose();
     self.postMessage({ kind: "result", bytes: result, width, height, transparent, mixed, opaque }, { transfer: [result] });
   } catch (error) {
-    self.postMessage({ kind: "error", code: error instanceof Error ? error.message.slice(0, 100) : "UNKNOWN_ERROR" });
+    const message = error instanceof Error ? error.message : "UNKNOWN_ERROR";
+    // Preserve stable machine error codes; tag unexpected browser IO failures
+    // so offline WebKit acceptance identifies the actual failing operation.
+    const code = /IO read operation failed|error occured reading the Blob/iu.test(message)
+      ? `${stage}: ${message}` : message;
+    self.postMessage({ kind: "error", code: code.slice(0, 100) });
   } finally {
     running = false;
   }
