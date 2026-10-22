@@ -17,7 +17,8 @@ if (packages366.failures.length > 0) {
   throw new Error(`Distributed donor lockfile metadata unverified: ${packages366.failures.join("; ")}`);
 }
 const pins366 = parseAssetPins366(await readFile(resolve(root, "docs/donor-provenance-366-2026-10-11.md"), "utf8"));
-const distribution366 = auditDistributedAssets366(root, pins366, [...packages366.rows, ...packages366.optionalInstalled]);
+const distribution366 = auditDistributedAssets366(root, pins366,
+  [...packages366.rows, ...packages366.optionalInstalled], lock.packages);
 if (distribution366.failures.length > 0) {
   throw new Error(`Distributed donor inventory unverified: ${distribution366.failures.join("; ")}`);
 }

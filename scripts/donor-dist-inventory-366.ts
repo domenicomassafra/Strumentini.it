@@ -8,6 +8,7 @@ import type { AssetPin366 } from "./donor-asset-pins-366";
 import { RUNTIME_PAYLOAD_366 } from "./donor-public-runtime-366";
 
 type PackageRow = { name: string; version: string; license: string; source: string; integrity: string };
+type LockEntry = { version?: string; license?: string; resolved?: string; integrity?: string };
 
 const GENERATED_RUNTIME = new Set([
   "vendor/portrait-modnet/ort-wasm-simd-threaded.mjs",
@@ -20,7 +21,9 @@ function digest(path: string): string {
 
 /** Built assets must have a pinned source; generated ONNX Runtime assets must
  * match the exact npm installation that Astro copies in astro.config.mjs. */
-export function auditDistributedAssets366(root: string, pins: AssetPin366[], packages: PackageRow[]) {
+export function auditDistributedAssets366(
+  root: string, pins: AssetPin366[], packages: PackageRow[], lockEntries: Record<string, LockEntry>,
+) {
   const failures: string[] = [];
   const dist = resolve(root, "dist");
   if (!existsSync(dist) || !lstatSync(dist).isDirectory()) {
@@ -46,12 +49,18 @@ export function auditDistributedAssets366(root: string, pins: AssetPin366[], pac
   }
 
   const runtime = packages.find((entry) => entry.name === "onnxruntime-web");
+  let installedRuntime: { name?: string; version?: string; license?: string } | null = null;
+  try {
+    installedRuntime = JSON.parse(readFileSync(resolve(root, "node_modules/onnxruntime-web/package.json"), "utf8"));
+  } catch { /* Missing or invalid runtime package is unverified. */ }
+  const runtimeVerified = runtime && installedRuntime?.name === runtime.name &&
+    installedRuntime.version === runtime.version && installedRuntime.license === runtime.license;
   for (const path of files) {
     if (pinned.has(path)) continue;
     if (GENERATED_RUNTIME.has(path)) {
       const filename = basename(path);
       const upstream = resolve(root, "node_modules/onnxruntime-web/dist", filename);
-      if (!runtime || !existsSync(upstream) || !lstatSync(upstream).isFile() ||
+      if (!runtimeVerified || !existsSync(upstream) || !lstatSync(upstream).isFile() ||
           digest(resolve(dist, path)) !== digest(upstream)) {
         failures.push(`UNVERIFIED_GENERATED_RUNTIME ${path}`);
       } else {
@@ -66,7 +75,6 @@ export function auditDistributedAssets366(root: string, pins: AssetPin366[], pac
     if (!files.has(path)) failures.push(`MISSING_GENERATED_RUNTIME ${path}`);
   }
 
-  const packageNames = new Set(packages.map((entry) => entry.name));
   const bundledPackages = new Set<string>();
   const scripts = [...files].filter((path) => path.startsWith("_astro/") && path.endsWith(".js"));
   if (!scripts.length) failures.push("MISSING_BUNDLED_SCRIPTS");
@@ -85,10 +93,15 @@ export function auditDistributedAssets366(root: string, pins: AssetPin366[], pac
     for (const source of sources as string[]) {
       const segments = source.replaceAll("\\", "/").split("node_modules/");
       if (segments.length === 1) continue;
-      const tail = segments.at(-1)!;
-      const name = tail.startsWith("@") ? tail.split("/").slice(0, 2).join("/") : tail.split("/")[0]!;
-      if (!packageNames.has(name)) failures.push(`UNVERIFIED_BUNDLED_PACKAGE ${mapPath} -> ${name}`);
-      else bundledPackages.add(name);
+      const names = segments.slice(1).map((part) =>
+        part.startsWith("@") ? part.split("/").slice(0, 2).join("/") : part.split("/")[0]!).filter(Boolean);
+      const name = names.at(-1)!;
+      const locked = lockEntries[`node_modules/${names.join("/node_modules/")}`];
+      const row = packages.find((entry) => entry.name === name &&
+        entry.version === locked?.version && entry.license === locked?.license &&
+        entry.source === locked?.resolved && entry.integrity === locked?.integrity);
+      if (!row) failures.push(`UNVERIFIED_BUNDLED_PACKAGE ${mapPath} -> ${name}`);
+      else bundledPackages.add(`${name}@${row.version}`);
     }
   }
   return { failures, bundledPackages: [...bundledPackages].sort(), verifiedFiles };
