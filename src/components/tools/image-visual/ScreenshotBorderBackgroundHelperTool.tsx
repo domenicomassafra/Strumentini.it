@@ -16,8 +16,9 @@ import {
 } from "../shared";
 import { DownloadLink } from "../marketing-media/DownloadLink";
 import { ImageVisualTool } from "./ImageVisualTool";
+import { ImageTextShapes384Tool } from "./ImageTextShapes384Tool";
 
-type Mode = "border" | "watermark" | "stitch";
+type Mode = "border" | "watermark" | "stitch" | "text-shapes";
 type Direction = "vertical" | "horizontal";
 
 interface WatermarkResult {
@@ -127,8 +128,9 @@ export function ScreenshotBorderBackgroundHelperTool() {
 
   return (
     <>
-      <label class="field"><span>Modalità workspace</span><select aria-label="Modalità workspace screenshot" value={mode} onChange={(event) => { setMode(event.currentTarget.value as Mode); resetAdvanced(); }}><option value="border">Bordo / sfondo</option><option value="watermark">Watermark / overlay</option><option value="stitch">Stitch screenshot</option></select></label>
+      <label class="field"><span>Modalità workspace</span><select aria-label="Modalità workspace screenshot" value={mode} onChange={(event) => { setMode(event.currentTarget.value as Mode); resetAdvanced(); }}><option value="border">Bordo / sfondo</option><option value="watermark">Watermark / overlay</option><option value="stitch">Stitch screenshot</option><option value="text-shapes">Testo e forme</option></select></label>
       {mode === "border" && <ImageVisualTool toolId="screenshot-border-background-helper" />}
+      {mode === "text-shapes" && <ImageTextShapes384Tool />}
 
       {mode === "watermark" && (
         <ToolOperation busy={watermark.isRunning}>
