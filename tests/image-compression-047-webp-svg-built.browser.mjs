@@ -20,7 +20,18 @@ for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
   rgba[at + 2] = (x * 5 + y * 17) & 255;
   rgba[at + 3] = x % 3 === 0 ? 87 : 255;
 }
-const webpOriginal = await sharp(rgba, { raw: { width, height, channels: 4 } }).webp({ lossless: true }).toBuffer();
+// A small smooth lossless WebP can already fit in tens of bytes, so re-encoding
+// may legitimately enlarge it. Use a deterministic, noisy RGB fixture to prove
+// this public lossy path can actually reduce bytes while preserving alpha.
+const webpRgba = Buffer.from(rgba);
+let seed = 0x81_047_047;
+for (let at = 0; at < webpRgba.length; at += 4) {
+  for (let channel = 0; channel < 3; channel++) {
+    seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
+    webpRgba[at + channel] = seed & 255;
+  }
+}
+const webpOriginal = await sharp(webpRgba, { raw: { width, height, channels: 4 } }).webp({ lossless: true }).toBuffer();
 const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64" viewBox="0 0 96 64">' +
   "\n   ".repeat(125) + '<rect x="0" y="0" width="96" height="64" fill="#00ff00"/></svg>';
 async function ready() {
@@ -79,6 +90,7 @@ try {
   const webpDownload = await savingWebp;
   assert.equal(webpDownload.suggestedFilename(), "alpha-compressed.webp");
   const webpBytes = await readFile(await webpDownload.path());
+  assert(webpBytes.length < webpOriginal.length, "Lossy WebP did not shrink the noisy lossless fixture");
   assert.equal(webpBytes.toString("ascii", 0, 4), "RIFF");
   assert.equal(webpBytes.toString("ascii", 8, 12), "WEBP");
   assert.equal(webpBytes.readUInt32LE(4) + 8, webpBytes.length);
