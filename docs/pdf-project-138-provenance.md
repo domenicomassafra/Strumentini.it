@@ -24,3 +24,10 @@ di snapshot immutabili e pulsanti nello stesso `PdfPageWorkspace372`.
 Nessun payload donor copiato, nessuna dipendenza runtime aggiunta. La scelta
 di API native rispetto a wrapper come `idb` evita un secondo strato persistence
 per una transazione singola e rispetta il codice #341 già collaudato.
+
+Verifica 22 ottobre 2026 per la regressione del ripristino: [fake-indexeddb](https://github.com/dumbmatter/fakeIndexedDB)
+v6.2.6 (release 2026-10-16, commit upstream `8881007614a7c04e1766f0b802992a5dfacfafd7`),
+Apache-2.0, solo `devDependency` per eseguire il vero seam IndexedDB da Vitest su Node.
+La libreria emula transazioni/store/versioni; non entra nel bundle di produzione.
+L'implementazione dell'eliminazione selettiva riusa la transazione `delete(id)`
+già impiegata in `deleteSavedPdf341`, con store `projects` separato.

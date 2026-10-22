@@ -159,6 +159,7 @@ try {
   // Force an IDB write failure in this disposable browser context.
   await page.evaluate(() => {
     const original = IDBObjectStore.prototype.add;
+    window.__str138OriginalAdd = original;
     IDBObjectStore.prototype.add = function (...args) {
       if (this.name === "projects") {
         this.transaction.abort();
@@ -170,6 +171,46 @@ try {
   await page.getByRole("button", { name: "Salva copia del progetto su questo dispositivo" }).click();
   await page.locator("[data-pdf-project-message]").getByText(/Salvataggio non riuscito/u).waitFor();
   assert.equal((await persisted(page)).count, 1, "failed write replaced original project");
+
+  await page.evaluate(() => {
+    IDBObjectStore.prototype.add = window.__str138OriginalAdd;
+    delete window.__str138OriginalAdd;
+  });
+  const saveProject = page.getByRole("button", { name: "Salva copia del progetto su questo dispositivo" });
+  const selectProject = page.getByLabel("Progetto da riprendere");
+  const deleteProject = page.getByRole("button", { name: "Elimina progetto selezionato" });
+  for (let i = 0; i < 2; i++) {
+    await saveProject.click();
+    await page.locator("[data-pdf-project-message]").getByText(/hash SHA-256 verificato/u).waitFor();
+  }
+  assert.equal((await persisted(page)).count, 3);
+  await saveProject.click();
+  await page.locator("[data-pdf-project-message]").getByText(/Salvataggio non riuscito/u).waitFor();
+  assert.equal((await persisted(page)).count, 3, "quota refusal should preserve all snapshots");
+  const projectIds = await selectProject.locator("option").evaluateAll((options) => options.map((option) => option.value));
+  const disposableId = projectIds.find((id) => id !== saved.id);
+  assert.ok(disposableId, "expected another snapshot available for selective removal");
+  await selectProject.selectOption(disposableId);
+  page.once("dialog", (dialog) => dialog.dismiss());
+  await deleteProject.click();
+  assert.equal((await persisted(page)).count, 3, "cancelling deletion must preserve the archive");
+  page.once("dialog", (dialog) => dialog.accept());
+  await deleteProject.click();
+  await page.locator("[data-pdf-project-message]").getByText(/Copia del progetto eliminata/u).waitFor();
+  assert.equal((await persisted(page)).count, 2);
+  await saveProject.click();
+  await page.locator("[data-pdf-project-message]").getByText(/hash SHA-256 verificato/u).waitFor();
+  assert.equal((await persisted(page)).count, 3, "saving after selective deletion must succeed");
+  assert.equal((await persisted(page)).hash, originalHash);
+  const extraIds = (await selectProject.locator("option").evaluateAll((options) => options.map((option) => option.value)))
+    .filter((id) => id !== saved.id);
+  for (const id of extraIds) {
+    await selectProject.selectOption(id);
+    page.once("dialog", (dialog) => dialog.accept());
+    await deleteProject.click();
+    await page.locator("[data-pdf-project-message]").getByText(/Copia del progetto eliminata/u).waitFor();
+  }
+  assert.equal((await persisted(page)).count, 1, "only the initial project remains for corruption refusal checks");
 
   // A damaged checksum must hide the project without mutating its PDF bytes.
   await page.evaluate(async () => {
@@ -226,6 +267,7 @@ try {
     undoRedo: true, selectionAndModeRestore: true, crashRecovery: true,
     originalSha256: originalHash, independentReadback: "pdf-lib and Poppler",
     failedWritePreservesRecord: true, corruptedHashRefused: true, futureSchemaRefused: true,
+    selectiveDeleteAndResave: true, deleteCancellation: true,
     offsiteRequests: offsite.length, physicalDevice: "NOT_RUN",
   }));
 } finally {

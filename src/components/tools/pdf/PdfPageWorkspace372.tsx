@@ -7,7 +7,7 @@ import {
   createPdfProjectHistory138, recordPdfProjectEdit138, stepPdfProjectHistory138,
   validatePdfProjectHistory138, type PdfProjectHistory138, type PdfProjectEdit138,
 } from "../../../engines/pdf/project-history-138";
-import { inspectPdfProjects138, loadPdfProject138, savePdfProject138, type PdfProjectSummary138 } from "../../../workbench/pdf-project-138";
+import { deletePdfProject138, inspectPdfProjects138, loadPdfProject138, savePdfProject138, type PdfProjectSummary138 } from "../../../workbench/pdf-project-138";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
 
 interface Thumbnail { page: number; url?: string; error?: string }
@@ -91,6 +91,19 @@ export function PdfPageWorkspace372() {
     } catch (reason) {
       setProjectMessage("Ripristino rifiutato, file e modifiche correnti conservati: " +
         (reason instanceof Error ? reason.message : "progetto non valido"));
+    } finally { setProjectBusy(false); }
+  }
+  async function deleteSelectedProject() {
+    const chosen = projects.find((project) => project.id === projectId);
+    if (!chosen || busy || projectBusy || !window.confirm(`Eliminare «${chosen.name}»? Operazione irreversibile.`)) return;
+    setProjectBusy(true);
+    setProjectMessage("");
+    try {
+      await deletePdfProject138(chosen.id);
+      await refreshProjects();
+      setProjectMessage("Copia del progetto eliminata. Altri PDF conservati.");
+    } catch (reason) {
+      setProjectMessage("Eliminazione fallita: " + (reason instanceof Error ? reason.message : "archivio non disponibile"));
     } finally { setProjectBusy(false); }
   }
   useEffect(() => { void refreshProjects().catch(() => setProjectMessage("Archivio locale non disponibile. Puoi continuare a modificare il PDF.")); }, []);
@@ -256,6 +269,8 @@ export function PdfPageWorkspace372() {
               </select>
             </label>
             <button type="button" onClick={() => void resumeProject()} disabled={!projectId || busy || projectBusy}>Riprendi progetto</button>
+            <button type="button" data-delete-pdf-project onClick={() => void deleteSelectedProject()}
+              disabled={!projectId || busy || projectBusy}>Elimina progetto selezionato</button>
           </div>}
           {unreadableProjects > 0 && <p role="status">Alcuni progetti non sono leggibili o superano i limiti: restano conservati senza modifiche.</p>}
           {projectMessage && <p role="status" data-pdf-project-message>{projectMessage}</p>}

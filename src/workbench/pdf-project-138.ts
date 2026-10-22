@@ -176,3 +176,18 @@ export async function loadPdfProject138(id: string): Promise<PdfProject138 | nul
     summary: summary(found),
   };
 }
+
+/** Explicitly discard one selected snapshot; other projects and #341 PDFs are untouched. */
+export async function deletePdfProject138(id: string): Promise<void> {
+  if (!UUID.test(id)) throw fail("INVALID_ID");
+  const db = await openSavedPdfDatabase341();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE, "readwrite");
+      tx.objectStore(STORE).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(fail("DELETE_FAILED"));
+      tx.onabort = () => reject(fail("DELETE_ABORTED"));
+    });
+  } finally { db.close(); }
+}
