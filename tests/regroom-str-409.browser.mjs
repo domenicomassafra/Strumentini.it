@@ -42,7 +42,7 @@ try {
   assert.equal(await annual.count(), 2);
   const versions = await annual.evaluateAll((rows) => rows.map((r) => ({ id: r.getAttribute("data-fiscal-version409"), content: r.textContent })));
   assert.deepEqual(versions.map((v) => v.id), ["IRPEF-2025-117-v1", "IRPEF-2026-117-v1"]);
-  for (const version of versions) assert.match(version.content, /Da nominare — approvazione fiscale non attestata/u);
+  for (const version of versions) assert.match(version.content, /Non attestata — nessun revisore fiscale qualificato ha firmato/u);
   const diff = await page.locator("[data-fiscal-diff409]").innerText();
   assert.match(diff, /35% → 33%/u);
   assert.match(diff, /non è una rettifica retroattiva del 2025/u);
