@@ -59,6 +59,8 @@ for (const [name, engine] of Object.entries(engines)) {
       if (/\/(?:models\/portrait-modnet|vendor\/portrait-modnet)\//u.test(req.url())) assetRequests.push([req.method(), req.url()]);
     });
     await page.goto(`${origin}/laboratorio/scontorno-ritratti/`, { waitUntil: "networkidle" });
+    assert.equal(await page.locator('[data-portrait-274]').getAttribute('data-offline-runtime'), 'input-cache-v5',
+      `${name} must test the current source checkout, not a stale portrait runtime`);
     assert.match(await page.locator('meta[name="robots"]').getAttribute("content"), /noindex/u);
     assert.equal(network.length, 0, `${name} unexpected eager remote request`);
     assert.deepEqual(cspViolations, [], `${name} CSP issues during initial load`);
