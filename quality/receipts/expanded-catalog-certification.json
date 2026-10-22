@@ -15635,7 +15635,8 @@
           "tests/regroom-str-280.test.ts",
           "tests/regroom-str-281.test.ts",
           "tests/release-scope-405.test.ts",
-          "tests/release-validation.test.ts"
+          "tests/release-validation.test.ts",
+          "tests/str-336-acceptance.test.ts"
         ]
       },
       "oracle": {
@@ -22035,7 +22036,8 @@
         "testFiles": [
           "tests/pdf-catalog.test.ts",
           "tests/pdf-compression-profile-218.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/str-336-acceptance.test.ts"
         ]
       },
       "oracle": {
