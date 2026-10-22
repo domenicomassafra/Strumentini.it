@@ -29956,7 +29956,7 @@
         },
         "module": {
           "path": "src/tools/screenshot-border-background-helper/module.ts",
-          "sha256": "f3c494349364377e146fcbd70e356f7d41a31ef67f5bb5cf5feb8b9206a1e886"
+          "sha256": "6dfcf68a5167f259b0910a77c08616ebadf1fe1f19225c14acb5c4fd4e3af031"
         },
         "page": {
           "path": "src/pages/tools/screenshot-border-background-helper.astro",
