@@ -8,9 +8,10 @@ type Kind = TextShapeLayer384["type"];
 
 function freshLayer(type: Kind, index: number): TextShapeLayer384 {
   const common = { id: `layer-${index}`, x: 10, y: 10, fill: type === "ellipse" ? "#00ff00" : "#ff0000", opacity: 1, visible: true };
-  return type === "text"
-    ? { ...common, type, text: "Testo", fontSize: 28, fontFamily: "sans-serif", direction: "ltr" }
-    : { ...common, type, width: 60, height: 40 };
+  if (type === "text") return { ...common, type, text: "Testo", fontSize: 28, fontFamily: "sans-serif", direction: "ltr" };
+  return type === "rectangle"
+    ? { ...common, type: "rectangle", width: 60, height: 40 }
+    : { ...common, type: "ellipse", width: 60, height: 40 };
 }
 
 export function ImageTextShapes384Tool() {
@@ -37,7 +38,11 @@ export function ImageTextShapes384Tool() {
   function swap(index: number, next: number) {
     setLayers((previous) => {
       const copy = [...previous];
-      [copy[index], copy[next]] = [copy[next], copy[index]];
+      const current = copy[index];
+      const target = copy[next];
+      if (!current || !target) return previous;
+      copy[index] = target;
+      copy[next] = current;
       return copy;
     });
     operation.reset();

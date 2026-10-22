@@ -22,7 +22,8 @@ interface CommonLayer {
 
 export type TextShapeLayer384 = CommonLayer & (
   | { readonly type: "text"; readonly text: string; readonly fontSize: number; readonly fontFamily: typeof FAMILIES[number]; readonly direction: "ltr" }
-  | { readonly type: "rectangle" | "ellipse"; readonly width: number; readonly height: number }
+  | { readonly type: "rectangle"; readonly width: number; readonly height: number }
+  | { readonly type: "ellipse"; readonly width: number; readonly height: number }
 );
 
 export interface TextShapesOutput384 {
@@ -66,7 +67,10 @@ export function validateTextShapes384(layers: unknown, width: number, height: nu
     parseHexColor(layer.fill);
     const common = { id: layer.id, x, y, visible: layer.visible, opacity: layer.opacity, fill: layer.fill };
     if (layer.type === "rectangle" || layer.type === "ellipse") {
-      return { ...common, type: layer.type, width: integer(layer.width, 1, 8192, "Shape width"), height: integer(layer.height, 1, 8192, "Shape height") };
+      const geometry = { width: integer(layer.width, 1, 8192, "Shape width"), height: integer(layer.height, 1, 8192, "Shape height") };
+      return layer.type === "rectangle"
+        ? { ...common, ...geometry, type: "rectangle" }
+        : { ...common, ...geometry, type: "ellipse" };
     }
     if (layer.type !== "text") invalid("Only text, rectangle and ellipse layers are supported");
     if (typeof layer.text !== "string" || layer.text.length < 1 || layer.text.length > 240 || /[\u0000-\u001f\u007f]/u.test(layer.text)) invalid("Text must be one line of 1..240 characters");
