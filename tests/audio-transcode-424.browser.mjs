@@ -15,6 +15,8 @@ const temp = mkdtempSync(join(tmpdir(), "audio-424-"));
 const kinds = { chromium, firefox, webkit };
 const browsers = (process.env.AUDIO424_BROWSERS ?? "chromium,firefox,webkit").split(",");
 let checks = 0;
+const playableBrowsers = [];
+const refusedBrowsers = [];
 
 function wave(seconds = 3) {
   const rate = 48_000;
@@ -66,12 +68,28 @@ try {
         checks += 2;
         if (name === "chromium") throw new Error("Chromium native audio encoder absent: cannot test core capability");
         console.log(`STR-424 ${name}: NO_GO native codec; refused without fake output`);
+        refusedBrowsers.push(name);
         continue;
       }
       await panel.locator("input[type=file]").setInputFiles(input);
       await panel.getByLabel("Qualità richiesta · kbps").selectOption("48");
       await panel.getByRole("button", { name: "Comprimi audio" }).click();
-      await panel.locator("[data-audio-424-result]").waitFor({ timeout: 30_000 });
+      try {
+        await panel.locator("[data-audio-424-result]").waitFor({ timeout: 30_000 });
+      } catch (error) {
+        const status = await panel.locator("[data-audio-424-status]").innerText();
+        const refused = /^AUDIO_424_(?:ENCODER_UNSUPPORTED|ENCODER_FAILED|ENCODER_MISMATCH|CODEC_UNVERIFIED|CONTAINER_MISMATCH|PLAYBACK_UNVERIFIED|AUDIO_SUSPENDED|TIMEOUT|FIDELITY_FAILED|EMPTY_OUTPUT|OUTPUT_LIMIT)/.test(status);
+        assert(refused, `${name}: no successful output or explicit failure after 30s (${status}); ${String(error)}`);
+        assert.equal(await panel.locator("[data-audio-424-result]").count(), 0);
+        assert.equal(await panel.getByRole("link", { name: "Scarica audio verificato" }).count(), 0);
+        assert.deepEqual(errors, []);
+        assert.deepEqual(outside, []);
+        if (name === "chromium") throw new Error(`Chromium encoder unexpectedly refused: ${status}`);
+        console.log(`STR-424 ${name}: NO_GO runtime encoder/decoder refused without fake output: ${status}`);
+        checks += 3;
+        refusedBrowsers.push(name);
+        continue;
+      }
       const receipt = await panel.locator("[data-audio-424-result]").innerText();
       assert.match(receipt, /48 kbps/);
       assert.match(receipt, /Bitrate medio reale/);
@@ -108,6 +126,29 @@ try {
       assert(Math.abs(frequency - 440) < 12, `Wrong decoded frequency: ${frequency}`);
       assert(rms > 0.03, `Audio signal disappeared: ${rms}`);
       checks += 3;
+      if (name === "chromium") {
+        // Compare two actual encoder requests; never assume bitrate hints are exact.
+        await panel.getByLabel("Qualità richiesta · kbps").selectOption("192");
+        assert.equal(await panel.locator("[data-audio-424-result]").count(), 0);
+        await panel.getByRole("button", { name: "Comprimi audio" }).click();
+        await panel.locator("[data-audio-424-result]").waitFor({ timeout: 30_000 });
+        const highReceipt = await panel.locator("[data-audio-424-result]").innerText();
+        assert.match(highReceipt, /192 kbps/);
+        assert.match(highReceipt, /Bitrate medio reale/);
+        const highDownloadEvent = page.waitForEvent("download");
+        await panel.getByRole("link", { name: "Scarica audio verificato" }).click();
+        const highDownload = await highDownloadEvent;
+        const highBytes = readFileSync(await highDownload.path());
+        const highPath = join(temp, `192-${highDownload.suggestedFilename()}`);
+        writeFileSync(highPath, highBytes);
+        const highProbe = JSON.parse(execFileSync("ffprobe", ["-v", "error", "-show_entries", "stream=codec_name:format=duration,size", "-of", "json", highPath], { encoding: "utf8" }));
+        assert.equal(highProbe.streams?.[0]?.codec_name, probe.streams[0].codec_name);
+        assert.equal(Number(highProbe.format.size), highBytes.length);
+        assert(Math.abs(Number(highProbe.format.duration) - 3) < 0.5);
+        assert(highBytes.length < readFileSync(input).length);
+        console.log(`STR-424 bitrate comparison chromium: 48kbps=${raw.length} bytes, 192kbps=${highBytes.length} bytes (both independently probed; encoder bitrate is a hint)`);
+        checks += 7;
+      }
       await panel.getByLabel("Qualità richiesta · kbps").selectOption("64");
       assert.equal(await panel.locator("[data-audio-424-result]").count(), 0, "Stale output still downloadable after settings change");
       checks++;
@@ -120,10 +161,12 @@ try {
       assert.deepEqual(outside, []);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2));
       checks += 3;
+      playableBrowsers.push(name);
       console.log(`STR-424 ${name}: PASS ${probe.streams[0].codec_name}, ${raw.length} bytes, ${frequency.toFixed(2)}Hz, RMS ${rms.toFixed(3)}`);
     } finally { await browser.close(); }
   }
-  console.log(`STR-424 PASS ${checks} real-browser/independent-playback checks; emulator/physical devices NOT_RUN`);
+  assert(playableBrowsers.includes("chromium"), "No successful native encoder and independent playback baseline");
+  console.log(`STR-424 browser acceptance: ${checks} checks, playable=${playableBrowsers.join(",")}, refusal/NO_GO=${refusedBrowsers.join(",") || "none"}; iOS/Android emulators NOT_RUN`);
 } finally {
   server?.kill("SIGTERM");
   rmSync(temp, { recursive: true, force: true });
