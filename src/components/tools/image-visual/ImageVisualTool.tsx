@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
-import { receivePngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
+import { receiveImageCompressionHandoff028 } from "../../../runtime/ephemeral-file-handoff-337";
 import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
 import type { ImageVisualToolId } from "../../../engines/image/visual";
@@ -115,7 +115,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
 
   useEffect(() => {
     if (toolId !== "image-compression") return;
-    return receivePngCompressionHandoff337((received) => {
+    return receiveImageCompressionHandoff028((received) => {
       if (operationBusy.current) return false;
       operation.reset();
       setFile(received);
@@ -123,15 +123,15 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
       setBatchMode(false);
       setPngLossless(false);
       setPngPalette("off");
-      setMime("image/png");
-      setHandoffStatus(`PNG locale ricevuto: ${received.name} (${received.size} byte). Scegli le opzioni e avvia manualmente la compressione.`);
+      setMime(received.type);
+      setHandoffStatus(`Immagine locale ricevuta: ${received.name} (${received.size} byte). Scegli le opzioni e avvia manualmente la compressione.`);
       return true;
     }, { window }, (failure) => {
       setHandoffStatus(failure === "expired"
-        ? "Passaggio PNG scaduto dopo 30 secondi. Ripeti l'azione dallo strumento originale."
+          ? "Passaggio immagine scaduto dopo 30 secondi. Ripeti l'azione dallo strumento originale."
         : failure === "invalid"
-          ? "Passaggio PNG non valido o oltre i limiti. Nessuna compressione avviata."
-          : "La scheda originale non è disponibile. Seleziona un PNG manualmente.");
+          ? "File non valido o troppo grande. Nessuna compressione avviata."
+          : "Scheda originale assente. Seleziona un'immagine manualmente.");
     });
   }, [toolId]);
 

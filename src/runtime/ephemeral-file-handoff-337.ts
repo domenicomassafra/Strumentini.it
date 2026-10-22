@@ -1,6 +1,7 @@
 import { createBinaryHandoffEnvelope, isBinaryHandoffEnvelope, isTrustedBinaryHandoffEvent, MAX_BINARY_HANDOFF_BYTES, type BinaryHandoffEnvelope } from "./binary-handoff";
 import type { OutputArtifactDescriptor } from "./output-artifact";
 import { parseCsvTable } from "../engines/table/csv";
+import { hasImageSignature028, imageFormat028, isPngBytes } from "./image-handoff-signatures-028";
 
 /** An audited narrow adapter, NOT a declaration that other catalog tools accept file handoffs. */
 export const PDF_PAGES_HANDOFF_TARGET_337 = {
@@ -56,18 +57,6 @@ function isPdfPayload(envelope: BinaryHandoffEnvelope): boolean {
     && payload[0] === 0x25 && payload[1] === 0x50 && payload[2] === 0x44 && payload[3] === 0x46 && payload[4] === 0x2d;
 }
 
-function isPngBytes(bytes: Uint8Array): boolean {
-  const signature = [137, 80, 78, 71, 13, 10, 26, 10];
-  return bytes.byteLength >= 45
-    && signature.every((value, index) => bytes[index] === value)
-    && bytes[8] === 0 && bytes[9] === 0 && bytes[10] === 0 && bytes[11] === 13
-    && bytes[12] === 73 && bytes[13] === 72 && bytes[14] === 68 && bytes[15] === 82
-    && bytes[16] !== undefined && bytes[20] !== undefined
-    && bytes.subarray(16, 20).some((value) => value !== 0)
-    && bytes.subarray(20, 24).some((value) => value !== 0)
-    && bytes.slice(-12).every((value, index) => value === [0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130][index]);
-}
-
 function isPngPayload(envelope: BinaryHandoffEnvelope): boolean {
   if (!isBinaryHandoffEnvelope(envelope)) return false;
   const { descriptor, payload } = envelope;
@@ -75,6 +64,28 @@ function isPngPayload(envelope: BinaryHandoffEnvelope): boolean {
     && descriptor.mime === "image/png"
     && descriptor.bytes > 0 && descriptor.bytes <= MAX_BINARY_HANDOFF_BYTES
     && /\.png$/iu.test(descriptor.name) && isPngBytes(payload);
+}
+
+/** #028: the same one-shot transfer for verified JPEG/PNG/WebP results.
+ * Container checks complement, rather than replace, the normal destination decoder.
+ */
+export function canOfferImageCompressionHandoff028(artifact: OutputArtifactDescriptor | null | undefined): artifact is OutputArtifactDescriptor {
+  if (artifact === null || artifact === undefined) return false;
+  const format = imageFormat028(artifact.mime);
+  return format !== undefined && artifact.kind === "image" && artifact.download.ready
+    && artifact.verification.state === "verified" && artifact.verification.verifiedMime === artifact.mime
+    && artifact.bytes instanceof Uint8Array && artifact.bytes.length === artifact.byteLength
+    && artifact.byteLength > 0 && artifact.byteLength <= MAX_BINARY_HANDOFF_BYTES
+    && format.extension.test(artifact.name) && hasImageSignature028(artifact.mime, artifact.bytes);
+}
+
+function isImageCompressionPayload028(envelope: BinaryHandoffEnvelope): boolean {
+  if (!isBinaryHandoffEnvelope(envelope)) return false;
+  const { descriptor, payload } = envelope;
+  const format = imageFormat028(descriptor.mime);
+  return descriptor.type === "image" && format !== undefined && descriptor.format === format.format
+    && format.extension.test(descriptor.name) && descriptor.bytes > 0
+    && hasImageSignature028(descriptor.mime, payload);
 }
 
 function isCsvBytes337(bytes: Uint8Array): boolean {
@@ -173,6 +184,19 @@ export function startPngCompressionHandoff337(
   return startFileHandoff337(artifact, PNG_COMPRESSION_HANDOFF_TARGET_337, canOfferPngCompressionHandoff337, "Solo un PNG verificato entro 64 MiB può essere trasferito.", onStatus, environment);
 }
 
+export function startImageCompressionHandoff028(
+  artifact: OutputArtifactDescriptor,
+  onStatus?: (status: EphemeralHandoffStatus337) => void,
+  environment: EphemeralHandoffEnvironment337 = { window },
+): EphemeralHandoffStart337 {
+  const format = imageFormat028(artifact.mime);
+  if (!canOfferImageCompressionHandoff028(artifact) || format === undefined) {
+    return { opened: false, reason: "Solo JPEG, PNG e WebP verificati possono essere trasferiti." };
+  }
+  return startFileHandoff337(artifact, PNG_COMPRESSION_HANDOFF_TARGET_337,
+    canOfferImageCompressionHandoff028, "File non verificato", onStatus, environment, format.format);
+}
+
 export function startCsvExportHandoff337(
   artifact: OutputArtifactDescriptor,
   onStatus?: (status: EphemeralHandoffStatus337) => void,
@@ -189,6 +213,7 @@ function startFileHandoff337(
   rejection: string,
   onStatus: ((status: EphemeralHandoffStatus337) => void) | undefined,
   environment: EphemeralHandoffEnvironment337,
+  format: string = target.format,
 ): EphemeralHandoffStart337 {
   if (!accepts(artifact)) return { opened: false, reason: rejection };
   const token = environment.createToken?.() ?? crypto.randomUUID();
@@ -196,7 +221,7 @@ function startFileHandoff337(
   const sender = environment.window;
   const expiresAt = nowMs(environment) + EPHEMERAL_FILE_HANDOFF_TTL_MS_337;
   let envelope: BinaryHandoffEnvelope | null;
-  try { envelope = createBinaryHandoffEnvelope(target.id === "image-compression" ? "image" : "file", artifact, target.format); }
+  try { envelope = createBinaryHandoffEnvelope(target.id === "image-compression" ? "image" : "file", artifact, format); }
   catch { return { opened: false, reason: "Impossibile verificare il file da trasferire." }; }
   const receiver = sender.open(`${target.route}/#handoff337=${token}`, "_blank");
   if (receiver === null) return { opened: false, reason: "Il browser ha bloccato la nuova scheda." };
@@ -252,6 +277,16 @@ export function receivePngCompressionHandoff337(
   return receiveFileHandoff337(onReceive, PNG_COMPRESSION_HANDOFF_TARGET_337, isPngPayload, environment, onFailure);
 }
 
+
+export function receiveImageCompressionHandoff028(
+  onReceive: (file: File) => unknown,
+  environment: EphemeralHandoffEnvironment337 = { window },
+  onFailure?: (reason: "expired" | "invalid" | "unavailable") => void,
+): () => void {
+  return receiveFileHandoff337(onReceive, PNG_COMPRESSION_HANDOFF_TARGET_337,
+    isImageCompressionPayload028, environment, onFailure, true);
+}
+
 export function receiveCsvExportHandoff337(
   onReceive: (file: File) => unknown,
   environment: EphemeralHandoffEnvironment337 = { window },
@@ -266,6 +301,7 @@ function receiveFileHandoff337(
   accepts: (envelope: BinaryHandoffEnvelope) => boolean,
   environment: EphemeralHandoffEnvironment337,
   onFailure?: (reason: "expired" | "invalid" | "unavailable") => void,
+  useVerifiedPayloadMime = false,
 ): () => void {
   const receiver = environment.window;
   const token = tokenFromHash(receiver.location.hash);
@@ -323,7 +359,7 @@ function receiveFileHandoff337(
       if (event.data.envelope === undefined) { reject(); return; }
       const { descriptor, payload } = event.data.envelope;
       // A fresh native File is the exact input type expected by the PDF engine.
-      const file = new File([new Uint8Array(payload)], descriptor.name, { type: target.mime });
+      const file = new File([new Uint8Array(payload)], descriptor.name, { type: useVerifiedPayloadMime ? descriptor.mime : target.mime });
       // Only synchronous, accepted local state updates may receive an ACK.
       const accepted = onReceive(file);
       if (accepted === false || accepted instanceof Promise) { reject(); return; }
