@@ -14,18 +14,31 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       || (bytes && bytes.byteLength > PORTRAIT_MAX_FILE_BYTES)) throw new Error("UNSUPPORTED_IMAGE");
     if (reuse && (!warmedInput || warmedInput.mime !== mime)) throw new Error("WARM_INPUT_MISSING");
     if (!reuse && !bytes) throw new Error("INPUT_MISSING");
+    const imageBlob = reuse ? null : new Blob([bytes!], { type: mime });
+    if (imageBlob) {
+      // Reject oversized decoded dimensions before allocating the full RGBA
+      // buffer, even if someone posts directly to this Worker.
+      const bitmap = await createImageBitmap(imageBlob);
+      try { checkPortraitInput(bytes!.byteLength, bitmap.width, bitmap.height, memoryGB); }
+      finally { bitmap.close(); }
+    }
 
     self.postMessage({ kind: "progress", message: "Caricamento modello e WebAssembly locali…" });
     const { env, pipeline, RawImage } = await import("@huggingface/transformers");
     // The donor accepts RawImage directly. Retain the already-decoded RGBA
     // inside this Worker for the same file: WebKit's Blob decoder can become
     // unavailable after the user switches the browser context offline.
-    const original = reuse ? warmedInput!.image : await RawImage.fromBlob(new Blob([bytes!], { type: mime }));
+    const original = reuse ? warmedInput!.image : await RawImage.fromBlob(imageBlob!);
     const width = original.width;
     const height = original.height;
     const originalByteLength = reuse ? warmedInput!.bytes : bytes!.byteLength;
     checkPortraitInput(originalByteLength, width, height, memoryGB);
+    if (original.channels !== 4 || original.data.length !== width * height * 4) throw new Error("INPUT_PIXELS_INVALID");
     if (!reuse) warmedInput = { image: original, bytes: originalByteLength, mime };
+    const canvas = new OffscreenCanvas(width, height);
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (!ctx) throw new Error("CANVAS_UNAVAILABLE");
+    ctx.putImageData(new ImageData(new Uint8ClampedArray(original.data), width, height), 0, 0);
     env.allowRemoteModels = false;
     env.allowLocalModels = true;
     // Transformers.js 4.3.1's processor auto-detection checks local paths only
@@ -79,12 +92,13 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       },
     });
     self.postMessage({ kind: "progress", message: "Calcolo alpha matte sul dispositivo…" });
-    const output = await segmenter(original);
+    // BackgroundRemovalPipeline reads its input twice. A RawImage instance is
+    // shared across those reads and its image processor may mutate it. Passing
+    // an OffscreenCanvas yields two independent RawImage copies without ever
+    // involving a Blob decoder (required for offline WebKit).
+    const output = await segmenter(canvas);
     if (!output || output.width !== width || output.height !== height || output.channels !== 4
       || output.data.length !== width * height * 4) throw new Error("MASK_INVALID");
-    const canvas = new OffscreenCanvas(width, height);
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    if (!ctx) throw new Error("CANVAS_UNAVAILABLE");
     // The donor's putAlpha() replaces any alpha originally present in a PNG or
     // WebP. Preserve user-provided transparency by intersecting that alpha with
     // the predicted matte (a fully transparent input pixel stays transparent).
