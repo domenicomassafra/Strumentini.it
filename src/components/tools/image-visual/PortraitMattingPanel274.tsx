@@ -71,6 +71,7 @@ export function PortraitMattingPanel274() {
   async function start() {
     if (!file || busy) return;
     const id = ++generation.current;
+    let stage = "validate";
     setBusy(true); clearResult(); setStatus("Validazione locale dell'immagine…");
     try {
       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("UNSUPPORTED_IMAGE");
@@ -79,6 +80,7 @@ export function PortraitMattingPanel274() {
       // switches offline. Reuse the dimensions and decoded pixels that this
       // same live Worker verified during its previous successful inference.
       const reuse = worker.current !== null && warmedFile.current === file && validatedInput.current?.file === file;
+      stage = reuse ? "reuse-verified-input" : "decode-new-input";
       let dimensions = validatedInput.current;
       if (!reuse || !dimensions) {
         const image = await createImageBitmap(file);
@@ -89,10 +91,12 @@ export function PortraitMattingPanel274() {
       checkPortraitInput(file.size, width, height, (navigator as Navigator & { deviceMemory?: number }).deviceMemory);
       if (generation.current !== id) return;
       validatedInput.current = dimensions;
+      stage = reuse ? "reuse-worker-input" : "read-new-file";
       const bytes = reuse ? null : await file.arrayBuffer();
       if (generation.current !== id) return;
       const preloadController = new AbortController();
       preload.current = preloadController;
+      stage = "read-model-cache";
       timeout.current = setTimeout(() => {
         if (generation.current === id) {
           stop(); setBusy(false); setStatus(readableError("TIMEOUT"));
@@ -122,6 +126,7 @@ export function PortraitMattingPanel274() {
       }
       preload.current = null;
       if (generation.current !== id) return;
+      stage = "post-worker-message";
       // Keep the already loaded Worker while this page remains open. Starting a
       // fresh module Worker would require network access even after its model
       // files were cached, making the next offline run fail before inference.
@@ -155,7 +160,10 @@ export function PortraitMattingPanel274() {
     } catch (error) {
       if (generation.current !== id) return;
       stop(); setBusy(false);
-      setStatus(readableError(error instanceof Error ? error.message : "UNKNOWN_ERROR"));
+      const message = error instanceof Error ? error.message : "UNKNOWN_ERROR";
+      const code = /IO read operation failed|error occured reading the Blob/iu.test(message)
+        ? `${stage}: ${message}` : message;
+      setStatus(readableError(code));
     }
   }
 
