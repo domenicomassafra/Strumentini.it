@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/portrait-modnet-274.yml'
       - 'tests/portrait-modnet-274.browser.mjs'
+      - 'tests/portrait-modnet-274-quantization.mjs'
       - 'tests/fixtures/portrait-modnet-274/**'
       - 'src/components/tools/image-visual/PortraitMattingPanel274.tsx'
       - 'src/engines/image/portrait-modnet*'
@@ -19,6 +20,20 @@ permissions:
 # Source CI runs independently and the release gate continues to require mobile
 # device evidence, full-frame annotations and owner-level provenance clearance.
 jobs:
+  quantization:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Compare pinned fp32 versus local q8 alpha matte
+        run: node tests/portrait-modnet-274-quantization.mjs
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 35
