@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { spawnSync } from "node:child_process";
-import { zipSync } from "fflate";
+import { unzipSync, zipSync } from "fflate";
 import { editWorkbookCell389, expandWorkbook389 } from "../src/engines/table/workbook-formulas-389";
 import { exportXlsxWorkbook389, openXlsxWorkbook389 } from "../src/engines/table/workbook-xlsx-389";
 
@@ -27,7 +27,23 @@ function fixture(dateStyleZero = false): ArrayBuffer {
   return zip.buffer.slice(zip.byteOffset, zip.byteOffset + zip.byteLength) as ArrayBuffer;
 }
 
-function ooxml(source: ArrayBuffer): { cells: Record<string, { formula: string | null; value: string | null }>; calcPr: Record<string, string> | null } {
+/** OOXML permits a bound prefix without a default SpreadsheetML namespace. */
+function prefixedWorksheetFixture(): ArrayBuffer {
+  const parts = unzipSync(new Uint8Array(fixture()));
+  const xml = new TextDecoder().decode(parts["xl/worksheets/sheet1.xml"]!);
+  const prefixed = xml.replace(/<(\/?)(worksheet|dimension|sheetData|row|c|is|t|v|f)\b/gu,
+    (_match, slash: string, name: string) => `<${slash}x:${name}`)
+    .replace(`xmlns="${sheet}"`, `xmlns:x="${sheet}"`);
+  parts["xl/worksheets/sheet1.xml"] = enc.encode(prefixed);
+  const zipped = zipSync(parts);
+  return zipped.buffer.slice(zipped.byteOffset, zipped.byteOffset + zipped.byteLength) as ArrayBuffer;
+}
+
+function ooxml(source: ArrayBuffer): {
+  cells: Record<string, { formula: string | null; value: string | null }>;
+  calcPr: Record<string, string> | null;
+  validSheetNamespace: boolean;
+} {
   const script = [
     "import json,sys,io,zipfile,xml.etree.ElementTree as E",
     "with zipfile.ZipFile(io.BytesIO(sys.stdin.buffer.read())) as zip:",
@@ -36,7 +52,9 @@ function ooxml(source: ArrayBuffer): { cells: Record<string, { formula: string |
     " workbook=E.fromstring(zip.read('xl/workbook.xml'))",
     " cells={cell.get('r'):{'formula':cell.findtext(s+'f'),'value':cell.findtext(s+'v')} for cell in root.findall('.//'+s+'c')}",
     " calc=workbook.find(s+'calcPr')",
-    " print(json.dumps({'cells':cells,'calcPr':calc.attrib if calc is not None else None}))",
+    " data=root.find(s+'sheetData')",
+    " valid_ns=root.tag==s+'worksheet' and root.find(s+'dimension') is not None and data is not None and data.find(s+'row') is not None",
+    " print(json.dumps({'cells':cells,'calcPr':calc.attrib if calc is not None else None,'validSheetNamespace':valid_ns}))",
   ].join("\n");
   const result = spawnSync("python3", ["-c", script], { input: Buffer.from(source), encoding: "utf8", timeout: 15_000 });
   expect(result.status, result.stderr).toBe(0);
@@ -52,6 +70,35 @@ describe("STR-389 independent review regressions", () => {
     const exported = exportXlsxWorkbook389(source, updated);
     expect(ooxml(exported).cells.C2).toEqual({ formula: "A2+B2", value: "0.3" });
     expect(openXlsxWorkbook389(exported).cells[1]![2]!.value).toBe("0.3");
+  });
+
+  it("calculates (1/3)*3 before rounding the final value and exports exact caches for dependent cells", () => {
+    const source = fixture();
+    const opened = openXlsxWorkbook389(source);
+    const edited = editWorkbookCell389(opened, 1, 2, "=(1/3)*3", "formula");
+    expect(edited.cells[1]![2]!.value).toBe("1");
+    const dependent = editWorkbookCell389(expandWorkbook389(edited, "row"), 2, 0, "=C2+1", "formula");
+    expect(dependent.cells[2]![0]!.value).toBe("2");
+    const exported = exportXlsxWorkbook389(source, dependent);
+    expect(ooxml(exported).cells).toMatchObject({
+      C2: { formula: "(1/3)*3", value: "1" },
+      A3: { formula: "C2+1", value: "2" },
+    });
+    expect(openXlsxWorkbook389(exported).cells[1]![2]!.value).toBe("1");
+  });
+
+  it("exports a prefixed SpreadsheetML worksheet without dropping the namespace of edited cells or dimension", () => {
+    const source = prefixedWorksheetFixture();
+    const opened = openXlsxWorkbook389(source);
+    const edited = editWorkbookCell389(opened, 1, 0, "3", "number");
+    const exported = exportXlsxWorkbook389(source, edited);
+    const oracle = ooxml(exported);
+    expect(oracle.validSheetNamespace).toBe(true);
+    expect(oracle.cells).toMatchObject({
+      A2: { formula: null, value: "3" },
+      C2: { formula: "A2+B2", value: "3.2" },
+    });
+    expect(openXlsxWorkbook389(exported).cells[1]![2]!.value).toBe("3.2");
   });
 
   it("preserves the source fullPrecision and calcId attributes through export", () => {

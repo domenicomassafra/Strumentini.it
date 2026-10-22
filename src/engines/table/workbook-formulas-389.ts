@@ -104,7 +104,7 @@ export function computeFormula389(formula: string, read: NumericReader): number 
       const [rowA, colA] = cellIndex389(first), [rowB, colB] = cellIndex389(last);
       if (rowB < rowA || colB < colA) throw new WorkbookError389("INVALID_FORMULA", "Intervallo SUM invertito.");
       let result = 0;
-      for (let r = rowA; r <= rowB; r++) for (let c = colA; c <= colB; c++) result = roundedWorkbookNumber389(result + read(cellAddress389(r, c)));
+      for (let r = rowA; r <= rowB; r++) for (let c = colA; c <= colB; c++) result += read(cellAddress389(r, c));
       return result;
     }
     if (token && /^\$?[A-Z]/u.test(token)) { cellIndex389(token); return read(token.replaceAll("$", "")); }
@@ -119,7 +119,7 @@ export function computeFormula389(formula: string, read: NumericReader): number 
     while (tokens[cursor] === "*" || tokens[cursor] === "/") {
       const op = tokens[cursor++]; const right = primary();
       if (op === "/" && right === 0) throw new WorkbookError389("INVALID_FORMULA", "Divisione per zero.");
-      result = roundedWorkbookNumber389(op === "*" ? result * right : result / right);
+      result = op === "*" ? result * right : result / right;
     }
     return result;
   }
@@ -127,7 +127,7 @@ export function computeFormula389(formula: string, read: NumericReader): number 
     let result = product();
     while (tokens[cursor] === "+" || tokens[cursor] === "-") {
       const op = tokens[cursor++]; const right = product();
-      result = roundedWorkbookNumber389(op === "+" ? result + right : result - right);
+      result = op === "+" ? result + right : result - right;
     }
     return result;
   }

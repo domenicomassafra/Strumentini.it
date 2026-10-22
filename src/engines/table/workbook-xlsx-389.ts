@@ -192,14 +192,14 @@ function readWorkbook(bytes: ArrayBuffer): Workbook389 {
   return recalculateWorkbook389({ sheetName, cells: rows.slice(0, Math.max(1, lastRow)).map((row) => row.slice(0, Math.max(1, lastColumn))) });
 }
 
-function serializeCell(cell: WorkbookCell389, address: string): string {
+function serializeCell(cell: WorkbookCell389, address: string, prefix: string): string {
   if (cell.kind === "blank") return "";
   if (cell.kind === "text") {
-    return `<c r="${address}" t="inlineStr"><is><t xml:space="preserve">${xmlEscape(cell.input)}</t></is></c>`;
+    return `<${prefix}c r="${address}" t="inlineStr"><${prefix}is><${prefix}t xml:space="preserve">${xmlEscape(cell.input)}</${prefix}t></${prefix}is></${prefix}c>`;
   }
-  if (cell.kind === "number") { strictWorkbookNumber389(cell.input); return `<c r="${address}"><v>${cell.input}</v></c>`; }
+  if (cell.kind === "number") { strictWorkbookNumber389(cell.input); return `<${prefix}c r="${address}"><${prefix}v>${cell.input}</${prefix}v></${prefix}c>`; }
   if (!cell.input.startsWith("=") || !Number.isFinite(Number(cell.value))) refuse("Valore di formula non ricalcolato.");
-  return `<c r="${address}"><f>${xmlEscape(cell.input.slice(1))}</f><v>${xmlEscape(cell.value)}</v></c>`;
+  return `<${prefix}c r="${address}"><${prefix}f>${xmlEscape(cell.input.slice(1))}</${prefix}f><${prefix}v>${xmlEscape(cell.value)}</${prefix}v></${prefix}c>`;
 }
 
 export function openXlsxWorkbook389(bytes: ArrayBuffer): Workbook389 { return readWorkbook(bytes); }
@@ -208,19 +208,24 @@ export function exportXlsxWorkbook389(source: ArrayBuffer, workbook: Workbook389
   const original = inspectPackage(source);
   if (original.sheetName !== workbook.sheetName) refuse("Il nome del foglio sorgente è cambiato.");
   const checked = recalculateWorkbook389(workbook);
-  const lines = checked.cells.map((row, rowIndex) => {
-    const cells = row.map((cell, col) => serializeCell(cell, cellAddress389(rowIndex, col))).join("");
-    return cells ? `<row r="${rowIndex + 1}">${cells}</row>` : "";
-  }).join("");
-  const replacement = `<sheetData>${lines}</sheetData>`;
   const old = decoder.decode(original.entries[original.sheetPath]!);
   const tag = /<(?:[A-Za-z_][\w.-]*:)?sheetData(?:\s[^>]*)?\s*\/>|<(?:[A-Za-z_][\w.-]*:)?sheetData(?:\s[^>]*)?>[^]*?<\/(?:[A-Za-z_][\w.-]*:)?sheetData\s*>/gu;
-  if ([...old.matchAll(tag)].length !== 1) refuse("Impossibile sostituire una sola sezione sheetData.");
+  const matches = [...old.matchAll(tag)];
+  if (matches.length !== 1) refuse("Impossibile sostituire una sola sezione sheetData.");
+  // Match the original qualified name: an unprefixed tag under an x:worksheet
+  // would otherwise be outside SpreadsheetML when there is no default xmlns.
+  const prefix = /^<([A-Za-z_][\w.-]*:)?sheetData\b/u.exec(matches[0]![0])?.[1] ?? "";
+  const lines = checked.cells.map((row, rowIndex) => {
+    const cells = row.map((cell, col) => serializeCell(cell, cellAddress389(rowIndex, col), prefix)).join("");
+    return cells ? `<${prefix}row r="${rowIndex + 1}">${cells}</${prefix}row>` : "";
+  }).join("");
+  const replacement = `<${prefix}sheetData>${lines}</${prefix}sheetData>`;
   let next = old.replace(tag, replacement);
-  const dimension = /<(?:[A-Za-z_][\w.-]*:)?dimension\b[^>]*\/\s*>/u;
+  const dimension = /<((?:[A-Za-z_][\w.-]*:)?)dimension\b[^>]*\/\s*>/u;
   if (/<(?:[A-Za-z_][\w.-]*:)?dimension\b/u.test(next)) {
     if (!dimension.test(next)) refuse("Dimensione del foglio non modificabile in modo veritiero.");
-    next = next.replace(dimension, `<dimension ref="A1:${cellAddress389(checked.cells.length - 1, checked.cells[0]!.length - 1)}"/>`);
+    next = next.replace(dimension, (_tag, dimensionPrefix: string) =>
+      `<${dimensionPrefix}dimension ref="A1:${cellAddress389(checked.cells.length - 1, checked.cells[0]!.length - 1)}"/>`);
   }
   original.entries[original.sheetPath] = encoder.encode(next);
   const workbookXml = decoder.decode(original.entries["xl/workbook.xml"]!);
