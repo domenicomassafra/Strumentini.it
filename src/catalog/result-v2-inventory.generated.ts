@@ -1053,9 +1053,9 @@ export const resultV2Inventory = [
     "toolId": "csv-join",
     "engine": "table-operations",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "TableWorkbench",
-      "source": "src/components/tools/table/TableWorkbench.tsx"
+      "kind": "bespoke",
+      "component": "CsvJoinTool",
+      "source": "src/components/tools/csv-join/CsvJoinTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",
@@ -4637,9 +4637,9 @@ export const resultV2Inventory = [
     "toolId": "table-compare",
     "engine": "table-operations",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "TableWorkbench",
-      "source": "src/components/tools/table/TableWorkbench.tsx"
+      "kind": "bespoke",
+      "component": "TableCompareTool",
+      "source": "src/components/tools/table-compare/TableCompareTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",
