@@ -1,13 +1,8 @@
 ---
 import ItalianToolPage from "../../components/tools/shared/ItalianToolPage.astro";
 import { ImageResizeTool } from "../../components/tools/image-resize/ImageResizeTool";
-import { ImageColorAdjustTool383 } from "../../components/tools/image-resize/ImageColorAdjustTool383";
 ---
 
 <ItalianToolPage toolId="image-resize">
   <ImageResizeTool client:load />
-  <details>
-    <summary>Regolazioni avanzate: curve, livelli e sRGB</summary>
-    <ImageColorAdjustTool383 client:visible />
-  </details>
 </ItalianToolPage>
