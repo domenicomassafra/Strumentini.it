@@ -41,7 +41,7 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: |
-          npm run preview -- --host 127.0.0.1 --port 4327 > "$RUNNER_TEMP/portrait-274-preview.log" 2>&1 &
+          ./node_modules/.bin/astro preview --host 127.0.0.1 --port 4327 > "$RUNNER_TEMP/portrait-274-preview.log" 2>&1 &
           preview_pid=$!
           trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
           ready=0
