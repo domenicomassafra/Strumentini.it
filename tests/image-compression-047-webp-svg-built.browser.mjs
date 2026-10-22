@@ -52,7 +52,11 @@ try {
   const errors = [], offsite = [];
   page.on("pageerror", e => errors.push(e.message));
   await page.route("**/*", route => {
-    if (route.request().url().startsWith(origin) && route.request().method() === "GET") return route.continue();
+    const url = route.request().url();
+    // WebKit may resolve local Blob SVG previews through its resource loader.
+    // These URLs are local browser objects, not offsite network requests.
+    if (url.startsWith("blob:") || url.startsWith("data:") ||
+        (url.startsWith(origin) && route.request().method() === "GET")) return route.continue();
     offsite.push(route.request().url()); return route.abort();
   });
   assert.equal((await page.goto(origin + "/tools/image-compression/"))?.status(), 200);
