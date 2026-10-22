@@ -1,0 +1,51 @@
+name: STR-212 compiled image consumer (no deployment)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/str-212-acceptance.yml'
+      - 'tests/str-212-*'
+      - 'tests/image-directional-212*'
+      - 'src/engines/image/**'
+      - 'src/components/tools/image-visual/**'
+
+permissions:
+  contents: read
+
+jobs:
+  str-212-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Verify integration checkout uses the current PR head
+        env:
+          EXPECTED_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # The browser acceptance exercises GitHub's synthetic integration
+          # merge with the current target main, including the exact PR head.
+          git merge-base --is-ancestor "$EXPECTED_PR_HEAD" HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13.9'
+      - run: npm ci
+      - name: Independent GIF frame oracle
+        run: |
+          python3 -m venv "$RUNNER_TEMP/str212-python"
+          "$RUNNER_TEMP/str212-python/bin/python" -m pip install 'Pillow==12.2.0'
+          echo "$RUNNER_TEMP/str212-python/bin" >> "$GITHUB_PATH"
+      - name: Install Chromium in isolated CI runner
+        run: npx playwright install --with-deps chromium
+      - run: npx vitest run tests/image-directional-212.test.ts --maxWorkers=1
+      - run: npx vitest run tests/str-212-refusals.test.ts --maxWorkers=1
+      - run: npm run check
+      - run: npm run build
+      - run: node tests/str-212-consumer.browser.mjs
