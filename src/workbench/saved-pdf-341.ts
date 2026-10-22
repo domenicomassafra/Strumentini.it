@@ -64,18 +64,21 @@ async function checksum(bytes: Uint8Array): Promise<string> {
   return [...result].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-function openDatabase(): Promise<IDBDatabase> {
+export function openSavedPdfDatabase341(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === "undefined") { reject(errorCode("STORAGE_UNAVAILABLE")); return; }
-    const request = indexedDB.open(SAVED_PDF_DB_341, 1);
+    const request = indexedDB.open(SAVED_PDF_DB_341, 2);
     request.onupgradeneeded = () => {
       if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE, { keyPath: "id" });
+      if (!request.result.objectStoreNames.contains("projects")) request.result.createObjectStore("projects", { keyPath: "id" });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(errorCode("STORAGE_DENIED"));
     request.onblocked = () => reject(errorCode("STORAGE_BLOCKED"));
   });
 }
+
+const openDatabase = openSavedPdfDatabase341;
 
 async function readAllRecords(): Promise<{ records: readonly unknown[]; limitExceeded: boolean }> {
   const db = await openDatabase();

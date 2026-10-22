@@ -4,6 +4,7 @@ import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import { inspectPdfBytes } from "../../../engines/pdf";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { pdfNUpManifest } from "../../../tools/pdf-n-up/manifest";
+import { ResultPrimaryAnswer, ToolResultPanel } from "../shared";
 
 export function PdfNUpTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -184,11 +185,14 @@ export function PdfNUpTool() {
       <button class="primary" type="submit" disabled={!plan || busy}>{busy ? "Impaginazione locale…" : "Crea PDF n-up"}</button>
       {busy ? <button type="button" onClick={invalidate}>Annulla impaginazione</button> : null}
     </div>
-    {downloadUrl ? <section class="result-panel" data-state="success" data-nup-result>
+    {downloadUrl ? <ToolResultPanel eyebrow="PDF n-up" placeholder="Crea il PDF." state="success">
+      <div data-nup-result>
+      <ResultPrimaryAnswer label="Fogli generati">{plan?.sheetCount}</ResultPrimaryAnswer>
       <p role="status">PDF n-up generato: {plan?.sheetCount} fogli con MediaBox, immagini JPEG e firma ricontrollati.</p>
       {resultPreviewError ? <p role="alert">{resultPreviewError}</p> : null}
       {resultPreview ? <img data-nup-result-preview src={resultPreview} alt={`Foglio ${Math.min(shownSheet, plan?.sheetCount ?? 1)} del PDF prodotto, riaperto e renderizzato con PDF.js`} style={{ maxWidth: "min(100%, 320px)", display: "block" }} /> : null}
       <a href={downloadUrl} download="pdf-n-up-raster.pdf">Scarica PDF n-up</a>
-    </section> : null}
+      </div>
+    </ToolResultPanel> : null}
   </form>;
 }

@@ -15,6 +15,20 @@
       "reductionPercent": 0.5,
       "missingFoiYears": [2024],
       "totalGrossCents": null
+    },
+    {
+      "input": "2019;27000;\n2020;27000;-0,1951219512",
+      "reductionPercent": 0.5,
+      "source": "ISTAT FOI dicembre 2020 (102,3) su dicembre 2019 (102,5), coefficiente TFR 1,500000%",
+      "annualRevaluationCents": [0, 2798],
+      "totalGrossCents": 375798
+    },
+    {
+      "input": "2024;27000;\n2025;27000;1,08153078",
+      "reductionPercent": 0.5,
+      "source": "ISTAT FOI 121,5 dicembre 2025 su 120,2 dicembre 2024, coefficiente TFR 2,311148%",
+      "annualRevaluationCents": [0, 4310],
+      "totalGrossCents": 377310
     }
   ]
 }

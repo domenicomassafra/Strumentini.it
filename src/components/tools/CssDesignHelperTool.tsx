@@ -1,7 +1,7 @@
 import { useMemo, useState } from "preact/hooks";
 import type { CssDesignMode, CssDesignResult } from "../../engines/design-css";
 import { toolRuntime } from "../../runtime/tool-runtime";
-import { InlineError, ResultProvenance, ToolActions, ToolResetButton, ToolSubmitButton, useToolOperation } from "./shared";
+import { InlineError, ResultPrimaryAnswer, ResultProvenance, ToolActions, ToolResetButton, ToolSubmitButton, ToolResultPanel, useToolOperation } from "./shared";
 
 function numeric(value: string): number {
   return Number(value.replace(",", "."));
@@ -79,13 +79,16 @@ export function CssDesignHelperTool() {
         <InlineError message={operation.error} />
         <ToolActions><ToolSubmitButton busy={operation.isRunning}>Genera CSS</ToolSubmitButton><ToolResetButton onClick={reset} /></ToolActions>
       </form>
-      {operation.result !== null && <section class="result-panel" data-css-design-result>
+      {operation.result !== null && <ToolResultPanel eyebrow="Risultato CSS" placeholder="Genera il codice CSS." state="success">
+        <div data-css-design-result>
+        <ResultPrimaryAnswer label="Proprietà CSS">{operation.result.property}</ResultPrimaryAnswer>
         <div aria-label="Anteprima CSS" style={{ minHeight: "9rem", border: "1px solid currentColor", ...previewStyle }} />
         <label class="field"><span>CSS canonico</span><textarea rows={3} readOnly value={operation.result.css} /></label>
         <ToolActions><button type="button" onClick={() => void copyCss()}>Copia CSS</button></ToolActions>
         <ResultProvenance>Anteprima e testo copiato derivano dallo stesso modello validato, interamente locale e senza rete.</ResultProvenance>
         {copyStatus !== "" && <p role="status">{copyStatus}</p>}
-      </section>}
+        </div>
+      </ToolResultPanel>}
     </div>
   );
 }

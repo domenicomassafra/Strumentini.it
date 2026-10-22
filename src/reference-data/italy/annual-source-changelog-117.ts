@@ -86,6 +86,7 @@ export function assertAnnualSourceChangeLog117(
   if (entries.length === 0 || entries.length > 256) throw new Error("ANNUAL_CHANGELOG_LIMIT_117");
   const seenAt = new Map<string, number>();
   entries.forEach((entry, index) => {
+    if (entry.entryId !== entryIdOf117(entry)) throw new Error("ANNUAL_CHANGELOG_INVALID_ID_117");
     if (seenAt.has(entry.entryId)) throw new Error(`ANNUAL_CHANGELOG_DUPLICATE_117: ${entry.entryId}`);
     if (!Number.isSafeInteger(entry.taxYear) || entry.taxYear < 1900 || entry.taxYear > 2200
       || ![entry.checkedAt, entry.effectiveFrom, entry.effectiveTo].every(isIsoDate117)
@@ -129,7 +130,11 @@ export function assertAnnualSourceChangeLog117(
       throw new Error(`ANNUAL_CHANGELOG_NOT_APPEND_ONLY_117: ${entries[index]!.entryId}`);
     }
   }
-  return Object.freeze(entries.map((entry) => Object.freeze(entry)));
+  return Object.freeze(entries.map((entry) => Object.freeze({
+    ...entry,
+    sourceUrls: Object.freeze([...entry.sourceUrls]),
+    sourceHashes: Object.freeze([...entry.sourceHashes]),
+  })));
 }
 
 export const ANNUAL_SOURCE_CHANGE_LOG_117: readonly AnnualSourceChangeEntry117[] = buildEntries117();
@@ -166,7 +171,10 @@ export function auditAnnualSourceChangeLog117(
 ): AnnualSourceChangeAudit117 {
   if (!isIsoDate117(asOf)) throw new Error("ANNUAL_CHANGELOG_INVALID_DATE_117");
   const currentYear = Number(asOf.slice(0, 4));
-  const years = [...new Set([...entries.map((entry) => entry.taxYear), currentYear])]
+  const years = [...new Set([
+    ...entries.filter((entry) => entry.taxYear <= currentYear).map((entry) => entry.taxYear),
+    currentYear,
+  ])]
     .sort((left, right) => left - right);
   const yearOutcomes = years.map((taxYear): AnnualSourceYearAudit117 => {
     const checked = entries
@@ -181,7 +189,8 @@ export function auditAnnualSourceChangeLog117(
   const checkedYears = yearOutcomes.filter((row) => row.outcome === "CHECKED").map((row) => row.taxYear);
   const notRunYears = yearOutcomes.filter((row) => row.outcome === "NOT_RUN").map((row) => row.taxYear);
   const retroactiveAmendments = entries
-    .filter((entry) => entry.amendmentKind === "RETROACTIVE_AMENDMENT").map((entry) => entry.entryId);
+    .filter((entry) => entry.amendmentKind === "RETROACTIVE_AMENDMENT" && entry.checkedAt <= asOf)
+    .map((entry) => entry.entryId);
   return Object.freeze({
     asOf, currentYear, yearOutcomes: Object.freeze(yearOutcomes),
     checkedYears: Object.freeze(checkedYears), notRunYears: Object.freeze(notRunYears),

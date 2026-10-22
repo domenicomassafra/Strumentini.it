@@ -54,6 +54,7 @@ import { decodeForConversion212 } from "./first-frame-gif-212";
 import { findImageTargetSize, parseImageTarget } from "./target-size";
 import { compressPngLossless47 } from "./png-lossless-47";
 import { quantizePngPalette47 } from "./png-palette-lossy-47";
+import { conversionCanvas, refuseTransparentJpeg } from "./jpeg-alpha-policy";
 
 export interface TransformInput {
   readonly file: Blob;
@@ -238,41 +239,6 @@ export async function cropImageLocal(input: unknown, signal?: AbortSignal, progr
   return { blob, filename: outputName(file, `${width}x${height}-crop`, mime), inputMime: inspectImageHeader(new Uint8Array(await file.blob.slice(0, 2 * 1024 * 1024).arrayBuffer())).mime, outputMime: mime, width, height, estimatedBytesSaved: file.size - blob.size };
 }
 
-function canvasTransparency(canvas: HTMLCanvasElement): boolean {
-  const pixels = get2d(canvas).getImageData(0, 0, canvas.width, canvas.height).data;
-  for (let index = 3; index < pixels.length; index += 4) {
-    if ((pixels[index] ?? 255) < 255) return true;
-  }
-  return false;
-}
-
-function conversionCanvas(bitmap: ImageBitmap, mime: OutputMime, background: unknown): {
-  readonly canvas: HTMLCanvasElement;
-  readonly sourceHadAlpha: boolean;
-  readonly background: string | null;
-  readonly alphaPolicy: ImageConversionOutput["alphaPolicy"];
-} {
-  const sourceCanvas = bitmapCanvas(bitmap);
-  const sourceHadAlpha = canvasTransparency(sourceCanvas);
-  if (mime !== "image/jpeg") {
-    return { canvas: sourceCanvas, sourceHadAlpha, background: null, alphaPolicy: sourceHadAlpha ? "preserved" : "opaque-source" };
-  }
-  if (!sourceHadAlpha) {
-    return { canvas: sourceCanvas, sourceHadAlpha, background: null, alphaPolicy: "opaque-source" };
-  }
-  if (typeof background !== "string" || background.trim() === "") {
-    throw new ImageVisualError("JPEG_ALPHA_BACKGROUND_REQUIRED", "Transparent pixels require an explicit JPEG background color");
-  }
-  const color = parseHexColor(background);
-  const backgroundHex = rgbToHex(color.r, color.g, color.b);
-  const canvas = makeCanvas(bitmap.width, bitmap.height);
-  const context = get2d(canvas);
-  context.fillStyle = backgroundHex;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(bitmap, 0, 0);
-  return { canvas, sourceHadAlpha, background: backgroundHex, alphaPolicy: "flattened-on-background" };
-}
-
 export async function convertImageFormatLocal(input: unknown, signal?: AbortSignal, progress?: (value: ImageVisualProgress) => void): Promise<ImageConversionOutput> {
   const value = validateObject(input);
   const file = asFile(value.file);
@@ -383,6 +349,9 @@ export async function compressImageLocal(input: unknown, signal?: AbortSignal, p
   const mime = assertOutputMime(value.mime ?? "image/jpeg");
   const decoded = await decodeImage(file, signal, progress);
   try {
+    if (mime === "image/jpeg" && (await readHeader(file, signal)).mime !== "image/jpeg") {
+      refuseTransparentJpeg(decoded.bitmap);
+    }
     if (value.targetKiB !== undefined) {
       parseImageTarget(value.targetKiB);
       const result = await findImageTargetSize(

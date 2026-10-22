@@ -7,6 +7,7 @@ import { inspectPdfBytes } from "../../../engines/pdf";
 import { openPdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { pdfBookletInterleaveManifest } from "../../../tools/pdf-booklet-interleave/manifest";
+import { ResultPrimaryAnswer, ToolResultPanel } from "../shared";
 
 export function PdfBookletInterleave251Tool() {
   const [mode, setMode] = useState<"booklet" | "interleave">("booklet");
@@ -211,10 +212,13 @@ export function PdfBookletInterleave251Tool() {
       <button type="submit" class="primary" disabled={!plan || working}>{working ? "Composizione locale…" : "Crea PDF e verifica"}</button>
       {working ? <button type="button" onClick={invalidate}>Annulla composizione</button> : null}
     </div>
-    {downloadUrl && <section data-251-result class="result-panel" data-state="success">
+    {downloadUrl && <ToolResultPanel eyebrow="PDF verificato" placeholder="Crea il PDF." state="success">
+      <div data-251-result>
+      <ResultPrimaryAnswer label="File pronto">{name}</ResultPrimaryAnswer>
       <p role="status">PDF generato e struttura ricontrollata: {name}.</p>
       {previewUrl && <img data-251-preview src={previewUrl} alt="Prima facciata riaperta e renderizzata localmente con PDF.js" style={{ maxWidth: "min(100%, 300px)" }} />}
       <a href={downloadUrl} download={name}>Scarica PDF {mode === "booklet" ? "booklet" : "intercalato"}</a>
-    </section>}
+      </div>
+    </ToolResultPanel>}
   </form>;
 }

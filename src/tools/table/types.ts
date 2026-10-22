@@ -67,7 +67,9 @@ export type CsvSortOutput = TableSortResult & { handoff: TableHandoff };
 export interface CsvGroupCountInput { text: string; groupColumns: number[]; countColumn?: number; aggregate?: TableAggregate; caseSensitive?: boolean; nullTokens?: string[]; emptyAsNull?: boolean }
 export type CsvGroupCountOutput = TableGroupCountResult & { handoff: TableHandoff };
 export interface CsvJoinInput { leftText: string; rightText: string; leftKeyColumns: number[]; rightKeyColumns: number[]; joinType?: TableJoinType; caseSensitive?: boolean; suffix?: string; nullTokens?: string[]; emptyAsNull?: boolean; nullKeyPolicy?: TableJoinNullKeyPolicy }
-export type CsvJoinOutput = TableJoinResult & { handoff: TableHandoff };
+export type CsvJoinOutput =
+  | (TableJoinResult & { handoff: TableHandoff })
+  | (ReturnType<typeof import("../../engines/table/relations-390").mergeCsvParts390> & { handoff: TableHandoff });
 export interface CsvPivotInput { text: string; groupColumns: number[]; valueColumn?: number; valueHeaderColumn?: number; aggregateColumn?: number; aggregate?: TableAggregate; caseSensitive?: boolean; nullTokens?: string[]; emptyAsNull?: boolean }
 export type CsvPivotOutput = TablePivotResult & { handoff: TableHandoff };
 export interface CsvToJsonInput { text: string; headerPolicy?: "preserve" | "unique"; pretty?: boolean }

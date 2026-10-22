@@ -27,12 +27,6 @@ function ascii(bytes: Uint8Array, offset: number, text: string): boolean {
   return [...text].every((character, index) => bytes[offset + index] === character.charCodeAt(0));
 }
 
-function filenameExtension(file: Pick<ImageVisualFile, "name">): string {
-  const name = file.name.toLowerCase();
-  const index = name.lastIndexOf(".");
-  return index < 0 ? "" : name.slice(index + 1);
-}
-
 function bmffBrands(bytes: Uint8Array): string[] {
   if (bytes.length < 16 || !ascii(bytes, 4, "ftyp")) return [];
   const boxLength = (bytes[0]! * 0x1000000 + bytes[1]! * 0x10000 + bytes[2]! * 0x100 + bytes[3]!) >>> 0;
@@ -48,7 +42,7 @@ function bmffBrands(bytes: Uint8Array): string[] {
   return brands;
 }
 
-export function identifyPortableImage(bytes: Uint8Array, file?: Pick<ImageVisualFile, "name" | "type">): PortableImageIdentification {
+export function identifyPortableImage(bytes: Uint8Array, _file?: Pick<ImageVisualFile, "name" | "type">): PortableImageIdentification {
   if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
     return { kind: "jpeg", mime: "image/jpeg", framePolicy: "single-image", decoder: "browser" };
   }
@@ -63,26 +57,29 @@ export function identifyPortableImage(bytes: Uint8Array, file?: Pick<ImageVisual
   }
 
   const brands = bmffBrands(bytes);
-  const declared = file?.type.toLowerCase() ?? "";
-  const extension = file === undefined ? "" : filenameExtension(file);
   // AVIF image sequences carry multiple timed frames. The browser may decode
   // frame 1, but this still-only conversion path cannot preserve animation.
   // The isolated #212 AVIF capability probe already refuses this 'avis' brand.
   if (brands.includes("avis")) {
     throw new ImageVisualError("UNSUPPORTED_AVIF_SEQUENCE", "Animated AVIF sequences require an approved animation-preserving converter");
   }
-  const avif = brands.includes("avif") || declared === "image/avif" || extension === "avif";
-  if (avif) return { kind: "avif", mime: "image/avif", framePolicy: "single-image", decoder: "browser" };
-
-  const heifBrand = brands.some((brand) => ["heic", "heix", "hevc", "hevx", "heim", "heis", "mif1", "msf1"].includes(brand));
-  const heicDeclared = declared === "image/heic" || declared === "image/heif" || extension === "heic" || extension === "heif";
-  if (heifBrand || heicDeclared) {
-    const heif = declared === "image/heif" || extension === "heif";
-    // Native decoding is only available in browsers that implement HEIF.
-    // Do not bundle an LGPL libheif decoder or imply universal support.
-    return { kind: heif ? "heif" : "heic", mime: heif ? "image/heif" : "image/heic", framePolicy: "single-image", decoder: "browser" };
+  // HEVC sequence tracks have timing that a single ImageBitmap cannot retain.
+  // `msf1` is the codec-agnostic HEIF sequence brand (ISO/IEC 23008-12).
+  if (brands.some((brand) => ["hevc", "hevx", "hevm", "hevs", "msf1"].includes(brand))) {
+    throw new ImageVisualError("UNSUPPORTED_HEIC_SEQUENCE", "Timed HEIF/HEIC sequences require an approved animation-preserving converter");
   }
-  throw new ImageVisualError("UNSUPPORTED_TYPE", "Supported inputs are JPEG/JPG, PNG, WebP, AVIF, HEIC/HEIF and GIF (first frame only)");
+  // `mif1`/`msf1` only identify a generic HEIF container; neither proves HEVC.
+  // Extension and client-supplied MIME cannot establish an AVIF/HEIC codec.
+  const heic = brands.some((brand) => ["heic", "heix", "heim", "heis"].includes(brand));
+  if (brands.includes("avif") && heic) {
+    throw new ImageVisualError("AMBIGUOUS_HEIF_BRANDS", "Conflicting AVIF and HEIC codec brands cannot be safely converted");
+  }
+  if (brands.includes("avif")) return { kind: "avif", mime: "image/avif", framePolicy: "single-image", decoder: "browser" };
+  if (heic) {
+    // Only native HEVC-capable browsers can decode HEIC here. No libheif/WASM.
+    return { kind: "heic", mime: "image/heic", framePolicy: "single-image", decoder: "browser" };
+  }
+  throw new ImageVisualError("UNSUPPORTED_TYPE", "Supported signatures are JPEG/JPG, PNG, WebP, still AVIF, HEIC and GIF (first frame only)");
 }
 
 async function readIdentification(file: ImageVisualFile, signal?: AbortSignal): Promise<PortableImageIdentification> {

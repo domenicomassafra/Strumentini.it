@@ -1,13 +1,17 @@
 /**
  * Annual, full-calendar-year TFR estimate for Italian employees.
  * Art. 2120 c.c. (Legge 297/1982, art. 1): wage / 13.5 each year;
- * prior-year reserve revalued by 1.5% + 75% of annual December FOI growth.
+ * prior-year reserve revalued by 1.5% + 75% of positive annual December FOI growth.
  * The optional IVS 0.50% reduction is under Legge 297/1982, art. 3;
  * exemptions, months, advances, pension-fund transfers and tax are out of scope.
  */
 export const TFR_15_SOURCES = [
   { authority: "Normattiva", title: "Legge 297/1982, articolo 1 (art. 2120 c.c.)", url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1982-05-29;297" },
   { authority: "INPS", title: "Circolare 75/2024, riduzione IVS dello 0,50% e relativa esenzione", url: "https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2024/06/Circolare_14611/Allegati/15195_Circolare-numero-75-del-28-06-2024.pdf" },
+  { authority: "ANCE / ISTAT", title: "Coefficienti FOI dicembre 2024", url: "https://ance.it/2025/02/legge-29-maggio-1982-n-297-tfr-indice-istat-relativo-al-mese-di-dicembre-2024/" },
+  { authority: "ISTAT", title: "Indice FOI dicembre 2025", url: "https://www.istat.it/comunicato-stampa/prezzi-al-consumo-dicembre-2025/" },
+  { authority: "Assolombarda / ISTAT", title: "Coeff. TFR dicembre 2020: 1,500000% in deflazione", url: "https://www.assolombarda.it/servizi/informazioni-economiche/trattamento-di-fine-rapporto-tfr-nota-informativa-dicembre-2020" },
+  { authority: "INPS", title: "Rivalutazione del TFR e imposta sostitutiva (Circolare 194/2014)", url: "https://servizi2.inps.it/servizi/Bussola/VisualizzaDoc.aspx?Accessibile=yes&iIDLink=-1&sVirtualURL=%2FCircolari%2FCircolare+numero+194+del+30-12-2014.htm" },
 ] as const;
 
 export interface TfrAnnualInput15 {
@@ -67,7 +71,8 @@ export function calculateTfr15(rows: readonly TfrAnnualInput15[], contributionRe
         revaluationCents = null;
         if (row.foiGrowthPercent === null) missingFoiYears.push(row.year);
       } else {
-        revaluationPercent = 1.5 + 0.75 * row.foiGrowthPercent;
+        // The FOI component is an increase, floored at zero in deflationary years (e.g. 2020).
+        revaluationPercent = 1.5 + 0.75 * Math.max(0, row.foiGrowthPercent);
         revaluationCents = Math.round(reserve * revaluationPercent / 100);
         totalRevaluationCents += revaluationCents;
       }
@@ -88,7 +93,8 @@ export function parseTfrRows15(text: string): TfrAnnualInput15[] {
   if (rawLines.length < 1 || rawLines.length > 60) throw new Error("Inserisci da 1 a 60 righe, una per anno.");
   return rawLines.map((line) => {
     const parts = line.split(";").map((value) => value.trim());
-    const decimal = (value: string) => /^-?\d+(?:[.,]\d{1,6})?$/u.test(value) ? Number(value.replace(",", ".")) : NaN;
+    // FOI Dec/Dec derives from index ratios and may need more precision than an amount in EUR.
+    const decimal = (value: string) => /^-?\d+(?:[.,]\d{1,10})?$/u.test(value) ? Number(value.replace(",", ".")) : NaN;
     if (parts.length !== 3 || !/^\d{4}$/u.test(parts[0]!) || parts[1] === "") {
       throw new Error("Ogni riga deve essere: anno; retribuzione lorda; variazione FOI (es. 2024;32000;1,1). ");
     }
