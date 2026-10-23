@@ -57,6 +57,7 @@ function parseIndexedRotations(value: string): Record<number, 0 | 90 | 180 | 270
 
 export function PdfTool({ toolId, title: _title, description: _description, actionLabel: _actionLabel, inputMode = "single", optionMode = "none", accept = "application/pdf,.pdf" }: PdfToolProps) {
   const [files, setFiles] = useState<File[]>([]);
+  const singleFileInput = useRef<HTMLInputElement | null>(null);
   const [mergePagePlan, setMergePagePlan] = useState<readonly PdfMergePageRef[] | null>(null);
   const [pages, setPages] = useState("");
   const [order, setOrder] = useState("");
@@ -113,15 +114,20 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   const pendingPdfHandoff = useRef<(() => void) | null>(null);
   const controller = useRef<AbortController | null>(null);
 
-  useEffect(() => () => {
-    controller.current?.abort();
-    autoRunArmed339.current = false;
-    pendingPdfHandoff.current?.();
-    pendingPdfHandoff.current = null;
+  useEffect(() => {
+    // Recover a native pick that completed before hydration.
+    const picked = singleFileInput.current?.files;
+    if (picked?.length) setFiles([...picked]);
+    return () => {
+      controller.current?.abort();
+      autoRunArmed339.current = false;
+      pendingPdfHandoff.current?.();
+      pendingPdfHandoff.current = null;
+    };
   }, []);
 
   useEffect(() => {
-    // Read after Astro hydration: server rendering cannot inspect browser storage.
+    // Read storage after hydration.
     setAutoDownload339(readAutoDownload339(browserStorage339()));
     const onStorage = (event: StorageEvent) => {
       if (event.key === AUTO_DOWNLOAD_KEY_339 || event.key === null) setAutoDownload339(readAutoDownload339(browserStorage339()));
@@ -135,7 +141,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     const armed = autoRunArmed339.current;
     autoRunArmed339.current = false;
     if (!armed || !readAutoDownload339(browserStorage339())) return;
-    // A multi-file PDF, ZIP, text or image result requires explicit manual choice.
+    // Multi-file downloads require manual choice.
     const artifact = result.artifacts.length === 1 ? result.artifacts[0]?.artifact : undefined;
     if (artifact?.kind !== "pdf" || artifact.mime !== "application/pdf") return;
     setDownloadStatus339(requestBrowserDownload339(artifact)
@@ -167,8 +173,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     return () => { active = false; };
   }, []);
 
-  // #337: the destination consumes ephemeral bytes as a native File. No file
-  // picker, download/reupload, remote request, persistent store or auto-run.
+  // #337 receives ephemeral local bytes; no upload or automatic run.
   useEffect(() => {
     if (toolId !== "pdf-to-images") return;
     return receivePdfPagesHandoff337((received) => {
@@ -286,8 +291,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   }
 
   async function execute() {
-    // The same submit/retry must not start a second job while the first owns
-    // the controller, or record one physical operation as two successful uses.
+    // Only one active job per controller.
     if (controller.current !== null) return;
     autoRunArmed339.current = false;
     setDownloadStatus339("");
@@ -425,6 +429,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     pendingPdfHandoff.current = null;
     setHandoffMessage("");
     setFiles([]);
+    if (singleFileInput.current) singleFileInput.current.value = "";
     setMergePagePlan(null);
     setPages("");
     setOrder("");
@@ -554,8 +559,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     ? result.raw.audit as unknown as PdfFormAnnotationAudit : undefined;
   const flattenVerification = toolId === "pdf-flatten" && result !== null && result.raw.verification
     ? result.raw.verification as unknown as PdfFlattenVerification : undefined;
-  // Independent, bounded inspection of final produced bytes only. This must
-  // never update PreparedPdfResult or the download eligibility on failure.
+  // Inspect output bytes independently; failure cannot change download eligibility.
   const outputFacts = useMemo(() => result?.artifacts.slice(0, 3).map(({ artifact }) => ({
     name: artifact.name,
     facts: readOutputFacts338(artifact),
@@ -657,7 +661,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
         ) : (
           <label class="field">
             <span>{inputMode === "multi" ? "File" : publicTitle}</span>
-            <input type="file" accept={accept} multiple={inputMode === "multi" || toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort"}
+            <input ref={singleFileInput} type="file" accept={accept} multiple={inputMode === "multi" || toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort"}
               onChange={(event) => choose(event)} disabled={isWorking} />
             <small>Elaborazione su questo dispositivo, senza caricamenti né elaborazione remota alternativa.</small>
           </label>
