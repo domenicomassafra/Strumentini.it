@@ -12,10 +12,10 @@ host. L'argomento --exclusive-lease-ack STR-363 è soltanto una
 dichiarazione dell'operatore, **non dimostra un lock**. Non avviare,
 spegnere o controllare simulatori impegnati da #106, #105, #111 o dFarming.
 
-Usare Node 26, checkout dedicato con HEAD noto e consumer compilato in dist/
-nello stesso checkout. Sul MiniPC serializzare build e test con
-flock -w 1800 /tmp/strumentini-it-heavy.lock. Servire il sito statico da
-un host raggiungibile dal dispositivo. Le route reali sono
+Usare Node 26, checkout dedicato sul Mac Studio con HEAD noto e consumer
+compilato in dist/ nello stesso checkout. Il MiniPC rimane riservato ai servizi
+e ai runtime che richiedono Linux: non usarlo per npm, test o build. Acquisire
+un lock esclusivo per il dispositivo e servirgli il sito statico. Le route sono
 /tools/pdf-rotate/, /tools/image-resize/, /tools/csv-cleaner/.
 
 La cattura `capture-mobile-memory-363.mjs` non pilota il browser: rimane
@@ -28,17 +28,23 @@ riaperti indipendentemente con pdf-lib, Sharp/libvips o Python CSV, gli input
 conservano il loro SHA-256. La prova resta *parziale*: cancel/retry e preflight
 sono globali, non convalidati in ogni caso; mancano background e iOS.
 
-Prima serve `npm ci && npm run check && npm run build` su MiniPC con guardia
-resource-guard realmente ammessa, nel worktree del ticket e con Node 26.
-Dopo aver verificato lock/dispositivo e **solo se l'AVD è già booted**
-(mai avviarlo senza il lock), eseguire nel checkout:
+Sul Mac Studio, eseguire `npm ci && npm run check && npm run build`, poi i test
+mirati. La prova funzionale Chromium **desktop**, distinta da quella mobile, è:
 
-    PATH=/home/udodo/.nvm/versions/node/v26.12.0/bin:$PATH \
-    ANDROID_HOME=/home/udodo/Android/Sdk STR363_ANDROID_SERIAL=emulator-5554 \
-    python3 /home/udodo/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 120 build -- \
-    flock -w 120 /tmp/strumentini-it-heavy.lock \
-    flock -w 120 /tmp/strumentini-it-android-avd.lock \
-    node tests/str-363-consumer.browser.mjs
+    STR363_LOCAL_CHROMIUM=1 node tests/str-363-consumer.browser.mjs
+
+Questo avvio usa il Chromium Playwright già installato, con profilo effimero
+isolato. Riporta heap JS, rAF e frame di input, completa i 18 workflow desktop
+e riapre gli output; **non fornisce misure iOS/Android**.
+
+Su macOS, dopo aver verificato il lock Android, il seriale effettivo,
+Chrome installato e **solo se l'AVD è già booted**, eseguire nel checkout:
+
+    ANDROID_HOME="$HOME/Library/Android/sdk" STR363_ANDROID_SERIAL=emulator-5554 \
+      node tests/str-363-consumer.browser.mjs
+
+L'acquisizione del lock e il boot del dispositivo precedono **separatamente**
+il comando: la variabile `STR363_ANDROID_SERIAL` non prende un lock.
 
 L'output Android, se veramente eseguito, deve dichiarare
 `STR363_ANDROID_EMULATOR_PARTIAL_REVIEW_REQUIRED` e salvare il JSON parziale,
@@ -46,7 +52,7 @@ gli stdout `dumpsys meminfo` per caso, gli SHA e la revisione HTML in una
 nuova directory `quality/receipts/mobile-memory-363/observed/raw/android-consumer-*`.
 Il PSS riguarda il solo processo Chrome principale; il JS heap CDP
 riguarda il renderer collegato, e il rAF risente dell'automazione. I download
-originali restano nella directory temporanea della sessione sul MiniPC
+originali restano nella directory temporanea della sessione sul Mac Studio
 per il revisore. Nessuna attribuzione fisica né modifica della receipt 36/36
 NOT_RUN. L'iOS Simulator richiede un workflow nativo Safari separato, lock
 esclusivo e audit di output/recupero. Il consumer Android non promuove
@@ -64,9 +70,9 @@ consumer della PR #380 usava solo Chromium desktop, senza file Android nativi.
 
 ## Raccolta e parser indipendente
 
-Su MiniPC, mentre un vero workflow del browser compilato è in corso:
+Su Mac Studio, mentre un vero workflow Android compilato è in corso:
 
-    ANDROID_HOME=/home/udodo/Android/Sdk node scripts/capture-mobile-memory-363.mjs --platform ANDROID_EMULATOR --device emulator-5554 --format image --size S --phase cold --samples 15 --interval-ms 1000 --exclusive-lease-ack STR-363
+    ANDROID_HOME="$HOME/Library/Android/sdk" node scripts/capture-mobile-memory-363.mjs --platform ANDROID_EMULATOR --device emulator-5554 --format image --size S --phase cold --samples 15 --interval-ms 1000 --exclusive-lease-ack STR-363
 
 Su Mac Studio, **solo dopo** un'assegnazione iOS esclusiva:
 
@@ -95,7 +101,36 @@ confrontare lease, schermate, tracce, operazioni e output riaperti.
 Il controllo ufficiale compilato resta
 npx tsx scripts/check-mobile-memory-363.ts (BLOCKED sino a prove complete).
 
-## Disponibilità osservata il 20 ottobre 2026
+## Disponibilità e prove del 23 ottobre 2026
+
+Nel worktree Mac Studio PR #380 (HEAD `337a8ced`) `npm ci` ha installato
+582 pacchetti; Vitest acceptance/refusals 6/6, `npm run check` e `npm run
+build` sono riusciti (309 pagine, 307 metadata), così come i 18 workflow
+Chromium desktop (S/M/L, cold/warm, PDF/image/CSV e output riaperti).
+La connessione Playwright al Chrome remoto CDP è fallita (timeout sul
+CDP locale 17630, ECONNRESET sul tunnel 17629): la nuova modalità Chromium
+locale isola il consumer dai processi condivisi.
+
+L'iPhone 18 Pro iOS 27 è stato avviato sul Mac sotto lock esclusivo; Appium
+3.8.0 e XCUITest 12.19.1 hanno riconosciuto il dispositivo, ma la creazione
+della sessione Safari è rimasta in `Setting up simulator` sino al timeout
+del client. Anche `simctl openurl` ha restituito NSPOSIXErrorDomain 60
+(timeout). Il simulatore è stato spento, il lock rilasciato e i processi
+avviati per il test chiusi senza modificare il profilo. **Nessun workflow iOS
+è stato osservato**, né sono disponibili memoria/frame/input Safari validi.
+
+Per Android, il download Homebrew è rimasto bloccato senza installare
+pacchetti. Gli archivi ufficiali hanno permesso di eseguire ADB 37.0.1,
+Temurin JDK 17.0.21 e sdkmanager 20.0 in una cartella temporanea di sessione.
+L'installazione dell'emulatore 37.2.12, SDK Platform 35 e immagine Google Play
+ARM64 (Android 35) è stata **rifiutata dal gestore per licenze non accettate**:
+la shell ha ricevuto exit 0, ma sdkmanager ha indicato esplicitamente
+`Skipping following packages as the license is not accepted`. Occorre una
+decisione dell'owner sui termini SDK Google prima di proseguire; non sono
+disponibili un emulatore Android booted o Chrome Android locale. Nessun
+workflow Android è stato osservato. Lo stato ufficiale resta 36/36 NOT_RUN.
+
+## Osservazioni storiche del 20 ottobre 2026
 
 L'iPhone 18 Pro iOS 27, UDID
 8C23729B-8544-4182-AD28-75B08E9722E6, è stato avviato dalla

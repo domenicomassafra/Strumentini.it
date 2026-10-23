@@ -189,8 +189,9 @@ try {
   const endpoint = androidSerial
     ? "http://127.0.0.1:" + androidForwardPort
     : process.env.STR363_CDP_ORIGIN ?? "http://127.0.0.1:17629";
-  browser = await chromium.connectOverCDP(endpoint, { noDefaults: true });
-  context = browser.contexts()[0];
+  const local = !androidSerial && process.env.STR363_LOCAL_CHROMIUM === "1";
+  browser = local ? await chromium.launch() : await chromium.connectOverCDP(endpoint, { noDefaults: true });
+  context = local ? await browser.newContext({ acceptDownloads: true }) : browser.contexts()[0];
   assert(context, "automation-browser context unavailable");
   if (androidSerial) {
     for (let attempt = 0; attempt < 30 && !page; attempt++) {
@@ -362,6 +363,7 @@ try {
   if (page && !androidSerial) {
     try { await page.close(); } catch { /* browser may already be gone */ }
   }
+  if (!androidSerial && process.env.STR363_LOCAL_CHROMIUM === "1" && browser) await browser.close();
   if (androidSerial) {
     if (androidForwardPort) {
       try { adb("forward", "--remove", "tcp:" + androidForwardPort); }
@@ -372,9 +374,7 @@ try {
       catch { /* best-effort owned reverse release */ }
     }
   }
-  // This is an externally owned automation-browser process. Closing the CDP
-  // Browser can send Browser.close on some Playwright/agent-browser versions.
-  // Let this standalone Node process release its WebSocket at exit instead.
+  // Leave externally owned CDP browsers running.
   server.kill("SIGTERM");
   await new Promise(done => {
     if (server.exitCode !== null) return done();
@@ -382,7 +382,6 @@ try {
     setTimeout(done, 1500).unref();
   });
 }
-// The attached CDP WebSocket otherwise keeps the standalone test process alive.
-// No Browser.close command is sent to the shared automation-browser.
+// Exit without sending Browser.close to external CDP clients.
 await new Promise(resolve => process.stdout.write("", resolve));
 process.exit(0);
