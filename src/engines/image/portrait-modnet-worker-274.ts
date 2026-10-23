@@ -140,10 +140,10 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     await segmenter.dispose();
     self.postMessage({ kind: "result", bytes: result, width, height, transparent, mixed, opaque }, { transfer: [result] });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "UNKNOWN_ERROR";
+    const message = error instanceof Error ? error.message : String(error);
     // Preserve stable machine error codes; tag unexpected browser IO failures
     // so offline WebKit acceptance identifies the actual failing operation.
-    const code = /IO read operation failed|error occured reading the Blob/iu.test(message)
+    const code = /I\/?O read operation failed|error occured reading the Blob/iu.test(message)
       ? `${stage}: ${message}` : message;
     self.postMessage({ kind: "error", code: code.slice(0, 100) });
   } finally {

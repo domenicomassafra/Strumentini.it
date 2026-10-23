@@ -162,8 +162,8 @@ export function PortraitMattingPanel274() {
     } catch (error) {
       if (generation.current !== id) return;
       stop(); setBusy(false);
-      const message = error instanceof Error ? error.message : "UNKNOWN_ERROR";
-      const code = /IO read operation failed|error occured reading the Blob/iu.test(message)
+      const message = error instanceof Error ? error.message : String(error);
+      const code = /I\/?O read operation failed|error occured reading the Blob/iu.test(message)
         ? `${stage}: ${message}` : message;
       setStatus(readableError(code));
     }
