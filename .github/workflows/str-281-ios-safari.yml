@@ -33,6 +33,14 @@ jobs:
           node-version: '26'
           cache: npm
       - run: npm ci
+      - name: Derive the stale certification index from its canonical generator
+        run: npm run certification:build
+      - name: Preserve generated certification for source review
+        uses: actions/upload-artifact@v4
+        with:
+          name: str-281-derived-certification
+          path: quality/receipts/expanded-catalog-certification.json
+          retention-days: 2
       - name: Install pinned Playwright Chromium fixture generator and WebKit consumer
         run: npx playwright install chromium webkit
       - name: Verify receipt semantics
