@@ -97,12 +97,11 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       },
     });
     self.postMessage({ kind: "progress", message: "Calcolo alpha matte sul dispositivo…" });
-    // BackgroundRemovalPipeline reads its input twice. A RawImage instance is
-    // shared across those reads and its image processor may mutate it. Passing
-    // an OffscreenCanvas yields two independent RawImage copies without ever
-    // involving a Blob decoder (required for offline WebKit).
+    // BackgroundRemovalPipeline reads its input twice; the donor explicitly
+    // accepts RawImage and clones it for putAlpha(). Give each inference a copy
+    // so warmedInput is immutable, and avoid Blob decoding after going offline.
     stage = "infer";
-    const output = await segmenter(canvas);
+    const output = await segmenter(original.clone());
     if (!output || output.width !== width || output.height !== height || output.channels !== 4
       || output.data.length !== width * height * 4) throw new Error("MASK_INVALID");
     // The donor's putAlpha() replaces any alpha originally present in a PNG or
