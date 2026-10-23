@@ -1,0 +1,41 @@
+name: STR-424 browser audio acceptance
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/audio-424-browser.yml'
+      - 'src/components/tools/AudioGeneratorTool.tsx'
+      - 'src/components/tools/audio/AudioTranscodePanel424.tsx'
+      - 'src/engines/browser-audio/transcode-424.ts'
+      - 'tests/audio-transcode-424.browser.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audio-424-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-independent-playback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Install independent decoder and pinned Playwright browsers
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          npx playwright install --with-deps chromium firefox webkit
+          ffprobe -version | head -1
+      - run: npm run build
+      - name: Browser encode and independent ffmpeg playback
+        run: node tests/audio-transcode-424.browser.mjs
