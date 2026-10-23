@@ -145,6 +145,8 @@ try {
   await page.locator("#ocr395-language").selectOption("eng");
   assert.equal(await page.locator("[data-ocr-result]").count(), 0, "language change must invalidate stale IT result");
   await page.locator("#ocr246-file").setInputFiles(enSample);
+  assert.equal(await page.locator("#ocr246-rotation").inputValue(), "0",
+    "a newly selected scan must not inherit the previous Italian image rotation");
   assert.equal(allRequests.some((u) => u.endsWith("eng.traineddata.gz")), false,
     "choosing EN or its input must not eagerly fetch traineddata");
   await page.locator("[data-ocr-run]").click();

@@ -84,7 +84,8 @@ export function LocalItalianOcr246Tool() {
           cancel();
           const chosen = event.currentTarget.files?.[0] ?? null;
           setFile(chosen);
-          setStatus(chosen ? `Pronto: ${chosen.name}` : "Nessuna immagine selezionata.");
+          setRotation(0);
+          setStatus(chosen ? `Pronto: ${chosen.name}. Orientamento ripristinato a 0°.` : "Nessuna immagine selezionata.");
         }} />
       <label class="ocr246-label" for="ocr395-language">Lingua di riconoscimento</label>
       <select id="ocr395-language" value={language} aria-describedby="ocr395-language-note" disabled={active}
