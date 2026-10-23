@@ -23,6 +23,7 @@ function run(label, argumentsList, options = {}) {
       ...options,
     });
     console.log(`${label}: exit 0`);
+    process.stdout.write(output);
     return output;
   } catch (error) {
     const detail = [error.message, error.stdout?.toString(), error.stderr?.toString()].filter(Boolean).join("\n");
