@@ -75,7 +75,11 @@ try {
     });
     await page.waitForFunction(length => document.querySelector("textarea")?.value.length === length, oversizedSource.length, { timeout: 120_000 });
     await page.locator("button[data-tool-run-control]").click();
-    await page.locator('[role="alert"]').first().waitFor({ timeout: 120_000 });
+    // The page also has a hidden account-logout alert; only the CSV form's
+    // actual refusal proves that the oversized transformation was rejected.
+    const oversizedError = page.locator('.table-workbench form [data-tool-error]');
+    await oversizedError.waitFor({ timeout: 120_000 });
+    assert.match(await oversizedError.innerText(), /L'operazione non è riuscita|limite|troppe righe/iu, "oversized CSV must produce a visible error in the CSV tool");
     assert.equal(digest(await page.locator("textarea").first().inputValue()), digest(oversizedSource), "refusal preserves full original rows");
     assert.equal(await page.locator("[data-str388-apply]").count(), 0);
     assert.equal(await page.locator('[data-result-class="table"]').count(), 0);
