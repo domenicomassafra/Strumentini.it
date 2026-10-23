@@ -30,3 +30,57 @@ The same scoped workflow additionally runs `node tests/portrait-modnet-274-quant
 - **Provenance gate:** on this branch `npx tsx scripts/donor-provenance-366.ts --check` exits **0** with `failures: []` after the OCR/asset work merged into `main`; the three portrait model files are pinned to the exact Hugging Face revision and the new gate rejects any other repository, revision, path or transport. A metadata pass is not a rights clearance. Our new model/license/compiled assets are SHA-256-pinned by the #274 test and documented here, but must be incorporated into #126's authoritative redistribution graph/rights review before a public release. A local check does not grant rights.
 
 **Release decision NO_GO:** do not merge/publish/mark Gold on this evidence alone. Complete a reference-matte fidelity/IoU or boundary-error oracle with licensed mask fixtures, fp32/q8 comparison, genuine iOS/Android memory/CSP/airplane-mode cases and #126 provenance/redistribution obligations first. The image baseline 30/30 unit tests and browser simulator runs pass, but physical-device verification and weight/dataset clearing remain absent. No automatic remote fallback is permitted.
+
+**Offline WebKit PNG encoder (23/10/2026):** The runtime reuses direct
+fflate@0.8.3 (MIT, already pinned in package-lock.json and shipped by #047)
+for zlib compression, and implements only the bounded IHDR/IDAT/IEND
+adapter for exact RGBA pixels in portrait-modnet-png-274.ts. This replaces
+the WebKit 1.63.0 read-png failure at Blob.arrayBuffer() observed after
+a successful offline OffscreenCanvas.convertToBlob() (RED CI job 120165628416).
+PNG chunks follow the existing image/png-palette-lossy-47.ts strategy.
+A node:zlib independent decode and CRC check now verify pixel-exact RGBA,
+including partial alpha, in portrait-modnet-png-274.test.ts; browser decode
+remains independently required. No new dependency, weight, runtime or
+copyleft donor is added. Previous no-network attempts, including blocking
+all context requests, reproduced the WebKit I/O read error; new encoder
+acceptance must pass before promoting the PR.
+
+**Quantization readback (23/10/2026):** CI job 120161186309 compares 221184
+sampled alpha pixels on Pexels 774909. q8-versus-fp32 mean absolute alpha
+delta 3.6252803096064814/255, binary mask disagreement 0.013034396701388888;
+manual-region balanced accuracy q8 0.9956570693260415 and fp32
+0.9975872607366898. These measurements do not cover uncertain individual
+hair strands or actual mobile hardware and cannot certify Gold.
+
+The 13dbda5c browser run confirmed WebKit generated a new PNG offline;
+the next test failure was the **/* network route incorrectly counting an
+in-memory blob: preview as egress (job 120168664542). The test now blocks
+only http:/https: traffic, and still fails if any HTTP(S) request is attempted.
+
+The scoped CI run also samples Chromium RSS with its preexisting
+--rss CDP/ps collector (baseline, peak, bound 2 GiB), and independently
+reopens the fresh offline-produced PNG in each browser, validating signature,
+768x512 dimensions and person/background alpha samples.
+
+CI Chromium/Firefox now use the same pinned Playwright v1.63.0-noble
+container already validated on WebKit; jobs 120171845718 and 120171845982
+were stuck in the Playwright apt --with-deps installation step. Browser
+runtime version and test matrix stay pinned. No upstream patch is required.
+
+A dedicated #274 image-source CI job now verifies both unchanged image test
+suites, #274 constraint and PNG unit tests, Astro npm run check, and the
+canonical donor-provenance-366 check on one checkout and SHA. It stays
+independent of the global #348 changed transport fingerprint acceptance,
+whose writer must audit the modified panel and update its reviewed hash.
+
+Firefox in the pinned root Playwright container requires its child process
+HOME to be owned by root: CI job 120174473564 reported that GitHub Actions
+uses /github/home owned by pwuser and could not launch Firefox. The browser
+step alone now sets HOME=/root as recommended by the browser diagnostic;
+other CI steps retain their original environment. Chromium container
+inference and offline PNG readback passed, with CDP peak RSS 836924 KiB
+from baseline 191408 KiB in CI job 120174473493 (2 GiB bound).
+
+The image-source job generates the catalog with npm run check before testing
+image-visual-tools; CI job 120175002914 found catalog imports unavailable
+when Vitest was run first. The catalog generator is reused without changes.
