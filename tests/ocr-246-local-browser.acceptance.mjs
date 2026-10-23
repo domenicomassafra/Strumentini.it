@@ -57,8 +57,19 @@ try {
   const offsite = allRequests.filter((u) => u.startsWith("http") && new URL(u).origin !== route.origin);
   assert.deepEqual(offsite, [], `OCR browser made offsite requests: ${offsite}`);
   assert.deepEqual(runtimeErrors, [], `browser page JavaScript errors: ${runtimeErrors}`);
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth), false,
-    "390px mobile viewport should not overflow horizontally");
+  const narrowLayout = await page.evaluate(() => ({
+    viewport: window.innerWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    offenders: [...document.querySelectorAll("body *")].filter((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.width > 0 && rect.right > window.innerWidth + 1;
+    }).slice(0, 12).map((element) => ({
+      tag: element.tagName, id: element.id, className: String(element.className).slice(0, 90),
+      right: Math.ceil(element.getBoundingClientRect().right),
+    })),
+  }));
+  assert.ok(narrowLayout.scrollWidth <= narrowLayout.viewport,
+    `390px mobile viewport must not overflow: ${JSON.stringify(narrowLayout)}`);
   const downloaded = page.waitForEvent("download");
   await page.getByRole("button", { name: /Scarica TXT locale/u }).click();
   const download = await downloaded;
