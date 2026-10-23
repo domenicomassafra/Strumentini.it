@@ -16,6 +16,7 @@ function readableError(code: string): string {
 export function PortraitMattingPanel274() {
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [lastRunInput, setLastRunInput] = useState("none");
   const [status, setStatus] = useState("Modello inattivo: il download parte solo dopo il consenso.");
   const [result, setResult] = useState<{ url: string; width: number; height: number; transparent: number; opaque: number; mixed: number } | null>(null);
   const worker = useRef<Worker | null>(null);
@@ -23,9 +24,13 @@ export function PortraitMattingPanel274() {
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const generation = useRef(0);
   const resultUrl = useRef<string | null>(null);
+  const validatedInput = useRef<{ file: File; width: number; height: number } | null>(null);
+  const warmedFile = useRef<File | null>(null);
 
   function stop() {
     worker.current?.terminate(); worker.current = null;
+    warmedFile.current = null;
+    validatedInput.current = null;
     preload.current?.abort(); preload.current = null;
     if (timeout.current !== null) clearTimeout(timeout.current);
     timeout.current = null;
@@ -48,26 +53,52 @@ export function PortraitMattingPanel274() {
   }
 
   function choose(next: File | null) {
-    cancel(); clearResult(); setFile(next);
+    if (busy) cancel();
+    else generation.current++;
+    if (next !== file) {
+      warmedFile.current = null;
+      validatedInput.current = null;
+    }
+    clearResult(); setFile(next);
     setStatus("Pronto: premi Avvia per caricare modello e WASM dal sito.");
   }
 
+  function freeModelMemory() {
+    generation.current++;
+    stop();
+    setStatus("Memoria del modello liberata. Il PNG già creato rimane scaricabile.");
+  }
+
   async function start() {
-    if (!file || worker.current) return;
+    if (!file || busy) return;
     const id = ++generation.current;
+    let stage = "validate";
     setBusy(true); clearResult(); setStatus("Validazione locale dell'immagine…");
     try {
       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("UNSUPPORTED_IMAGE");
       if (file.size < 64 || file.size > PORTRAIT_MAX_FILE_BYTES) throw new Error("FILE_SIZE_LIMIT");
-      const image = await createImageBitmap(file);
-      const { width, height } = image;
-      image.close();
+      // WebKit cannot decode a Blob using createImageBitmap after a context
+      // switches offline. Reuse the dimensions and decoded pixels that this
+      // same live Worker verified during its previous successful inference.
+      const reuse = worker.current !== null && warmedFile.current === file && validatedInput.current?.file === file;
+      setLastRunInput(reuse ? "reused-worker" : "decoded-new-file");
+      stage = reuse ? "reuse-verified-input" : "decode-new-input";
+      let dimensions = validatedInput.current;
+      if (!reuse || !dimensions) {
+        const image = await createImageBitmap(file);
+        dimensions = { file, width: image.width, height: image.height };
+        image.close();
+      }
+      const { width, height } = dimensions;
       checkPortraitInput(file.size, width, height, (navigator as Navigator & { deviceMemory?: number }).deviceMemory);
       if (generation.current !== id) return;
-      const bytes = await file.arrayBuffer();
+      validatedInput.current = dimensions;
+      stage = reuse ? "reuse-worker-input" : "read-new-file";
+      const bytes = reuse ? null : await file.arrayBuffer();
       if (generation.current !== id) return;
       const preloadController = new AbortController();
       preload.current = preloadController;
+      stage = "read-model-cache";
       timeout.current = setTimeout(() => {
         if (generation.current === id) {
           stop(); setBusy(false); setStatus(readableError("TIMEOUT"));
@@ -97,7 +128,11 @@ export function PortraitMattingPanel274() {
       }
       preload.current = null;
       if (generation.current !== id) return;
-      const instance = new Worker(new URL("../../../engines/image/portrait-modnet-worker-274.ts", import.meta.url), { type: "module" });
+      stage = "post-worker-message";
+      // Keep the already loaded Worker while this page remains open. Starting a
+      // fresh module Worker would require network access even after its model
+      // files were cached, making the next offline run fail before inference.
+      const instance = worker.current ?? new Worker(new URL("../../../engines/image/portrait-modnet-worker-274.ts", import.meta.url), { type: "module" });
       worker.current = instance;
       instance.onerror = () => {
         if (generation.current !== id) return;
@@ -111,23 +146,30 @@ export function PortraitMattingPanel274() {
           stop(); setBusy(false); setStatus(readableError(message.code));
         }
         if (message.kind === "result") {
-          stop(); setBusy(false);
+          if (timeout.current !== null) clearTimeout(timeout.current);
+          timeout.current = null;
+          setBusy(false);
+          warmedFile.current = file;
           const url = URL.createObjectURL(new Blob([message.bytes], { type: "image/png" }));
           resultUrl.current = url;
           setResult({ url, width: message.width, height: message.height, transparent: message.transparent, mixed: message.mixed, opaque: message.opaque });
           setStatus("PNG RGBA decodificato e verificato localmente. Controlla visivamente capelli, contorni e sfondi complessi.");
         }
       };
-      instance.postMessage({ kind: "start", bytes, mime: file.type, memoryGB: (navigator as Navigator & { deviceMemory?: number }).deviceMemory }, [bytes]);
+      if (bytes) instance.postMessage({ kind: "start", bytes, mime: file.type, memoryGB: (navigator as Navigator & { deviceMemory?: number }).deviceMemory }, [bytes]);
+      else instance.postMessage({ kind: "start", reuse: true, mime: file.type, memoryGB: (navigator as Navigator & { deviceMemory?: number }).deviceMemory });
       setStatus("Caricamento dal sito: download autorizzato, nessuna immagine inviata in rete…");
     } catch (error) {
       if (generation.current !== id) return;
       stop(); setBusy(false);
-      setStatus(readableError(error instanceof Error ? error.message : "UNKNOWN_ERROR"));
+      const message = error instanceof Error ? error.message : String(error);
+      const code = /I\/?O read operation failed|error occured reading the Blob/iu.test(message)
+        ? `${stage}: ${message}` : message;
+      setStatus(readableError(code));
     }
   }
 
-  return <section class="tool-surface" data-portrait-274 aria-label="Laboratorio rimozione sfondo ritratto">
+  return <section class="tool-surface" data-portrait-274 data-offline-runtime="input-cache-v5" data-last-run-input={lastRunInput} aria-label="Laboratorio rimozione sfondo ritratto">
     <h2>Rimozione sfondo ritratti · esperimento locale</h2>
     <p>Solo persone e ritratti. MODNet costruisce un alpha matte per capelli e bordi tramite Transformers.js e WASM. Non è un modello per oggetti generici. Il file resta nel browser; modello quantizzato (6,6 MB) e runtime (circa 14 MB) si scaricano solo dopo Avvia, dallo stesso sito, e possono restare nella cache HTTP. Anche offline funziona soltanto dopo aver caricato gli asset in cache; la disponibilità dipende dalla cache del browser.</p>
     <p>JPG, PNG o WebP fino a 8 MiB, massimo 1600 px per lato e {PORTRAIT_MAX_PIXELS.toLocaleString("it-IT")} pixel. Richiede WebAssembly e memoria disponibile; i browser con RAM dichiarata inferiore a 4 GiB vengono rifiutati. Puoi interrompere il Worker; nessun fallback verso servizi remoti.</p>
@@ -135,6 +177,7 @@ export function PortraitMattingPanel274() {
     {file && <p>Input: {file.name} ({file.size.toLocaleString("it-IT")} byte)</p>}
     <div class="tool-actions"><button type="button" disabled={!file || busy} onClick={() => void start()}>Avvia (autorizzo il download locale)</button>
       {busy && <button type="button" onClick={cancel}>Annulla e libera memoria</button>}
+      {!busy && worker.current && <button type="button" onClick={freeModelMemory}>Libera memoria del modello</button>}
     </div>
     <p role="status" aria-live="polite">{status}</p>
     {result && <section aria-label="Risultato PNG trasparente"><h3>PNG RGBA · {result.width}×{result.height}</h3>
