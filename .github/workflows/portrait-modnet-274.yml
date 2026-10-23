@@ -79,6 +79,7 @@ jobs:
       - name: Decode real MODNet RGBA output, independent alpha oracle, CSP and cache
         env:
           BROWSER: ${{ matrix.browser }}
+          HOME: /root # Firefox must have root-owned HOME in root container
         run: |
           ./node_modules/.bin/astro preview --host 127.0.0.1 --port 4327 > "$RUNNER_TEMP/portrait-274-preview.log" 2>&1 &
           preview_pid=$!

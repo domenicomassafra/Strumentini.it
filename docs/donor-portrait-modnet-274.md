@@ -72,3 +72,11 @@ suites, #274 constraint and PNG unit tests, Astro npm run check, and the
 canonical donor-provenance-366 check on one checkout and SHA. It stays
 independent of the global #348 changed transport fingerprint acceptance,
 whose writer must audit the modified panel and update its reviewed hash.
+
+Firefox in the pinned root Playwright container requires its child process
+HOME to be owned by root: CI job 120174473564 reported that GitHub Actions
+uses /github/home owned by pwuser and could not launch Firefox. The browser
+step alone now sets HOME=/root as recommended by the browser diagnostic;
+other CI steps retain their original environment. Chromium container
+inference and offline PNG readback passed, with CDP peak RSS 836924 KiB
+from baseline 191408 KiB in CI job 120174473493 (2 GiB bound).
