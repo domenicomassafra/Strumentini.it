@@ -1,4 +1,4 @@
-/** Compiled public fiscal-source consumer, using the existing MiniPC automation-browser CDP 17629. */
+/** Compiled public fiscal-source consumer in local Chromium or an explicit CDP endpoint. */
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -23,7 +23,8 @@ let browser;
 let context;
 try {
   const origin = `http://127.0.0.1:${server.address().port}`;
-  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
+  const cdpEndpoint = process.env.STRUMENTINI_ACCEPTANCE_CDP;
+  browser = cdpEndpoint ? await chromium.connectOverCDP(cdpEndpoint) : await chromium.launch({ headless: true });
   context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
   const errors = [];
