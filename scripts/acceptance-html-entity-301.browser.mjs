@@ -101,7 +101,13 @@ try {
       assert.equal(await page.locator('[data-result-action="download"]').count(), 0, `${engine.name()}: download after invalid Unicode`);
       assert.deepEqual(offsite, [], `${engine.name()}: unexpected offsite requests`);
       assert.deepEqual(errors, [], `${engine.name()}: script errors`);
-      assert.deepEqual(consoleErrors, [], `${engine.name()}: console errors`);
+      // Global account bootstrap tries the local session endpoint. The strict
+      // test-only CSP correctly blocks it; record that refusal, fail on others.
+      const blockedAuthSessionCsp = (message) => message.includes(`${origin}/api/auth/session`)
+        && /content.security.policy/iu.test(message) && /connect-src|refused to connect|blocked/iu.test(message);
+      const authSessionCspErrors = consoleErrors.filter(blockedAuthSessionCsp);
+      const unexpectedConsoleErrors = consoleErrors.filter((message) => !blockedAuthSessionCsp(message));
+      assert.deepEqual(unexpectedConsoleErrors, [], `${engine.name()}: unexpected console errors`);
       const lazyScript = scripts.find((script) => /\/he\.[\w-]+\.js$/u.test(script));
       assert(lazyScript, `${engine.name()}: pinned he lazy chunk absent`);
       const chunkPath = resolve(dist, `.${lazyScript}`);
@@ -117,7 +123,8 @@ try {
         csp: { status: "PASS", responseHeader: csp },
         externalRequests: offsite.length,
         pageErrors: errors.length,
-        consoleErrors: consoleErrors.length,
+        consoleErrors: unexpectedConsoleErrors.length,
+        authSessionCspBlocks: authSessionCspErrors.length,
         lazyChunk: { path: lazyScript, sha256: sha256(await readFile(chunkPath)) },
       });
       console.log(`PASS ${engine.name()} ${browser.version()} 3 real UI conversions, CSP self + inline hashes/connect-src none, he lazy chunk, no egress`);
