@@ -61,3 +61,26 @@ The scoped CI run also samples Chromium RSS with its preexisting
 --rss CDP/ps collector (baseline, peak, bound 2 GiB), and independently
 reopens the fresh offline-produced PNG in each browser, validating signature,
 768x512 dimensions and person/background alpha samples.
+
+CI Chromium/Firefox now use the same pinned Playwright v1.63.0-noble
+container already validated on WebKit; jobs 120171845718 and 120171845982
+were stuck in the Playwright apt --with-deps installation step. Browser
+runtime version and test matrix stay pinned. No upstream patch is required.
+
+A dedicated #274 image-source CI job now verifies both unchanged image test
+suites, #274 constraint and PNG unit tests, Astro npm run check, and the
+canonical donor-provenance-366 check on one checkout and SHA. It stays
+independent of the global #348 changed transport fingerprint acceptance,
+whose writer must audit the modified panel and update its reviewed hash.
+
+Firefox in the pinned root Playwright container requires its child process
+HOME to be owned by root: CI job 120174473564 reported that GitHub Actions
+uses /github/home owned by pwuser and could not launch Firefox. The browser
+step alone now sets HOME=/root as recommended by the browser diagnostic;
+other CI steps retain their original environment. Chromium container
+inference and offline PNG readback passed, with CDP peak RSS 836924 KiB
+from baseline 191408 KiB in CI job 120174473493 (2 GiB bound).
+
+The image-source job generates the catalog with npm run check before testing
+image-visual-tools; CI job 120175002914 found catalog imports unavailable
+when Vitest was run first. The catalog generator is reused without changes.
