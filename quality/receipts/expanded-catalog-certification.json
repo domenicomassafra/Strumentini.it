@@ -15640,6 +15640,7 @@
           "tests/regroom-str-281.test.ts",
           "tests/release-scope-405.test.ts",
           "tests/release-validation.test.ts",
+          "tests/str-281-refusals.test.ts",
           "tests/str-336-acceptance.test.ts"
         ]
       },
