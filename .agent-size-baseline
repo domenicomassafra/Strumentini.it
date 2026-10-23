@@ -101,7 +101,7 @@
   "src/components/tools/file-privacy/FilePrivacyResultV2.tsx": 21224,
   "src/components/tools/image-visual/ImageResultV2.tsx": 31189,
   "src/components/tools/image-visual/ImageTransformWorkspaceTool.tsx": 33083,
-  "src/components/tools/image-visual/ImageVisualTool.tsx": 30721,
+  "src/components/tools/image-visual/ImageVisualTool.tsx": 28486,
   "src/components/tools/pdf/PdfResultV2.tsx": 38634,
   "src/components/tools/pdf/PdfTool.tsx": 73101,
   "src/components/tools/pdf/PdfVisualSignature241Tool.tsx": 22527,

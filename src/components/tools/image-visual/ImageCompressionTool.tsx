@@ -18,6 +18,10 @@ export function ImageCompressionTool() {
       disabled={!hydrated}
       style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}
     >
+      <p class="file-note" data-webp-capability-47>
+        WebP: compressione con perdita (lossy), trasparenza conservata se il browser la codifica correttamente.
+        WebP senza perdita (lossless) e controllo dello sforzo di codifica non disponibili con il codec Canvas corrente.
+      </p>
       <ImageVisualTool toolId="image-compression" />
       <SvgCompression47Tool />
       <ImageFamilyCapabilities028 />

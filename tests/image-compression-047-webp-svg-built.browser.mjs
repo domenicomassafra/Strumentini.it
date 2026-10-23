@@ -61,6 +61,9 @@ try {
   });
   assert.equal((await page.goto(origin + "/tools/image-compression/"))?.status(), 200);
   await page.locator("[data-image-compression-hydration-gate]:not([disabled])").waitFor();
+  const webpCapability = await page.locator("[data-webp-capability-47]").innerText();
+  assert.match(webpCapability, /WebP: compressione con perdita/);
+  assert.match(webpCapability, /WebP senza perdita .* non disponibili/);
   const form = page.locator("form").filter({ has: page.locator("[data-png-lossless-47]") });
   assert.equal(await form.count(), 1);
   // The public PNG IDAT path must also result in a real, byte-exact browser download.
