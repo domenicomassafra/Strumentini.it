@@ -148,6 +148,18 @@ print("PDFKIT_56_PAGES=\(document.pageCount) PRIVATE=\(text.contains(prv)) APPRO
   await upload.setInputFiles({ name: "too-large.txt", mimeType: "text/plain", buffer: Buffer.alloc(512 * 1024 + 1, 65) });
   await page.getByRole("alert").waitFor();
   assert.equal(await page.locator('[data-printable-result="success"]').count(), 0);
+  // The production UI must use the same validated #83 file gateway as the
+  // programmatic converter. TextDecoder alone would print disguised RTF.
+  for (const { name, mimeType, buffer, rejection } of [
+    { name: "renamed-rtf.txt", mimeType: "text/plain", buffer: Buffer.from("{\\rtf1\\ansi Questo e un documento RTF}"), rejection: "PDF56_BINARY_REFUSED" },
+    { name: "renamed-pdf.txt", mimeType: "text/plain", buffer: Buffer.from("%PDF-1.7\nNon e un file TXT"), rejection: "PDF56_BINARY_REFUSED" },
+    { name: "mismatch.txt", mimeType: "text/html", buffer: Buffer.from("testo valido ma MIME errato"), rejection: "PDF56_MIME_CONFLICT" },
+    { name: "empty.txt", mimeType: "text/plain", buffer: Buffer.alloc(0), rejection: "PDF56_INPUT_LIMIT" },
+  ]) {
+    await upload.setInputFiles({ name, mimeType, buffer });
+    await page.getByRole("alert").filter({ hasText: rejection }).waitFor();
+    assert.equal(await page.locator('[data-printable-result="success"]').count(), 0);
+  }
   console.log("PRINTABLE_56_ACTUAL_BROWSER_PYPDF_PDFMINER_PDFKIT_PASS");
 } finally {
   await browser?.close();
