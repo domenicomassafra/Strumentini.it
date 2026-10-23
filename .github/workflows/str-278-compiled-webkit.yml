@@ -1,0 +1,40 @@
+name: STR-278 compiled WebKit resize consumer
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/str-278-compiled-webkit.yml'
+      - 'tests/regroom-str-278.test.ts'
+      - 'tests/str-278-*'
+      - 'src/components/tools/image-resize/**'
+      - 'src/engines/image/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: str-278-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compiled-webkit-str278:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Install pinned WebKit consumer
+        run: npx playwright install webkit
+      - name: Verify resize and refusal contracts
+        run: npx vitest run tests/regroom-str-278.test.ts tests/str-278-refusals.test.ts --maxWorkers=1
+      - name: Build the consumer
+        run: npm run build
+      - name: Exercise compiled WebKit image resize and downloaded pixels
+        run: node tests/str-278-consumer.browser.mjs

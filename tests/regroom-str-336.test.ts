@@ -138,6 +138,15 @@ describe("STR-336 mobile Photos/Files simulator acceptance receipt", () => {
       const expected = { revision: fixture.build.revision,
         indexFile: join(root, "index.html"), evidenceDir: root };
       expect(await verifyMobilePickerArtifacts336(receipt, expected)).toEqual([]);
+      // A matching hash and PNG signature do not prove a decodable screenshot.
+      const corruptPng = Buffer.concat([png.subarray(0, 8), Buffer.alloc(96)]);
+      await writeFile(join(root, "sharing.png"), corruptPng);
+      const forged = { ...receipt, sharing: { ...receipt.sharing,
+        screenshot: { ...receipt.sharing.screenshot,
+          bytes: corruptPng.length, sha256: hash(corruptPng) } } };
+      expect(await verifyMobilePickerArtifacts336(forged, expected)).toContain(
+        "sharing.screenshot: captured evidence is not decodable PNG",
+      );
       await writeFile(join(root, "sharing.png"), Buffer.from("not a screenshot"));
       expect(await verifyMobilePickerArtifacts336(receipt, expected)).toEqual([
         "sharing.screenshot: actual bytes/hash differ from receipt",
@@ -149,7 +158,7 @@ describe("STR-336 mobile Photos/Files simulator acceptance receipt", () => {
     } finally {
       await rm(root, { recursive: true, force: true });
     }
-  });
+  }, 30_000);
   it("refuses physical claims, wrong device/browser combination, uploads and unobserved errors", () => {
     for (const incomplete of [
       { device: { ...fixture.device, physicalHardware: "PASS" } },
