@@ -1,9 +1,9 @@
-/** STR-375 independent Poppler + pdf-lib rotated crop placement acceptance. Run with tsx on MiniPC. */
+/** STR-375 independent Poppler + pdf-lib rotated crop acceptance. Run with tsx on macOS. */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import sharp from "sharp";
-import { degrees, PDFDocument } from "pdf-lib";
+import { degrees, PDFDocument, rgb } from "pdf-lib";
 import { insertPdfImage375 } from "../src/engines/pdf/image-placement-375";
 
 function render(source: Uint8Array) {
@@ -89,3 +89,63 @@ assert(Math.abs(jsChanges - changes) < changes * .35,
   "Poppler/PDF.js object geometry differs: " + changes + " vs " + jsChanges);
 console.log("PASS independent PDF.js vs Poppler: changed=" + jsChanges + "/" + changes +
   " pixels, PDF.js inside=" + jsInside + ", same crop geometry");
+
+// A solid 2x2 raster proves bounds but cannot reveal a reversed rotation or
+// incorrect alpha compositing. Check asymmetric RGBA quadrants in both renderers.
+const oriented = await PDFDocument.create();
+const orientedPage = oriented.addPage([600, 800]);
+orientedPage.setCropBox(40, 60, 420, 300);
+orientedPage.setRotation(degrees(90));
+orientedPage.drawRectangle({ x: 40, y: 60, width: 420, height: 300,
+  color: rgb(0.38, 0.38, 0.38) });
+const orientedSource = await oriented.save({ useObjectStreams: false });
+const originalOriented = orientedSource.slice();
+const rgba = Buffer.alloc(24 * 12 * 4);
+const quadrants = [
+  [235, 20, 20, 255], [30, 210, 45, 128],
+  [20, 50, 230, 255], [245, 210, 25, 96],
+] as const;
+for (let y = 0; y < 12; y++) for (let x = 0; x < 24; x++) {
+  const color = quadrants[(y >= 6 ? 2 : 0) + (x >= 12 ? 1 : 0)]!;
+  const offset = (y * 24 + x) * 4;
+  for (let channel = 0; channel < 4; channel++) rgba[offset + channel] = color[channel]!;
+}
+const asymmetricPng = new Uint8Array(await sharp(rgba, { raw: {
+  width: 24, height: 12, channels: 4,
+} }).png().toBuffer());
+const orientedPlacement = { page: 1, x: 0.12, y: 0.2, width: 0.24, rotation: 90 as const };
+const orientedOutput = await insertPdfImage375(orientedSource, asymmetricPng, orientedPlacement, "orientation.pdf");
+assert.deepEqual(orientedSource, originalOriented, "asymmetric fixture must preserve source bytes");
+const screenWidth = 300, screenHeight = 420;
+const boxWidth = screenWidth * orientedPlacement.width;
+const boxHeight = boxWidth * 2; // Rotation 90 swaps the source's 24:12 aspect ratio.
+const samples = [
+  { name: "top left blue", u: 0.25, v: 0.25, color: quadrants[2] },
+  { name: "top right red", u: 0.75, v: 0.25, color: quadrants[0] },
+  { name: "bottom left translucent yellow", u: 0.25, v: 0.75, color: quadrants[3] },
+  { name: "bottom right translucent green", u: 0.75, v: 0.75, color: quadrants[1] },
+] as const;
+const views = await Promise.all([
+  Promise.all([render(orientedSource), render(orientedOutput.bytes)]),
+  Promise.all([renderPdfJs(orientedSource), renderPdfJs(orientedOutput.bytes)]),
+]);
+function pixel(view: Awaited<ReturnType<typeof render>>, x: number, y: number): number[] {
+  const start = (y * view.info.width + x) * view.info.channels;
+  return Array.from(view.data.subarray(start, start + 3));
+}
+for (const [index, [background, composite]] of views.entries()) {
+  assert.deepEqual([composite.info.width, composite.info.height], [screenWidth, screenHeight]);
+  for (const { name, u, v, color } of samples) {
+    const x = Math.floor(orientedPlacement.x * screenWidth + u * boxWidth);
+    const y = Math.floor(orientedPlacement.y * screenHeight + v * boxHeight);
+    const before = pixel(background, x, y), after = pixel(composite, x, y);
+    const alpha = color[3] / 255;
+    for (let channel = 0; channel < 3; channel++) {
+      const expected = color[channel]! * alpha + before[channel]! * (1 - alpha);
+      assert(Math.abs(after[channel]! - expected) <= 30,
+        (index === 0 ? "Poppler" : "PDF.js") + " " + name + " channel " + channel +
+        ": expected " + Math.round(expected) + ", got " + after[channel]);
+    }
+  }
+}
+console.log("PASS asymmetric clockwise 90° + RGBA alpha: four directional quadrants in Poppler and PDF.js, source unchanged");

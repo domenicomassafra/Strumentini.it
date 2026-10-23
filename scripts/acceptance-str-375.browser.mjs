@@ -95,11 +95,16 @@ try {
         await overlay.scrollIntoViewIfNeeded();
         const box = await overlay.boundingBox();
         assert(box);
-        assert(box.y >= 0 && box.y + box.height <= viewport.height,
-          "image overlay must be within the viewport before pointer movement");
-        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+        // On a narrow screen the overlay can be taller than the visible area.
+        // Drag from the intersecting portion instead of requiring full visibility.
+        const left = Math.max(0, box.x), right = Math.min(viewport.width, box.x + box.width);
+        const top = Math.max(0, box.y), bottom = Math.min(viewport.height, box.y + box.height);
+        assert(right - left >= 12 && bottom - top >= 12,
+          "image overlay must have a draggable visible area: " + JSON.stringify(box));
+        const startX = (left + right) / 2, startY = (top + bottom) / 2;
+        await page.mouse.move(startX, startY);
         await page.mouse.down();
-        await page.mouse.move(box.x + box.width / 2 + 6, box.y + box.height / 2 + 9, { steps: 6 });
+        await page.mouse.move(startX + 6, startY + 9, { steps: 6 });
         await page.mouse.up();
         const xPercent = Number(await page.getByLabel("Posizione immagine orizzontale").inputValue());
         assert(xPercent > 12, "drag must move overlay");
