@@ -1,0 +1,51 @@
+name: OCR Italian and English browser acceptance (#154)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ocr-395-browser.yml'
+      - 'tests/ocr-246-local-browser.acceptance.mjs'
+      - 'tests/fixtures/ocr-395/**'
+      - 'src/engines/ocr/**'
+      - 'src/components/tools/ocr246/**'
+      - 'src/pages/tools/ocr-italiano-locale-246.astro'
+      - 'public/ocr-395/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Browser acceptance for the built local-only OCR route; not release admission.
+jobs:
+  chromium-ocr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - name: Exercise real Italian and English OCR, manual corrections, and refusals
+        run: |
+          ./node_modules/.bin/astro preview --host 127.0.0.1 --port 4378 > "$RUNNER_TEMP/ocr-395-preview.log" 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail --output /dev/null http://127.0.0.1:4378/tools/ocr-italiano-locale-246/; then
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat "$RUNNER_TEMP/ocr-395-preview.log"
+            exit 1
+          fi
+          node tests/ocr-246-local-browser.acceptance.mjs

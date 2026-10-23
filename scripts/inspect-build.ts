@@ -3,10 +3,29 @@ import { basename, join, relative, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
 import { groups } from "../src/catalog/groups";
 import { publicIndexPaths } from "../src/seo/public-discovery";
+import { auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
+import { auditLockedPackages366, parseAssetPins366 } from "./donor-provenance-366";
+import { auditDistributedAssets366 } from "./donor-dist-inventory-366";
 
 const root = resolve(import.meta.dirname, "..");
 const updateBaseline = process.argv.includes("--update-baseline");
 const dist = resolve(root, "dist");
+const lock = JSON.parse(await readFile(resolve(root, "package-lock.json"), "utf8"));
+const manifest = JSON.parse(await readFile(resolve(root, "package.json"), "utf8"));
+const packages366 = auditLockedPackages366(lock, manifest);
+if (packages366.failures.length > 0) {
+  throw new Error(`Distributed donor lockfile metadata unverified: ${packages366.failures.join("; ")}`);
+}
+const pins366 = parseAssetPins366(await readFile(resolve(root, "docs/donor-provenance-366-2026-10-11.md"), "utf8"));
+const distribution366 = auditDistributedAssets366(root, pins366,
+  [...packages366.rows, ...packages366.optionalInstalled], lock.packages);
+if (distribution366.failures.length > 0) {
+  throw new Error(`Distributed donor inventory unverified: ${distribution366.failures.join("; ")}`);
+}
+const noticeFailures = auditDistributedNotices366(dist);
+if (noticeFailures.length > 0) {
+  throw new Error(`Distributed donor notices are incomplete: ${noticeFailures.join("; ")}`);
+}
 const pagePath = resolve(dist, "tools/business-day/index.html");
 const page = await readFile(pagePath, "utf8");
 
@@ -30,6 +49,7 @@ const designStudyPath = "prototipi/351/index.html";
 const fiscalBoundedPath = "tools/calcoli-fiscali-italia/index.html";
 const pdfOcr247Path = "tools/pdf-scansionato-ocr-247/index.html";
 const whisper298Path = "laboratorio/trascrizione-audio/index.html";
+const portrait274Path = "laboratorio/scontorno-ritratti/index.html";
 const previewOnlyPaths = [
   "tools/codice-fiscale/index.html",
   "tools/iva-calcolo/index.html",
@@ -39,6 +59,7 @@ const previewOnlyPaths = [
   "tools/ocr-italiano-locale-246/index.html",
   pdfOcr247Path,
   whisper298Path,
+  portrait274Path,
   designStudyPath,
   fiscalBoundedPath,
 ] as const;
@@ -49,7 +70,11 @@ for (const previewPath of previewOnlyPaths) {
     throw new Error(`Unreviewed preview route promoted into index/catalog: ${previewPath}`);
   }
   const preview = htmlPages.find(({ path }) => relative(dist, path).replaceAll("\\", "/") === previewPath)?.html;
-  const sourceSafe = previewPath === whisper298Path
+  const sourceSafe = previewPath === portrait274Path
+    ? preview?.includes('data-portrait274-preview="experimental-local-only"') &&
+      preview.includes("Rimozione sfondo ritratti") && preview.includes("esperimento locale") &&
+      preview.includes("browser")
+    : previewPath === whisper298Path
     ? preview?.includes('data-whisper298-preview="experimental-local-only"') &&
       preview.includes("sperimentale") && preview.includes("browser") &&
       preview.includes("Trascrizione audio italiana")
@@ -78,7 +103,9 @@ for (const previewPath of previewOnlyPaths) {
         preview.includes("risultato parziale")
     : previewPath === fiscalBoundedPath
       ? preview?.includes('data-fiscal-t1') &&
-        preview.includes("Stipendio netto annuo") &&
+        preview.includes("Residuo nazionale parziale da RAL") &&
+        preview.includes("netto in busta paga resta non determinato") &&
+        !preview.includes("Netto annuo illustrativo") &&
         preview.includes("Regime forfettario annuale") &&
         preview.includes("2025 — fonti verificate") &&
         preview.includes("TFR maturato e rivalutazione") &&
@@ -241,6 +268,8 @@ console.log(
   `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
     `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
     `${pageMetadata.length} unique metadata page(s), ${sitemapLocations.length} sitemap entry(ies); ` +
+    `${DONOR_NOTICES_366.length} distributed donor notice(s); ` +
+    `${distribution366.verifiedFiles} pinned distribution file(s), ${distribution366.bundledPackages.length} mapped npm donor(s); ` +
     `${discoveryUrlMode}; ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );

@@ -2,42 +2,125 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { adjacentPdfPageId, movePdfPageId } from "../../../engines/pdf/page-order-controls";
 import { openPdfThumbnailSession, PDF_THUMBNAIL_WINDOW, type PdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import { PDF_LIMITS } from "../../../engines/pdf/types";
-import type { PdfWorkspaceMode372 } from "../../../engines/pdf/workspace-372";
 import { runPdfWorkspaceWorker372 } from "../../../engines/pdf/workspace-worker-client-372";
+import {
+  createPdfProjectHistory138, recordPdfProjectEdit138, stepPdfProjectHistory138,
+  validatePdfProjectHistory138, type PdfProjectHistory138, type PdfProjectEdit138,
+} from "../../../engines/pdf/project-history-138";
+import { deletePdfProject138, inspectPdfProjects138, loadPdfProject138, savePdfProject138, type PdfProjectSummary138 } from "../../../workbench/pdf-project-138";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
+import { PdfAnnotationEditor134 } from "./PdfAnnotationEditor134";
+import { PdfImagePlacement375 } from "./PdfImagePlacement375";
+import { PdfProjectControls138 } from "./PdfProjectControls138";
 
 interface Thumbnail { page: number; url?: string; error?: string }
 
 export function PdfPageWorkspace372() {
   const [file, setFile] = useState<File | null>(null);
   const [session, setSession] = useState<PdfThumbnailSession | null>(null);
-  const [order, setOrder] = useState<number[]>([]);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [history, setHistory] = useState<PdfProjectHistory138 | null>(null);
+  const restoringHistory = useRef<PdfProjectHistory138 | null>(null);
+  const edit = history?.states[history.index];
+  const order = edit?.order ?? [];
+  const selected = edit?.selected ?? [];
+  const mode = edit?.mode ?? "reorder";
+  const [projects, setProjects] = useState<readonly PdfProjectSummary138[]>([]);
+  const [projectId, setProjectId] = useState("");
+  const [unreadableProjects, setUnreadableProjects] = useState(0);
+  const [projectBusy, setProjectBusy] = useState(false);
+  const [projectMessage, setProjectMessage] = useState("");
   const [start, setStart] = useState(0);
   const [target, setTarget] = useState("1");
   const [images, setImages] = useState<Thumbnail[]>([]);
-  const [mode, setMode] = useState<PdfWorkspaceMode372>("reorder");
+  const [showAnnotator, setShowAnnotator] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<PreparedPdfResult | null>(null);
   const active = useRef<AbortController | null>(null);
   const [dragged, setDragged] = useState<number | null>(null);
 
-  function updateOrder(next: number[]) {
-    if (busy) return;
-    setOrder(next);
+  function applyEdit(next: PdfProjectEdit138) {
+    if (busy || projectBusy || session === null) return;
+    setHistory((previous) => previous === null ? previous : recordPdfProjectEdit138(previous, next, session.pageCount));
     setResult(null);
     setError("");
   }
+  function updateOrder(next: number[]) {
+    applyEdit({ order: next, selected, mode });
+  }
+  function updateSelection(next: readonly number[]) {
+    applyEdit({ order, selected: next, mode });
+  }
+  function undoRedo(delta: -1 | 1) {
+    if (busy || projectBusy) return;
+    setHistory((previous) => previous ? stepPdfProjectHistory138(previous, delta) : previous);
+    setResult(null);
+    setError("");
+  }
+  async function refreshProjects() {
+    const list = await inspectPdfProjects138();
+    setProjects(list.items);
+    setUnreadableProjects(list.unreadableCount + Number(list.limitExceeded));
+    setProjectId((previous) => list.items.some((project) => project.id === previous) ? previous : (list.items[0]?.id ?? ""));
+  }
+  async function saveProject() {
+    if (!file || !history || !session || busy || projectBusy) return;
+    setProjectBusy(true);
+    setProjectMessage("");
+    try {
+      const saved = await savePdfProject138(file, history);
+      await refreshProjects();
+      setProjectId(saved.id);
+      setProjectMessage("Progetto salvato e riletto con hash SHA-256 verificato. È una copia locale: il PDF originale resta invariato.");
+    } catch (reason) {
+      setProjectMessage("Salvataggio non riuscito, progetto corrente e originale conservati: " +
+        (reason instanceof Error ? reason.message : "spazio locale non disponibile"));
+    } finally { setProjectBusy(false); }
+  }
+  async function resumeProject() {
+    if (!projectId || busy || projectBusy) return;
+    setProjectBusy(true);
+    setProjectMessage("");
+    try {
+      const saved = await loadPdfProject138(projectId);
+      if (!saved) throw new Error("Progetto non più disponibile");
+      restoringHistory.current = saved.history;
+      setSession(null);
+      setHistory(null);
+      setShowAnnotator(false);
+      setFile(saved.file);
+      setStart(0);
+      setResult(null);
+      setError("");
+      setProjectMessage("Progetto verificato e riaperto. Sono disponibili annulla e ripristina.");
+    } catch (reason) {
+      setProjectMessage("Ripristino rifiutato, file e modifiche correnti conservati: " +
+        (reason instanceof Error ? reason.message : "progetto non valido"));
+    } finally { setProjectBusy(false); }
+  }
+  async function deleteSelectedProject() {
+    const chosen = projects.find((project) => project.id === projectId);
+    if (!chosen || busy || projectBusy || !window.confirm(`Eliminare «${chosen.name}»? Operazione irreversibile.`)) return;
+    setProjectBusy(true);
+    setProjectMessage("");
+    try {
+      await deletePdfProject138(chosen.id);
+      await refreshProjects();
+      setProjectMessage("Copia del progetto eliminata. Altri PDF conservati.");
+    } catch (reason) {
+      setProjectMessage("Eliminazione fallita: " + (reason instanceof Error ? reason.message : "archivio non disponibile"));
+    } finally { setProjectBusy(false); }
+  }
+  useEffect(() => { void refreshProjects().catch(() => setProjectMessage("Archivio locale non disponibile. Puoi continuare a modificare il PDF.")); }, []);
   function reset() {
     active.current?.abort();
     active.current = null;
     setFile(null);
     setSession(null);
-    setOrder([]);
-    setSelected([]);
+    restoringHistory.current = null;
+    setHistory(null);
     setStart(0);
-    setMode("reorder");
+    setShowAnnotator(false);
     setError("");
     setResult(null);
     setBusy(false);
@@ -49,10 +132,10 @@ export function PdfPageWorkspace372() {
     setBusy(false);
     setFile(next);
     setSession(null);
-    setOrder([]);
-    setSelected([]);
+    restoringHistory.current = null;
+    setHistory(null);
     setStart(0);
-    setMode("reorder");
+    setShowAnnotator(false);
     setResult(null);
     setError(next && next.size > PDF_LIMITS.maxBytes
       ? "PDF troppo grande: massimo 25 MiB. Il file originale non è stato modificato."
@@ -68,7 +151,10 @@ export function PdfPageWorkspace372() {
       opened = value;
       if (disposed) { void value.close(); return; }
       setSession(value);
-      setOrder(Array.from({ length: value.pageCount }, (_, index) => index + 1));
+      const restored = restoringHistory.current;
+      restoringHistory.current = null;
+      setHistory(restored && validatePdfProjectHistory138(restored, value.pageCount)
+        ? restored : createPdfProjectHistory138(value.pageCount));
     }).catch((reason) => {
       if (!disposed) setError("PDF non leggibile o non supportato: " +
         (reason instanceof Error ? reason.message : "controlla il file") + ". Originale conservato.");
@@ -116,9 +202,7 @@ export function PdfPageWorkspace372() {
 
   function toggle(page: number) {
     if (busy) return;
-    setSelected((prev) => prev.includes(page) ? prev.filter((id) => id !== page) : [...prev, page]);
-    setResult(null);
-    setError("");
+    updateSelection(selected.includes(page) ? selected.filter((id) => id !== page) : [...selected, page]);
   }
   function moveBatch(to: "begin" | "end") {
     if (busy) return;
@@ -181,7 +265,11 @@ export function PdfPageWorkspace372() {
   return (
     <section class="tool-operation" data-pdf-workspace-372>
       <section class="tool-form-card">
-        <p class="file-note">Organizza localmente un PDF, tocca le miniature per selezionare le pagine, spostale e scarica una nuova copia. Il file originale rimane invariato.</p>
+        <p class="file-note">Organizza e annota un PDF locale, riordina o estrai pagine e scarica una nuova copia. Le annotazioni vengono esportate separatamente dal riordino; la cronologia del progetto riguarda ordine, selezione e modalità. L'originale rimane invariato.</p>
+        <PdfProjectControls138 projects={projects} selectedId={projectId}
+          onSelect={setProjectId} disabled={busy || projectBusy}
+          unreadableProjects={unreadableProjects} message={projectMessage}
+          onResume={() => void resumeProject()} onDelete={() => void deleteSelectedProject()} />
         <label class="field"><span>PDF da modificare</span>
           <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={busy} aria-label="PDF da modificare" />
           <small>Massimo 25 MiB, 200 pagine. Quattro miniature per volta; nessun caricamento su server.</small>
@@ -190,8 +278,8 @@ export function PdfPageWorkspace372() {
         {error && <p role="alert">{error}</p>}
         {ready && <>
           <div class="actions" role="group" aria-label="Operazioni pagine">
-            <button type="button" disabled={busy} onClick={() => { setSelected([...order]); setResult(null); }}>Seleziona tutte</button>
-            <button type="button" disabled={busy} onClick={() => { setSelected([]); setResult(null); }}>Deseleziona</button>
+            <button type="button" disabled={busy} onClick={() => updateSelection([...order])}>Seleziona tutte</button>
+            <button type="button" disabled={busy} onClick={() => updateSelection([])}>Deseleziona</button>
             <button type="button" onClick={() => moveBatch("begin")} disabled={busy || !selected.length}>Sposta selezionate all'inizio</button>
             <button type="button" onClick={() => moveBatch("end")} disabled={busy || !selected.length}>Sposta selezionate alla fine</button>
           </div>
@@ -199,6 +287,11 @@ export function PdfPageWorkspace372() {
             <label>Posizione destinazione <input aria-label="Posizione destinazione" type="number" min="1" max={order.length} value={target} onInput={(event) => setTarget(event.currentTarget.value)} style={{ width: "5rem" }} disabled={busy} /></label>
             <button type="button" onClick={moveSelectedToPosition} disabled={busy || selected.length !== 1}>Sposta pagina selezionata qui</button>
             <button type="button" onClick={() => updateOrder([...order].reverse())} disabled={busy}>Inverti ordine</button>
+          </div>
+          <div class="actions" role="group" aria-label="Cronologia modifiche PDF">
+            <button type="button" onClick={() => undoRedo(-1)} disabled={busy || projectBusy || !history || history.index === 0}>Annulla modifica</button>
+            <button type="button" onClick={() => undoRedo(1)} disabled={busy || projectBusy || !history || history.index >= history.states.length - 1}>Ripristina modifica</button>
+            <button type="button" data-save-pdf-project onClick={() => void saveProject()} disabled={busy || projectBusy}>Salva copia del progetto su questo dispositivo</button>
           </div>
           <p role="status" data-pdf-order-status>{order.length} pagine · {selected.length} selezionate · ordine corrente: {order.slice(0, 10).join(", ")}{order.length > 10 ? "…" : ""}</p>
           <section aria-label="Miniature e ordine delle pagine" data-pdf-thumbnail-workspace data-window-size={PDF_THUMBNAIL_WINDOW}>
@@ -235,10 +328,20 @@ export function PdfPageWorkspace372() {
               })}
             </ol>
           </section>
+          <div class="actions">
+            <button type="button" onClick={() => setShowAnnotator((opened) => !opened)} disabled={busy} aria-expanded={showAnnotator}>
+              {showAnnotator ? "Chiudi editor annotazioni" : "Evidenzia, commenta e annota le pagine"}
+            </button>
+          </div>
+          {showAnnotator && file && <PdfAnnotationEditor134 file={file} pageCount={order.length} initialPage={selected[0] ?? order[0] ?? 1} />}
+          <details class="field" data-workspace-image-editor>
+            <summary>Inserisci immagine nel PDF</summary>
+            <PdfImagePlacement375 file={file!} session={session!} />
+          </details>
           <fieldset class="field">
             <legend>Risultato da creare</legend>
-            <label><input type="radio" name="workspace-mode-372" checked={mode === "reorder"} disabled={busy} onChange={() => { setMode("reorder"); setResult(null); setError(""); }} /> Riordina tutte le pagine</label>
-            <label><input type="radio" name="workspace-mode-372" checked={mode === "selected"} disabled={busy} onChange={() => { setMode("selected"); setResult(null); setError(""); }} /> Estrai solo le selezionate nell'ordine corrente</label>
+            <label><input type="radio" name="workspace-mode-372" checked={mode === "reorder"} disabled={busy} onChange={() => applyEdit({ order, selected, mode: "reorder" })} /> Riordina tutte le pagine</label>
+            <label><input type="radio" name="workspace-mode-372" checked={mode === "selected"} disabled={busy} onChange={() => applyEdit({ order, selected, mode: "selected" })} /> Estrai solo le selezionate nell'ordine corrente</label>
           </fieldset>
           <div class="actions">
             <button type="button" onClick={() => void save()} disabled={busy || mode === "selected" && !selected.length}>Crea PDF e verifica</button>

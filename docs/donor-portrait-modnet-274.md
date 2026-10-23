@@ -1,0 +1,86 @@
+# #274 — MODNet portrait-only alpha matting: provenance and NO_GO (2026-10-19)
+
+## Scope and reuse
+
+This is an **opt-in, noindex, experimental browser laboratory** at `/laboratorio/scontorno-ritratti/`, not a Gold tool or an authorized public production release. Existing conversion/crop/resize/tools are not modified. Unlike a flat background compositor, the worker performs actual portrait matting using the existing `@huggingface/transformers@4.3.1` Apache-2.0 dependency, with `onnxruntime-web` MIT, and returns PNG RGBA. No server-side image processing, no provider upload or MiniPC dependency. Inputs are limited to portraits of persons; generic object extraction is outside the donor model's scope.
+
+- Donor: [huggingface/transformers.js](https://github.com/huggingface/transformers.js/tree/4.3.1), release/tag 4.3.1 (2026-10-07), Apache-2.0, commit `511bb61a7c46b73e33f1af3fb308fbd1afe98c02`. Already present because of #298. npm tarball checksum/SRI: see [`donor-whisper-298.md`](donor-whisper-298.md); reused, not installed twice.
+- Inference: `onnxruntime-web@1.31.0-dev.20260914-8d85527a0`, MIT, npm SRI `sha512-Iy7rtadoBgxS/LLvDr3QW38DB1PNXRnr0GJMcL0TAt7c9qjgVQl83UlGCVyeAnK2InpmW8Uc3PL8XIuqtDeF6g==`. Emitted from the locked installed npm package into built assets. WASM SHA-256 `06ba057753da3847e4c24f02d91ab133455b0817c69a44993a9a53a2146df9e3` (14 MiB); `.mjs` SHA-256 `c57ca56328877353a575e51bbca6f18450027d6c9bf2307a2cb2c41363b4de9f`. The pinned [ONNX Runtime source commit](https://github.com/microsoft/onnxruntime/tree/8d85527a0) has MIT LICENSE SHA-256 `2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c`, shipped as `public/vendor/portrait-modnet/LICENSE-onnxruntime.txt`. Browser CPU/WASM with one thread, no GPU requirement; the build doesn't package the oversized asyncify fallback for this path. Full npm transitive graph is in `package-lock.json` and remains subject to #126's redistribution review.
+- Model: [Xenova/modnet](https://huggingface.co/Xenova/modnet/tree/fa2fa546052fba4c08921230a26cc69a333fca12), commit `fa2fa546052fba4c08921230a26cc69a333fca12` (model card says **Apache-2.0**). Underlying [ZHKKKe/MODNet](https://github.com/ZHKKKe/MODNet) declares **Apache-2.0**; the upstream LICENSE is distributed as `public/licenses/portrait-modnet-274-LICENSE.txt` (SHA-256 `c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4`), with `public/licenses/portrait-modnet-274-ATTRIBUTION.txt` next to it. `onnx/model_quantized.onnx` at that revision, 6,632,188 bytes, SHA-256 Git LFS oid **and independently downloaded file** `92e49898c3e05a6d7a944fc67a8cb87c4aad754ffb6ebd949528c7d1105fee3a`. Local `config.json` SHA-256 `e144d8af9b1f09649785c77f592a76bbc69504ae02e43700663b2a9f00d9c8a2`; `preprocessor_config.json` SHA-256 `07d83634b1fdd20142ca6e3fe55ab92b558f56d1b0f005ff3a7926f1c9e1165d`. The q8 weight has an fp32 companion of 25,888,640 bytes (`07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9`), not bundled; a quantitative fp32-vs-q8 mask-quality oracle is still required for Gold. **Licence chain verified 2026-10-21 (owner decision «usa repo OSS con licenza adeguata»):** the upstream rights holder [ZHKKKe/MODNet](https://github.com/ZHKKKe/MODNet) states in its README at commit `28165a451e4610c9d77cfdf925a94610bb2810fb` that "the code, models, and demos in this repository ... are released under the Apache License 2.0", and the repository's `LICENSE` (SHA-256 `c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4`) is the Apache-2.0 text; the Hugging Face conversion `Xenova/modnet` at revision `fa2fa546052fba4c08921230a26cc69a333fca12` declares `apache-2.0` in its model card. That is the primary grant for the redistributed weights. Training datasets are **not** redistributed by this site. The shipped notices are `public/licenses/portrait-modnet-274-LICENSE.txt`, `portrait-modnet-274-ATTRIBUTION.txt`, `transformers-274-Apache-2.0.txt` and `onnxruntime-web-274-MIT.txt`, all registered in `scripts/donor-notices-366.ts`, which fails the build if a notice is missing from `dist/licenses/`. The three model files are pinned in the #366 asset register to the exact Hugging Face repository and revision; the #366 gate refuses any other repository, revision, file name, credentialed URL, query string or non-HTTPS mirror (`tests/donor-provenance-366-20261021-hf-model.test.ts`). This attests licence and byte identity, not a legal opinion about every transitive dependency; #126 remains the owner-level gate.
+- Rejected: [`@imgly/background-removal@1.7.0`](https://github.com/imgly/background-removal-js) AGPL-3.0 per GitHub primary LICENSE (npm registry modified 2026-09-22; requires separate commercial/copyleft authorization); [`rembg@v2.0.85`](https://github.com/danielgatis/rembg/releases/tag/v2.0.85), 2026-09-20, MIT per GitHub primary LICENSE, is a Python/server wrapper with separate segmentation model rights and cannot serve this same-origin static portrait pipeline without an added runtime. No copyleft donor added.
+
+## Browser contract and evidence boundaries
+
+An explicit click authorizes the three model asset GETs into same-origin `CacheStorage` from the page, followed by inference in a module Worker; ONNX WASM is also served same-origin, with no CDN. The `allowRemoteModels=false` and `local_files_only=true` settings prohibit model fallbacks. WebKit experimentally discarded CacheStorage writes made by a Worker after it terminated; an independent page-to-Worker probe verified that the page can persist the same files and the Worker can read them. With `/models/**` requests blocked, warmed model files successfully re-created a PNG in **Chromium, Firefox and WebKit**; a fresh context with missing assets failed closed. These tests block the model endpoint after page load, **not** the entire network or a cold airplane-mode navigation; storage can still be evicted. Both model prefetch and inference are subject to cancellation and a combined 120-second timeout. Input JPEG/PNG/WebP up to 8 MiB, max 1600 px each side, max 2 million pixels; devices reporting <4 GiB memory are refused. Unknown memory is a hardware proof gap. Output gets independent PNG header and browser-decode dimensional verification, alpha histogram and visual preview; degenerate mattes are refused. No metadata container is copied to PNG.
+
+Fixtures: real publicly available Pexels portraits ([5965592](https://www.pexels.com/photo/5965592/), [774909](https://www.pexels.com/photo/774909/), [220453](https://www.pexels.com/photo/220453/)), obtained 2026-10-19 at width 768 under the [Pexels License](https://www.pexels.com/license/) (not facial identities or private user files). Local fixture hashes, respectively: `6702252f7f2a15d9d68c0101d01ced1d301d8625709b8773a7744da5f7d19242`, `fadee2311305700e0fe1fdac13b0ff9a053db79438c197d679a4eceb671ebae3`, `5c71ebfc46c192d68daf15ea0dc10e744a0a9c6dbd79ada25c8658b976e5c89a`. The derived RGBA sample `portrait-derived-alpha.png` (Pexels 5965592, SHA-256 `5efdd7e54b3904f0a505f921b96e16ce49a0348c2cf6a9d12f07a74f4f2dc372`) deliberately includes a clear corner and a 100/255-alpha face patch. Independent conservative human-inspected oracle `tests/fixtures/portrait-modnet-274/annotation-points.json` selects 4 person and 4 background interior coordinates per photo, separate from model predictions. Browser-decoded PNG results classified **24/24** points correctly in Chromium, Firefox and WebKit (accuracy 100% vs 50% for a constant-alpha baseline, threshold >=180 foreground / <=32 background); the derived PNG preserves transparent and semitransparent input alpha in all three. Pixel masks include hundreds of thousands of mixed-alpha pixels. These are **not** pixel-accurate full-frame ground-truth masks: hair-boundary precision and complex-background quality still need independently annotated reference masks and real-device observations.
+
+**Extended independent acceptance (2026-10-22):** `tests/fixtures/portrait-modnet-274/manual-regions.json` manually traces conservative foreground and background polygons in the original real Pexels 774909 photograph, separate from the model output, as well as four approximate left/right hairline-crossing intervals. `tests/portrait-modnet-274.browser.mjs --full` scores tens of thousands of independently labelled pixels at stride 4 against the browser-decoded PNG, reporting foreground/background recall, balanced accuracy (constant-alpha baseline 50%) and absolute alpha error. It also checks that each scanline crosses the approximate photographed hairline and contains partially transparent pixels. Ambiguous hair strands are excluded from the dense interior mask, so **this remains a partial trimap oracle, not a full-frame alpha reference or Gold hair-edge certification**. The scoped GitHub Actions workflow `portrait-modnet-274.yml` runs the existing actual inference harness independently on Chromium, Firefox and WebKit whenever its source/fixture changes; it has no deployment action. Results must be read from CI before claiming PASS.
+
+The same scoped workflow additionally runs `node tests/portrait-modnet-274-quantization.mjs` on Node 26, using the unmodified `@huggingface/transformers@4.3.1` `background-removal` pipeline twice on the identical local 774909 photograph: local 6,632,188-byte q8 model and an evaluation-only 25,888,640-byte fp32 model downloaded from the exact revision `fa2fa546052fba4c08921230a26cc69a333fca12`. It must verify SHA-256 `07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9` before running fp32, disable remote model fallback, and report independent region scores, mean absolute alpha delta and threshold-mask disagreement. Neither the fp32 weights nor intermediate images are committed or distributed. Hugging Face model source and licence are as pinned above; the fp32 temporary download is only a CI evaluation dependency. Actual result is **NOT_RUN until the CI result is inspected**.
+
+## Verification, scope and limitations
+
+- `npx vitest run tests/portrait-modnet-274.test.ts tests/image-visual-tools.test.ts tests/image-media-tools.test.ts --maxWorkers=1`: **3/3 files, 30/30 tests PASS**; byte-pinning test covers all three model files, two original license files and both installed WASM runtime assets.
+- `node tests/portrait-modnet-274.browser.mjs --full --chromium-only|--firefox-only|--webkit-only`: three ONNX portraits per browser, independent PNG readback, 24 interior reference points per browser, preexisting RGBA alpha, zero offsite requests, consent/cancel, warmed-model cache with model GETs blocked and missing-model fail-closed: **PASS all three engines** on MiniPC Linux Playwright. This does not simulate an actual iPhone or Android device.
+- `node tests/portrait-modnet-274.browser.mjs --full --chromium-only --csp`: **PASS** with a simulated restrictive document CSP allowing same-origin scripts, WASM, worker and blob image. This tests compatibility with that local policy; it is not a production-header attestation.
+- `node tests/portrait-modnet-274.browser.mjs --full --chromium-only --csp --rss`: final Linux Chromium baseline **229,352 KiB**, peak **784,080 KiB** RSS summed from CDP-reported Chromium processes, below the **2 GiB** scoped test threshold; simulated restrictive same-origin CSP passed. Approximate desktop measurement, **not** iOS/Android memory evidence.
+- `npm run check`: **0 errors, 0 warnings** (39 existing TypeScript deprecation hints); `npm run build`: **306 generated pages**, build inspection **PASS**; `npm run deploy:check`: portable and Cloudflare dry-run **PASS**. No production deploy.
+- **WebKit simulator PASS; physical Safari/mobile NOT_RUN/NO_GO.** Linux Playwright WebKit actually loaded MODNet and passed the PNG/matte/cache/abort test. This improves the previous macOS WebKit initialization failure, but does **not** certify an actual Safari/iPhone or Android device. Physical mobile performance, RSS and airplane-mode navigation remain unverified, so no Gold.
+- **Provenance gate:** on this branch `npx tsx scripts/donor-provenance-366.ts --check` exits **0** with `failures: []` after the OCR/asset work merged into `main`; the three portrait model files are pinned to the exact Hugging Face revision and the new gate rejects any other repository, revision, path or transport. A metadata pass is not a rights clearance. Our new model/license/compiled assets are SHA-256-pinned by the #274 test and documented here, but must be incorporated into #126's authoritative redistribution graph/rights review before a public release. A local check does not grant rights.
+
+**Release decision NO_GO:** do not merge/publish/mark Gold on this evidence alone. Complete a reference-matte fidelity/IoU or boundary-error oracle with licensed mask fixtures, fp32/q8 comparison, genuine iOS/Android memory/CSP/airplane-mode cases and #126 provenance/redistribution obligations first. The image baseline 30/30 unit tests and browser simulator runs pass, but physical-device verification and weight/dataset clearing remain absent. No automatic remote fallback is permitted.
+
+**Offline WebKit PNG encoder (23/10/2026):** The runtime reuses direct
+fflate@0.8.3 (MIT, already pinned in package-lock.json and shipped by #047)
+for zlib compression, and implements only the bounded IHDR/IDAT/IEND
+adapter for exact RGBA pixels in portrait-modnet-png-274.ts. This replaces
+the WebKit 1.63.0 read-png failure at Blob.arrayBuffer() observed after
+a successful offline OffscreenCanvas.convertToBlob() (RED CI job 120165628416).
+PNG chunks follow the existing image/png-palette-lossy-47.ts strategy.
+A node:zlib independent decode and CRC check now verify pixel-exact RGBA,
+including partial alpha, in portrait-modnet-png-274.test.ts; browser decode
+remains independently required. No new dependency, weight, runtime or
+copyleft donor is added. Previous no-network attempts, including blocking
+all context requests, reproduced the WebKit I/O read error; new encoder
+acceptance must pass before promoting the PR.
+
+**Quantization readback (23/10/2026):** CI job 120161186309 compares 221184
+sampled alpha pixels on Pexels 774909. q8-versus-fp32 mean absolute alpha
+delta 3.6252803096064814/255, binary mask disagreement 0.013034396701388888;
+manual-region balanced accuracy q8 0.9956570693260415 and fp32
+0.9975872607366898. These measurements do not cover uncertain individual
+hair strands or actual mobile hardware and cannot certify Gold.
+
+The 13dbda5c browser run confirmed WebKit generated a new PNG offline;
+the next test failure was the **/* network route incorrectly counting an
+in-memory blob: preview as egress (job 120168664542). The test now blocks
+only http:/https: traffic, and still fails if any HTTP(S) request is attempted.
+
+The scoped CI run also samples Chromium RSS with its preexisting
+--rss CDP/ps collector (baseline, peak, bound 2 GiB), and independently
+reopens the fresh offline-produced PNG in each browser, validating signature,
+768x512 dimensions and person/background alpha samples.
+
+CI Chromium/Firefox now use the same pinned Playwright v1.63.0-noble
+container already validated on WebKit; jobs 120171845718 and 120171845982
+were stuck in the Playwright apt --with-deps installation step. Browser
+runtime version and test matrix stay pinned. No upstream patch is required.
+
+A dedicated #274 image-source CI job now verifies both unchanged image test
+suites, #274 constraint and PNG unit tests, Astro npm run check, and the
+canonical donor-provenance-366 check on one checkout and SHA. It stays
+independent of the global #348 changed transport fingerprint acceptance,
+whose writer must audit the modified panel and update its reviewed hash.
+
+Firefox in the pinned root Playwright container requires its child process
+HOME to be owned by root: CI job 120174473564 reported that GitHub Actions
+uses /github/home owned by pwuser and could not launch Firefox. The browser
+step alone now sets HOME=/root as recommended by the browser diagnostic;
+other CI steps retain their original environment. Chromium container
+inference and offline PNG readback passed, with CDP peak RSS 836924 KiB
+from baseline 191408 KiB in CI job 120174473493 (2 GiB bound).
+
+The image-source job generates the catalog with npm run check before testing
+image-visual-tools; CI job 120175002914 found catalog imports unavailable
+when Vitest was run first. The catalog generator is reused without changes.

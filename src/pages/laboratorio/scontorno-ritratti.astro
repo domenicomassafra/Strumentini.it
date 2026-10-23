@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PortraitMattingPanel274 } from "../../components/tools/image-visual/PortraitMattingPanel274";
+import "../../components/tools/tool-surface.css";
+---
+<BaseLayout title="Laboratorio scontorno ritratti locale" description="Prototipo browser opt-in per PNG RGBA da ritratti con MODNet" noindex>
+  <main class="tool-page tool-sheet portrait274-page" data-portrait274-preview="experimental-local-only">
+    <h1>Laboratorio: scontorno locale dei ritratti</h1>
+    <p><a href="/tools/image-format-conversion/">Torna agli strumenti immagine</a></p>
+    <PortraitMattingPanel274 client:load />
+  </main>
+</BaseLayout>
+<style>
+  .portrait274-page { max-width: 950px; margin: 0 auto; padding: 2rem 1rem 4rem; display: grid; gap: 1.2rem; }
+  :global([data-portrait-274]) { display: grid; gap: 1rem; min-width: 0; overflow-wrap: anywhere; }
+  :global([data-portrait-274] .tool-actions) { display: flex; flex-wrap: wrap; gap: .7rem; }
+  :global([data-portrait-274] button) { border: 1px solid var(--line); border-radius: .55rem; padding: .6rem 1rem; cursor: pointer; }
+  :global([data-portrait-274] button:disabled) { opacity: .55; cursor: default; }
+</style>

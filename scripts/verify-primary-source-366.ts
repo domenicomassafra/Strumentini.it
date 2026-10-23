@@ -41,15 +41,17 @@ export type PrimarySource366Manifest = {
 };
 
 const SHA256 = /^[a-f0-9]{64}$/u;
-const EXPECTED_COUNT = 26; // 8 WOFF2 + 4 OFL + 14 OCR assets; no fake MIT template
+const EXPECTED_COUNT = 28; // 8 WOFF2 + 4 OFL + 16 OCR assets; no fake MIT template
 // Independently reviewed pin for the manifest *content*. Prevent changing only
 // manifest URLs/hashes/claims while continuing to get a green offline result.
 // This is an integrity check on the recorded evidence, not an upstream signature.
-export const MANIFEST_SHA256_366 = "e3e05ab3220abbf57a6bb8c1583a2b4d0c5886cb835a19a267a186e66698629b";
+export const MANIFEST_SHA256_366 = "7b1229b229073af4ce2e869bb98eff51d60b7dbe938c1bba1da054ec5be63893";
 const TESSDATA_COMMIT_366 = "806cd9adc8c6e8abc11c782db1818c990576bebc";
 const ORIGINAL_TESSDATA_COMMIT_366 = "c2b2e0df86272ce11be323f23f96cf656565ed41";
 const ORIGINAL_ITA_SHA256_366 = "795032c2e1eebdce34216acaa849e07c0583dfc0ea309dc4f2bfcb7b1cddd9e3";
 const ORIGINAL_ITA_BYTES_366 = 15_951_701; // Original 2018 revision, not current main revision
+const ORIGINAL_ENG_SHA256_366 = "daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047";
+const ORIGINAL_ENG_BYTES_366 = 23_466_654;
 const FONT_FAMILIES: Readonly<Record<string, string>> = {
   archivo: "archivo",
   inter: "inter",
@@ -115,6 +117,7 @@ function shippedFiles(root: string, canonicalRoot: string): { paths: string[]; f
   }
   visit("public/fonts");
   visit("public/ocr-246");
+  visit("public/ocr-395");
   return { paths: paths.toSorted(), failures };
 }
 
@@ -163,7 +166,8 @@ export function verifyPrimarySource366(
     paths.add(asset.path);
     const normalized = resolve(root, asset.path);
     const relativePath = relative(root, normalized);
-    if (!asset.path.startsWith("public/fonts/") && !asset.path.startsWith("public/ocr-246/") ||
+    if (!asset.path.startsWith("public/fonts/") && !asset.path.startsWith("public/ocr-246/") &&
+        !asset.path.startsWith("public/ocr-395/") ||
         relativePath.startsWith("..") || relativePath.includes(`${sep}..${sep}`) ||
         relativePath !== asset.path) {
       failures.push(`OUT_OF_SCOPE_ASSET ${asset.path}`);
@@ -191,6 +195,10 @@ export function verifyPrimarySource366(
       }
     } else if (asset.evidence === "EXACT_UPSTREAM_BYTES" &&
         !asset.path.startsWith("public/fonts/") &&
+        !(asset.path === "public/ocr-395/lang/COPYING-tessdata-Apache-2.0.txt" &&
+          asset.sourceKind === "git-immutable" &&
+          asset.sourceUrl ===
+            `https://raw.githubusercontent.com/tesseract-ocr/tessdata/${ORIGINAL_TESSDATA_COMMIT_366}/COPYING`) &&
         !(asset.path === "public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE" &&
           asset.sourceKind === "git-immutable" &&
           asset.sourceUrl ===
@@ -223,24 +231,29 @@ export function verifyPrimarySource366(
     if (asset.path === "public/ocr-246/lang/NPM-PACKAGE-MIT.LICENSE") {
       failures.push("UNATTRIBUTED_MIT_TEMPLATE_DISTRIBUTED");
     }
-    if (asset.path === "public/ocr-246/lang/ita.traineddata.gz") {
+    if (asset.path === "public/ocr-246/lang/ita.traineddata.gz" ||
+        asset.path === "public/ocr-395/lang/eng.traineddata.gz") {
+      const language = asset.path.endsWith("/eng.traineddata.gz") ? "eng" : "ita";
+      const originalSha = language === "eng" ? ORIGINAL_ENG_SHA256_366 : ORIGINAL_ITA_SHA256_366;
+      const originalBytes = language === "eng" ? ORIGINAL_ENG_BYTES_366 : ORIGINAL_ITA_BYTES_366;
+      const label = language === "eng" ? "ENGLISH" : "ITALIAN";
       if (asset.sourceKind !== "npm-tarball-sri-validated-and-git-immutable" ||
           asset.additionalUpstreamUrl !==
-            `https://raw.githubusercontent.com/naptha/tessdata/${TESSDATA_COMMIT_366}/4.0.0/ita.traineddata.gz` ||
+            `https://raw.githubusercontent.com/naptha/tessdata/${TESSDATA_COMMIT_366}/4.0.0/${language}.traineddata.gz` ||
           asset.originalUncompressedSourceUrl !==
-            `https://raw.githubusercontent.com/tesseract-ocr/tessdata/${ORIGINAL_TESSDATA_COMMIT_366}/ita.traineddata` ||
-          asset.originalUncompressedSha256 !== ORIGINAL_ITA_SHA256_366) {
-        failures.push("ITALIAN_MODEL_GIT_SOURCE_NOT_PINNED");
+            `https://raw.githubusercontent.com/tesseract-ocr/tessdata/${ORIGINAL_TESSDATA_COMMIT_366}/${language}.traineddata` ||
+          asset.originalUncompressedSha256 !== originalSha) {
+        failures.push(`${label}_MODEL_GIT_SOURCE_NOT_PINNED`);
       }
       try {
         // Cap untrusted inflation before hashing: a replaced gzip must not
         // exhaust memory even when its compressed-byte pin already failed.
-        const original = gunzipSync(bytes, { maxOutputLength: ORIGINAL_ITA_BYTES_366 });
-        if (original.byteLength !== ORIGINAL_ITA_BYTES_366 || sha256(original) !== ORIGINAL_ITA_SHA256_366) {
-          failures.push("ITALIAN_MODEL_ORIGINAL_BYTES_MISMATCH");
+        const original = gunzipSync(bytes, { maxOutputLength: originalBytes });
+        if (original.byteLength !== originalBytes || sha256(original) !== originalSha) {
+          failures.push(`${label}_MODEL_ORIGINAL_BYTES_MISMATCH`);
         }
       } catch {
-        failures.push("ITALIAN_MODEL_INVALID_GZIP");
+        failures.push(`${label}_MODEL_INVALID_GZIP`);
       }
     }
   }

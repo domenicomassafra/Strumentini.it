@@ -1,0 +1,47 @@
+name: STR-281 simulated mobile WebKit consumer
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/str-281-ios-safari.yml'
+      - 'scripts/acceptance-ios-safari-sim-281.mjs'
+      - 'scripts/generate-image-resize-physical-fixtures.ts'
+      - 'scripts/lib/ios-safari-sim-281.ts'
+      - 'tests/regroom-str-281.test.ts'
+      - 'tests/str-281-*'
+      - 'src/components/tools/image-resize/**'
+      - 'src/components/tools/audio/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: str-281-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compiled-webkit:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Install pinned Playwright Chromium fixture generator and WebKit consumer
+        run: npx playwright install chromium webkit
+      - name: Verify receipt semantics
+        run: npx vitest run tests/regroom-str-281.test.ts --maxWorkers=1
+      - name: Verify refusals preserve the original files
+        run: npx vitest run tests/str-281-refusals.test.ts --maxWorkers=1
+      - name: Build the compiled consumer
+        run: npm run build
+      - name: Replay Image Resize and Audio Generator on simulated mobile WebKit
+        run: node tests/str-281-consumer.browser.mjs
+      - name: Check catalog and TypeScript contracts
+        run: npm run check

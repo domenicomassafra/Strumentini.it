@@ -1053,9 +1053,9 @@ export const resultV2Inventory = [
     "toolId": "csv-join",
     "engine": "table-operations",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "TableWorkbench",
-      "source": "src/components/tools/table/TableWorkbench.tsx"
+      "kind": "bespoke",
+      "component": "CsvJoinTool",
+      "source": "src/components/tools/csv-join/CsvJoinTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",
@@ -3099,6 +3099,25 @@ export const resultV2Inventory = [
     "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md"
   },
   {
+    "toolId": "p7m-extract",
+    "engine": "file-privacy",
+    "rendererSeam": {
+      "kind": "bespoke",
+      "component": "P7mExtractTool",
+      "source": "src/components/tools/P7mExtractTool.tsx"
+    },
+    "resultDeclaration": {
+      "state": "declared",
+      "class": "file",
+      "capabilities": [
+        "download",
+        "reset",
+        "provenance"
+      ]
+    },
+    "migrationOwner": ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md"
+  },
+  {
     "toolId": "palette-extractor",
     "engine": "image",
     "rendererSeam": {
@@ -4637,9 +4656,9 @@ export const resultV2Inventory = [
     "toolId": "table-compare",
     "engine": "table-operations",
     "rendererSeam": {
-      "kind": "shared",
-      "component": "TableWorkbench",
-      "source": "src/components/tools/table/TableWorkbench.tsx"
+      "kind": "bespoke",
+      "component": "TableCompareTool",
+      "source": "src/components/tools/table-compare/TableCompareTool.tsx"
     },
     "resultDeclaration": {
       "state": "declared",

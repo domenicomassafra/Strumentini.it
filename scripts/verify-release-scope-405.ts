@@ -22,6 +22,7 @@ import {
   type ToolCertificationReceipt,
 } from "../src/release/validation";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 
 const execFileAsync = promisify(execFile);
 const digest = (bytes: Uint8Array | string) => createHash("sha256").update(bytes).digest("hex");
@@ -261,7 +262,7 @@ export async function inspectCurrentReleaseScope405(root: string, requestedIds: 
   const generated = await import(pathToFileURL(resolve(root, "src/generated/catalog.ts")).href) as { catalog?: ReleaseCatalogEntry[] };
   if (!Array.isArray(generated.catalog) || generated.catalog.length === 0) throw new Error("generated catalog unavailable");
   const revision = (await execFileAsync("git", ["rev-parse", "HEAD"], { cwd: root })).stdout.trim();
-  const dirty = (await execFileAsync("git", ["status", "--porcelain"], { cwd: root })).stdout.trim().length > 0;
+  const dirty = inspectReleaseWorkingTree162(root).dirty;
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
   const selectedIds = requestedIds.length === 1 && requestedIds[0] === "*"
     ? generated.catalog.map((entry) => entry.id) : requestedIds;

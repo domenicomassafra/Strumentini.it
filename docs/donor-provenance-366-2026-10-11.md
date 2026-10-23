@@ -4,7 +4,7 @@ Evidence time: 2026-10-11 Europe/Rome. **Feasibility only; NO_ADOPT and NO_GO fo
 
 ## Machine-checkable inventory
 
-Run `./node_modules/.bin/tsx scripts/donor-provenance-366.ts --check` to examine **every** non-dev lockfile package (including nested/optional platform packages), check root direct dependency metadata and transitive edges, SHA-512 SRI shapes and exact registry tarball URLs, check all 30 retained checked-in assets against independent SHA-256 pins, and classify all eight donor package snapshots. An unchanged lockfile is **metadata evidence**, not an independently downloaded npm tarball checksum. A passing metadata check is **not** a rights or adoption decision. The scripts intentionally require exact SHA and block any newly introduced unpinned vendored file.
+Run `./node_modules/.bin/tsx scripts/donor-provenance-366.ts --check` to examine **every** non-dev lockfile package (including nested/optional platform packages), check root direct dependency metadata and transitive edges, SHA-512 SRI shapes and exact registry tarball URLs, check all 33 retained checked-in assets against independent SHA-256 pins, and classify all eight donor package snapshots. An unchanged lockfile is **metadata evidence**, not an independently downloaded npm tarball checksum. A passing metadata check is **not** a rights or adoption decision. The scripts intentionally require exact SHA and block any newly introduced unpinned vendored file.
 
 The local audit snapshots from 2026-10-10 are [npm metadata](audit-2026-10-10/donor-packages.json), [authenticated repository metadata](audit-2026-10-10/donor-metadata-authenticated.json), and [candidate WASM inventory](audit-2026-10-10/donor-wasm-sizes.json). They are historical captures and contain no independent downloaded-tarball hashes for the candidate WASM files; file sizes and registry-declared `dist.integrity` are **not** proof that extracted WASM bytes match a deployed asset. The checker therefore never approves installing the candidates on the strength of these snapshots alone.
 
@@ -78,6 +78,11 @@ src/engines/video/vendor/gifenc-mit-1.0.3/LICENSE.md	1610b01533a777ff952669a7d4f
 src/engines/video/vendor/gifenc-mit-1.0.3/README.md	021ac8f1473bfd69396de7fe8d7707a4b61c19af336606ee94f6d2946121d512	LOCAL_AUTHORED	GIT	git:9b394fdfbf4d37bf54678bba762b79e7c66b3304:06cac3d38f9646465516b05b18a572d57a67c39b
 src/engines/video/vendor/gifenc-mit-1.0.3/index.d.mts	1cf412cc89e9a70fe682e2f63aa5f33e44d7d68984616ef1a2dba05c755c8581	LOCAL_AUTHORED	GIT	git:9b394fdfbf4d37bf54678bba762b79e7c66b3304:e11bd8fec69d3067fc6edec7a9a95e5607387628
 src/engines/video/vendor/gifenc-mit-1.0.3/index.mjs	217761244379253ba5815510d3048a4fb1f4c4dbe9fb51a5cfbfe26f34eec093	MIT	1.0.3	https://registry.npmjs.org/gifenc/-/gifenc-1.0.3.tgz
+public/models/portrait-modnet/config.json	e144d8af9b1f09649785c77f592a76bbc69504ae02e43700663b2a9f00d9c8a2	Apache-2.0	fa2fa546052fba4c08921230a26cc69a333fca12	https://huggingface.co/Xenova/modnet/resolve/fa2fa546052fba4c08921230a26cc69a333fca12/config.json
+public/models/portrait-modnet/preprocessor_config.json	07d83634b1fdd20142ca6e3fe55ab92b558f56d1b0f005ff3a7926f1c9e1165d	Apache-2.0	fa2fa546052fba4c08921230a26cc69a333fca12	https://huggingface.co/Xenova/modnet/resolve/fa2fa546052fba4c08921230a26cc69a333fca12/preprocessor_config.json
+public/models/portrait-modnet/onnx/model_quantized.onnx	92e49898c3e05a6d7a944fc67a8cb87c4aad754ffb6ebd949528c7d1105fee3a	Apache-2.0	fa2fa546052fba4c08921230a26cc69a333fca12	https://huggingface.co/Xenova/modnet/resolve/fa2fa546052fba4c08921230a26cc69a333fca12/onnx/model_quantized.onnx
+public/ocr-395/lang/COPYING-tessdata-Apache-2.0.txt	85c31da65107d18490666cc8e3af6373b5303fb57f82b97119d47ad219896800	Apache-2.0	1.0.0	https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/COPYING
+public/ocr-395/lang/eng.traineddata.gz	ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468	Apache-2.0	1.0.0	https://registry.npmjs.org/@tesseract.js-data/eng/-/eng-1.0.0.tgz
 <!-- ASSET-PINS-366-END -->
 
 Current source-bound usage, unresolved real distribution rights, and the

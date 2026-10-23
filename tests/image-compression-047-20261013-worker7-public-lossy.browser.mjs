@@ -59,7 +59,7 @@ try {
         return route.abort();
       });
       assert.equal((await page.goto(`${origin}/tools/image-compression/`))?.status(), 200);
-      const form = page.locator("form").last();
+      const form = page.locator("form").filter({ has: page.locator("[data-png-lossless-47]") });
       const paletteSelect = form.locator("[data-png-palette-47] select");
       assert.deepEqual(await paletteSelect.locator("option").evaluateAll((options) => options.map((option) => option.value)),
         ["off", "exact", "lossy"]);
@@ -67,7 +67,7 @@ try {
       // React form re-renders asynchronously on WebKit; wait for the real
       // public control to apply the restricted picker before asserting.
       await page.waitForFunction(() => {
-        const form = [...document.querySelectorAll("form")].at(-1);
+        const form = document.querySelector("[data-png-lossless-47]")?.closest("form");
         return form?.querySelector('input[type="file"]')?.getAttribute("accept") === "image/png,.png";
       }, undefined, { timeout: 15_000 });
       assert.equal(await form.locator("input[type=file]").getAttribute("accept"), "image/png,.png");

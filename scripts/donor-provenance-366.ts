@@ -4,12 +4,17 @@ import { createRequire } from "node:module";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { expectedAssetDistribution366 } from "./donor-asset-distributions-366";
+import { expectedAssetDistribution366, pinnedModelRevision366 } from "./donor-asset-distributions-366";
+import { validModelSource366, versionAccepted366 } from "./donor-model-source-366";
+import { parseAssetPins366, type AssetPin366 } from "./donor-asset-pins-366";
+export { parseAssetPins366 };
+export type { AssetPin366 };
 import { knownSpdx366 as knownSpdx } from "./donor-spdx-366";
 import { isLocalAuthored366, verifyLocalAuthored366 } from "./donor-local-authored-366";
 import { verifiedFontPrimary366 } from "./donor-font-primary-366";
 import { verifyPrimarySource366 } from "./verify-primary-source-366";
 import { auditForbiddenCodecs126 } from "./forbidden-codecs-126";
+import { auditPublicRuntime366 } from "./donor-public-runtime-366";
 
 const semver = createRequire(import.meta.url)("semver") as {
   validRange: (range: string) => string | null;
@@ -29,7 +34,6 @@ type LockEntry = {
 };
 type Lock = { lockfileVersion?: number; packages?: Record<string, LockEntry> };
 type Manifest = { dependencies?: Record<string, string>; devDependencies?: Record<string, string>; optionalDependencies?: Record<string, string> };
-export type AssetPin366 = { path: string; sha256: string; license: string; version: string; source: string };
 type Candidate = { name?: string; version?: string; license?: string; dist?: { integrity?: string; tarball?: string; shasum?: string }; dependencies?: Record<string, string> | null };
 type Row = { name: string; version: string; license: string; source: string; integrity: string; scope: "production" | "optional-runtime" };
 
@@ -204,11 +208,17 @@ function safeAssetPath(root: string, name: string): string | null {
 }
 function validAssetSource(asset: AssetPin366, root: string): boolean {
   if (asset.path.startsWith("public/fonts/")) return verifiedFontPrimary366(root, asset);
+  if (asset.path === "public/ocr-395/lang/COPYING-tessdata-Apache-2.0.txt") {
+    return asset.license === "Apache-2.0" &&
+      asset.version === "1.0.0" &&
+      asset.source === "https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/COPYING" &&
+      verifyPrimarySource366(root).failures.length === 0;
+  }
+  if (pinnedModelRevision366(asset.path)) return validModelSource366(asset);
   const distribution = expectedAssetDistribution366(asset.path);
   if (VENDORED_DIRS_366.some((dir) => asset.path.startsWith(dir + "/"))) {
     return !!distribution && validSource(distribution, asset.version, asset.source);
   }
-  // Preserve generic fixture behavior for callers auditing their own dirs.
   if (!URL.canParse(asset.source)) return false;
   const url = new URL(asset.source);
   return url.protocol === "https:" && url.hostname === "registry.npmjs.org" &&
@@ -216,7 +226,7 @@ function validAssetSource(asset: AssetPin366, root: string): boolean {
     url.pathname.endsWith(`-${asset.version}.tgz`) &&
     url.pathname.includes("/-/");
 }
-function allFiles(root: string, dir: string): string[] {
+export function allFiles(root: string, dir: string): string[] {
   const absolute = safeAssetPath(root, dir);
   if (!absolute || !existsSync(absolute)) return [];
   return readdirSync(absolute, { withFileTypes: true }).flatMap((entry) => {
@@ -237,16 +247,14 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     pinned.add(asset.path);
     const authored = isLocalAuthored366(asset.path);
     if (!authored && !knownSpdx(asset.license)) failures.push(`UNKNOWN_ASSET_LICENSE ${asset.path}`);
-    if (!authored && !asset.path.startsWith("public/fonts/") && !/^\d+\.\d+\.\d+(?:[-+][\w.-]+)?$/u.test(asset.version)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
+    if (!versionAccepted366(asset, authored)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
     if (!authored && !validAssetSource(asset, root)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
-    // Do not allow arbitrary vendor paths to claim first-party provenance.
     if (!authored && (asset.license === "LOCAL_AUTHORED" || asset.version === "GIT" || asset.source.startsWith("git:"))) {
       failures.push(`INVALID_LOCAL_AUTHORED ${asset.path}`);
     }
     if (!HASH_256.test(asset.sha256)) failures.push(`INVALID_ASSET_PIN ${asset.path}`);
     if (!existsSync(full)) { failures.push(`MISSING_ASSET ${asset.path}`); continue; }
     const stat = lstatSync(full);
-    // Never follow a link into owner data or attempt unlimited reads of new assets.
     if (!stat.isFile() || stat.size > 64 * 1024 * 1024) {
       failures.push(`UNSAFE_ASSET_TYPE_OR_SIZE ${asset.path}`); continue;
     }
@@ -256,15 +264,23 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     if (digest !== asset.sha256) failures.push(`ASSET_HASH_MISMATCH ${asset.path}`);
   }
   for (const dir of dirs) {
-    if (!safeAssetPath(root, dir) || !existsSync(resolve(root, dir)) ||
-      !lstatSync(resolve(root, dir)).isDirectory()) {
-      if ((dir === "public/models" || dir === "public/vendor") && !existsSync(resolve(root, dir))) continue;
-      failures.push(`MISSING_ASSET_DIRECTORY ${dir}`);
-      continue;
+    const absolute = safeAssetPath(root, dir);
+    try {
+      if (absolute && lstatSync(absolute).isDirectory()) {
+        for (const path of allFiles(root, dir)) {
+          if (!pinned.has(path)) failures.push(`UNPINNED_ASSET ${path}`);
+        }
+        continue;
+      }
     }
-    for (const path of allFiles(root, dir)) {
-      if (!pinned.has(path)) failures.push(`UNPINNED_ASSET ${path}`);
+    catch (error) {
+      if ((dir === "public/models" || dir === "public/vendor" || dir === "public/ocr-395") &&
+          (error as NodeJS.ErrnoException).code === "ENOENT") continue;
     }
+    failures.push(`MISSING_ASSET_DIRECTORY ${dir}`);
+  }
+  if (dirs.includes("public/models")) {
+    failures.push(...auditPublicRuntime366(allFiles(root, "public"), pinned));
   }
   return { status: failures.length ? "NO_GO" as const : "VERIFIED_METADATA" as const, files: assets.length, rows: assets, failures };
 }
@@ -293,19 +309,8 @@ export function auditCandidate366(candidate: Candidate, lockEntry: LockEntry | n
   return { name, version, license: candidate.license ?? "UNKNOWN", integrity: candidate.dist?.integrity ?? "UNKNOWN", source: candidate.dist?.tarball ?? "UNKNOWN", decision: "NO_ADOPT" as const, failures };
 }
 
-export function parseAssetPins366(document: string): AssetPin366[] {
-  const match = document.match(/<!-- ASSET-PINS-366-BEGIN -->([\s\S]*?)<!-- ASSET-PINS-366-END -->/u);
-  if (!match?.[1]?.trim()) throw new Error("MISSING_ASSET_PIN_REGISTER");
-  return match[1].trim().split("\n").map((line) => {
-    const parts = line.split("\t");
-    if (parts.length !== 5) throw new Error(`INVALID_ASSET_PIN_LINE ${line}`);
-    const [path = "", sha256 = "", license = "", version = "", source = ""] = parts;
-    return { path, sha256, license, version, source };
-  });
-}
-
 export const VENDORED_DIRS_366 = [
-  "public/ocr-246", "public/fonts", "src/engines/video/vendor", "public/models", "public/vendor",
+  "public/ocr-246", "public/ocr-395", "public/fonts", "src/engines/video/vendor", "public/models", "public/vendor",
 ];
 
 export function auditRepository366(root: string) {

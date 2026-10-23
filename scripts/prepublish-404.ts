@@ -12,6 +12,7 @@ import { lstat, open, readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { assertReleaseRevision404 } from "./validate-release";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 
 const execFileAsync = promisify(execFile);
 const ROOT = resolve(import.meta.dirname, "..");
@@ -23,24 +24,43 @@ export interface PrepublishStep404 {
   readonly publishes: boolean;
 }
 
-export function prepublishSteps404(expectedSha: string): readonly PrepublishStep404[] {
+/**
+ * Owner decision 20/10/2026 makes the automatic evidence (suite, browser matrix,
+ * simulator/emulator lanes, proven rollback) the release criterion. The strict
+ * per-tool Gold and physical-device admission stays available with
+ * STRUMENTINI_RELEASE_STRICT=1.
+ */
+export function releasePolicy420Enabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.STRUMENTINI_RELEASE_STRICT !== "1";
+}
+
+export function prepublishSteps404(expectedSha: string, policy420 = releasePolicy420Enabled()): readonly PrepublishStep404[] {
+  const admission: PrepublishStep404[] = policy420
+    ? [{
+        name: "owner-policy-automatic-admission", program: "node",
+        args: ["node_modules/tsx/dist/cli.mjs", "scripts/release-gate-420.ts", `--expected-sha=${expectedSha}`],
+        publishes: false,
+      }]
+    : [
+        {
+          name: "read-only-required-admission", program: "node",
+          args: ["node_modules/tsx/dist/cli.mjs", "scripts/validate-release.ts", "--no-write-receipt", "--require-ready", `--expected-sha=${expectedSha}`],
+          publishes: false,
+        },
+        // Production publishes the entire dist, so every catalog tool is in scope.
+        {
+          name: "scope-and-staging-rollback-admission", program: "node",
+          args: ["node_modules/tsx/dist/cli.mjs", "scripts/verify-release-scope-405.ts", "--all"],
+          publishes: false,
+        },
+      ];
   return [
     { name: "source-and-engine-tests", program: "npm", args: ["test", "--", "--maxWorkers=1"], publishes: false },
     { name: "python-ticket-oracle", program: "npm", args: ["run", "tickets:test"], publishes: false },
     { name: "astro-source-validation", program: "npm", args: ["run", "check"], publishes: false },
     { name: "cumulative-build", program: "npm", args: ["run", "build"], publishes: false },
     { name: "cloudflare-static-dry-run", program: "npm", args: ["run", "deploy:check"], publishes: false },
-    {
-      name: "read-only-required-admission", program: "node",
-      args: ["node_modules/tsx/dist/cli.mjs", "scripts/validate-release.ts", "--no-write-receipt", "--require-ready", `--expected-sha=${expectedSha}`],
-      publishes: false,
-    },
-    // Production publishes the entire dist, so every catalog tool is in scope.
-    {
-      name: "scope-and-staging-rollback-admission", program: "node",
-      args: ["node_modules/tsx/dist/cli.mjs", "scripts/verify-release-scope-405.ts", "--all"],
-      publishes: false,
-    },
+    ...admission,
     { name: "wrangler-production-deploy", program: "node_modules/.bin/wrangler", args: ["deploy"], publishes: true },
   ];
 }
@@ -109,26 +129,38 @@ export async function fingerprintPublicationAssets404(directory: string): Promis
  * before the ONLY publishing command. The boundary is tested with mocks. */
 export async function runPrepublish404(input: {
   expectedSha?: string | undefined;
+  /** Explicit override for tests and operators; defaults to the owner policy. */
+  policy420?: boolean | undefined;
   verifyRevision(): Promise<void>;
   snapshotAssets(): Promise<string>;
+  snapshotEvidence(): Promise<string>;
   runStep(step: PrepublishStep404): Promise<void>;
 }): Promise<void> {
   // Validate format before executing even a harmless external binary.
   assertReleaseRevision404({ expectedSha: input.expectedSha, currentSha: input.expectedSha ?? "" });
   await input.verifyRevision();
-  const steps = prepublishSteps404(input.expectedSha!);
+  const steps = prepublishSteps404(input.expectedSha!, input.policy420 ?? releasePolicy420Enabled());
   let builtAssets: string | undefined;
+  let admittedEvidence: string | undefined;
   for (const step of steps) {
     if (step.publishes) {
       if (!builtAssets) throw new Error("RELEASE_404_ASSET_SNAPSHOT_MISSING");
+      if (!admittedEvidence) throw new Error("RELEASE_404_EVIDENCE_SNAPSHOT_MISSING");
       await input.verifyRevision();
       const currentAssets = await input.snapshotAssets();
       if (currentAssets !== builtAssets) throw new Error("RELEASE_404_ASSET_CHANGED_AFTER_BUILD");
+      if (await input.snapshotEvidence() !== admittedEvidence) {
+        throw new Error("RELEASE_404_EVIDENCE_CHANGED_AFTER_ADMISSION");
+      }
     }
     await input.runStep(step);
     if (step.name === "cumulative-build") {
       builtAssets = await input.snapshotAssets();
       if (!/^[a-f0-9]{64}$/u.test(builtAssets)) throw new Error("RELEASE_404_ASSET_SNAPSHOT_INVALID");
+    }
+    if (step.name === "owner-policy-automatic-admission" || step.name === "scope-and-staging-rollback-admission") {
+      admittedEvidence = await input.snapshotEvidence();
+      if (!/^[a-f0-9]{64}$/u.test(admittedEvidence)) throw new Error("RELEASE_404_EVIDENCE_SNAPSHOT_INVALID");
     }
   }
 }
@@ -138,10 +170,9 @@ async function git(...args: string[]): Promise<string> {
 }
 
 async function verifyReleaseCandidate404(expectedSha: string): Promise<void> {
-  const [currentSha, originMainSha, dirty, remoteMain] = await Promise.all([
+  const [currentSha, originMainSha, remoteMain] = await Promise.all([
     git("rev-parse", "HEAD"),
     git("rev-parse", "refs/remotes/origin/main"),
-    git("status", "--porcelain"),
     // Fetch-less current remote identity: no local stale origin/main can
     // authorize publishing after another commit lands on GitHub.
     git("ls-remote", "--exit-code", "origin", "refs/heads/main"),
@@ -152,7 +183,7 @@ async function verifyReleaseCandidate404(expectedSha: string): Promise<void> {
   }
   assertReleaseRevision404({
     expectedSha, currentSha, githubSha: process.env.GITHUB_SHA || undefined,
-    githubRef: process.env.GITHUB_REF || undefined, dirty: dirty.length !== 0,
+    githubRef: process.env.GITHUB_REF || undefined, dirty: inspectReleaseWorkingTree162(ROOT).dirty,
   });
 }
 
@@ -174,6 +205,7 @@ async function main(): Promise<void> {
     expectedSha,
     verifyRevision: () => verifyReleaseCandidate404(expectedSha),
     snapshotAssets: () => fingerprintPublicationAssets404(resolve(ROOT, "dist")),
+    snapshotEvidence: () => fingerprintPublicationAssets404(resolve(ROOT, "quality/receipts")),
     runStep: executeStep404,
   });
 }

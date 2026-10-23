@@ -70,3 +70,13 @@ Le colonne URL e membro riportano la fonte esatta del file, non soltanto la lice
 - La PR #222 ha già risolto i **sette falsi DEV_ONLY** del lockfile e verifica i nodi optional-runtime: non sono blocker residui. Restano separati gli obblighi LGPL/MPL, il corrispondente sorgente degli altri componenti e i gate sicurezza, Gold/physical/release. Questa evidenza **non** introduce alcun donor, non promuove il prodotto a Gold e non permette il deploy.
 
 Il check offline atteso restituisce `decision: NO_GO`, `files: 26`, `exactUpstream: 26`, `unresolved: 0`, `failures: []`. Un elenco failures vuoto certifica la coerenza del registro di byte, non una clearance legale dell'intera applicazione. `donor-provenance-366.ts --check` deve continuare a rifiutare con `REDISTRIBUTION_OBLIGATIONS_NOT_CLEARED` fino alla verifica e al soddisfacimento di tali obblighi.
+
+
+## Estensione ENG #154 — 23 ottobre 2026
+
+Riuso dello stesso registro/fonti, nessun nuovo motore. La decompressione del modello inglese confronta 23.466.654 byte con SHA-256 `daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047`, upstream tessdata commit `c2b2e0df86272ce11be323f23f96cf656565ed41`. L’Apache-2.0 completa resta distribuita in `public/ocr-246/lang/UPSTREAM-APACHE-2.0.LICENSE`.
+
+- `public/ocr-395/lang/COPYING-tessdata-Apache-2.0.txt`: 691 byte, SHA-256 `85c31da65107d18490666cc8e3af6373b5303fb57f82b97119d47ad219896800`; fonte https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/COPYING; obbligo `ocr-eng`, EXACT_UPSTREAM_BYTES.
+- `public/ocr-395/lang/eng.traineddata.gz`: 10923060 byte, SHA-256 `ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468`; fonte https://registry.npmjs.org/@tesseract.js-data/eng/-/eng-1.0.0.tgz; obbligo `ocr-eng`, EXACT_UPSTREAM_BYTES.
+
+Il registro ora verifica 28 asset (26 storici più modello e COPYING ENG); `decision: NO_GO` conserva il confine della revisione legale complessiva, non certifica release o browser. La documentazione Tesseract `langPath` e la discussion upstream #921 confermano il riuso del percorso locale: https://github.com/naptha/tesseract.js/blob/master/docs/local-installation.md e https://github.com/naptha/tesseract.js/discussions/921 (consultate il 23/10/2026).

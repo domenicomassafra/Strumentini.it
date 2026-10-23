@@ -15,8 +15,8 @@ describe("STR-366 primary source assets: offline fail-closed evidence", () => {
   it("pins every shipped OCR/font asset, includes all OFL copyrights and preserves NO_GO", () => {
     expect(verifyPrimarySource366(root)).toEqual({
       decision: "NO_GO",
-      files: 26,
-      exactUpstream: 26,
+      files: 28,
+      exactUpstream: 28,
       unresolved: 0,
       failures: [],
     });
@@ -60,6 +60,14 @@ describe("STR-366 primary source assets: offline fail-closed evidence", () => {
     model.originalUncompressedSha256 = "0".repeat(64);
     expect(verifyPrimarySource366(root, altered).failures)
       .toContain("ITALIAN_MODEL_GIT_SOURCE_NOT_PINNED");
+  });
+
+  it("rejects a changed English model source even when compressed bytes still match", () => {
+    const altered = structuredClone(original);
+    const model = altered.assets.find((entry) => entry.path.endsWith("/eng.traineddata.gz"))!;
+    model.originalUncompressedSha256 = "0".repeat(64);
+    expect(verifyPrimarySource366(root, altered).failures)
+      .toContain("ENGLISH_MODEL_GIT_SOURCE_NOT_PINNED");
   });
 
   it("fails when an upstream URL is forged even if local SHA-256 remains correct", () => {

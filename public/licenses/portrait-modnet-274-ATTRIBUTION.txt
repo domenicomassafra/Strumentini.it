@@ -1,0 +1,28 @@
+Portrait matting model used by the Strumentini.it experimental laboratory.
+
+Model: Xenova/modnet at Hugging Face revision
+fa2fa546052fba4c08921230a26cc69a333fca12
+Source: https://huggingface.co/Xenova/modnet
+Model card license: Apache-2.0
+
+Original MODNet: https://github.com/ZHKKKe/MODNet, commit
+28165a451e4610c9d77cfdf925a94610bb2810fb, Apache-2.0. Upstream states that
+"the code, models, and demos in this repository" are Apache-2.0; that statement
+is the primary license grant for the released checkpoints. The training
+datasets are not redistributed with this site. A copy of the license text ships
+as /licenses/portrait-modnet-274-LICENSE.txt.
+
+Quantized ONNX file: /models/portrait-modnet/onnx/model_quantized.onnx
+SHA-256: 92e49898c3e05a6d7a944fc67a8cb87c4aad754ffb6ebd949528c7d1105fee3a
+
+Browser inference: @huggingface/transformers 4.3.1 (Apache-2.0)
+https://github.com/huggingface/transformers.js
+License: /licenses/transformers-274-Apache-2.0.txt
+
+Runtime: onnxruntime-web 1.31.0-dev.20260914-8d85527a0 (MIT)
+https://github.com/microsoft/onnxruntime
+License: /licenses/onnxruntime-web-274-MIT.txt
+
+Exact transitive source pins are documented in the source repository's
+docs/donor-portrait-modnet-274.md. This attribution does not confer Gold,
+release admission or a legal opinion beyond the cited upstream grants.

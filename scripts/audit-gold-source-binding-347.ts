@@ -16,6 +16,7 @@ import { relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } from "./lib/current-revision";
+import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 import { validateGoldReceipts, type ToolCertificationReceipt } from "../src/release/validation";
 
 const execFileAsync = promisify(execFile);
@@ -234,7 +235,7 @@ export async function inspectGoldBinding347(root: string): Promise<AuditGoldResu
     qualityModule.qualityIndex.tools, searchModule.searchCatalog);
   const git = (args: string[]) => execFileAsync("git", args, { cwd: root });
   const revision = (await git(["rev-parse", "HEAD"])).stdout.trim();
-  const workingTreeDirty = (await git(["status", "--porcelain"])).stdout.trim().length > 0;
+  const workingTreeDirty = inspectReleaseWorkingTree162(root).dirty;
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
   const dir = resolve(root, "quality/receipts");
   const receipts: ReceiptEvidence347[] = [];

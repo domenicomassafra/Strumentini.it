@@ -1,6 +1,6 @@
-import { TableWorkbench } from "../table/TableWorkbench";
+import { TableRelations390 } from "../table-relations-390/TableRelations390";
 import { tableCompareManifest } from "../../../tools/table-compare/manifest";
 
 export function TableCompareTool() {
-  return <TableWorkbench toolId={tableCompareManifest.id} title="Table Compare" description="Compare two CSV tables by explicit keys and columns." mode="compare" manifest={tableCompareManifest} />;
+  return <TableRelations390 kind="compare" manifest={tableCompareManifest} />;
 }

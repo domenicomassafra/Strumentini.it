@@ -165,12 +165,14 @@ describe("ticket 60 CSV/table upgrade gate", () => {
     const cleanerSource = readFileSync(new URL("../src/components/tools/csv-cleaner/CsvCleanerTool.tsx", import.meta.url), "utf8");
     const dedupeSource = readFileSync(new URL("../src/components/tools/csv-dedupe/CsvDedupeTool.tsx", import.meta.url), "utf8");
     const workbenchSource = readFileSync(new URL("../src/components/tools/table/TableWorkbench.tsx", import.meta.url), "utf8");
+    const workbenchSummarySource = readFileSync(new URL("../src/components/tools/table/TableSummary388.ts", import.meta.url), "utf8");
 
     expect(cleanerSource).toContain("Righe dati modificate");
     expect(cleanerSource).toContain("Celle modificate");
     expect(dedupeSource).toContain("Righe dati interessate");
     expect(dedupeSource).toContain("Celle rimosse");
-    expect(workbenchSource).toContain("interruzioni riga normalizzate");
-    expect(workbenchSource).toContain("caratteri sostitutivi");
+    expect(workbenchSource).toContain("resultSummary");
+    expect(workbenchSummarySource).toContain("interruzioni riga normalizzate");
+    expect(workbenchSummarySource).toContain("caratteri sostitutivi");
   });
 });

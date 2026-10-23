@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { toolRuntime } from "../../../runtime/tool-runtime";
-import { receivePngCompressionHandoff337 } from "../../../runtime/ephemeral-file-handoff-337";
+import { receiveImageCompressionHandoff028 } from "../../../runtime/ephemeral-file-handoff-337";
 import { AUTO_DOWNLOAD_KEY_339, browserStorage339, changeAutoDownload339, readAutoDownload339 } from "../../../runtime/download-policy-339";
 import { requestBrowserDownload339 } from "../../../runtime/browser-download-339";
 import type { ImageVisualToolId } from "../../../engines/image/visual";
@@ -18,6 +18,8 @@ import {
 } from "../shared";
 import { CONTROL, it } from "../shared/controlLabels";
 import { ImageResultV2, prepareImageResult, type PreparedImageResult } from "./ImageResultV2";
+import { buildInput } from "./image-visual-input";
+import type { JpegQualityPreset47 } from "../../../engines/image/jpeg-quality-presets-47";
 
 interface ImageVisualToolProps {
   readonly toolId: ImageVisualToolId;
@@ -40,6 +42,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   const [svgBackground, setSvgBackground] = useState("#ffffff");
   const [svgTransparent, setSvgTransparent] = useState(true);
   const [quality, setQuality] = useState("0.85");
+  const [jpegPreset, setJpegPreset] = useState<JpegQualityPreset47>("normal");
   const [targetKiB, setTargetKiB] = useState("");
   const [targetUnit, setTargetUnit] = useState<"KiB" | "MiB">("KiB");
   const [minimumQuality, setMinimumQuality] = useState("0.45");
@@ -62,7 +65,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     const autoAtStart = mime === "image/png"
       && (toolId === "image-format-conversion" || (toolId === "image-compression" && !batchMode && file !== null))
       && readAutoDownload339(browserStorage339());
-    const input = buildInput(toolId, selectedFile, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette);
+    const input = buildInput(toolId, selectedFile, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette, jpegPreset);
     const run = await toolRuntime.run(toolId, input, {}, signal);
     if (!run.ok) return run;
     const prepared = await prepareImageResult(run.value);
@@ -81,7 +84,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
   operationBusy.current = operation.isRunning;
   const result = operation.result;
   // Ignore the download preference.
-  useLayoutEffect(clearResult, [file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette]);
+  useLayoutEffect(clearResult, [file, secondFile, files, value, secondValue, numberValue, secondNumberValue, mime, quality, jpegPreset, colorMode, targetKiB, minimumQuality, allowResize, batchMode, targetUnit, svgWidth, svgHeight, svgScale, svgBackground, svgTransparent, pngLossless, pngPalette]);
 
   useEffect(() => {
     if (toolId === "image-metadata-viewer") setMetadataPickerReady(true);
@@ -115,7 +118,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
 
   useEffect(() => {
     if (toolId !== "image-compression") return;
-    return receivePngCompressionHandoff337((received) => {
+    return receiveImageCompressionHandoff028((received) => {
       if (operationBusy.current) return false;
       operation.reset();
       setFile(received);
@@ -123,15 +126,15 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
       setBatchMode(false);
       setPngLossless(false);
       setPngPalette("off");
-      setMime("image/png");
-      setHandoffStatus(`PNG locale ricevuto: ${received.name} (${received.size} byte). Scegli le opzioni e avvia manualmente la compressione.`);
+      setMime(received.type);
+      setHandoffStatus(`Immagine locale ricevuta: ${received.name} (${received.size} byte). Scegli le opzioni e avvia manualmente la compressione.`);
       return true;
     }, { window }, (failure) => {
       setHandoffStatus(failure === "expired"
-        ? "Passaggio PNG scaduto dopo 30 secondi. Ripeti l'azione dallo strumento originale."
+          ? "Passaggio immagine scaduto dopo 30 secondi. Ripeti l'azione dallo strumento originale."
         : failure === "invalid"
-          ? "Passaggio PNG non valido o oltre i limiti. Nessuna compressione avviata."
-          : "La scheda originale non è disponibile. Seleziona un PNG manualmente.");
+          ? "File non valido o troppo grande. Nessuna compressione avviata."
+          : "Scheda originale assente. Seleziona un'immagine manualmente.");
     });
   }, [toolId]);
 
@@ -162,6 +165,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
     setSvgBackground("#ffffff");
     setSvgTransparent(true);
     setQuality("0.85");
+    setJpegPreset("normal");
     setTargetKiB("");
     setTargetUnit("KiB");
     setMinimumQuality("0.45");
@@ -293,7 +297,18 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
           {pngPalette !== "off" && <small>Solo PNG RGB/RGBA 8 bit senza metadati colore non verificati, massimo 4 MiB e 1 milione di pixel. L'approssimazione è esplicita e può variare i canali colore fino a 32 livelli; alpha invariato. File originali conservati se il risultato non riduce i byte. Nessun target di peso o ridimensionamento.</small>}
         </label>}
         {toolId === "image-format-conversion" && !svgSelected && mime === "image/jpeg" && <label class="field"><span>Sfondo per trasparenza → JPEG</span><input type="color" value={/^#[0-9a-f]{6}$/iu.test(value) ? value : "#ffffff"} onInput={(event) => setValue(event.currentTarget.value)} disabled={operation.isRunning} /><small>Obbligatorio quando l'immagine contiene alpha. Il JPEG non supporta trasparenza: i pixel trasparenti vengono compositati su questo colore.</small></label>}
-        {needsQuality(toolId) && !(toolId === "image-compression" && (pngLossless || pngPalette !== "off")) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
+        {toolId === "image-compression" && !batchMode && !pngLossless && pngPalette === "off" && mime === "image/jpeg" && (
+          <label class="field" data-jpeg-preset-47>
+            <span>Modalità JPEG</span>
+            <select value={jpegPreset} onChange={(event) => setJpegPreset(event.currentTarget.value as JpegQualityPreset47)} disabled={operation.isRunning}>
+              <option value="normal">Normale (qualità indicativa 0,84)</option>
+              <option value="compact">Alta compressione (qualità indicativa 0,55)</option>
+              <option value="custom">Personalizzata</option>
+            </select>
+            <small>Il browser decide come codificare la qualità richiesta. Un obiettivo di peso attiva una ricerca automatica e prevale sul preset; non sono disponibili controlli JPEG expert.</small>
+          </label>
+        )}
+        {needsQuality(toolId) && !(toolId === "image-compression" && (pngLossless || pngPalette !== "off" || (!batchMode && mime === "image/jpeg" && jpegPreset !== "custom"))) && <label class="field"><span>Qualità, se supportata</span><input type="number" min="0.1" max="1" step="0.01" value={quality} onInput={(event) => setQuality(event.currentTarget.value)} disabled={operation.isRunning} /></label>}
         {toolId === "image-compression" && !pngLossless && pngPalette === "off" && (
           <fieldset class="field" data-target-image-compression>
             <legend>Dimensione obiettivo (facoltativa)</legend>
@@ -322,7 +337,7 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
             )}
           </fieldset>
         )}
-        {toolId === "image-format-conversion" && <p class="file-note">Input: SVG statico con policy restrittiva, JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF e GIF. SVG produce PNG/JPEG/WebP o PDF raster-backed, NON un PDF vettoriale. HEIC/HEIF usa un decoder locale lazy; per GIF viene convertito solo il primo frame. I metadati container non vengono conservati. La modalità SVG è in validazione (Partial), non certificata Gold.</p>}
+        {toolId === "image-format-conversion" && <p class="file-note">Input: SVG statico, JPG, PNG, WebP, AVIF statico, HEIC e GIF. SVG esporta raster, non PDF vettoriale. AVIF/HEIC richiedono decoder nativo e firma valida; HEIC non certificato. GIF: solo primo frame, animazione persa; GIF animato separato. Metadati non conservati. SVG: Partial, non Gold.</p>}
         {mime === "image/png" && (toolId === "image-format-conversion" || (toolId === "image-compression" && !batchMode)) && (
           <div {...(toolId === "image-compression" ? { "data-download-compression339": "" } : { "data-download-png339": "" })}>
             <label class="field">
@@ -346,41 +361,6 @@ export function ImageVisualTool({ toolId }: ImageVisualToolProps) {
       </ToolResultPanel>
     </ToolOperation>
   );
-}
-
-function buildInput(toolId: ImageVisualToolId, file: File | null, secondFile: File | null, files: File[], value: string, secondValue: string, numberValue: string, secondNumberValue: string, mime: string, quality: string, colorMode: string, targetKiB: string, minimumQuality: string, allowResize: boolean, batchMode: boolean, targetUnit: "KiB" | "MiB", svgWidth: string, svgHeight: string, svgScale: string, svgBackground: string, svgTransparent: boolean, pngLossless: boolean, pngPalette: "off" | "exact" | "lossy"): unknown {
-  const qualityNumber = Number(quality);
-  const primary = file ?? files[0];
-  switch (toolId) {
-    case "color-blindness-image-simulation": return { file: primary, mode: colorMode === "deuteranopia" || colorMode === "tritanopia" ? colorMode : "protanopia" };
-    case "image-crop": return { file: primary, x: 0, y: 0, width: Number(numberValue), height: Number(secondNumberValue), mime, quality: qualityNumber };
-    case "image-format-conversion": return isSvgInput(primary)
-      ? { file: primary, mime, quality: qualityNumber, width: Number(svgWidth), height: Number(svgHeight), scale: Number(svgScale), background: svgTransparent && mime !== "image/jpeg" && mime !== "application/pdf" ? "transparent" : svgBackground }
-      : { file: primary, mime, quality: qualityNumber, ...(mime === "image/jpeg" ? { background: value || "#ffffff" } : {}) };
-    case "image-compression": return {
-      ...(batchMode ? { files } : { file: primary, mime }),
-      ...(pngLossless && !batchMode ? { pngLossless: true } : {}),
-      ...(pngPalette !== "off" && !batchMode ? { pngPalette } : {}),
-      quality: qualityNumber,
-      ...(targetKiB.trim() === "" ? {} : { targetKiB: Number(targetKiB) * (targetUnit === "MiB" ? 1024 : 1), minQuality: Number(minimumQuality), allowResize }),
-    };
-    case "aspect-ratio-calculator": return { width: Number(numberValue), height: Number(secondNumberValue) };
-    case "platform-size-presets": return { presetId: value || "instagram-square", width: Number(numberValue), height: Number(secondNumberValue) };
-    case "image-metadata-viewer": return primary ?? null;
-    case "exif-remover": return { file: primary };
-    case "color-picker": return { hex: value || "#336699" };
-    case "color-converter": return { color: value || (colorMode === "named-color" ? "rebeccapurple" : "#336699"), mode: colorMode };
-    case "contrast-checker": return { foreground: value || "#000000", background: secondValue || "#ffffff" };
-    case "palette-extractor": return { file: primary, count: Number(numberValue) };
-    case "dominant-color-extractor": return primary ?? null;
-    case "image-dimensions-batch-inspector": return files;
-    case "image-rename-batch-preview": return { files, prefix: value, suffix: secondValue, start: Number(numberValue) };
-    case "contact-sheet-generator": return { files, columns: Number(numberValue), cellWidth: 240, cellHeight: 180, ordering: value || "selection" };
-    case "favicon-app-icon-size-generator": return { file: primary, sizes: [16, 32, 48, 64, 128, 180, 192, 512] };
-    case "screenshot-border-background-helper": return { file: primary, border: Number(numberValue), padding: Number(secondNumberValue), background: value || "#ffffff" };
-    case "image-compare-slider": return primary === null || secondFile === null ? null : { first: primary, second: secondFile };
-    case "perceptual-duplicate-finder": return { files };
-  }
 }
 
 function needsFile(toolId: ImageVisualToolId): boolean {
