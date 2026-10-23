@@ -22,6 +22,24 @@ permissions:
 # Source CI runs independently and the release gate continues to require mobile
 # device evidence, full-frame annotations and owner-level provenance clearance.
 jobs:
+  image-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Existing image regressions and #274 PNG/constraints
+        run: npx vitest run tests/image-visual-tools.test.ts tests/image-media-tools.test.ts tests/portrait-modnet-274.test.ts tests/portrait-modnet-png-274.test.ts --maxWorkers=1
+      - name: Astro TypeScript check
+        run: npm run check
+      - name: Donor provenance gate
+        run: npx tsx scripts/donor-provenance-366.ts --check
   quantization:
     runs-on: ubuntu-latest
     timeout-minutes: 20

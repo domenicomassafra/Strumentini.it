@@ -66,3 +66,9 @@ CI Chromium/Firefox now use the same pinned Playwright v1.63.0-noble
 container already validated on WebKit; jobs 120171845718 and 120171845982
 were stuck in the Playwright apt --with-deps installation step. Browser
 runtime version and test matrix stay pinned. No upstream patch is required.
+
+A dedicated #274 image-source CI job now verifies both unchanged image test
+suites, #274 constraint and PNG unit tests, Astro npm run check, and the
+canonical donor-provenance-366 check on one checkout and SHA. It stays
+independent of the global #348 changed transport fingerprint acceptance,
+whose writer must audit the modified panel and update its reviewed hash.
