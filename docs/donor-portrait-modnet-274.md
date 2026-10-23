@@ -56,3 +56,8 @@ The 13dbda5c browser run confirmed WebKit generated a new PNG offline;
 the next test failure was the **/* network route incorrectly counting an
 in-memory blob: preview as egress (job 120168664542). The test now blocks
 only http:/https: traffic, and still fails if any HTTP(S) request is attempted.
+
+The scoped CI run also samples Chromium RSS with its preexisting
+--rss CDP/ps collector (baseline, peak, bound 2 GiB), and independently
+reopens the fresh offline-produced PNG in each browser, validating signature,
+768x512 dimensions and person/background alpha samples.

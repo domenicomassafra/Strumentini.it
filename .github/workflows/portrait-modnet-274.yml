@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/portrait-modnet-274.yml'
       - 'tests/portrait-modnet-274.browser.mjs'
+      - 'tests/portrait-modnet-274-browser-readback.mjs'
       - 'tests/portrait-modnet-png-274.test.ts'
       - 'tests/portrait-modnet-274-quantization.mjs'
       - 'tests/fixtures/portrait-modnet-274/**'
@@ -73,7 +74,7 @@ jobs:
             cat "$RUNNER_TEMP/portrait-274-preview.log"
             exit 1
           fi
-          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp
+          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp --rss
   webkit:
     runs-on: ubuntu-latest
     timeout-minutes: 35
@@ -111,4 +112,4 @@ jobs:
             cat "$RUNNER_TEMP/portrait-274-preview.log"
             exit 1
           fi
-          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp
+          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp --rss

@@ -4,12 +4,12 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium, firefox, webkit } from "playwright";
+import { assertOfflinePng274 } from "./portrait-modnet-274-browser-readback.mjs";
 
 const full = process.argv.includes("--full");
 const origin = process.env.PORTRAIT_274_PREVIEW ?? "http://127.0.0.1:4327";
 const samples = ["5965592", "774909", "220453"];
-// Independently inspected, conservative interior person/background points on the
-// source photographs. This is a limited binary oracle, not a pixel-perfect matte.
+// Independently labelled photo interiors; limited binary oracle.
 const annotation = JSON.parse(readFileSync(resolve("tests/fixtures/portrait-modnet-274/annotation-points.json"), "utf8"));
 const manuallyTraced = JSON.parse(readFileSync(resolve("tests/fixtures/portrait-modnet-274/manual-regions.json"), "utf8"));
 
@@ -200,9 +200,7 @@ for (const [name, engine] of Object.entries(engines)) {
       assert.equal(await page.getByRole('button', { name: 'Libera memoria del modello' }).count(), 1,
         `${name} must hydrate the updated Worker reuse controls`);
       console.log(`PASS ${name} warm-cache inference with model network blocked`);
-      // A real browser-offline state also blocks Worker code and WASM requests.
-      // This is stronger than intercepting only /models/** and catches missing
-      // runtime caching. The tab is already loaded and has completed inference.
+      // Reuse the loaded Worker with browser network disconnected.
       const onlineResultUrl = await page.locator('[data-portrait-274] img').getAttribute('src');
       // Playwright WebKit 1.63 may fail with an internal I/O error under
       // setOffline(true). Fail closed on every browser-network request instead,
@@ -235,6 +233,8 @@ for (const [name, engine] of Object.entries(engines)) {
         if (name === "webkit") await context.unroute(httpTraffic, denyNetwork);
         else await context.setOffline(false);
       }
+      // Decode newly encoded PNG pixels again outside the Worker.
+      await assertOfflinePng274(page, annotation[samples[0]], name);
       await page.getByRole('button', { name: 'Libera memoria del modello' }).click();
       assert.match(await page.locator('[data-portrait-274] [role="status"]').textContent(), /Memoria del modello liberata/u);
       assert.equal(await page.locator('[data-portrait-274] img').count(), 1,
