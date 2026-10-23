@@ -1,0 +1,41 @@
+name: STR-373 compiled PDF text consumer
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/str-373-compiled-browser.yml'
+      - 'src/components/tools/pdf/PdfOriginalText133Tool.tsx'
+      - 'src/engines/pdf/edit-original-text*'
+      - 'tests/str-373-*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: str-373-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compiled-pdf-text:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Install independent PDF oracle
+        run: brew install poppler
+      - name: Install compiled browser engine
+        run: npx playwright install chromium
+      - name: Verify supported edits and refusals
+        run: npx vitest run tests/str-373-acceptance.test.ts tests/str-373-refusals.test.ts --maxWorkers=1
+      - name: Build static consumer
+        run: npm run build
+      - name: Verify compiled PDF edit and Poppler oracle
+        run: node tests/str-373-consumer.browser.mjs

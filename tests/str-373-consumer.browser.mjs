@@ -97,9 +97,10 @@ try {
   writeFileSync(join(temp, "input.pdf"), input);
   const before = independentPdf("input.pdf", ["ALFA", "RESTO"]);
   await serverReady();
-  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
-  const context = browser.contexts()[0];
-  assert(context, "No existing Chrome automation browser context");
+  const cdp = process.env.STR133_CDP;
+  browser = cdp ? await chromium.connectOverCDP(cdp) : await chromium.launch({ headless: true });
+  const context = cdp ? browser.contexts()[0] : await browser.newContext({ acceptDownloads: true });
+  assert(context, "No Chrome browser context available");
   page = await context.newPage();
   await page.setViewportSize({ width: 390, height: 844 });
   const errors = [];
@@ -176,7 +177,8 @@ try {
     viewport: "390x844", offsiteRequests: offsite.length, uploads: uploads.length, jsErrors: errors.length, mobilePhysical: "NOT_RUN" }));
 } finally {
   if (page && !page.isClosed()) await page.close();
-  // The CDP browser belongs to the MiniPC automation profile; leave it and other tabs open.
+  // An external CDP browser belongs to the automation profile; close only one launched here.
+  if (browser && !process.env.STR133_CDP) await browser.close();
   server.kill();
   rmSync(temp, { recursive: true, force: true });
 }
