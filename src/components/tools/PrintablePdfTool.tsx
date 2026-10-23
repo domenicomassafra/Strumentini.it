@@ -58,11 +58,17 @@ export function PrintablePdfTool() {
     }
     setUploading(true);
     try {
+      // Apply the same bounded, format-aware refusals used by the #83 file
+      // gateway. Plain decoding alone accepts e.g. RTF renamed as .txt.
+      const textGateway = extension === "docx" ? null : await import("../../engines/pdf/office-print-pack-56");
+      if (epoch !== uploadEpoch.current) return;
+      if (textGateway) textGateway.preflightOfficePrint56(file);
       const bytes = new Uint8Array(await file.arrayBuffer());
       if (epoch !== uploadEpoch.current) return;
+      if (bytes.byteLength !== file.size) throw new Error("PDF56_INPUT_CHANGED: il file è cambiato durante la lettura.");
       const decoded = extension === "docx"
         ? await (await import("../../engines/pdf/simple-docx-print-56")).simpleDocxToPrintableText56(bytes)
-        : new TextDecoder("utf-8", { fatal: true }).decode(bytes).replace(/^\ufeff/u, "");
+        : textGateway!.decodeText56(bytes);
       if (epoch !== uploadEpoch.current) return;
       setWordSource(extension === "docx");
       setKind(format ?? "txt");
