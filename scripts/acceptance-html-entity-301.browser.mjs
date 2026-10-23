@@ -1,12 +1,15 @@
 /** Run after `npm run build`: node scripts/acceptance-html-entity-301.browser.mjs. */
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createServer } from "node:http";
-import { readFile, stat } from "node:fs/promises";
+import { readFile, stat, writeFile } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 import { chromium, firefox, webkit } from "@playwright/test";
 
-const dist = resolve(import.meta.dirname, "../dist");
+const root = resolve(import.meta.dirname, "..");
+const dist = join(root, "dist");
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const contentTypes = { ".js": "text/javascript", ".css": "text/css", ".html": "text/html", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 const server = createServer(async (request, response) => {
   const pathname = decodeURIComponent(new URL(request.url ?? "/", "http://localhost").pathname);
@@ -38,7 +41,10 @@ const cases = [
 ];
 const selectedEngines = { chromium, firefox, webkit };
 const engineNames = (process.env.STR301_BROWSERS ?? "chromium,firefox,webkit").split(",");
-assert(engineNames.every((name) => Object.hasOwn(selectedEngines, name)));
+assert(engineNames.length > 0 && new Set(engineNames).size === engineNames.length && engineNames.every((name) => Object.hasOwn(selectedEngines, name)));
+const browserReceipts = [];
+const htmlPath = "tools/html-entity-codec/index.html";
+const htmlSha256 = sha256(await readFile(join(dist, htmlPath)));
 
 try {
   for (const engineName of engineNames) {
@@ -65,6 +71,9 @@ try {
       });
       const response = await page.goto(`${origin}/tools/html-entity-codec/`, { waitUntil: "networkidle" });
       assert.equal(response?.status(), 200, `${engine.name()}: built HTML route is unavailable`);
+      const csp = response?.headers()["content-security-policy"] ?? "";
+      assert.match(csp, /(?:^|; )script-src 'self' /u, `${engine.name()}: CSP script origin`);
+      assert.match(csp, /(?:^|; )connect-src 'none'(?:;|$)/u, `${engine.name()}: CSP network refusal`);
       for (const sample of cases) {
         await page.locator("form textarea").first().fill(sample.text);
         await page.locator("form select").nth(0).selectOption(sample.mode);
@@ -83,11 +92,51 @@ try {
         assert.equal(result.valore, sample.expected, `${engine.name()}: HTML entity mismatch`);
         assert.match(result.avviso, /non esegue una sanificazione HTML/u);
       }
+      await page.locator("form textarea").first().fill("&#x110000;");
+      await page.locator("form select").nth(0).selectOption("decode");
+      await page.locator('form button[type="submit"]').click();
+      const refusal = page.locator("[data-tool-error]");
+      await refusal.waitFor({ state: "visible" });
+      assert((await refusal.innerText()).trim().length > 0, `${engine.name()}: missing refusal message`);
+      assert.equal(await page.locator('[data-result-action="download"]').count(), 0, `${engine.name()}: download after invalid Unicode`);
       assert.deepEqual(offsite, [], `${engine.name()}: unexpected offsite requests`);
       assert.deepEqual(errors, [], `${engine.name()}: script errors`);
-      assert(scripts.some((script) => /\/he\.[\w-]+\.js$/u.test(script)), `${engine.name()}: pinned he lazy chunk absent`);
+      assert.deepEqual(consoleErrors, [], `${engine.name()}: console errors`);
+      const lazyScript = scripts.find((script) => /\/he\.[\w-]+\.js$/u.test(script));
+      assert(lazyScript, `${engine.name()}: pinned he lazy chunk absent`);
+      const chunkPath = resolve(dist, `.${lazyScript}`);
+      assert(chunkPath.startsWith(`${dist}${sep}`), `${engine.name()}: lazy chunk outside build`);
+      browserReceipts.push({
+        engine: engineName,
+        version: browser.version(),
+        status: "PASS",
+        conversions: cases.length,
+        invalidUnicodeRefusals: 1,
+        refusalUi: "PASS",
+        downloadJson: "PASS",
+        csp: { status: "PASS", responseHeader: csp },
+        externalRequests: offsite.length,
+        pageErrors: errors.length,
+        consoleErrors: consoleErrors.length,
+        lazyChunk: { path: lazyScript, sha256: sha256(await readFile(chunkPath)) },
+      });
       console.log(`PASS ${engine.name()} ${browser.version()} 3 real UI conversions, CSP self + inline hashes/connect-src none, he lazy chunk, no egress`);
       await context.close();
     } finally { await browser.close(); }
   }
+  const complete = browserReceipts.length === Object.keys(selectedEngines).length;
+  const receipt = {
+    schemaVersion: 1,
+    toolId: "html-entity-codec",
+    status: complete ? "PASS" : "PARTIAL",
+    sourceRevision: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
+    build: { route: htmlPath, sha256: htmlSha256 },
+    environment: { platform: process.platform, arch: process.arch, node: process.version },
+    requiredEngines: Object.keys(selectedEngines),
+    browsers: browserReceipts,
+    note: "Playwright browsers validate the built local route; this is not physical-device or production-deployment evidence.",
+  };
+  const receiptPath = join(root, "quality/receipts/developer-web/html-entity-codec-301.browser.json");
+  await writeFile(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
+  console.log(`${receipt.status} STR-301 browser receipt: ${receiptPath}`);
 } finally { await new Promise((resolveClose, reject) => server.close((error) => error ? reject(error) : resolveClose())); }
