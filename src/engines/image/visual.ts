@@ -139,9 +139,14 @@ export async function decodeBitmap(file: Blob, signal?: AbortSignal): Promise<Im
     if (header.width > IMAGE_VISUAL_LIMITS.maxDimension || header.height > IMAGE_VISUAL_LIMITS.maxDimension) throw new ImageVisualError("PIXEL_LIMIT", "The image dimensions exceed the local limit");
     assertPixels(header.width, header.height);
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
-    abortIfNeeded(signal);
-    assertPixels(bitmap.width, bitmap.height);
-    return bitmap;
+    try {
+      abortIfNeeded(signal);
+      assertPixels(bitmap.width, bitmap.height);
+      return bitmap;
+    } catch (error) {
+      bitmap.close();
+      throw error;
+    }
   } catch (error) {
     abortIfNeeded(signal);
     if (error instanceof ImageVisualError) throw error;

@@ -147,7 +147,7 @@ export function ImageLayers381Tool() {
         {layers.map((layer, index) => <li key={layer.file.name + index} data-381-layer={index}>
           <strong>{index + 1}. {layer.name}</strong>{" "}
           <label>
-            <input type="checkbox" checked={layer.visible} onChange={(event) => change(index, { visible: event.currentTarget.checked })} /> Visibile
+            <input type="checkbox" aria-label={`Visibile livello ${index + 1}: ${layer.name}`} checked={layer.visible} onChange={(event) => change(index, { visible: event.currentTarget.checked })} /> Visibile
           </label>{" "}
           <label>Opacità {Math.round(layer.opacity * 100)}%
             <input type="range" min="0" max="100" step="1" value={layer.opacity * 100}

@@ -87,6 +87,8 @@ try {
 
   // S: actual canvas alpha/color changes, order and visibility, then the exported PNG.
   const smallInputs = await files(2, 1);
+  assert.equal(await page.getByRole("checkbox", { name: "Visibile livello 1: originale-rosso.png" }).count(), 1);
+  assert.equal(await page.getByRole("checkbox", { name: "Visibile livello 2: originale-blu.png" }).count(), 1);
   await assertPixel([0, 0, 255, 255]);
   await page.getByRole("slider", { name: "Opacità livello 2" }).evaluate((slider) => {
     slider.value = "50";
