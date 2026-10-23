@@ -1,5 +1,5 @@
 /** STR-409 compiled fiscal consumer and annual rollover gate.
- * Reuse the existing MiniPC Chrome CDP17629 browser acceptance (no new browser/profile).
+ * Reuse local Chromium acceptance, with an optional explicit CDP endpoint.
  */
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
