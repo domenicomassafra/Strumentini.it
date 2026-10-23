@@ -204,7 +204,17 @@ for (const [name, engine] of Object.entries(engines)) {
       // This is stronger than intercepting only /models/** and catches missing
       // runtime caching. The tab is already loaded and has completed inference.
       const onlineResultUrl = await page.locator('[data-portrait-274] img').getAttribute('src');
-      await context.setOffline(true);
+      // Playwright WebKit 1.63 may fail with an internal I/O error under
+      // setOffline(true). Fail closed on every browser-network request instead,
+      // while still requiring a fresh real PNG and no egress after warmup.
+      // https://github.com/microsoft/playwright/issues/42775
+      const deniedNetworkRequests = [];
+      const denyNetwork = (route) => {
+        deniedNetworkRequests.push(route.request().url());
+        return route.abort("internetdisconnected");
+      };
+      if (name === "webkit") await context.route("**/*", denyNetwork);
+      else await context.setOffline(true);
       try {
         // Reuse the selected File. WebKit may fail to materialize a new
         // Playwright-injected File once its browser context is offline.
@@ -216,9 +226,11 @@ for (const [name, engine] of Object.entries(engines)) {
           `${name} warmed runtime must infer while the browser context is offline (input path=${lastRunInput})`);
         assert.notEqual(await page.locator('[data-portrait-274] img').getAttribute('src'), onlineResultUrl,
           `${name} offline inference must produce a fresh PNG after the online result`);
-        console.log(`PASS ${name} warmed-page inference in browser offline mode`);
+        assert.deepEqual(deniedNetworkRequests, [], `${name} warmed inference attempted a network request`);
+        console.log(`PASS ${name} warmed-page inference with browser network ${name === "webkit" ? "blocked" : "offline"}`);
       } finally {
-        await context.setOffline(false);
+        if (name === "webkit") await context.unroute("**/*", denyNetwork);
+        else await context.setOffline(false);
       }
       await page.getByRole('button', { name: 'Libera memoria del modello' }).click();
       assert.match(await page.locator('[data-portrait-274] [role="status"]').textContent(), /Memoria del modello liberata/u);
