@@ -71,6 +71,9 @@ try {
       });
       const response = await page.goto(`${origin}/tools/html-entity-codec/`, { waitUntil: "networkidle" });
       assert.equal(response?.status(), 200, `${engine.name()}: built HTML route is unavailable`);
+      const csp = response?.headers()["content-security-policy"] ?? "";
+      assert.match(csp, /(?:^|; )script-src 'self' /u, `${engine.name()}: CSP script origin`);
+      assert.match(csp, /(?:^|; )connect-src 'none'(?:;|$)/u, `${engine.name()}: CSP network refusal`);
       for (const sample of cases) {
         await page.locator("form textarea").first().fill(sample.text);
         await page.locator("form select").nth(0).selectOption(sample.mode);
@@ -89,6 +92,13 @@ try {
         assert.equal(result.valore, sample.expected, `${engine.name()}: HTML entity mismatch`);
         assert.match(result.avviso, /non esegue una sanificazione HTML/u);
       }
+      await page.locator("form textarea").first().fill("&#x110000;");
+      await page.locator("form select").nth(0).selectOption("decode");
+      await page.locator('form button[type="submit"]').click();
+      const refusal = page.locator("[data-tool-error]");
+      await refusal.waitFor({ state: "visible" });
+      assert((await refusal.innerText()).trim().length > 0, `${engine.name()}: missing refusal message`);
+      assert.equal(await page.locator('[data-result-action="download"]').count(), 0, `${engine.name()}: download after invalid Unicode`);
       assert.deepEqual(offsite, [], `${engine.name()}: unexpected offsite requests`);
       assert.deepEqual(errors, [], `${engine.name()}: script errors`);
       assert.deepEqual(consoleErrors, [], `${engine.name()}: console errors`);
@@ -101,8 +111,10 @@ try {
         version: browser.version(),
         status: "PASS",
         conversions: cases.length,
+        invalidUnicodeRefusals: 1,
+        refusalUi: "PASS",
         downloadJson: "PASS",
-        csp: "self-inline-hashes-connect-none",
+        csp: { status: "PASS", responseHeader: csp },
         externalRequests: offsite.length,
         pageErrors: errors.length,
         consoleErrors: consoleErrors.length,
