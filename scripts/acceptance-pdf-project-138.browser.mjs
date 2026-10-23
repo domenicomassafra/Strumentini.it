@@ -23,6 +23,12 @@ async function ready() {
   }
   throw new Error("Consumer route unavailable");
 }
+async function waitForHydratedPdfWorkspace(page) {
+  await page.waitForFunction(() => {
+    const islands = Array.from(document.querySelectorAll("astro-island"));
+    return islands.length > 0 && islands.every((island) => !island.hasAttribute("ssr"));
+  }, null, { timeout: 30_000 });
+}
 async function fixture() {
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
@@ -74,6 +80,7 @@ try {
     tab.on("console", (message) => { if (message.type() === "error") pageErrors.push(message.text()); });
   });
   context.on("requestfailed", (request) => pageErrors.push(`${request.url()}: ${request.failure()?.errorText}`));
+  context.on("response", (response) => { if (response.status() >= 400) pageErrors.push(`HTTP ${response.status()} ${response.url()}`); });
   let page = await context.newPage();
   const offsite = [];
   context.on("request", (request) => {
@@ -101,6 +108,8 @@ try {
     } finally { db.close(); }
   });
   assert.equal((await page.goto(origin + "/tools/pdf-page-reorder/", { waitUntil: "domcontentloaded" }))?.status(), 200);
+  await waitForHydratedPdfWorkspace(page);
+  assert.ok(delayedHydrationAssets >= 1, "PDF island delay was not exercised");
   await page.getByLabel("PDF da modificare").setInputFiles({ name: "progetto138.pdf", mimeType: "application/pdf", buffer: input });
   const order = page.locator("[data-pdf-order-status]");
   try {
@@ -144,6 +153,7 @@ try {
   await page.close();
   page = await context.newPage();
   assert.equal((await page.goto(origin + "/tools/pdf-page-reorder/"))?.status(), 200);
+  await waitForHydratedPdfWorkspace(page);
   await page.getByRole("button", { name: "Riprendi progetto" }).click();
   await page.locator("[data-pdf-order-status]").filter({ hasText: /4, 3, 2, 1/u }).waitFor();
   assert.equal(await page.getByRole("button", { name: "Seleziona pagina originale 4" }).getAttribute("aria-pressed"), "true");
