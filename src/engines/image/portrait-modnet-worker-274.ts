@@ -1,5 +1,6 @@
 import { checkPortraitInput, checkPortraitPng, PORTRAIT_MAX_FILE_BYTES } from "./portrait-modnet-274";
 import type { RawImage } from "@huggingface/transformers";
+import { encodePortraitPng274 } from "./portrait-modnet-png-274";
 
 type Request = { kind: "start"; bytes?: ArrayBuffer; mime: string; memoryGB?: number; reuse?: boolean };
 let running = false;
@@ -39,10 +40,6 @@ self.onmessage = async (event: MessageEvent<Request>) => {
     checkPortraitInput(originalByteLength, width, height, memoryGB);
     if (original.channels !== 4 || original.data.length !== width * height * 4) throw new Error("INPUT_PIXELS_INVALID");
     if (!reuse) warmedInput = { image: original, bytes: originalByteLength, mime };
-    const canvas = new OffscreenCanvas(width, height);
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    if (!ctx) throw new Error("CANVAS_UNAVAILABLE");
-    ctx.putImageData(new ImageData(new Uint8ClampedArray(original.data), width, height), 0, 0);
     env.allowRemoteModels = false;
     env.allowLocalModels = true;
     // Transformers.js 4.3.1's processor auto-detection checks local paths only
@@ -122,11 +119,10 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       else mixed++;
     }
     if (transparent + mixed === 0 || opaque + mixed === 0) throw new Error("MASK_DEGENERATE");
-    ctx.putImageData(new ImageData(rgba, width, height), 0, 0);
+    // WebKit can return a PNG Blob but reject reading it while network is cut.
+    // Serialize verified RGBA directly, without the browser Blob I/O path.
     stage = "encode-png";
-    const png = await canvas.convertToBlob({ type: "image/png" });
-    stage = "read-png";
-    const result = await png.arrayBuffer();
+    const result = encodePortraitPng274(rgba, width, height);
     stage = "verify-png";
     checkPortraitPng(new Uint8Array(result), width, height);
     // Independent browser decoding, after the PNG encoder, must preserve alpha.

@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/portrait-modnet-274.yml'
       - 'tests/portrait-modnet-274.browser.mjs'
+      - 'tests/portrait-modnet-png-274.test.ts'
       - 'tests/portrait-modnet-274-quantization.mjs'
       - 'tests/fixtures/portrait-modnet-274/**'
       - 'src/components/tools/image-visual/PortraitMattingPanel274.tsx'
