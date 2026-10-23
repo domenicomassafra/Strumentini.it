@@ -3,6 +3,7 @@
  * Any unmatched vendored path must remain unverified in #366's audit. */
 const DISTRIBUTIONS = [
   ["public/ocr-246/lang/", "@tesseract.js-data/ita"],
+  ["public/ocr-395/lang/", "@tesseract.js-data/eng"],
   ["public/ocr-246/core/", "tesseract.js-core"],
   ["public/ocr-246/vendor/", "tesseract.js"],
   ["src/engines/video/vendor/gifenc-mit-1.0.3/", "gifenc"],

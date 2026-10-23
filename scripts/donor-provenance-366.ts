@@ -208,12 +208,17 @@ function safeAssetPath(root: string, name: string): string | null {
 }
 function validAssetSource(asset: AssetPin366, root: string): boolean {
   if (asset.path.startsWith("public/fonts/")) return verifiedFontPrimary366(root, asset);
+  if (asset.path === "public/ocr-395/lang/COPYING-tessdata-Apache-2.0.txt") {
+    return asset.license === "Apache-2.0" &&
+      asset.version === "1.0.0" &&
+      asset.source === "https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/COPYING" &&
+      verifyPrimarySource366(root).failures.length === 0;
+  }
   if (pinnedModelRevision366(asset.path)) return validModelSource366(asset);
   const distribution = expectedAssetDistribution366(asset.path);
   if (VENDORED_DIRS_366.some((dir) => asset.path.startsWith(dir + "/"))) {
     return !!distribution && validSource(distribution, asset.version, asset.source);
   }
-  // Preserve generic fixture behavior for callers auditing their own dirs.
   if (!URL.canParse(asset.source)) return false;
   const url = new URL(asset.source);
   return url.protocol === "https:" && url.hostname === "registry.npmjs.org" &&
@@ -244,14 +249,12 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
     if (!authored && !knownSpdx(asset.license)) failures.push(`UNKNOWN_ASSET_LICENSE ${asset.path}`);
     if (!versionAccepted366(asset, authored)) failures.push(`UNKNOWN_ASSET_VERSION ${asset.path}`);
     if (!authored && !validAssetSource(asset, root)) failures.push(`UNKNOWN_ASSET_SOURCE ${asset.path}`);
-    // Do not allow arbitrary vendor paths to claim first-party provenance.
     if (!authored && (asset.license === "LOCAL_AUTHORED" || asset.version === "GIT" || asset.source.startsWith("git:"))) {
       failures.push(`INVALID_LOCAL_AUTHORED ${asset.path}`);
     }
     if (!HASH_256.test(asset.sha256)) failures.push(`INVALID_ASSET_PIN ${asset.path}`);
     if (!existsSync(full)) { failures.push(`MISSING_ASSET ${asset.path}`); continue; }
     const stat = lstatSync(full);
-    // Never follow a link into owner data or attempt unlimited reads of new assets.
     if (!stat.isFile() || stat.size > 64 * 1024 * 1024) {
       failures.push(`UNSAFE_ASSET_TYPE_OR_SIZE ${asset.path}`); continue;
     }
@@ -271,7 +274,7 @@ export function auditVendoredAssets366(root: string, assets: AssetPin366[], dirs
       }
     }
     catch (error) {
-      if ((dir === "public/models" || dir === "public/vendor") &&
+      if ((dir === "public/models" || dir === "public/vendor" || dir === "public/ocr-395") &&
           (error as NodeJS.ErrnoException).code === "ENOENT") continue;
     }
     failures.push(`MISSING_ASSET_DIRECTORY ${dir}`);
@@ -307,7 +310,7 @@ export function auditCandidate366(candidate: Candidate, lockEntry: LockEntry | n
 }
 
 export const VENDORED_DIRS_366 = [
-  "public/ocr-246", "public/fonts", "src/engines/video/vendor", "public/models", "public/vendor",
+  "public/ocr-246", "public/ocr-395", "public/fonts", "src/engines/video/vendor", "public/models", "public/vendor",
 ];
 
 export function auditRepository366(root: string) {

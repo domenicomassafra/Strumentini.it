@@ -29,13 +29,22 @@
       "url": "https://registry.npmjs.org/@tesseract.js-data/ita/-/ita-1.0.0.tgz",
       "integrity": "sha512-Sx19NVYve5VAxEBDL6CWTX+evlvzV+iAS5ejJywcHVsmir/C9Tzw2fExoh97QFc06t48tYZA8VrMobsBzMAEhA==",
       "tarballSRIRechecked": true
+    },
+    "english-model": {
+      "package": "@tesseract.js-data/eng",
+      "version": "1.0.0",
+      "registryLicense": "MIT (npm metadata only)",
+      "url": "https://registry.npmjs.org/@tesseract.js-data/eng/-/eng-1.0.0.tgz",
+      "integrity": "sha512-mbTumm6KQPUHyzTPQaF3ObXYnx0SqqfV2nabqFVQBwD6Kl7PhGSLSzOlfFTWy0P3BjghaSKA2W9GB19Jk+ZcTg==",
+      "tarballSRIRechecked": true
     }
   },
   "obligations": {
     "font-ofl": "OFL-1.1: ship the applicable copyright notice and full OFL license with every copy; respect reserved font name rules if modifying. Four upstream-exact notices are included in public/fonts.",
     "ocr-js": "Apache-2.0 package: retain LICENSE and relevant NOTICE if any; retain separately shipped minified bundle MIT/BSD-3-Clause notices and their attribution.",
     "ocr-core": "Apache-2.0 package: preserve LICENSE, notices and permitted source/license statements for WASM and JavaScript core artifacts.",
-    "ocr-ita": "Apache-2.0 provenance: decompressed npm Italian model is byte-identical to tesseract-ocr/tessdata commit c2b2e0df86272ce11be323f23f96cf656565ed41; naptha/tessdata's pinned Apache license is shipped. npm MIT metadata has no standalone license grant, and the unattributed local MIT template was removed. NO_GO persists for other redistribution obligations."
+    "ocr-ita": "Apache-2.0 provenance: decompressed npm Italian model is byte-identical to tesseract-ocr/tessdata commit c2b2e0df86272ce11be323f23f96cf656565ed41; naptha/tessdata's pinned Apache license is shipped. npm MIT metadata has no standalone license grant, and the unattributed local MIT template was removed. NO_GO persists for other redistribution obligations.",
+    "ocr-eng": "Apache-2.0 original tessdata model, byte-identical after gzip decompression to pinned c2b2e0df86272ce11be323f23f96cf656565ed41. Preserve upstream COPYING and the full Apache-2.0 license already shipped with the Italian model; npm MIT metadata does not replace the original grant."
   },
   "assets": [
     {
@@ -300,6 +309,29 @@
       "obligation": "ocr-js",
       "packageId": "tesseract-js",
       "archivePath": "package/dist/worker.min.js.LICENSE.txt"
+    },
+    {
+      "path": "public/ocr-395/lang/COPYING-tessdata-Apache-2.0.txt",
+      "bytes": 691,
+      "sha256": "85c31da65107d18490666cc8e3af6373b5303fb57f82b97119d47ad219896800",
+      "evidence": "EXACT_UPSTREAM_BYTES",
+      "sourceKind": "git-immutable",
+      "sourceUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/COPYING",
+      "obligation": "ocr-eng"
+    },
+    {
+      "path": "public/ocr-395/lang/eng.traineddata.gz",
+      "bytes": 10923060,
+      "sha256": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468",
+      "evidence": "EXACT_UPSTREAM_BYTES",
+      "sourceKind": "npm-tarball-sri-validated-and-git-immutable",
+      "sourceUrl": "https://registry.npmjs.org/@tesseract.js-data/eng/-/eng-1.0.0.tgz",
+      "obligation": "ocr-eng",
+      "packageId": "english-model",
+      "archivePath": "package/4.0.0/eng.traineddata.gz",
+      "additionalUpstreamUrl": "https://raw.githubusercontent.com/naptha/tessdata/806cd9adc8c6e8abc11c782db1818c990576bebc/4.0.0/eng.traineddata.gz",
+      "originalUncompressedSourceUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/eng.traineddata",
+      "originalUncompressedSha256": "daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047"
     }
   ]
 }
