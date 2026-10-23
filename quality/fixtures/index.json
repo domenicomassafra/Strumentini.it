@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-04",
-  "family_count": 99,
+  "family_count": 100,
   "families": [
     {
       "id": "archive-checksum-manifest",
@@ -2404,6 +2404,29 @@
         "EPUB3 spine order, navigation and UTF-8",
         "binary ZIP integrity and output TXT reopen",
         "script, CSS, remote, traversal and ZIP-bomb refusal"
+      ]
+    },
+    {
+      "id": "p7m-cms-176",
+      "candidate_families": [
+        "P7M/CMS SignedData extraction with an always-unverified notice"
+      ],
+      "path": "quality/fixtures/p7m-cms-176/vectors.json",
+      "format": "json",
+      "provenance": {
+        "kind": "synthetic-local",
+        "license_or_rights": "Synthetic CMS envelopes signed with an ephemeral self-signed RSA-2048 certificate generated locally on 2026-10-21; no personal data, no private key committed, zero upload."
+      },
+      "truth_sources": [
+        "rfc5652",
+        "openssl-cli",
+        "fixture-policy"
+      ],
+      "coverage": [
+        "attached PDF and XML payload byte equality",
+        "PEM envelope and constructed OCTET STRING",
+        "tampered payload extracted but never reported as verified",
+        "detached, truncated, indefinite-length and non-SignedData refusal"
       ]
     }
   ]

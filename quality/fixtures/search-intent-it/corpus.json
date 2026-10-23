@@ -8,6 +8,7 @@
     { "area": "pdf", "query": "estrai testo pdf", "toolId": "pdf-text-extraction", "maxRank": 0 },
     { "area": "pdf", "query": "ruota pdf", "toolId": "pdf-rotate", "maxRank": 0 },
     { "area": "pdf", "query": "estrai immagini da pdf", "toolId": "pdf-image-extractor", "maxRank": 0 },
+    { "area": "pdf", "query": "firma digitale p7m", "toolId": "p7m-extract", "maxRank": 0 },
     { "area": "images", "query": "ridimensiona immagine", "toolId": "image-resize", "maxRank": 0 },
     { "area": "images", "query": "ritaglia immagine", "toolId": "image-crop", "maxRank": 1 },
     { "area": "images", "query": "converti jpg png", "toolId": "image-format-conversion", "maxRank": 0 },
@@ -50,7 +51,6 @@
     { "query": "hash sh256", "suggestion": "hash sha256" }
   ],
   "deliberateNoTool": [
-    "firma digitale p7m",
     "ocr documento scannerizzato",
     "converti docx in pdf",
     "calcola codice fiscale",
