@@ -57,6 +57,7 @@ async function readSourceDimensions(file: File): Promise<ImageDimensions> {
 
 export function ImageResizeTool() {
   const [file, setFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [sourceDimensions, setSourceDimensions] = useState<ImageDimensions | null>(null);
   const [sizingMode, setSizingMode] = useState<SizingMode>("pixels");
   const [width, setWidth] = useState("1200");
@@ -198,7 +199,11 @@ export function ImageResizeTool() {
     if (controller.current !== null) return;
     setError("");
     clearOutput();
-    if (file === null) {
+    // SSR exposes the native file input before Preact hydration. If the OS
+    // returns a selection before the change listener attaches, use the File
+    // retained by the input when the user explicitly starts processing.
+    const selectedFile = fileInputRef.current?.files?.[0] ?? file;
+    if (selectedFile === null || selectedFile === undefined) {
       setError("Scegli un'immagine JPEG, PNG o WebP.");
       return;
     }
@@ -206,7 +211,7 @@ export function ImageResizeTool() {
     let dimensions = sourceDimensions;
     if (sizingMode === "percent" && dimensions === null) {
       try {
-        dimensions = await readSourceDimensions(file);
+        dimensions = await readSourceDimensions(selectedFile);
         setSourceDimensions(dimensions);
       } catch (caught) {
         setError(friendlyError(caught));
@@ -235,7 +240,7 @@ export function ImageResizeTool() {
       const { resizeImageLocal } = await import("../../../tools/image-resize/module");
       const output = await resizeImageLocal(
         {
-          file,
+          file: selectedFile,
           width: target.width,
           height: target.height,
           fit,
@@ -291,7 +296,7 @@ export function ImageResizeTool() {
     setProgress(null);
     setError("");
     clearOutput();
-    const input = document.querySelector<HTMLInputElement>("#image-resize-file");
+    const input = fileInputRef.current;
     if (input !== null) input.value = "";
   }
 
@@ -301,6 +306,7 @@ export function ImageResizeTool() {
         <label class="field">
           <span>Immagine</span>
           <input
+            ref={fileInputRef}
             id="image-resize-file"
             type="file"
             accept="image/jpeg,image/png,image/webp"

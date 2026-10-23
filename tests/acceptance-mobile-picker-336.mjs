@@ -1,13 +1,33 @@
 // #336: Chrome mobile emulation only (NOT physical iOS Safari / Android Chrome).
 // Run with: node tests/acceptance-mobile-picker-336.mjs http://127.0.0.1:4966
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
+import { createServer } from "node:http";
+import { extname, resolve, sep } from "node:path";
 import { chromium, devices } from "@playwright/test";
 
-const base = process.argv[2] ?? "http://127.0.0.1:4966";
+// With no URL argument, exercise the actual dist/ built by npm run build.
+const dist = resolve(import.meta.dirname, "../dist");
+const mime = { ".html": "text/html", ".js": "application/javascript", ".mjs": "application/javascript",
+  ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml", ".woff2": "font/woff2",
+  ".wasm": "application/wasm", ".json": "application/json" };
+const server = process.argv[2] ? null : createServer(async (request, response) => {
+  try {
+    const pathname = decodeURIComponent(new URL(request.url ?? "/", "http://127.0.0.1").pathname);
+    const candidate = resolve(dist, pathname.replace(/^\/+/u, ""), pathname.endsWith("/") ? "index.html" : "");
+    if (!candidate.startsWith(dist + sep)) throw Error("Outside dist");
+    const path = (await stat(candidate)).isDirectory() ? resolve(candidate, "index.html") : candidate;
+    response.writeHead(200, { "content-type": mime[extname(path)] ?? "application/octet-stream" });
+    response.end(await readFile(path));
+  } catch { response.writeHead(404).end("Not found"); }
+});
+if (server) await new Promise((done) => server.listen(0, "127.0.0.1", done));
+const base = process.argv[2] ?? `http://127.0.0.1:${server.address().port}`;
+// Use installed Playwright Chromium on MiniPC; a dedicated Chrome binary can
+// still be selected explicitly without embedding a Mac-only path.
 const browser = await chromium.launch({
   headless: true,
-  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  ...(process.env.STR336_CHROME_BIN ? { executablePath: process.env.STR336_CHROME_BIN } : {}),
 });
 const source = await readFile("quality/fixtures/pdf-gold/simple-2page.pdf");
 const png = await readFile("quality/fixtures/image-metadata/synthetic-1x1-rgb.png");
@@ -183,4 +203,5 @@ try {
   console.log("NOT_RUN #336 physical iOS Safari Photo Library, physical Android Chrome Photos/Files, real OS permission denial/background return.");
 } finally {
   await browser.close();
+  if (server) await new Promise((done) => server.close(done));
 }

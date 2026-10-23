@@ -1,7 +1,5 @@
 import type { FactoryToolManifest } from "../../tool-factory/manifest";
-import { STR421_TOOL_COPY_IT } from "./tool-copy-str421";
-import { EPUB422_TOOL_COPY_IT } from "./tool-copy-epub-422";
-import { STR418_TOOL_COPY_IT } from "./tool-copy-str418";
+import { TICKET_TOOL_COPY_IT } from "./tool-copy-tickets";
 
 /** Copy pubblica: nomi e descrizioni in italiano; identificatori tecnici invariati. */
 export interface ItalianToolCopy {
@@ -11,9 +9,7 @@ export interface ItalianToolCopy {
 }
 
 export const TOOL_COPY_IT: Readonly<Record<string, ItalianToolCopy>> = {
-  ...STR421_TOOL_COPY_IT,
-  ...EPUB422_TOOL_COPY_IT,
-  ...STR418_TOOL_COPY_IT,
+  ...TICKET_TOOL_COPY_IT,
   "tfr-calculator": {
     name: "Calcola TFR lordo e rivalutazione",
     summary: "Stima per anno la quota TFR e la rivalutazione FOI del fondo, distinguendo gli importi con ipotesi esplicite.",
