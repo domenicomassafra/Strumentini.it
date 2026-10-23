@@ -167,13 +167,15 @@ try {
   if (await page.locator("[data-ocr-result]").count()) {
     assert.match(await page.locator("[data-ocr-correction]").innerText(), /nessuna conferma di accuratezza/iu);
   }
-  await page.locator("#ocr246-rotation").selectOption("270");
+  // Pillow's positive rotation for this fixture is counterclockwise:
+  // a 90° clockwise correction restores its upright orientation.
+  await page.locator("#ocr246-rotation").selectOption("90");
   assert.equal(await page.locator("[data-ocr-result]").count(), 0);
   await page.locator("[data-ocr-run]").click();
   await page.locator("[data-ocr-result]").waitFor({ state: "visible", timeout: 95_000 });
   assert.equal((await enEditor.inputValue()).replace(/\s+/gu, " ").trim(), enExpected,
-    "manual 270-degree correction must recover labeled English text");
-  assert.match(await page.locator("[data-ocr-result]").innerText(), /Correzione manuale applicata: 270°/u);
+    "manual 90-degree clockwise correction must recover labeled English text");
+  assert.match(await page.locator("[data-ocr-result]").innerText(), /Correzione manuale applicata: 90°/u);
 
   await page.locator("#ocr246-file").setInputFiles(resolve("tests/fixtures/ocr-395/invoice-en-low-contrast.png"));
   await page.locator("#ocr246-rotation").selectOption("0");
