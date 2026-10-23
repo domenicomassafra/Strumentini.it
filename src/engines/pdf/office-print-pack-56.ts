@@ -109,7 +109,7 @@ async function readFile56(file: PrintableOfficeFile56, signal?: AbortSignal): Pr
   }
 }
 
-/** Reject incompatible names and MIME before reading Office bytes. */
+/** Reject incompatible name and MIME before reading Office bytes; decoder checks binary headers. */
 export function preflightOfficePrint56(file: PrintableOfficeFile56): PrintableSourceKind {
   if (!file || typeof file.name !== "string" || typeof file.type !== "string"
     || typeof file.arrayBuffer !== "function" || file.name.length < 3 || file.name.length > 160
