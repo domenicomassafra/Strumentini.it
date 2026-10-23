@@ -10,6 +10,7 @@ import {
 import { deletePdfProject138, inspectPdfProjects138, loadPdfProject138, savePdfProject138, type PdfProjectSummary138 } from "../../../workbench/pdf-project-138";
 import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
 import { PdfAnnotationEditor134 } from "./PdfAnnotationEditor134";
+import { PdfImagePlacement375 } from "./PdfImagePlacement375";
 import { PdfProjectControls138 } from "./PdfProjectControls138";
 
 interface Thumbnail { page: number; url?: string; error?: string }
@@ -333,6 +334,10 @@ export function PdfPageWorkspace372() {
             </button>
           </div>
           {showAnnotator && file && <PdfAnnotationEditor134 file={file} pageCount={order.length} initialPage={selected[0] ?? order[0] ?? 1} />}
+          <details class="field" data-workspace-image-editor>
+            <summary>Inserisci immagine nel PDF</summary>
+            <PdfImagePlacement375 file={file!} session={session!} />
+          </details>
           <fieldset class="field">
             <legend>Risultato da creare</legend>
             <label><input type="radio" name="workspace-mode-372" checked={mode === "reorder"} disabled={busy} onChange={() => applyEdit({ order, selected, mode: "reorder" })} /> Riordina tutte le pagine</label>
