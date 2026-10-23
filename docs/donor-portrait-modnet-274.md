@@ -61,3 +61,8 @@ The scoped CI run also samples Chromium RSS with its preexisting
 --rss CDP/ps collector (baseline, peak, bound 2 GiB), and independently
 reopens the fresh offline-produced PNG in each browser, validating signature,
 768x512 dimensions and person/background alpha samples.
+
+CI Chromium/Firefox now use the same pinned Playwright v1.63.0-noble
+container already validated on WebKit; jobs 120171845718 and 120171845982
+were stuck in the Playwright apt --with-deps installation step. Browser
+runtime version and test matrix stay pinned. No upstream patch is required.
