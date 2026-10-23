@@ -48,6 +48,7 @@ server.stderr.on("data", data => { serverError += String(data).slice(0, 1000); }
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
 function installFrameProbe() {
+  if (window.str363) return; // Warm capture reuses the page sampler.
   const observed = { active: false, last: null, gaps: [], pointer: null, latency: null, start: 0 };
   const frame = time => {
     if (observed.active && observed.last !== null) observed.gaps.push(time - observed.last);

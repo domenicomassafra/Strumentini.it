@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { runInNewContext } from "node:vm";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { PDFDocument } from "pdf-lib";
@@ -62,5 +63,23 @@ describe("STR-363 mobile editor memory acceptance seams", () => {
     expect(receipt.physicalDeviceObserved).toBe(false);
     expect(validateMobileMemory363(receipt)).toEqual([]);
     expect(assessMobileMemory363(receipt).status).toBe("BLOCKED");
+  });
+
+  it("reuses one animation-frame sampler and pointer listener during warm capture", () => {
+    // The browser runner self-executes on import; evaluate its actual helper in an isolated DOM.
+    const source = readFileSync(resolve(import.meta.dirname, "str-363-consumer.browser.mjs"), "utf8");
+    const helper = source.match(/function installFrameProbe\(\) \{[\s\S]*?\n\}\n(?=\nasync function fixture\()/u)?.[0];
+    expect(helper).toBeDefined();
+    const frames: Array<(time: number) => void> = [];
+    const listeners: string[] = [];
+    const page = {
+      window: {},
+      document: { addEventListener: (type: string) => listeners.push(type) },
+      requestAnimationFrame: (callback: (time: number) => void) => frames.push(callback),
+      performance: { now: () => 0 },
+    };
+    runInNewContext(`${helper}\ninstallFrameProbe(); installFrameProbe();`, page);
+    expect(frames).toHaveLength(1);
+    expect(listeners).toEqual(["pointerdown"]);
   });
 });
