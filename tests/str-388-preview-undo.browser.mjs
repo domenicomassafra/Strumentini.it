@@ -31,7 +31,10 @@ async function ready() {
 try {
   await ready();
   // Reuse the approved MiniPC automation-browser; isolate only this test's tabs.
-  const browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
+  // MiniPC uses the approved dedicated CDP browser; CI owns its ephemeral Chromium.
+  const browser = process.env.CI === "true"
+    ? await chromium.launch({ headless: true })
+    : await chromium.connectOverCDP("http://127.0.0.1:17629");
   const context = await browser.newContext({ acceptDownloads: true });
   try {
     const page = await context.newPage();
