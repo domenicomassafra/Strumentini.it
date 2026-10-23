@@ -51,3 +51,8 @@ delta 3.6252803096064814/255, binary mask disagreement 0.013034396701388888;
 manual-region balanced accuracy q8 0.9956570693260415 and fp32
 0.9975872607366898. These measurements do not cover uncertain individual
 hair strands or actual mobile hardware and cannot certify Gold.
+
+The 13dbda5c browser run confirmed WebKit generated a new PNG offline;
+the next test failure was the **/* network route incorrectly counting an
+in-memory blob: preview as egress (job 120168664542). The test now blocks
+only http:/https: traffic, and still fails if any HTTP(S) request is attempted.

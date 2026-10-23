@@ -213,7 +213,10 @@ for (const [name, engine] of Object.entries(engines)) {
         deniedNetworkRequests.push(route.request().url());
         return route.abort("internetdisconnected");
       };
-      if (name === "webkit") await context.route("**/*", denyNetwork);
+      // Playwright also routes blob: preview reads for **/*; blob URLs are
+      // in-memory output, never HTTP egress. Block all HTTP(S) instead.
+      const httpTraffic = /^https?:\/\//u;
+      if (name === "webkit") await context.route(httpTraffic, denyNetwork);
       else await context.setOffline(true);
       try {
         // Reuse the selected File. WebKit may fail to materialize a new
@@ -229,7 +232,7 @@ for (const [name, engine] of Object.entries(engines)) {
         assert.deepEqual(deniedNetworkRequests, [], `${name} warmed inference attempted a network request`);
         console.log(`PASS ${name} warmed-page inference with browser network ${name === "webkit" ? "blocked" : "offline"}`);
       } finally {
-        if (name === "webkit") await context.unroute("**/*", denyNetwork);
+        if (name === "webkit") await context.unroute(httpTraffic, denyNetwork);
         else await context.setOffline(false);
       }
       await page.getByRole('button', { name: 'Libera memoria del modello' }).click();
