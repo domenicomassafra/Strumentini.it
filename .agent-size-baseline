@@ -139,7 +139,7 @@
   "src/engines/unit-conversion/index.ts": 45699,
   "src/engines/url-marketing/index.ts": 53024,
   "src/engines/video/mp4-inspection.ts": 22561,
-  "src/i18n/it/tool-copy.ts": 58010,
+  "src/i18n/it/tool-copy.ts": 57839,
   "src/pages/accedi.astro": 26838,
   "src/pages/cerca.astro": 23344,
   "src/pages/impostazioni.astro": 63051,

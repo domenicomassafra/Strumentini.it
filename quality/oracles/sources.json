@@ -1100,6 +1100,20 @@
         "EPUB3 media type and package metadata"
       ],
       "checked_at": "2026-10-19"
+    },
+    {
+      "id": "rfc5652",
+      "source_class": "official-primary",
+      "authority": "IETF / RFC Editor",
+      "url": "https://datatracker.ietf.org/doc/html/rfc5652",
+      "locator": "RFC 5652 — Cryptographic Message Syntax (CMS)",
+      "supports": [
+        "ContentInfo",
+        "SignedData",
+        "encapContentInfo.eContent",
+        "detached signatures"
+      ],
+      "checked_at": "2026-10-21"
     }
   ]
 }
