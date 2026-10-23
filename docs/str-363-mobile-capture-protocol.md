@@ -18,10 +18,49 @@ flock -w 1800 /tmp/strumentini-it-heavy.lock. Servire il sito statico da
 un host raggiungibile dal dispositivo. Le route reali sono
 /tools/pdf-rotate/, /tools/image-resize/, /tools/csv-cleaner/.
 
-La cattura non pilota il browser. Occorrono inoltre workflow S/M/L per
-ogni formato e fase cold/warm, eventi UI misurati, background/cancel/retry,
-preflight di limite, file scaricato e suo reopen indipendente. Associare
-sempre gli hash dei byte reali e le prove della sessione ai log.
+La cattura `capture-mobile-memory-363.mjs` non pilota il browser: rimane
+un campionatore raw separato. Il consumer `tests/str-363-consumer.browser.mjs`
+supporta anche Android Chrome **già avviato** tramite
+`STR363_ANDROID_SERIAL`, CDP su ADB forward e server compilato raggiungibile
+via ADB reverse. Riutilizza i workflow PDF/image/CSV del consumer e il download
+reale da Android DownloadManager (non il picker nativo). I file vengono
+riaperti indipendentemente con pdf-lib, Sharp/libvips o Python CSV, gli input
+conservano il loro SHA-256. La prova resta *parziale*: cancel/retry e preflight
+sono globali, non convalidati in ogni caso; mancano background e iOS.
+
+Prima serve `npm ci && npm run check && npm run build` su MiniPC con guardia
+resource-guard realmente ammessa, nel worktree del ticket e con Node 26.
+Dopo aver verificato lock/dispositivo e **solo se l'AVD è già booted**
+(mai avviarlo senza il lock), eseguire nel checkout:
+
+    PATH=/home/udodo/.nvm/versions/node/v26.12.0/bin:$PATH \
+    ANDROID_HOME=/home/udodo/Android/Sdk STR363_ANDROID_SERIAL=emulator-5554 \
+    python3 /home/udodo/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 120 build -- \
+    flock -w 120 /tmp/strumentini-it-heavy.lock \
+    flock -w 120 /tmp/strumentini-it-android-avd.lock \
+    node tests/str-363-consumer.browser.mjs
+
+L'output Android, se veramente eseguito, deve dichiarare
+`STR363_ANDROID_EMULATOR_PARTIAL_REVIEW_REQUIRED` e salvare il JSON parziale,
+gli stdout `dumpsys meminfo` per caso, gli SHA e la revisione HTML in una
+nuova directory `quality/receipts/mobile-memory-363/observed/raw/android-consumer-*`.
+Il PSS riguarda il solo processo Chrome principale; il JS heap CDP
+riguarda il renderer collegato, e il rAF risente dell'automazione. I download
+originali restano nella directory temporanea della sessione sul MiniPC
+per il revisore. Nessuna attribuzione fisica né modifica della receipt 36/36
+NOT_RUN. L'iOS Simulator richiede un workflow nativo Safari separato, lock
+esclusivo e audit di output/recupero. Il consumer Android non promuove
+automaticamente alcun caso a PASS.
+
+Riuso: runner Android precedenti ai commit
+`9355993243416c27488193492daf8237051277fc` (immagini) e
+`f30dcd4ce7bda4d319ff714ec8727b58a88264c3` (PDF/CSV), Playwright
+Apache-2.0, pdf-lib MIT, Sharp Apache-2.0; libvips è una dipendenza
+transitiva già presente con licenza LGPL-2.1-or-later (nessuna nuova
+adozione): https://www.libvips.org/. CDP e Android
+`dumpsys meminfo` ufficiali. L'adattamento era necessario perché il
+consumer della PR #380 usava solo Chromium desktop, senza file Android nativi.
+
 
 ## Raccolta e parser indipendente
 

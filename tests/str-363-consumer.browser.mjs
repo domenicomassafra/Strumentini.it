@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync, spawn } from "node:child_process";
 import { createServer } from "node:net";
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { chromium } from "@playwright/test";
 import { PDFDocument } from "pdf-lib";
 import sharp from "sharp";
@@ -21,6 +22,24 @@ const port = await new Promise((done, fail) => {
   });
 });
 const origin = `http://127.0.0.1:${port}`;
+const androidSerial = process.env.STR363_ANDROID_SERIAL;
+const adbBin = process.env.ANDROID_HOME
+  ? resolve(process.env.ANDROID_HOME, "platform-tools/adb") : "adb";
+const adb = (...args) => execFileSync(adbBin, ["-s", androidSerial, ...args], {
+  encoding: "utf8", timeout: 30_000, maxBuffer: 3_000_000,
+}).trim();
+let androidForwardPort;
+let androidDownloadDir;
+let androidRawDir;
+let androidIdentity;
+async function chromePss(format, size, phase, stage) {
+  const raw = adb("shell", "dumpsys", "meminfo", "com.android.chrome");
+  const total = raw.match(/^\s*TOTAL\s+(\d+)\s+\d+\s+\d+\s+\d+\s+\d+/m);
+  assert(total, "Android Chrome main process PSS absent");
+  const name = ["meminfo", format, size, phase, stage].join("-") + ".txt";
+  await writeFile(resolve(androidRawDir, name), raw, { flag: "wx" });
+  return { pssKb: Number(total[1]), rawFile: name, sha256: sha(raw), sampledAt: new Date().toISOString() };
+}
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], {
   cwd: root, stdio: ["ignore", "pipe", "pipe"],
 });
@@ -47,6 +66,8 @@ function installFrameProbe() {
     finish() { observed.active = false; return {
       samples: observed.gaps.length,
       maxIntervalMs: observed.gaps.length ? Math.max(...observed.gaps) : null,
+      intervalsMs: observed.gaps.slice(-1000),
+      intervalsTruncated: observed.gaps.length > 1000,
       pointerToFrameMs: observed.latency,
       elapsedMs: performance.now() - observed.start,
     }; },
@@ -107,15 +128,81 @@ async function waitForServer() {
   throw new Error("compiled dist/ server unavailable: " + serverError);
 }
 
+async function saveDownload(link, page) {
+  if (!androidSerial) {
+    const pending = page.waitForEvent("download", { timeout: 30_000 });
+    await link.click();
+    const path = await (await pending).path();
+    assert(path, "Chromium download path unavailable");
+    return { path, bytes: await readFile(path) };
+  }
+  const names = () => new Set(adb("shell", "ls", "-1", "/sdcard/Download").split(/\r?\n/u).filter(Boolean));
+  const before = names();
+  await link.click({ noWaitAfter: true });
+  let fresh = [];
+  for (let attempt = 0; attempt < 50; attempt++) {
+    await sleep(500);
+    fresh = [...names()].filter(name => !before.has(name));
+    if (fresh.length === 1 && /^[\w ().-]{1,180}$/u.test(fresh[0])) {
+      const remote = "/sdcard/Download/" + fresh[0];
+      let bytesOnDevice = 0;
+      try { bytesOnDevice = Number(adb("shell", "stat", "-c", "%s", remote)); }
+      catch { continue; } // DownloadManager may still be finalizing the file.
+      if (bytesOnDevice > 0) {
+        const path = join(androidDownloadDir, "download-" + Date.now() + "-" + fresh[0]);
+        execFileSync(adbBin, ["-s", androidSerial, "pull", remote, path], {
+          encoding: "utf8", timeout: 30_000,
+        });
+        const bytes = await readFile(path);
+        if (bytes.length === bytesOnDevice) return { path, bytes };
+      }
+    }
+  }
+  throw new Error("Android download not uniquely observed: " + fresh.length);
+}
+
 let browser, context, page;
 try {
   await waitForServer();
-  // The shared automation-browser Chrome is already running. Own only the tab opened below.
-  browser = await chromium.connectOverCDP(process.env.STR363_CDP_ORIGIN ?? "http://127.0.0.1:17629", { noDefaults: true });
+  if (androidSerial) {
+    assert.match(androidSerial, /^emulator-\d+$/u, "Explicit Android emulator serial required");
+    assert.equal(adb("get-state"), "device");
+    assert.equal(adb("shell", "getprop", "sys.boot_completed"), "1",
+      "Emulator must already be booted under exclusive device lock");
+    androidDownloadDir = await mkdtemp(join(tmpdir(), "str363-android-download-"));
+    const rawRoot = resolve(root, "quality/receipts/mobile-memory-363/observed/raw");
+    await mkdir(rawRoot, { recursive: true });
+    androidRawDir = await mkdtemp(join(rawRoot, "android-consumer-"));
+    androidIdentity = {
+      serial: androidSerial,
+      fingerprint: adb("shell", "getprop", "ro.build.fingerprint"),
+      osVersion: adb("shell", "getprop", "ro.build.version.release"),
+      chromeVersion: adb("shell", "dumpsys", "package", "com.android.chrome")
+        .match(/\bversionName=([^\s]+)/u)?.[1] ?? "UNKNOWN",
+    };
+    adb("reverse", "tcp:" + port, "tcp:" + port);
+    androidForwardPort = adb("forward", "tcp:0", "localabstract:chrome_devtools_remote");
+    adb("shell", "am", "start", "-a", "android.intent.action.VIEW", "-d",
+      origin + "/tools/image-resize/", "com.android.chrome");
+  }
+  const endpoint = androidSerial
+    ? "http://127.0.0.1:" + androidForwardPort
+    : process.env.STR363_CDP_ORIGIN ?? "http://127.0.0.1:17629";
+  browser = await chromium.connectOverCDP(endpoint, { noDefaults: true });
   context = browser.contexts()[0];
   assert(context, "automation-browser context unavailable");
-  page = await context.newPage();
-  await page.setViewportSize({ width: 390, height: 844 });
+  if (androidSerial) {
+    for (let attempt = 0; attempt < 30 && !page; attempt++) {
+      page = context.pages().find(candidate => candidate.url().startsWith(origin + "/tools/"));
+      if (!page) await sleep(250);
+    }
+    assert(page, "Android Chrome tab from ACTION_VIEW was not exposed through CDP");
+  } else {
+    page = await context.newPage();
+    await page.setViewportSize({ width: 390, height: 844 });
+  }
+  if (androidSerial) assert.match(await page.evaluate(() => navigator.userAgent),
+    /Android.*Chrome\//u, "CDP target is not installed Android Chrome");
   const cdp = await context.newCDPSession(page);
   await cdp.send("Performance.enable");
   const heap = async () => {
@@ -146,7 +233,8 @@ try {
         await page.locator('input[type="file"]').first().waitFor({ timeout: 30_000 });
         await page.evaluate(installFrameProbe);
         await page.locator('input[type="file"]').first().setInputFiles({
-          name: input.name, mimeType: input.mime, buffer: input.bytes,
+          name: "str363-" + Date.now() + "-" + phase + "-" + input.name,
+          mimeType: input.mime, buffer: input.bytes,
         });
         if (format === "pdf") await page.locator('input[placeholder="1-3, 5"]').fill("1");
         if (format === "image") {
@@ -155,6 +243,7 @@ try {
           await page.locator('input[type="number"]').nth(1).fill(String(sizeOut));
         }
         const before = await heap();
+        const pssBefore = androidSerial ? await chromePss(format, size, phase, "before") : null;
         let sampling = true;
         const samples = [before];
         const sampler = (async () => {
@@ -173,21 +262,34 @@ try {
           const link = page.locator(selector).first();
           await link.waitFor({ timeout: 90_000 });
           const timing = await page.evaluate(() => window.str363.finish());
-          const downloadPromise = page.waitForEvent("download", { timeout: 30_000 });
-          await link.click();
-          const download = await downloadPromise;
-          const outputPath = await download.path();
-          assert(outputPath);
-          outputBytes = await readFile(outputPath);
-          await independentlyReopen(format, outputBytes, outputPath, input.expected);
+          const saved = await saveDownload(link, page);
+          outputBytes = saved.bytes;
+          await independentlyReopen(format, outputBytes, saved.path, input.expected);
           assert.equal(sha(input.bytes), initialHash, "original file input changed");
           const after = await heap();
+          const pssAfter = androidSerial ? await chromePss(format, size, phase, "after") : null;
           samples.push(after);
-          matrix.push({ platform: "DESKTOP_CHROMIUM_MOBILE_VIEWPORT_ONLY", format, size, phase,
+          let rawBrowserProbe = null;
+          if (androidSerial) {
+            const file = ["browser-samples", format, size, phase].join("-") + ".json";
+            const bytes = JSON.stringify({
+              sourceRevision: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
+              format, size, phase, sampledAt: new Date().toISOString(),
+              jsHeapBytes: samples, frame: timing,
+            }, null, 2) + "\n";
+            assert(Buffer.byteLength(bytes) < 20_000, "Raw frame/heap source exceeds per-file limit");
+            await writeFile(resolve(androidRawDir, file), bytes, { flag: "wx" });
+            rawBrowserProbe = { file, sha256: sha(bytes) };
+          }
+          const { intervalsMs, ...frameSummary } = timing;
+          matrix.push({ platform: androidSerial ? "ANDROID_EMULATOR" : "DESKTOP_CHROMIUM_MOBILE_VIEWPORT_ONLY",
+            format, size, phase,
             inputBytes: input.bytes.length, inputSha256: initialHash,
             outputBytes: outputBytes.length, outputSha256: sha(outputBytes),
             memory: { metric: "JSHeapUsedSize_BYTES", before, after, sampledPeak: Math.max(...samples) },
-            frame: timing, reopenedIndependently: true });
+            androidChromeMainProcessPssKb: androidSerial ? { before: pssBefore, after: pssAfter } : null,
+            frame: frameSummary, rawBrowserProbe,
+            reopenedIndependently: true, recovery: "NOT_RUN_PER_CASE" });
         } finally { sampling = false; await sampler; }
       }
     }
@@ -211,11 +313,8 @@ try {
   await page.getByRole("button", { name: "Ridimensiona", exact: true }).click();
   const recovered = page.locator('a[download]').first();
   await recovered.waitFor({ timeout: 90_000 });
-  const retryDownload = page.waitForEvent("download", { timeout: 30_000 });
-  await recovered.click();
-  const retryPath = await (await retryDownload).path();
-  assert(retryPath);
-  await independentlyReopen("image", await readFile(retryPath), retryPath, [1200, 1200]);
+  const retrySaved = await saveDownload(recovered, page);
+  await independentlyReopen("image", retrySaved.bytes, retrySaved.path, [1200, 1200]);
   assert.equal(sha(large.bytes), largeHash, "cancel/retry mutated source image");
 
   // A controlled refusal exercises the memory budget without inducing device OOM.
@@ -233,14 +332,45 @@ try {
   assert.equal(matrix.length, 18);
   assert.deepEqual(pageErrors, []);
   assert.deepEqual(offsite, []);
-  console.log("STR363_COMPILED_CONSUMER_DESKTOP_CHROMIUM_PASS", JSON.stringify({
+  const report = {
+    schemaVersion: 1, ticket: "STR-363",
+    status: androidSerial ? "INCOMPLETE_REVIEW_REQUIRED" : "DESKTOP_VIEWPORT_ONLY",
+    physicalDeviceObserved: false,
     sourceRevision: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
-    browser: browser.version(), viewport: { width: 390, height: 844 },
-    limitations: "Desktop Chrome viewport only; no Android/iOS device, process PSS, or physical memory budget claimed",
+    browser: browser.version(), device: androidIdentity ?? null,
+    viewport: androidSerial ? null : { width: 390, height: 844 },
+    routes: Object.fromEntries(await Promise.all(
+      Object.entries({ pdf: "/tools/pdf-rotate/", image: "/tools/image-resize/", csv: "/tools/csv-cleaner/" })
+        .map(async ([format, route]) => [format, {
+          route, compiledHtmlSha256: sha(await readFile(resolve(root, "dist", route.slice(1), "index.html"))),
+        }]))),
+    limitations: androidSerial
+      ? "Installed Android Chrome CDP, scripted file selection, Chrome MAIN PROCESS PSS only; no iOS, native picker, controlled OOM, per-case recovery or independent review"
+      : "Desktop Chrome viewport only; no Android/iOS device, process PSS, or physical memory budget claimed",
     observations: matrix,
-  }));
+  };
+  if (androidSerial) {
+    await writeFile(resolve(androidRawDir, "consumer-partial.json"),
+      JSON.stringify(report, null, 2) + "\n", { flag: "wx" });
+    console.log("STR363_ANDROID_RAW_DIR", androidRawDir);
+  }
+  console.log(androidSerial
+    ? "STR363_ANDROID_EMULATOR_PARTIAL_REVIEW_REQUIRED"
+    : "STR363_COMPILED_CONSUMER_DESKTOP_CHROMIUM_PASS", JSON.stringify(report));
 } finally {
-  if (page) await page.close();
+  if (page && !androidSerial) {
+    try { await page.close(); } catch { /* browser may already be gone */ }
+  }
+  if (androidSerial) {
+    if (androidForwardPort) {
+      try { adb("forward", "--remove", "tcp:" + androidForwardPort); }
+      catch { /* best-effort owned forward release */ }
+    }
+    if (androidDownloadDir) {
+      try { adb("reverse", "--remove", "tcp:" + port); }
+      catch { /* best-effort owned reverse release */ }
+    }
+  }
   // This is an externally owned automation-browser process. Closing the CDP
   // Browser can send Browser.close on some Playwright/agent-browser versions.
   // Let this standalone Node process release its WebSocket at exit instead.
