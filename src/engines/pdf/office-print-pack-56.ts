@@ -109,7 +109,7 @@ async function readFile56(file: PrintableOfficeFile56, signal?: AbortSignal): Pr
   }
 }
 
-/** Never trusts MIME, extension or magic independently. Refusal happens before reading Office payloads. */
+/** Reject incompatible name and MIME before reading Office bytes; decoder checks binary headers. */
 export function preflightOfficePrint56(file: PrintableOfficeFile56): PrintableSourceKind {
   if (!file || typeof file.name !== "string" || typeof file.type !== "string"
     || typeof file.arrayBuffer !== "function" || file.name.length < 3 || file.name.length > 160
@@ -130,7 +130,7 @@ export function preflightOfficePrint56(file: PrintableOfficeFile56): PrintableSo
   return kind;
 }
 
-function decodeText56(bytes: Uint8Array): string {
+export function decodeText56(bytes: Uint8Array): string {
   if (bytes.length === 0 || bytes.length > MAX_TEXT_BYTES) fail("PDF56_INPUT_LIMIT", "File oltre il limite locale.");
   // UTF-8 decoding removes a leading BOM. Inspect the same effective header
   // that the printable path would read, or BOM-prefixed RTF/PDF/Office files
