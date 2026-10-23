@@ -24,8 +24,10 @@ describe("STR-278 — resize input and independent image oracle", () => {
     expect(signatureMatches(independentlyEncoded, "image/jpeg")).toBe(true);
     expect(metadata).toMatchObject({ format: "jpeg", width: 80, height: 80 });
     expect(pixel.info.channels).toBe(3);
-    expect(pixel.data[0]).toBeGreaterThan(pixel.data[1] + 140);
-    expect(pixel.data[0]).toBeGreaterThan(pixel.data[2] + 100);
+    expect(pixel.data.length).toBeGreaterThanOrEqual(3);
+    const [red = 0, green = 0, blue = 0] = pixel.data;
+    expect(red).toBeGreaterThan(green + 140);
+    expect(red).toBeGreaterThan(blue + 100);
     expect(sha(input)).toBe(before);
   });
 
