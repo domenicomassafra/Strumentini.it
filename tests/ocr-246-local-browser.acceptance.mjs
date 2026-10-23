@@ -42,8 +42,10 @@ try {
   const text = (await page.locator('textarea[aria-label="Testo OCR italiano"]').inputValue()).replace(/\s+/gu, " ").trim();
   assert.equal(text, expected);
   assert.match(await page.locator("[data-ocr-confidence]").innerText(), /Tesseract/u);
-  assert.equal(await page.locator('#ocr395-language option[value="eng"]').isDisabled(), true,
-    "unapproved English model must not be selectable or fetchable");
+  assert.equal(await page.locator('#ocr395-language option[value="eng"]').isDisabled(), false,
+    "pinned same-origin English model must be selectable");
+  assert.equal(allRequests.some((u) => u.endsWith("eng.traineddata.gz")), false,
+    "the EN model must never be downloaded during Italian OCR");
   const originalPreview = page.locator("[data-ocr-original-preview]");
   await originalPreview.waitFor({ state: "visible" });
   await page.waitForFunction(() => {
@@ -123,6 +125,70 @@ try {
   assert.deepEqual(allRequests.filter((u) => u.startsWith("http") && new URL(u).origin !== route.origin), [],
     "rotated OCR must not fetch from external origins");
   assert.deepEqual(runtimeErrors, [], "rotated OCR must not cause JS exceptions");
+  // EN OCR is opt-in: selecting it and choosing a file must not download
+  // the second model until the user actually starts recognition.
+  const enSample = resolve("tests/fixtures/ocr-395/invoice-en.png");
+  const enExpected = (await readFile(resolve("tests/fixtures/ocr-395/invoice-en.txt"), "utf8")).trim();
+  assert.equal(createHash("sha256").update(await readFile(enSample)).digest("hex"),
+    "76a837a9afb4e7ef0312bdff33c1ea7175f2cae02d417143350bff09a57a685d");
+  await page.locator("#ocr395-language").selectOption("eng");
+  assert.equal(await page.locator("[data-ocr-result]").count(), 0, "language change must invalidate stale IT result");
+  await page.locator("#ocr246-file").setInputFiles(enSample);
+  assert.equal(allRequests.some((u) => u.endsWith("eng.traineddata.gz")), false,
+    "choosing EN or its input must not eagerly fetch traineddata");
+  await page.locator("[data-ocr-run]").click();
+  await page.locator("[data-ocr-result]").waitFor({ state: "visible", timeout: 95_000 });
+  const enEditor = page.locator('textarea[aria-label="English OCR text"]');
+  const enRecognized = (await enEditor.inputValue()).replace(/\s+/gu, " ").trim();
+  assert.equal(enRecognized, enExpected, "English browser Tesseract must match its independently labeled scan");
+  assert.ok(allRequests.some((u) => u.endsWith("/ocr-395/lang/eng.traineddata.gz")), "only the EN job fetches same-origin ENG");
+  assert.match(await page.locator("[data-ocr-result]").innerText(), /lingua eng/u);
+  assert.match(await page.locator("[data-ocr-confidence]").innerText(), /non.*calibrat/iu);
+  const enCorrection = "Reviewed English invoice 24680 — USD 123.45";
+  await enEditor.fill(enCorrection);
+  assert.match(await page.locator("[data-ocr-correction]").innerText(), /corretto manualmente/iu);
+  const enDownloadWaiting = page.waitForEvent("download");
+  await page.getByRole("button", { name: /Scarica TXT locale/u }).click();
+  const enDownload = await enDownloadWaiting;
+  assert.equal(enDownload.suggestedFilename(), "ocr-english-395.txt");
+  assert.equal(await readFile(await enDownload.path(), "utf8"), enCorrection,
+    "reopen and compare the actual exported Unicode English correction");
+  await page.locator("#ocr246-rotation").selectOption("90");
+  assert.equal(await page.locator("[data-ocr-result]").count(), 0);
+
+  // A real wrong rotation cannot be treated as verified, regardless of
+  // whether the recognizer extracts some accidental characters.
+  await page.locator("#ocr246-file").setInputFiles(resolve("tests/fixtures/ocr-395/invoice-en-rotated.png"));
+  await page.locator("#ocr246-rotation").selectOption("0");
+  await page.locator("[data-ocr-run]").click();
+  await page.waitForFunction(() => Boolean(document.querySelector("[data-ocr-result]")) ||
+    document.querySelector("[data-ocr-status]")?.textContent?.startsWith("OCR non completato:"),
+    null, { timeout: 95_000 });
+  if (await page.locator("[data-ocr-result]").count()) {
+    assert.match(await page.locator("[data-ocr-correction]").innerText(), /nessuna conferma di accuratezza/iu);
+  }
+  await page.locator("#ocr246-rotation").selectOption("270");
+  assert.equal(await page.locator("[data-ocr-result]").count(), 0);
+  await page.locator("[data-ocr-run]").click();
+  await page.locator("[data-ocr-result]").waitFor({ state: "visible", timeout: 95_000 });
+  assert.equal((await enEditor.inputValue()).replace(/\s+/gu, " ").trim(), enExpected,
+    "manual 270-degree correction must recover labeled English text");
+  assert.match(await page.locator("[data-ocr-result]").innerText(), /Correzione manuale applicata: 270°/u);
+
+  await page.locator("#ocr246-file").setInputFiles(resolve("tests/fixtures/ocr-395/invoice-en-low-contrast.png"));
+  await page.locator("#ocr246-rotation").selectOption("0");
+  await page.locator("[data-ocr-run]").click();
+  await page.waitForFunction(() => Boolean(document.querySelector("[data-ocr-result]")) ||
+    document.querySelector("[data-ocr-status]")?.textContent?.startsWith("OCR non completato:"),
+    null, { timeout: 95_000 });
+  if (await page.locator("[data-ocr-result]").count()) {
+    assert.match(await page.locator("[data-ocr-correction]").innerText(), /nessuna conferma di accuratezza/iu,
+      "degraded scans are always explicitly unverified even if Tesseract returns a score");
+    assert.doesNotMatch(await page.locator("[data-ocr-result]").innerText(), /accuratezza confermata/iu);
+  }
+  assert.deepEqual(allRequests.filter((u) => u.startsWith("http") && new URL(u).origin !== route.origin), []);
+  assert.deepEqual(runtimeErrors, []);
+  console.log("#395 BROWSER PASS: Italian and English scans matched labeled text; ENG fetched lazily, edited English TXT reopened, wrong rotation and degraded scan not authoritative; only same-origin network.");
   console.log("#246 BROWSER PASS: real Tesseract Italian OCR exact on original and manually corrected RAW-90 invoice; worker/WASM/ITA same origin, lazy load, two actual TXT downloads, 390px responsive, no external HTTP, no JS errors.");
   console.log("#246 OCR ASSET REQUESTS:", allRequests.filter((u) => u.includes("/ocr-246/")).map((u) => new URL(u).pathname).join(", "));
 } finally {

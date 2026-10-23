@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { recognizeLocalItalianOcr246, type OcrResult246 } from "../../../engines/ocr/local-italian-246";
+import { recognizeLocalOcr395, type OcrLanguage395, type OcrResult395 } from "../../../engines/ocr/language-395";
 import { prepareOcrTextExport395 } from "../../../engines/ocr/correction-395";
 
 /** Experimental local-only direct route. #271 blocks public production promotion. */
 export function LocalItalianOcr246Tool() {
   const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState("Seleziona un'immagine PNG stampata in italiano.");
+  const [status, setStatus] = useState("Seleziona un'immagine PNG stampata in italiano o inglese.");
   const [active, setActive] = useState(false);
   const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
-  const [result, setResult] = useState<OcrResult246 | null>(null);
+  const [language, setLanguage] = useState<OcrLanguage395>("ita");
+  const [result, setResult] = useState<OcrResult395 | null>(null);
   const [editedText, setEditedText] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const operation = useRef<AbortController | null>(null);
@@ -36,9 +37,9 @@ export function LocalItalianOcr246Tool() {
     setActive(true);
     setResult(null);
     setEditedText("");
-    setStatus("Avvio del worker OCR italiano locale: il primo caricamento può impiegare tempo.");
+    setStatus("Avvio OCR locale: il modello della lingua scelta viene caricato solo ora.");
     try {
-      const recognized = await recognizeLocalItalianOcr246(file, {
+      const recognized = await recognizeLocalOcr395(file, language, {
         signal: controller.signal,
         rotateClockwiseDegrees: rotation,
         onProgress: (phase, progress) => {
@@ -70,7 +71,7 @@ export function LocalItalianOcr246Tool() {
     try {
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = "ocr-italiano-246.txt";
+      anchor.download = language === "ita" ? "ocr-italiano-246.txt" : "ocr-english-395.txt";
       anchor.click();
     } finally { URL.revokeObjectURL(url); }
   }
@@ -86,11 +87,21 @@ export function LocalItalianOcr246Tool() {
           setStatus(chosen ? `Pronto: ${chosen.name}` : "Nessuna immagine selezionata.");
         }} />
       <label class="ocr246-label" for="ocr395-language">Lingua di riconoscimento</label>
-      <select id="ocr395-language" value="ita" aria-describedby="ocr395-language-note" disabled={active}>
-        <option value="ita">Italiano (modello locale verificato)</option>
-        <option value="eng" disabled>Inglese (modello e diritti non verificati)</option>
+      <select id="ocr395-language" value={language} aria-describedby="ocr395-language-note" disabled={active}
+        onChange={(event) => {
+          const next = event.currentTarget.value;
+          if (next !== "ita" && next !== "eng") return;
+          operation.current?.abort();
+          operation.current = null;
+          setLanguage(next);
+          setResult(null);
+          setEditedText("");
+          setStatus("Lingua cambiata: riesegui l'OCR prima di usare il testo.");
+        }}>
+        <option value="ita">Italiano (modello disponibile nel sito)</option>
+        <option value="eng">English (download del modello solo all'avvio dell'OCR inglese)</option>
       </select>
-      <p id="ocr395-language-note">L'inglese resta disabilitato finché modello, hash, licenza e corpus di scansioni non saranno approvati. Nessun caricamento di modelli esterni.</p>
+      <p id="ocr395-language-note">Entrambi i modelli provengono dal sito. Il modello inglese viene richiesto soltanto quando avvii il riconoscimento inglese.</p>
       <label class="ocr246-label" for="ocr246-rotation">Correzione manuale orientamento, in senso orario</label>
       <select id="ocr246-rotation" value={rotation} disabled={active}
         onChange={(event) => {
@@ -99,7 +110,7 @@ export function LocalItalianOcr246Tool() {
             setRotation(degrees);
             setResult(null);
             setEditedText("");
-            setStatus("Orientamento modificato: riesegui l'OCR italiano prima di usare il testo.");
+            setStatus("Orientamento modificato: riesegui l'OCR prima di usare il testo.");
           }
         }}>
         <option value="0">Nessuna rotazione</option>
@@ -109,7 +120,7 @@ export function LocalItalianOcr246Tool() {
       </select>
       <div class="ocr246-controls">
         <button type="button" data-ocr-run disabled={!file || active} onClick={() => void recognize()}>
-          {active ? "Riconoscimento in corso…" : "Estrai testo in italiano"}
+          {active ? "Riconoscimento in corso…" : language === "ita" ? "Estrai testo in italiano" : "Extract English text"}
         </button>
         <button type="button" data-ocr-cancel disabled={!active} onClick={cancel}>Annulla OCR</button>
       </div>
@@ -124,7 +135,7 @@ export function LocalItalianOcr246Tool() {
             </figure>}
             <div>
               <label class="ocr246-label" for="ocr395-edit">Modifica la trascrizione confrontandola con la scansione</label>
-              <textarea id="ocr395-edit" aria-label="Testo OCR italiano" value={editedText} maxLength={100_000} rows={7}
+              <textarea id="ocr395-edit" aria-label={language === "ita" ? "Testo OCR italiano" : "English OCR text"} value={editedText} maxLength={100_000} rows={7}
                 onInput={(event) => setEditedText(event.currentTarget.value)} />
               <p data-ocr-correction>{editedText !== result.text
                 ? "Testo corretto manualmente: confidenza OCR riferita solo al testo originario."
@@ -143,7 +154,7 @@ export function LocalItalianOcr246Tool() {
         </div>
       )}
       <p class="ocr246-note">
-        Elaborazione locale in browser, senza invio dell'immagine a servizi esterni. Caricamento differito di WASM e dati italiani dal sito.
+        Elaborazione locale in browser, senza invio dell'immagine a servizi esterni. Caricamento differito di WASM e del modello italiano o inglese dal sito, soltanto all’avvio della lingua scelta.
         La rotazione è scelta da te, non stimata automaticamente: correggi l'orientamento e verifica il testo. Scansioni difficili e affidabilità su iOS Safari/Android Chrome fisici non sono ancora certificati (#271).
         I file HEIC/JPEG/PDF non sono supportati da questa versione.
       </p>
