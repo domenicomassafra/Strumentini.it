@@ -114,6 +114,15 @@ describe("STR-423 P7M/CMS extraction without any authenticity claim", () => {
     expect(joined.signatureVerification).toBe("NOT_VERIFIED");
   });
 
+  it("refuses SignedData without the mandatory signerInfos SET", () => {
+    const payload = new TextEncoder().encode("%PDF-1.4 missing signerInfos");
+    const encap = seq(concat([dataOid(), context0(octets(payload))]));
+    const missingSigners = seq(concat([tlv(0x02, new Uint8Array([1])), set(new Uint8Array()), encap]));
+    const malformed = seq(concat([signedDataOid(), context0(missingSigners)]));
+    expect(() => extractP7m176({ bytes: malformed, fileName: "signerinfos-missing.p7m" }))
+      .toThrow("P7M_SIGNER_INFOS");
+  });
+
   it("never touches the network and honours cancellation and the input ceiling", async () => {
     const network = vi.fn(() => { throw new Error("NETWORK_CALLED"); });
     vi.stubGlobal("fetch", network);
