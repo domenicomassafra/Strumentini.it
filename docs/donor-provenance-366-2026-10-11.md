@@ -81,6 +81,8 @@ src/engines/video/vendor/gifenc-mit-1.0.3/index.mjs	217761244379253ba5815510d304
 public/models/portrait-modnet/config.json	e144d8af9b1f09649785c77f592a76bbc69504ae02e43700663b2a9f00d9c8a2	Apache-2.0	fa2fa546052fba4c08921230a26cc69a333fca12	https://huggingface.co/Xenova/modnet/resolve/fa2fa546052fba4c08921230a26cc69a333fca12/config.json
 public/models/portrait-modnet/preprocessor_config.json	07d83634b1fdd20142ca6e3fe55ab92b558f56d1b0f005ff3a7926f1c9e1165d	Apache-2.0	fa2fa546052fba4c08921230a26cc69a333fca12	https://huggingface.co/Xenova/modnet/resolve/fa2fa546052fba4c08921230a26cc69a333fca12/preprocessor_config.json
 public/models/portrait-modnet/onnx/model_quantized.onnx	92e49898c3e05a6d7a944fc67a8cb87c4aad754ffb6ebd949528c7d1105fee3a	Apache-2.0	fa2fa546052fba4c08921230a26cc69a333fca12	https://huggingface.co/Xenova/modnet/resolve/fa2fa546052fba4c08921230a26cc69a333fca12/onnx/model_quantized.onnx
+public/ocr-395/lang/COPYING-tessdata-Apache-2.0.txt	85c31da65107d18490666cc8e3af6373b5303fb57f82b97119d47ad219896800	Apache-2.0	1.0.0	https://raw.githubusercontent.com/tesseract-ocr/tessdata/c2b2e0df86272ce11be323f23f96cf656565ed41/COPYING
+public/ocr-395/lang/eng.traineddata.gz	ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468	Apache-2.0	1.0.0	https://registry.npmjs.org/@tesseract.js-data/eng/-/eng-1.0.0.tgz
 <!-- ASSET-PINS-366-END -->
 
 Current source-bound usage, unresolved real distribution rights, and the
