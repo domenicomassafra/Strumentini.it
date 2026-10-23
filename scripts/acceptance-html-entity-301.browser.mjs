@@ -11,8 +11,14 @@ const root = resolve(import.meta.dirname, "..");
 const dist = join(root, "dist");
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const contentTypes = { ".js": "text/javascript", ".css": "text/css", ".html": "text/html", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
+const authPath = "/api/auth/session";
 const server = createServer(async (request, response) => {
   const pathname = decodeURIComponent(new URL(request.url ?? "/", "http://localhost").pathname);
+  if (pathname === authPath && request.method === "GET") {
+    response.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
+    response.end('{"user":null}');
+    return;
+  }
   const file = resolve(dist, `.${pathname}`, pathname.endsWith("/") ? "index.html" : "");
   if (!file.startsWith(dist + sep)) { response.writeHead(403).end(); return; }
   const mime = contentTypes[file.slice(file.lastIndexOf("."))] ?? "application/octet-stream";
@@ -25,7 +31,8 @@ const server = createServer(async (request, response) => {
         .filter((match) => !/\bsrc\s*=/iu.test(match[0]) && match[1] !== "")
         .map((match) => `'sha256-${createHash("sha256").update(match[1]).digest("base64")}'`)
       : [];
-    response.setHeader("Content-Security-Policy", `default-src 'self'; script-src 'self' ${hashes.join(" ")}; connect-src 'none'; object-src 'none'; base-uri 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'`);
+    // The shared layout checks its anonymous session; the codec itself has no API traffic.
+    response.setHeader("Content-Security-Policy", `default-src 'self'; script-src 'self' ${hashes.join(" ")}; connect-src ${origin}${authPath}; object-src 'none'; base-uri 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'`);
     response.end(bytes);
   } catch { response.writeHead(404).end("Missing local build asset"); }
 });
@@ -60,9 +67,15 @@ try {
       const errors = [];
       const consoleErrors = [];
       const scripts = [];
+      const connections = [];
       page.on("pageerror", (error) => errors.push(String(error)));
       page.on("console", (message) => { if (message.type() === "error") consoleErrors.push(message.text()); });
-      page.on("request", (request) => { if (request.resourceType() === "script") scripts.push(new URL(request.url()).pathname); });
+      page.on("request", (request) => {
+        if (request.resourceType() === "script") scripts.push(new URL(request.url()).pathname);
+        if (["fetch", "xhr", "eventsource", "websocket"].includes(request.resourceType())) {
+          connections.push({ url: request.url(), method: request.method() });
+        }
+      });
       await page.route("**/*", (route) => {
         const url = route.request().url();
         if (url.startsWith(`${origin}/`) || url.startsWith("data:") || url.startsWith("blob:")) return route.continue();
@@ -73,7 +86,7 @@ try {
       assert.equal(response?.status(), 200, `${engine.name()}: built HTML route is unavailable`);
       const csp = response?.headers()["content-security-policy"] ?? "";
       assert.match(csp, /(?:^|; )script-src 'self' /u, `${engine.name()}: CSP script origin`);
-      assert.match(csp, /(?:^|; )connect-src 'none'(?:;|$)/u, `${engine.name()}: CSP network refusal`);
+      assert(csp.includes(`connect-src ${origin}${authPath};`), `${engine.name()}: CSP must permit only the session endpoint`);
       for (const sample of cases) {
         await page.locator("form textarea").first().fill(sample.text);
         await page.locator("form select").nth(0).selectOption(sample.mode);
@@ -99,6 +112,8 @@ try {
       await refusal.waitFor({ state: "visible" });
       assert((await refusal.innerText()).trim().length > 0, `${engine.name()}: missing refusal message`);
       assert.equal(await page.locator('[data-result-action="download"]').count(), 0, `${engine.name()}: download after invalid Unicode`);
+      assert(connections.length > 0, `${engine.name()}: shared layout auth was not exercised`);
+      assert(connections.every(({ url, method }) => url === `${origin}${authPath}` && method === "GET"), `${engine.name()}: unexpected browser API traffic: ${JSON.stringify(connections)}`);
       assert.deepEqual(offsite, [], `${engine.name()}: unexpected offsite requests`);
       assert.deepEqual(errors, [], `${engine.name()}: script errors`);
       assert.deepEqual(consoleErrors, [], `${engine.name()}: console errors`);
@@ -115,12 +130,13 @@ try {
         refusalUi: "PASS",
         downloadJson: "PASS",
         csp: { status: "PASS", responseHeader: csp },
+        anonymousSessionRequests: connections.length,
         externalRequests: offsite.length,
         pageErrors: errors.length,
         consoleErrors: consoleErrors.length,
         lazyChunk: { path: lazyScript, sha256: sha256(await readFile(chunkPath)) },
       });
-      console.log(`PASS ${engine.name()} ${browser.version()} 3 real UI conversions, CSP self + inline hashes/connect-src none, he lazy chunk, no egress`);
+      console.log(`PASS ${engine.name()} ${browser.version()} 3 real UI conversions, CSP self + inline hashes/auth-only connect-src, he lazy chunk, no egress`);
       await context.close();
     } finally { await browser.close(); }
   }
