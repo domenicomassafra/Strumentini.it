@@ -22,7 +22,7 @@ import { ANNUAL_VAT_2025_WINDOW_117 } from "../../reference-data/italy/fiscal-an
       </div>
       <div data-preset class="fields" hidden>
         <label for="iva-date">Data operazione nel periodo verificato (13–31/12/2025)</label>
-        <input id="iva-date" name="date" type="date" min="2025-12-13" max="2025-12-31" value="2025-12-13" />
+        <input id="iva-date" name="date" type="date" min="2025-12-13" max="2025-12-31" required />
         <label for="iva-category">Categoria legale esplicita</label>
         <select id="iva-category" name="category">
           {ANNUAL_VAT_2025_WINDOW_117.categories.map((category) =>

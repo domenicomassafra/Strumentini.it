@@ -19,6 +19,7 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
       <form novalidate>
         <label for="irpef-annual-year">Anno d'imposta</label>
         <select id="irpef-annual-year" name="year" required>
+          <option value="" selected>Seleziona un anno d’imposta</option>
           {VERIFIED_IRPEF_EXCERPTS_117.map((pack) => <option value={pack.taxYear}>{pack.taxYear}</option>)}
         </select>
         <label for="irpef-annual-income">Reddito imponibile IRPEF annuo (€)</label>
@@ -70,6 +71,10 @@ import { VERIFIED_IRPEF_EXCERPTS_117 } from "../../reference-data/italy/fiscal-a
     year.addEventListener("change", () => { income.value = ""; });
     form.addEventListener("submit", (event) => {
       event.preventDefault(); reset();
+      if (!year.value) {
+        error.textContent = "Seleziona esplicitamente l’anno d’imposta prima del calcolo.";
+        error.hidden = false; return;
+      }
       const raw = income.value.trim();
       if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(raw)) {
         error.textContent = "Reddito non valido: inserisci euro non negativi, al massimo due decimali, senza separatori delle migliaia.";

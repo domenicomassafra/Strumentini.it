@@ -10,7 +10,7 @@ import { IRPEF_128_COVERAGE, IRPEF_128_LIABILITY_SOURCES } from "../../engines/i
     <noscript><p data-irpef-noscript>Il calcolo richiede JavaScript. Il pulsante resta disattivato e non invia il reddito.</p></noscript>
     <form novalidate>
       <label for="irpef-c-year">Anno d'imposta</label>
-      <select id="irpef-c-year" name="year"><option value="2025">2025</option><option value="2026">2026 (solo nazionale)</option></select>
+      <select id="irpef-c-year" name="year" required><option value="" selected>Seleziona un anno d’imposta</option><option value="2025">2025</option><option value="2026">2026 (solo nazionale)</option></select>
       <label for="irpef-c-income">Reddito imponibile in euro, senza separatori delle migliaia</label>
       <input id="irpef-c-income" name="income" type="text" inputmode="decimal" placeholder="40000,00" required />
       <label for="irpef-c-region">Regione per addizionale</label>
@@ -45,6 +45,10 @@ import { IRPEF_128_COVERAGE, IRPEF_128_LIABILITY_SOURCES } from "../../engines/i
     form.addEventListener("input", clear); form.addEventListener("change", clear);
     form.addEventListener("submit", (event) => {
       event.preventDefault(); clear();
+      if (!field("year").value) {
+        error.textContent = "Seleziona esplicitamente l’anno d’imposta prima del calcolo.";
+        error.hidden = false; return;
+      }
       const raw = field("income").value.trim();
       if (!/^(?:0|[1-9]\d{0,9})(?:[.,]\d{1,2})?$/u.test(raw)) {
         error.textContent = "Reddito non valido: euro non negativi, massimo due decimali, senza separatori delle migliaia.";

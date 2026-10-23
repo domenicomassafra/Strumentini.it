@@ -191,7 +191,13 @@ try {
   const annualIncome = annual.locator('[name="income"]');
   const annualYear = annual.locator('[name="year"]');
   assert.equal(await annualIncome.inputValue(), "", "No financial input crosses paths");
-  assert.deepEqual(await annualYear.locator("option").evaluateAll(options => options.map(o => o.value)), ["2025", "2026"]);
+  assert.deepEqual(await annualYear.locator("option").evaluateAll(options => options.map(o => o.value)), ["", "2025", "2026"]);
+  assert.equal(await annualYear.inputValue(), "");
+  await annualIncome.fill("40000");
+  await annual.locator('button[type="submit"]').click();
+  assert.equal((await annual.locator("output").innerText()).trim(), "", "Missing year must refuse calculation");
+  assert.match(await annual.locator('[role="alert"]').innerText(), /seleziona.*anno/iu);
+  await annualYear.selectOption("2025");
   await annualIncome.fill("40000");
   await annual.locator('[name="region"]').selectOption("puglia");
   await annual.locator('[name="municipality"]').selectOption("bari");
