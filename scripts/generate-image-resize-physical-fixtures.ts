@@ -18,10 +18,7 @@ if (sourcePixels / IMAGE_LIMITS.maxSourcePixels < 0.95 || estimatedDecodedBytes 
 }
 
 await mkdir(outputDir, { recursive: true });
-const browser = await chromium.launch({
-  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-  headless: true,
-});
+const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage();
   const dataUrl = await page.evaluate(({ width, height }) => {
