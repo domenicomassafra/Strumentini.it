@@ -34,10 +34,10 @@ jobs:
           node-version: '26'
           cache: npm
       - run: npm ci
+      - name: Astro TypeScript check and generated catalog
+        run: npm run check
       - name: Existing image regressions and #274 PNG/constraints
         run: npx vitest run tests/image-visual-tools.test.ts tests/image-media-tools.test.ts tests/portrait-modnet-274.test.ts tests/portrait-modnet-png-274.test.ts --maxWorkers=1
-      - name: Astro TypeScript check
-        run: npm run check
       - name: Donor provenance gate
         run: npx tsx scripts/donor-provenance-366.ts --check
   quantization:

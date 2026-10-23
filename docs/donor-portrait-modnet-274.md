@@ -80,3 +80,7 @@ step alone now sets HOME=/root as recommended by the browser diagnostic;
 other CI steps retain their original environment. Chromium container
 inference and offline PNG readback passed, with CDP peak RSS 836924 KiB
 from baseline 191408 KiB in CI job 120174473493 (2 GiB bound).
+
+The image-source job generates the catalog with npm run check before testing
+image-visual-tools; CI job 120175002914 found catalog imports unavailable
+when Vitest was run first. The catalog generator is reused without changes.
