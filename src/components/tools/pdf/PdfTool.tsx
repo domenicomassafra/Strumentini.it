@@ -23,6 +23,7 @@ import { PdfFormAuditDetails } from "./PdfFormAuditDetails";
 import { PdfPasswordOptions417, passwordActionLabel417 } from "./PdfPasswordOptions417";
 import type { PdfFormAnnotationAudit, PdfFlattenVerification } from "../../../engines/pdf";
 import { PdfTextExportDownloads53 } from "./PdfTextExportDownloads53";
+import { PdfNativeFileField336 } from "./PdfNativeFileField336";
 import type { PdfTextExportMode53, ScopedPdfTextExport53 } from "../../../engines/pdf/text-export-53";
 
 export type PdfToolId = PdfResultToolId;
@@ -57,6 +58,7 @@ function parseIndexedRotations(value: string): Record<number, 0 | 90 | 180 | 270
 
 export function PdfTool({ toolId, title: _title, description: _description, actionLabel: _actionLabel, inputMode = "single", optionMode = "none", accept = "application/pdf,.pdf" }: PdfToolProps) {
   const [files, setFiles] = useState<File[]>([]);
+  const singleFileInput = useRef<HTMLInputElement | null>(null);
   const [mergePagePlan, setMergePagePlan] = useState<readonly PdfMergePageRef[] | null>(null);
   const [pages, setPages] = useState("");
   const [order, setOrder] = useState("");
@@ -121,7 +123,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
   }, []);
 
   useEffect(() => {
-    // Read after Astro hydration: server rendering cannot inspect browser storage.
+    // Read storage after hydration.
     setAutoDownload339(readAutoDownload339(browserStorage339()));
     const onStorage = (event: StorageEvent) => {
       if (event.key === AUTO_DOWNLOAD_KEY_339 || event.key === null) setAutoDownload339(readAutoDownload339(browserStorage339()));
@@ -425,6 +427,7 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
     pendingPdfHandoff.current = null;
     setHandoffMessage("");
     setFiles([]);
+    if (singleFileInput.current) singleFileInput.current.value = ""; // same-file retries
     setMergePagePlan(null);
     setPages("");
     setOrder("");
@@ -655,12 +658,9 @@ export function PdfTool({ toolId, title: _title, description: _description, acti
             <label class="field"><span>Secondo PDF</span><input type="file" accept={accept} onChange={(event) => choose(event, 1)} disabled={isWorking} /></label>
           </div>
         ) : (
-          <label class="field">
-            <span>{inputMode === "multi" ? "File" : publicTitle}</span>
-            <input type="file" accept={accept} multiple={inputMode === "multi" || toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort"}
-              onChange={(event) => choose(event)} disabled={isWorking} />
-            <small>Elaborazione su questo dispositivo, senza caricamenti né elaborazione remota alternativa.</small>
-          </label>
+          <PdfNativeFileField336 inputMode={inputMode} label={publicTitle} accept={accept}
+            additionalMultiple={toolId === "pdf-compression-lite" && compressionProfile === "target-best-effort"}
+            disabled={isWorking} inputRef={singleFileInput} onChoose={choose} onPicked={setFiles} />
         )}
         {files.length > 0 && <p class="file-note" role="status">{files.map((file) => `${file.name} · ${(file.size / 1024).toFixed(1)} KiB`).join(" · ")}</p>}
         {toolId === "pdf-merge" && files.length > 0 && (
