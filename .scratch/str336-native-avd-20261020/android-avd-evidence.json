@@ -1,0 +1,24 @@
+{
+  "ticket": 111,
+  "claim": "SIMULATED_ANDROID_AVD_CHROME",
+  "revision": "51adf8729bbefa451feef0d8201a6e51bb879fb5",
+  "device": {
+    "type": "SIMULATED_DEVICE",
+    "os": "Android",
+    "fingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.036/12592187:user/release-keys",
+    "sdk": "35",
+    "chrome": "124.0.6367.219"
+  },
+  "observations": [
+    {
+      "step": "FAILURE_SCREENSHOT",
+      "screenshot": {
+        "path": "failure.png",
+        "sha256": "41544d164f1defdd646313bbb48c3744f954615416fefe3ab63a1a954c1713a6",
+        "bytes": 413595
+      }
+    }
+  ],
+  "limitations": [],
+  "error": "locator.scrollIntoViewIfNeeded: Timeout 29666.402000000002ms exceeded.\nCall log:\n  - attempting scroll into view action\n    - waiting for element to be stable\n\n    at picker (/home/udodo/Code/.worktrees/strumentini-it-111/tests/str336-android-native.acceptance.mjs:57:32)\n    at /home/udodo/Code/.worktrees/strumentini-it-111/tests/str336-android-native.acceptance.mjs:152:9"
+}
