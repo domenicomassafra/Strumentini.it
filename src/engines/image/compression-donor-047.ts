@@ -14,6 +14,7 @@
  * or original metadata/ICC preservation, since Canvas exposes none of those.
  */
 import { inspectImageHeader, type SupportedImageMime } from "./format";
+import { JPEG_QUALITY_PRESETS_47 } from "./jpeg-quality-presets-47";
 
 export const DONOR_47_CAPABILITIES = Object.freeze({
   pngLossless: { supported: true, codec: "fflate", alpha: "byte-exact", note: "verified original scanlines/palette/tRNS/metadata" },
@@ -101,7 +102,7 @@ function rejectAnimation(bytes: Uint8Array, mime: SupportedImageMime): void {
 }
 
 function quality(options: DonorOptions47): number {
-  const fallback = options.mode === "jpeg-compact" ? 0.55 : options.mode === "jpeg-normal" ? 0.84 : 0.78;
+  const fallback = options.mode === "jpeg-compact" ? JPEG_QUALITY_PRESETS_47.compact : options.mode === "jpeg-normal" ? JPEG_QUALITY_PRESETS_47.normal : 0.78;
   if (options.qualityHint === undefined) return fallback;
   if (!Number.isFinite(options.qualityHint) || options.qualityHint < 0.1 || options.qualityHint > 1) {
     error("INVALID_QUALITY", "Browser quality hint must be between 0.1 and 1");
