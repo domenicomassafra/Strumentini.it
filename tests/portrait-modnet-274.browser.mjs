@@ -4,12 +4,12 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium, firefox, webkit } from "playwright";
+import { assertOfflinePng274 } from "./portrait-modnet-274-browser-readback.mjs";
 
 const full = process.argv.includes("--full");
 const origin = process.env.PORTRAIT_274_PREVIEW ?? "http://127.0.0.1:4327";
 const samples = ["5965592", "774909", "220453"];
-// Independently inspected, conservative interior person/background points on the
-// source photographs. This is a limited binary oracle, not a pixel-perfect matte.
+// Independently labelled photo interiors; limited binary oracle.
 const annotation = JSON.parse(readFileSync(resolve("tests/fixtures/portrait-modnet-274/annotation-points.json"), "utf8"));
 const manuallyTraced = JSON.parse(readFileSync(resolve("tests/fixtures/portrait-modnet-274/manual-regions.json"), "utf8"));
 
@@ -59,6 +59,8 @@ for (const [name, engine] of Object.entries(engines)) {
       if (/\/(?:models\/portrait-modnet|vendor\/portrait-modnet)\//u.test(req.url())) assetRequests.push([req.method(), req.url()]);
     });
     await page.goto(`${origin}/laboratorio/scontorno-ritratti/`, { waitUntil: "networkidle" });
+    assert.equal(await page.locator('[data-portrait-274]').getAttribute('data-offline-runtime'), 'input-cache-v5',
+      `${name} must test the current source checkout, not a stale portrait runtime`);
     assert.match(await page.locator('meta[name="robots"]').getAttribute("content"), /noindex/u);
     assert.equal(network.length, 0, `${name} unexpected eager remote request`);
     assert.deepEqual(cspViolations, [], `${name} CSP issues during initial load`);
@@ -195,7 +197,48 @@ for (const [name, engine] of Object.entries(engines)) {
       await page.waitForFunction(() => /PNG RGBA decodificato|Rimozione sfondo non disponibile|Tempo limite/.test(document.querySelector('[data-portrait-274] [role="status"]')?.textContent ?? ""), null, { timeout: 135_000 });
       const warmCacheStatus = await page.locator('[data-portrait-274] [role="status"]').textContent();
       assert.match(warmCacheStatus, /PNG RGBA decodificato/u, `${name} must reuse same-origin warm model cache without refetch`);
+      assert.equal(await page.getByRole('button', { name: 'Libera memoria del modello' }).count(), 1,
+        `${name} must hydrate the updated Worker reuse controls`);
       console.log(`PASS ${name} warm-cache inference with model network blocked`);
+      // Reuse the loaded Worker with browser network disconnected.
+      const onlineResultUrl = await page.locator('[data-portrait-274] img').getAttribute('src');
+      // Playwright WebKit 1.63 may fail with an internal I/O error under
+      // setOffline(true). Fail closed on every browser-network request instead,
+      // while still requiring a fresh real PNG and no egress after warmup.
+      // https://github.com/microsoft/playwright/issues/42775
+      const deniedNetworkRequests = [];
+      const denyNetwork = (route) => {
+        deniedNetworkRequests.push(route.request().url());
+        return route.abort("internetdisconnected");
+      };
+      // Playwright also routes blob: preview reads for **/*; blob URLs are
+      // in-memory output, never HTTP egress. Block all HTTP(S) instead.
+      const httpTraffic = /^https?:\/\//u;
+      if (name === "webkit") await context.route(httpTraffic, denyNetwork);
+      else await context.setOffline(true);
+      try {
+        // Reuse the selected File. WebKit may fail to materialize a new
+        // Playwright-injected File once its browser context is offline.
+        await page.getByRole("button", { name: /Avvia/u }).click();
+        await page.waitForFunction(() => /PNG RGBA decodificato|Rimozione sfondo non disponibile|Tempo limite/.test(document.querySelector('[data-portrait-274] [role="status"]')?.textContent ?? ""), null, { timeout: 30_000 });
+        const offlineStatus = await page.locator('[data-portrait-274] [role="status"]').textContent();
+        const lastRunInput = await page.locator('[data-portrait-274]').getAttribute('data-last-run-input');
+        assert.match(offlineStatus, /PNG RGBA decodificato/u,
+          `${name} warmed runtime must infer while the browser context is offline (input path=${lastRunInput})`);
+        assert.notEqual(await page.locator('[data-portrait-274] img').getAttribute('src'), onlineResultUrl,
+          `${name} offline inference must produce a fresh PNG after the online result`);
+        assert.deepEqual(deniedNetworkRequests, [], `${name} warmed inference attempted a network request`);
+        console.log(`PASS ${name} warmed-page inference with browser network ${name === "webkit" ? "blocked" : "offline"}`);
+      } finally {
+        if (name === "webkit") await context.unroute(httpTraffic, denyNetwork);
+        else await context.setOffline(false);
+      }
+      // Decode newly encoded PNG pixels again outside the Worker.
+      await assertOfflinePng274(page, annotation[samples[0]], name);
+      await page.getByRole('button', { name: 'Libera memoria del modello' }).click();
+      assert.match(await page.locator('[data-portrait-274] [role="status"]').textContent(), /Memoria del modello liberata/u);
+      assert.equal(await page.locator('[data-portrait-274] img').count(), 1,
+        `${name} freeing model memory must retain the generated PNG for download`);
     }
     await context.close();
     const denied = await browser.newContext();

@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/portrait-modnet-274.yml'
       - 'tests/portrait-modnet-274.browser.mjs'
+      - 'tests/portrait-modnet-274-browser-readback.mjs'
+      - 'tests/portrait-modnet-png-274.test.ts'
       - 'tests/portrait-modnet-274-quantization.mjs'
       - 'tests/fixtures/portrait-modnet-274/**'
       - 'src/components/tools/image-visual/PortraitMattingPanel274.tsx'
@@ -40,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium, firefox]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,7 +52,8 @@ jobs:
           node-version: '26'
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps "${{ matrix.browser }}"
       - run: npm run build
       - name: Decode real MODNet RGBA output, independent alpha oracle, CSP and cache
         env:
@@ -71,4 +74,42 @@ jobs:
             cat "$RUNNER_TEMP/portrait-274-preview.log"
             exit 1
           fi
-          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp
+          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp --rss
+  webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    # The Playwright 1.63.0 image contains the WebKit libraries missing from
+    # ubuntu-latest. It also avoids apt mirrors that stalled the prior job.
+    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Trust only the checked-out repository inside container
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Decode WebKit MODNet RGBA output with offline warm-cache
+        env:
+          BROWSER: webkit
+        run: |
+          ./node_modules/.bin/astro preview --host 127.0.0.1 --port 4327 > "$RUNNER_TEMP/portrait-274-preview.log" 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail --output /dev/null http://127.0.0.1:4327/laboratorio/scontorno-ritratti/; then
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat "$RUNNER_TEMP/portrait-274-preview.log"
+            exit 1
+          fi
+          node "tests/portrait-modnet-274.browser.mjs" --full "--$BROWSER-only" --csp --rss

@@ -1,24 +1,45 @@
 import { checkPortraitInput, checkPortraitPng, PORTRAIT_MAX_FILE_BYTES } from "./portrait-modnet-274";
+import type { RawImage } from "@huggingface/transformers";
+import { encodePortraitPng274 } from "./portrait-modnet-png-274";
 
-type Request = { kind: "start"; bytes: ArrayBuffer; mime: string; memoryGB?: number };
+type Request = { kind: "start"; bytes?: ArrayBuffer; mime: string; memoryGB?: number; reuse?: boolean };
 let running = false;
+let warmedInput: { image: RawImage; bytes: number; mime: string } | null = null;
 
 self.onmessage = async (event: MessageEvent<Request>) => {
   if (running || event.data.kind !== "start") return;
   running = true;
+  let stage = "validate";
   try {
-    const { bytes, mime, memoryGB } = event.data;
+    const { bytes, mime, memoryGB, reuse } = event.data;
     if (!(["image/jpeg", "image/png", "image/webp"] as string[]).includes(mime)
-      || bytes.byteLength > PORTRAIT_MAX_FILE_BYTES) throw new Error("UNSUPPORTED_IMAGE");
-    const imageBlob = new Blob([bytes], { type: mime });
-    const bitmap = await createImageBitmap(imageBlob);
-    const width = bitmap.width;
-    const height = bitmap.height;
-    bitmap.close();
-    checkPortraitInput(bytes.byteLength, width, height, memoryGB);
+      || (bytes && bytes.byteLength > PORTRAIT_MAX_FILE_BYTES)) throw new Error("UNSUPPORTED_IMAGE");
+    if (reuse && (!warmedInput || warmedInput.mime !== mime)) throw new Error("WARM_INPUT_MISSING");
+    if (!reuse && !bytes) throw new Error("INPUT_MISSING");
+    stage = "decode-input";
+    const imageBlob = reuse ? null : new Blob([bytes!], { type: mime });
+    if (imageBlob) {
+      // Reject oversized decoded dimensions before allocating the full RGBA
+      // buffer, even if someone posts directly to this Worker.
+      const bitmap = await createImageBitmap(imageBlob);
+      try { checkPortraitInput(bytes!.byteLength, bitmap.width, bitmap.height, memoryGB); }
+      finally { bitmap.close(); }
+    }
 
     self.postMessage({ kind: "progress", message: "Caricamento modello e WebAssembly locali…" });
-    const { env, pipeline } = await import("@huggingface/transformers");
+    stage = "load-runtime";
+    const { env, pipeline, RawImage } = await import("@huggingface/transformers");
+    // The donor accepts RawImage directly. Retain the already-decoded RGBA
+    // inside this Worker for the same file: WebKit's Blob decoder can become
+    // unavailable after the user switches the browser context offline.
+    stage = "prepare-input";
+    const original = reuse ? warmedInput!.image : await RawImage.fromBlob(imageBlob!);
+    const width = original.width;
+    const height = original.height;
+    const originalByteLength = reuse ? warmedInput!.bytes : bytes!.byteLength;
+    checkPortraitInput(originalByteLength, width, height, memoryGB);
+    if (original.channels !== 4 || original.data.length !== width * height * 4) throw new Error("INPUT_PIXELS_INVALID");
+    if (!reuse) warmedInput = { image: original, bytes: originalByteLength, mime };
     env.allowRemoteModels = false;
     env.allowLocalModels = true;
     // Transformers.js 4.3.1's processor auto-detection checks local paths only
@@ -62,6 +83,7 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       wasm: `${self.location.origin}/vendor/portrait-modnet/ort-wasm-simd-threaded.wasm`,
     };
     wasm.numThreads = 1;
+    stage = "open-model";
     const segmenter = await pipeline("background-removal", "portrait-modnet", {
       device: "wasm", dtype: "q8", local_files_only: true,
       progress_callback: (value) => {
@@ -72,19 +94,17 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       },
     });
     self.postMessage({ kind: "progress", message: "Calcolo alpha matte sul dispositivo…" });
-    const output = await segmenter(imageBlob);
+    // BackgroundRemovalPipeline reads its input twice; the donor explicitly
+    // accepts RawImage and clones it for putAlpha(). Give each inference a copy
+    // so warmedInput is immutable, and avoid Blob decoding after going offline.
+    stage = "infer";
+    const output = await segmenter(original.clone());
     if (!output || output.width !== width || output.height !== height || output.channels !== 4
       || output.data.length !== width * height * 4) throw new Error("MASK_INVALID");
-    const canvas = new OffscreenCanvas(width, height);
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    if (!ctx) throw new Error("CANVAS_UNAVAILABLE");
     // The donor's putAlpha() replaces any alpha originally present in a PNG or
     // WebP. Preserve user-provided transparency by intersecting that alpha with
     // the predicted matte (a fully transparent input pixel stays transparent).
-    const sourceBitmap = await createImageBitmap(imageBlob);
-    ctx.drawImage(sourceBitmap, 0, 0);
-    sourceBitmap.close();
-    const originalPixels = ctx.getImageData(0, 0, width, height).data;
+    const originalPixels = original.data;
     const rgba = new Uint8ClampedArray(output.data);
     let transparent = 0;
     let mixed = 0;
@@ -99,19 +119,29 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       else mixed++;
     }
     if (transparent + mixed === 0 || opaque + mixed === 0) throw new Error("MASK_DEGENERATE");
-    ctx.putImageData(new ImageData(rgba, width, height), 0, 0);
-    const png = await canvas.convertToBlob({ type: "image/png" });
-    const result = await png.arrayBuffer();
+    // WebKit can return a PNG Blob but reject reading it while network is cut.
+    // Serialize verified RGBA directly, without the browser Blob I/O path.
+    stage = "encode-png";
+    const result = encodePortraitPng274(rgba, width, height);
+    stage = "verify-png";
     checkPortraitPng(new Uint8Array(result), width, height);
     // Independent browser decoding, after the PNG encoder, must preserve alpha.
-    const roundtrip = await createImageBitmap(new Blob([result], { type: "image/png" }));
-    const verified = roundtrip.width === width && roundtrip.height === height;
-    roundtrip.close();
-    if (!verified) throw new Error("PNG_READBACK_FAILED");
-    self.postMessage({ kind: "result", bytes: result, width, height, transparent, mixed, opaque }, { transfer: [result] });
+    if (!reuse) {
+      stage = "readback-png";
+      const roundtrip = await createImageBitmap(new Blob([result], { type: "image/png" }));
+      const verified = roundtrip.width === width && roundtrip.height === height;
+      roundtrip.close();
+      if (!verified) throw new Error("PNG_READBACK_FAILED");
+    }
     await segmenter.dispose();
+    self.postMessage({ kind: "result", bytes: result, width, height, transparent, mixed, opaque }, { transfer: [result] });
   } catch (error) {
-    self.postMessage({ kind: "error", code: error instanceof Error ? error.message.slice(0, 100) : "UNKNOWN_ERROR" });
+    const message = error instanceof Error ? error.message : String(error);
+    // Preserve stable machine error codes; tag unexpected browser IO failures
+    // so offline WebKit acceptance identifies the actual failing operation.
+    const code = /I\/?O read operation failed|error occured reading the Blob/iu.test(message)
+      ? `${stage}: ${message}` : message;
+    self.postMessage({ kind: "error", code: code.slice(0, 100) });
   } finally {
     running = false;
   }
