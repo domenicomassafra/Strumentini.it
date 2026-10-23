@@ -9,6 +9,7 @@ import { csvCleanerManifest } from "../../../tools/csv-cleaner/manifest";
 import type { CsvCleanerOutput } from "../../../tools/csv-cleaner/types";
 import { CsvTableResultV2 } from "../csv-shared/CsvTableResultV2";
 import { CONTROL, it } from "../shared/controlLabels";
+import { TableTransformDiff388 } from "../table/TableTransformDiff388";
 
 export function CsvCleanerTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -18,6 +19,8 @@ export function CsvCleanerTool() {
   const [processing, setProcessing] = useState(false);
   const [handoffDismissed, setHandoffDismissed] = useState(false);
   const [handoffStatus, setHandoffStatus] = useState("");
+  const [sourceSample388, setSourceSample388] = useState("");
+  const [undoFile388, setUndoFile388] = useState<File | null>(null);
   const controller = useRef<AbortController | null>(null);
   const fileInput = useRef<HTMLInputElement | null>(null);
   const pendingCsvExport337 = useRef<(() => void) | null>(null);
@@ -26,7 +29,7 @@ export function CsvCleanerTool() {
   async function clean() {
     if (controller.current !== null) return;
     if (!file) { setError("Scegli prima un file CSV."); return; }
-    setError(""); setResult(null); setProgress(0); setProcessing(true); setHandoffDismissed(false); setHandoffStatus("");
+    setError(""); setResult(null); setSourceSample388(""); setProgress(0); setProcessing(true); setHandoffDismissed(false); setHandoffStatus("");
     const active = new AbortController();
     controller.current = active;
     try {
@@ -34,6 +37,7 @@ export function CsvCleanerTool() {
       const run = await toolRuntime.run("csv-cleaner", { text }, {}, active.signal);
       if (active.signal.aborted || controller.current !== active) return;
       if (!run.ok) throw new Error(run.message);
+      setSourceSample388(text.slice(0, 64 * 1024));
       setResult(run.value as CsvCleanerOutput);
       recordCompletedTool(csvCleanerManifest.id);
     } catch (caught) {
@@ -49,6 +53,8 @@ export function CsvCleanerTool() {
     controller.current?.abort();
     controller.current = null;
     setFile(null);
+    setUndoFile388(null);
+    setSourceSample388("");
     setResult(null);
     setError("");
     setProgress(0);
@@ -58,12 +64,32 @@ export function CsvCleanerTool() {
     if (fileInput.current !== null) fileInput.current.value = "";
   }
 
+  function apply388() {
+    if (result === null || file === null) return;
+    setUndoFile388(file);
+    setFile(new File([result.output], file.name.replace(/\.csv$/iu, "") + ".clean.csv", { type: "text/csv" }));
+    setResult(null);
+    setSourceSample388("");
+    if (fileInput.current) fileInput.current.value = "";
+    setHandoffStatus("Pulizia applicata; puoi annullarla e recuperare il file originale.");
+  }
+
+  function undo388() {
+    if (undoFile388 === null) return;
+    setFile(undoFile388);
+    setUndoFile388(null);
+    setResult(null);
+    setSourceSample388("");
+    setHandoffStatus("Annullato: il file originale è stato ripristinato senza modifiche.");
+  }
+
   const handoffTargets = result === null ? [] : compatibleHandoffTargets(result.handoff, handoffCatalog);
 
   const gutterState = gutterStateFromResult(result, error, processing);
   return <div class="tool-operation">
     <section class="tool-form-card">
-      <label class="field"><span>File CSV</span><input ref={fileInput} aria-label="File CSV" type="file" disabled={processing} accept=".csv,text/csv,text/plain" onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setError(""); setHandoffDismissed(false); setHandoffStatus(""); }} /></label>
+      <label class="field"><span>File CSV</span><input ref={fileInput} aria-label="File CSV" type="file" disabled={processing} accept=".csv,text/csv,text/plain" onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setResult(null); setUndoFile388(null); setSourceSample388(""); setError(""); setHandoffDismissed(false); setHandoffStatus(""); }} /></label>
+      {undoFile388 !== null && <button type="button" data-str388-undo onClick={undo388}>Annulla ultima applicazione</button>}
       {file && <p class="file-note">{file.name} · {(file.size / 1024).toFixed(1)} KiB{file.size > CSV_SOFT_FILE_BYTES ? " · file grande" : ""}</p>}
       <p class="file-note">Dimensione consigliata: 10 MiB · limite massimo: {Math.round(CSV_HARD_FILE_BYTES / 1024 / 1024)} MiB.</p>
       {processing && <><progress max={1} value={progress} aria-label="Lettura del CSV in corso" /><button type="button" onClick={() => controller.current?.abort()}>{it(CONTROL.cancel)}</button></>}
@@ -115,6 +141,7 @@ export function CsvCleanerTool() {
       }}
       onReset={reset}
     >
+      {result !== null && <><TableTransformDiff388 source={sourceSample388} output={result.output} delimiter={result.delimiter} summary={`Righe: ${result.rows}; BOM rimosso: ${result.changes.strippedBom ? "sì" : "no"}; terminatori normalizzati: ${result.changes.normalizedRecordBreaks}`} /><button type="button" data-str388-apply onClick={apply388}>Applica pulizia (annullabile)</button></>}
       {result !== null && !handoffDismissed && handoffTargets.length > 0 && (
         <aside class="handoff-card" aria-label="Strumenti successivi compatibili">
           <strong>Passa questa tabella pulita direttamente a un altro strumento, senza scaricarla e ricaricarla.</strong>

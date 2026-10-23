@@ -1,4 +1,4 @@
-/** STR-117 annual official-source registry, compiled consumer on the MiniPC automation-browser (CDP 17629). */
+/** STR-117 annual official-source registry, compiled consumer in local Chromium or an explicit CDP endpoint. */
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -23,7 +23,8 @@ let browser;
 const contexts = [];
 try {
   const origin = `http://127.0.0.1:${server.address().port}`;
-  browser = await chromium.connectOverCDP("http://127.0.0.1:17629");
+  const cdpEndpoint = process.env.STRUMENTINI_ACCEPTANCE_CDP;
+  browser = cdpEndpoint ? await chromium.connectOverCDP(cdpEndpoint) : await chromium.launch({ headless: true });
   for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 900 }]) {
     const context = await browser.newContext({ viewport });
     contexts.push(context);

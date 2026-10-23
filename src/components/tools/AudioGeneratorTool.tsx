@@ -3,6 +3,7 @@ import { recordCompletedTool } from "../../workbench/completed-tool";
 import { bpmFromTapTimes, generateNoiseSamples, validateAudioGeneratorSettings, type NoiseKind } from "../../engines/browser-audio";
 import { AudioLoudnessPanel307 } from "./audio/AudioLoudnessPanel307";
 import { AudioTimelinePanel231 } from "./audio/AudioTimelinePanel231";
+import { AudioTranscodePanel424 } from "./audio/AudioTranscodePanel424";
 
 type Mode = "tone" | "metronome" | "noise";
 
@@ -156,5 +157,6 @@ export function AudioGeneratorTool() {
     <p role="status" aria-live="polite">{status}</p>
     <AudioLoudnessPanel307 />
     <AudioTimelinePanel231 />
+    <AudioTranscodePanel424 />
   </div>;
 }
