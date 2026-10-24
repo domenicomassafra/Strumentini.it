@@ -1,3 +1,19 @@
+import {
+  RESULT_DECIMAL_PLACES,
+  add,
+  compareZero,
+  divide,
+  formatRounded,
+  multiply,
+  numberToDisplay,
+  parseDecimal,
+  parseScale,
+  rational,
+  rationalToNumber,
+  subtract,
+  type Rational,
+} from "./decimal";
+
 export const UNIT_CONVERSION_ENGINE_VERSION = "unit-conversion-v1";
 
 export type UnitDimension =
@@ -21,11 +37,6 @@ export type UnitDimension =
   | "digital-storage"
   | "data-rate";
 
-interface Rational {
-  readonly numerator: bigint;
-  readonly denominator: bigint;
-}
-
 interface UnitDefinition {
   readonly id: string;
   readonly dimension: UnitDimension;
@@ -43,94 +54,6 @@ export interface UnitDescriptor {
   readonly symbol: string;
   readonly aliases: readonly string[];
   readonly authority: string;
-}
-
-const MAX_DECIMAL_DIGITS = 80;
-const RESULT_DECIMAL_PLACES = 12;
-const DECIMAL_PATTERN = /^([+-]?)(\d+)(?:[.,](\d+))?$/u;
-
-function gcd(left: bigint, right: bigint): bigint {
-  let first = left < 0n ? -left : left;
-  let second = right < 0n ? -right : right;
-  while (second !== 0n) [first, second] = [second, first % second];
-  return first === 0n ? 1n : first;
-}
-
-function rational(numerator: bigint, denominator: bigint): Rational {
-  if (denominator === 0n) throw new Error("INVALID_DENOMINATOR");
-  const sign = denominator < 0n ? -1n : 1n;
-  const divisor = gcd(numerator, denominator);
-  return {
-    numerator: numerator * sign / divisor,
-    denominator: denominator * sign / divisor,
-  };
-}
-
-function add(left: Rational, right: Rational): Rational {
-  return rational(left.numerator * right.denominator + right.numerator * left.denominator, left.denominator * right.denominator);
-}
-
-function subtract(left: Rational, right: Rational): Rational {
-  return rational(left.numerator * right.denominator - right.numerator * left.denominator, left.denominator * right.denominator);
-}
-
-function multiply(left: Rational, right: Rational): Rational {
-  return rational(left.numerator * right.numerator, left.denominator * right.denominator);
-}
-
-function divide(left: Rational, right: Rational, code = "INVALID_DENOMINATOR"): Rational {
-  if (right.numerator === 0n) throw new Error(code);
-  return rational(left.numerator * right.denominator, left.denominator * right.numerator);
-}
-
-function compareZero(value: Rational): -1 | 0 | 1 {
-  return value.numerator === 0n ? 0 : value.numerator < 0n ? -1 : 1;
-}
-
-function parseDecimal(value: string | number, code = "INVALID_DECIMAL"): Rational {
-  if (typeof value === "number") {
-    if (!Number.isFinite(value)) throw new Error(code);
-    return parseDecimal(String(value), code);
-  }
-  const text = value.trim();
-  const match = DECIMAL_PATTERN.exec(text);
-  if (match === null) throw new Error(code);
-  const whole = match[2] ?? "";
-  const fraction = match[3] ?? "";
-  if (whole.length + fraction.length > MAX_DECIMAL_DIGITS) throw new Error("VALUE_OUT_OF_RANGE");
-  const sign = match[1] === "-" ? -1n : 1n;
-  return rational(sign * BigInt(`${whole}${fraction}` || "0"), 10n ** BigInt(fraction.length));
-}
-
-function parseScale(value: string): Rational {
-  const slash = value.indexOf("/");
-  if (slash === -1) return parseDecimal(value, "INVALID_UNIT_SCALE");
-  return rational(BigInt(value.slice(0, slash)), BigInt(value.slice(slash + 1)));
-}
-
-function formatRounded(value: Rational, decimalPlaces = RESULT_DECIMAL_PLACES): string {
-  const negative = value.numerator < 0n;
-  const numerator = negative ? -value.numerator : value.numerator;
-  const scale = 10n ** BigInt(decimalPlaces);
-  const scaled = numerator * scale;
-  let quotient = scaled / value.denominator;
-  const remainder = scaled % value.denominator;
-  if (remainder * 2n >= value.denominator) quotient += 1n;
-  const whole = quotient / scale;
-  const fraction = (quotient % scale).toString().padStart(decimalPlaces, "0").replace(/0+$/u, "");
-  const sign = negative && quotient !== 0n ? "-" : "";
-  return `${sign}${whole}${fraction === "" ? "" : `.${fraction}`}`;
-}
-
-function rationalToNumber(value: Rational, code = "VALUE_OUT_OF_RANGE"): number {
-  const result = Number(value.numerator) / Number(value.denominator);
-  if (!Number.isFinite(result)) throw new Error(code);
-  return result;
-}
-
-function numberToDisplay(value: number, decimalPlaces = RESULT_DECIMAL_PLACES): string {
-  if (!Number.isFinite(value)) throw new Error("VALUE_OUT_OF_RANGE");
-  return value.toFixed(decimalPlaces).replace(/\.0+$/u, "").replace(/(\.\d*?)0+$/u, "$1");
 }
 
 const SI_AUTHORITY = "BIPM SI Brochure, 9th edition (2019), revision 4.01 June 2026: SI base/derived units and decimal prefixes.";

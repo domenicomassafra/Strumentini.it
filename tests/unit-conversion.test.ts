@@ -22,11 +22,28 @@ describe("ticket 136 — shared unit registry and basic dimensions", () => {
     expect(convertUnit({ value: "491.67", from: "rankine", to: "celsius" }).result).toBe("0");
   });
 
+  it("preserves negative temperatures and absolute zero across affine scales", () => {
+    expect(convertUnit({ value: "-40", from: "celsius", to: "fahrenheit" }).result).toBe("-40");
+    expect(convertUnit({ value: "-273.15", from: "celsius", to: "kelvin" }).result).toBe("0");
+    expect(convertUnit({ value: "0", from: "kelvin", to: "rankine" }).result).toBe("0");
+  });
+
   it("accepts Italian decimal comma and documents no grouping", () => {
     const result = convertUnit({ value: "1,5", from: "meter", to: "centimeter" });
     expect(result.result).toBe("150");
     expect(result.assumptions.decimalInput).toContain("comma or point");
     expect(() => convertUnit({ value: "1.234,5", from: "meter", to: "centimeter" })).toThrow("INVALID_VALUE");
+  });
+
+  it("handles finite numeric values that JavaScript serializes in exponent notation", () => {
+    expect(convertUnit({ value: 1e21, from: "meter", to: "kilometer" }).result).toBe("1000000000000000000");
+    expect(convertUnit({ value: -1e21, from: "meter", to: "kilometer" }).result).toBe("-1000000000000000000");
+    expect(convertUnit({ value: 1e-7, from: "meter", to: "millimeter" }).result).toBe("0.0001");
+    expect(convertUnit({ value: 1.25e-7, from: "meter", to: "millimeter" }).result).toBe("0.000125");
+    expect(() => convertUnit({ value: Number.POSITIVE_INFINITY, from: "meter", to: "kilometer" })).toThrow("INVALID_VALUE");
+    expect(() => convertUnit({ value: Number.NaN, from: "meter", to: "kilometer" })).toThrow("INVALID_VALUE");
+    expect(() => convertUnit({ value: Number.MAX_VALUE, from: "meter", to: "kilometer" })).toThrow("VALUE_OUT_OF_RANGE");
+    expect(() => convertUnit({ value: "1e21", from: "meter", to: "kilometer" })).toThrow("INVALID_VALUE");
   });
 
   it("round-trips basic dimensions within the declared display precision", () => {
