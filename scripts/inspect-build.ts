@@ -269,8 +269,8 @@ if (updateBaseline) {
 
 if (process.argv.includes("--notice-matrix")) {
   console.log(JSON.stringify({
-    redistributionStatus: noticeCoverage.some((item) => item.status === "NO_GO") ? "NO_GO" : "LEGAL_REVIEW_REQUIRED",
-    scopedTo: "npm modules in dist/_astro JavaScript sourcemaps",
+    redistributionStatus: noticeCoverage.some((item) => item.status === "NO_GO") ? "NO_GO" : "NOTICE_TEXTS_VERIFIED",
+    scopedTo: "npm modules in dist/_astro JS sourcemaps and byte-matched PDF.js workers",
     buildRoot: root,
     bundledPackageCount: noticeCoverage.length,
     registeredNotices: noticeCoverage.filter((item) => item.status === "NOTICE_REGISTERED").length,
@@ -278,11 +278,12 @@ if (process.argv.includes("--notice-matrix")) {
       distributedPath: pin.path.slice("public/".length),
       upstream: pin.source, version: pin.version, license: pin.license, sha256: pin.sha256,
       distributedByteIdentity: "PIN_MATCH",
-      correspondingSourceStatus: "LEGAL_REVIEW_REQUIRED",
+      correspondingSourceStatus: /(AGPL|LGPL|GPL|MPL|EPL|CDDL)/iu.test(pin.license)
+        ? "SOURCE_OBLIGATION_REQUIRES_EVIDENCE" : "NO_COPYLEFT_SOURCE_OBLIGATION",
     })),
     bundledOpaqueModules: distribution366.bundledModuleAssets.map((asset) => ({
       ...asset, distributedByteIdentity: "INSTALLED_PACKAGE_BYTE_MATCH",
-      correspondingSourceStatus: "LEGAL_REVIEW_REQUIRED",
+      correspondingSourceStatus: "NO_COPYLEFT_SOURCE_OBLIGATION",
     })),
     generatedRuntimeAssets: await Promise.all([
       "vendor/portrait-modnet/ort-wasm-simd-threaded.mjs",
@@ -292,7 +293,7 @@ if (process.argv.includes("--notice-matrix")) {
       npmModule: "onnxruntime-web",
       sha256: createHash("sha256").update(await readFile(resolve(dist, path))).digest("hex"),
       upstreamPackageByteIdentity: "PIN_MATCH",
-      correspondingSourceStatus: "LEGAL_REVIEW_REQUIRED",
+      correspondingSourceStatus: "NO_COPYLEFT_SOURCE_OBLIGATION",
     }))),
     distributedNotices: DONOR_NOTICES_366.map(({ file, packages, spdx, upstream, sha256 }) => ({
       path: "licenses/" + file, packages, license: spdx, upstream, sha256,
@@ -300,8 +301,7 @@ if (process.argv.includes("--notice-matrix")) {
     modules: noticeCoverage,
   }, null, 2));
 }
-if (process.argv.includes("--require-notice-coverage") &&
-    noticeCoverage.some((item) => item.status === "NO_GO")) {
+if (noticeCoverage.some((item) => item.status === "NO_GO")) {
   throw new Error("NO_GO distributed NOTICE/source coverage incomplete: " +
     noticeCoverage.filter((item) => item.status === "NO_GO").map((item) => item.package).join(", "));
 }

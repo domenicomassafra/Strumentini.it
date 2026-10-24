@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -66,6 +66,19 @@ describe("#366 distributed donor notices", () => {
     expect(auditNoticeDirectory366(extra)).toEqual([
       "UNREGISTERED_NOTICE public/licenses/unattributed.txt",
     ]);
+  });
+
+  it("distributes both MIT and Zlib conditions for bundled pako 1.0.11", () => {
+    const notices = DONOR_NOTICES_366.filter((notice) =>
+      notice.packages.includes("pako@1.0.11"));
+    expect(notices).toHaveLength(2);
+    const licenceTexts = notices.map((notice) =>
+      readFileSync(join(root, "public/licenses", notice.file), "utf8"));
+    expect(licenceTexts.some((text) => text.includes("The MIT License"))).toBe(true);
+    expect(licenceTexts.some((text) =>
+      text.includes("This port is under zlib license") &&
+      text.includes("Jean-loup Gailly and Mark Adler"))).toBe(true);
+    expect(auditDonorNotices366(root)).toEqual([]);
   });
 
   it("reports a bundled npm module without a shipped license notice", () => {
