@@ -81,10 +81,14 @@ describe("expanded catalog certification index", () => {
     // receipt remains historical but cannot authorize this new manifest.
     // #169 expands the existing ZIP creator to verified ZIP/GZIP handling:
     // preserve its historical receipt but fail the prior manifest identity.
-    expect(index.summary.releaseEligibleGoldCount).toBe(252);
+    expect(index.summary.releaseEligibleGoldCount).toBe(251);
     const imageCompression = index.tools.find((tool) => tool.id === "image-compression");
     expect(imageCompression).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
     expect(imageCompression?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
+    // #136 also invalidates the old PDF form inspector receipt.
+    const formEditor = index.tools.find((tool) => tool.id === "pdf-form-inspector");
+    expect(formEditor).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
+    expect(formEditor?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
     const zipCreator = index.tools.find((tool) => tool.id === "zip-creator");
     expect(zipCreator).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
     expect(zipCreator?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");

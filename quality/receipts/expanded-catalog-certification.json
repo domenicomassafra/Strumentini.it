@@ -122,8 +122,8 @@
       "IMPLEMENTED_UNVERIFIED": 15
     },
     "certificationGoldCount": 257,
-    "releaseEligibleGoldCount": 252,
-    "releaseBlockedCount": 22,
+    "releaseEligibleGoldCount": 251,
+    "releaseBlockedCount": 23,
     "physicalDevicePassCount": 0,
     "oracleBoundCount": 274,
     "fixtureBoundCount": 274,
@@ -22737,18 +22737,18 @@
     {
       "id": "pdf-form-inspector",
       "route": "/tools/pdf-form-inspector",
-      "name": "PDF Form Field Inspector",
+      "name": "Compila e salva moduli PDF",
       "category": "documents",
       "engine": "pdf",
       "maintenanceClass": "E",
       "status": "GOLD",
       "certificationReceipt": "quality/receipts/pdf/pdf-form-inspector.gold.json",
-      "releaseGate": "PASS",
-      "goldEligible": true,
+      "releaseGate": "BLOCKED",
+      "goldEligible": false,
       "implementation": {
         "manifest": {
           "path": "src/tools/pdf-form-inspector/manifest.ts",
-          "sha256": "bb45f2399c3e0af37179d60404c85b495482d0739862984c1ebab9e0530a5537"
+          "sha256": "7d571c6156e3cc70bc3aecd1280e67ecd451083423d1e60298398cf1e0ca8748"
         },
         "module": {
           "path": "src/tools/pdf-form-inspector/module.ts",
@@ -22811,7 +22811,8 @@
         "location": "LOCAL",
         "network": "forbidden",
         "capabilities": [
-          "file-read"
+          "file-read",
+          "file-write"
         ]
       },
       "locality": {
@@ -22868,7 +22869,9 @@
           "status": "PASS"
         }
       ],
-      "blockers": [],
+      "blockers": [
+        "RECEIPT_MANIFEST_IDENTITY_STALE"
+      ],
       "coverageGaps": []
     },
     {
