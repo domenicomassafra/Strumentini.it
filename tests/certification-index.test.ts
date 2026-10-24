@@ -81,7 +81,7 @@ describe("expanded catalog certification index", () => {
     // receipt remains historical but cannot authorize this new manifest.
     // #169 expands the existing ZIP creator to verified ZIP/GZIP handling:
     // preserve its historical receipt but fail the prior manifest identity.
-    expect(index.summary.releaseEligibleGoldCount).toBe(252);
+    expect(index.summary.releaseEligibleGoldCount).toBe(251);
     const imageCompression = index.tools.find((tool) => tool.id === "image-compression");
     expect(imageCompression).toMatchObject({ status: "GOLD", goldEligible: false, releaseGate: "BLOCKED" });
     expect(imageCompression?.blockers).toContain("RECEIPT_MANIFEST_IDENTITY_STALE");
