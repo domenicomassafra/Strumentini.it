@@ -17,3 +17,35 @@ La matrice eseguibile e i numeri in byte sono prodotti da `npx tsx scripts/audit
 Prova reale riproducibile senza cambiare il prodotto: `npx vitest run tests/audit-pdf-engine-provenance-369.test.ts --maxWorkers=1` riapre il file sorgente e quello modificato con il parser indipendente `pdfjs-dist/legacy`, confronta testo di entrambe le pagine, verifica SHA distinti, license gate, decisioni e limiti. `npx tsx scripts/audit-pdf-engine-provenance-369.ts` stampa il report JSON completo. I controlli di build sono `npm run check && npm run build`. Dopo la build, `node scripts/acceptance-pdf-engine-369.browser.mjs` verifica la rotta reale compilata nella scheda del browser di automazione esistente, il rifiuto PDF malformato, download, readback indipendente, operatori grafici e assenza di richieste offsite (richiede CDP visibile su `127.0.0.1:17630`).
 
 Rimane esplicitamente **NO_GO** presentare una capacità di modifica arbitraria del testo PDF o acquistare/distribuire MuPDF per uso proprietario senza licenza. La decisione presente consente esclusivamente di continuare a usare le operazioni PDF già implementate e provate nei rispettivi perimetri.
+
+## Aggiornamento STR-373 / #133 — 20 ottobre 2026
+
+La precedente decisione **NO_GO per l'editing arbitrario** resta valida. Il motore first-party
+[src/engines/pdf/edit-original-text-133.ts](../src/engines/pdf/edit-original-text-133.ts)
+estende soltanto il sottoinsieme verificabile: su documenti PDF non cifrati, non firmati,
+senza annotazioni, moduli o risorse grafiche complesse, ogni pagina con un unico operatore
+di testo BT ... Tf ... Td (testo) Tj ET in stream indiretto non compresso,
+il contenuto testuale originale può essere sostituito con ASCII stampabile, stessa lunghezza,
+font Courier Type1 standard e identica metrica di avanzamento. L'operazione cambia lo
+stream originale ed esporta una nuova copia; non inserisce overlay. La sorgente rimane immutata.
+Il calcolo gira in un Web Worker locale: Annulla interrompe il worker e impedisce
+che un risultato tardivo venga scaricato; il timeout è 60 secondi.
+
+Sono esplicitamente **UNSUPPORTED_CAPABILITY / NO_GO**: font proporzionali o incorporati,
+glifi Unicode/non mappati, stringhe di lunghezza differente, kerning/TJ, più operatori
+di testo per pagina, reflow, testo in immagini, contenuti condivisi o compressi,
+pagine ruotate, layout ambiguo, annotazioni (anche vuote), AcroForm, firme,
+PDF cifrati/linearizzati, object stream e strutture non riconosciute (anche cataloghi
+con Outlines, PageLabels o altre chiavi oltre Type/Pages). Non si deduce
+dai casi verificati un editor universale, una garanzia su PDF esterni, Gold,
+supporto fisico mobile o un deploy di produzione.
+
+**Provenienza:** parser e writer originali del repository (codice first-party),
+conservati e riusati senza librerie runtime aggiuntive; PDF.js pdfjs-dist@6.4.299
+(Mozilla, Apache-2.0 dichiarata, incluso notice del package) impiegato come
+lettore indipendente nel test Node. Poppler (pdfinfo, pdftotext,
+pdffonts, pdftoppm) impiegato esclusivamente come oracolo esterno nel
+consumer di accettazione su MiniPC; non è distribuito con il sito. Il vincolo
+sulla distribuzione delle componenti transitive di PDF.js resta quello annotato
+nella matrice STR-369 e non è qui ampliato. Donor, versioni e riferimenti upstream
+rimangono quelli del confronto STR-369; nessuna adozione di MuPDF AGPL/commerciale.
