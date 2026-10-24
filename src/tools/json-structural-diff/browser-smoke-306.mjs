@@ -18,8 +18,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   const external = [];
   const errors = [];
   try {
-    browser = await engine.launch({ headless: true, timeout: 20_000 });
-    const page = await bounded(browser.newPage({ acceptDownloads: true, serviceWorkers: "block" }), 20_000, `${name}.newPage`);
+    browser = await engine.launch({ headless: true, timeout: 90_000 });
+    const page = await bounded(browser.newPage({ acceptDownloads: true, serviceWorkers: "block" }), 60_000, `${name}.newPage`);
     // Resource-guarded Studio can take more than 10 seconds to hydrate the page.
     page.setDefaultTimeout(30_000);
     page.on("pageerror", (error) => errors.push(error.message));
@@ -31,7 +31,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       }
       return route.continue();
     });
-    const response = await page.goto(url, { waitUntil: "networkidle", timeout: 20_000 });
+    const response = await page.goto(url, { waitUntil: "networkidle", timeout: 60_000 });
     assert.equal(response?.status(), 200);
     const left = page.getByLabel("JSON prima");
     const right = page.getByLabel("JSON dopo");
@@ -83,13 +83,13 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     assert.equal(nested.differenceCount, 1);
     assert.deepEqual(nested.differences.map(({ kind, path }) => ({ kind, path })), [{ kind: "value", path: "/settings/mode" }]);
 
-    await page.getByRole("button", { name: "Reimposta" }).click();
+    await page.getByRole("form", { name: /Confronta la struttura di due/ }).getByRole("button", { name: "Reimposta" }).click();
     assert.equal(await left.inputValue(), '{"items":[1,2],"active":true}');
     assert.equal(await right.inputValue(), '{"items":[2,1],"active":"yes"}');
     assert.equal(await button.count(), 0);
     assert.deepEqual(external, []);
     assert.deepEqual(errors, []);
-    console.log(JSON.stringify({ browser: name, http: 200, arrayReorder: "PASS", inheritedKeys: "PASS", rootPrimitive: "PASS", egressRequests: 0, pageErrors: 0 }));
+    console.log(JSON.stringify({ browser: name, http: 200, arrayReorder: "PASS", inheritedKeys: "PASS", rootPrimitive: "PASS", validJson: "PASS", invalidJson: "PASS", nestedChange: "PASS", reset: "PASS", egressRequests: 0, pageErrors: 0 }));
   } catch (error) {
     console.error(`${name} FAILED`, error);
     process.exitCode = 1;
