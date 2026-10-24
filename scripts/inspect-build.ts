@@ -1,9 +1,10 @@
+import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { basename, join, relative, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
 import { groups } from "../src/catalog/groups";
 import { publicIndexPaths } from "../src/seo/public-discovery";
-import { auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
+import { auditBundleNoticeCoverage366, auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
 import { auditLockedPackages366, parseAssetPins366 } from "./donor-provenance-366";
 import { auditDistributedAssets366 } from "./donor-dist-inventory-366";
 
@@ -22,6 +23,8 @@ const distribution366 = auditDistributedAssets366(root, pins366,
 if (distribution366.failures.length > 0) {
   throw new Error(`Distributed donor inventory unverified: ${distribution366.failures.join("; ")}`);
 }
+const noticeCoverage = auditBundleNoticeCoverage366(distribution366.bundledPackages,
+  [...packages366.rows, ...packages366.optionalInstalled]);
 const noticeFailures = auditDistributedNotices366(dist);
 if (noticeFailures.length > 0) {
   throw new Error(`Distributed donor notices are incomplete: ${noticeFailures.join("; ")}`);
@@ -262,6 +265,45 @@ if (updateBaseline) {
     `${JSON.stringify(baseline, null, 2)}\n`,
     "utf8",
   );
+}
+
+if (process.argv.includes("--notice-matrix")) {
+  console.log(JSON.stringify({
+    redistributionStatus: noticeCoverage.some((item) => item.status === "NO_GO") ? "NO_GO" : "NOTICE_TEXTS_VERIFIED",
+    scopedTo: "npm modules in dist/_astro JS sourcemaps and byte-matched PDF.js workers",
+    buildRoot: root,
+    bundledPackageCount: noticeCoverage.length,
+    registeredNotices: noticeCoverage.filter((item) => item.status === "NOTICE_REGISTERED").length,
+    publicAssetPins: pins366.filter((pin) => pin.path.startsWith("public/")).map((pin) => ({
+      distributedPath: pin.path.slice("public/".length),
+      upstream: pin.source, version: pin.version, license: pin.license, sha256: pin.sha256,
+      distributedByteIdentity: "PIN_MATCH",
+      correspondingSourceStatus: /(AGPL|LGPL|GPL|MPL|EPL|CDDL)/iu.test(pin.license)
+        ? "SOURCE_OBLIGATION_REQUIRES_EVIDENCE" : "NO_COPYLEFT_SOURCE_OBLIGATION",
+    })),
+    bundledOpaqueModules: distribution366.bundledModuleAssets.map((asset) => ({
+      ...asset, distributedByteIdentity: "INSTALLED_PACKAGE_BYTE_MATCH",
+      correspondingSourceStatus: "NO_COPYLEFT_SOURCE_OBLIGATION",
+    })),
+    generatedRuntimeAssets: await Promise.all([
+      "vendor/portrait-modnet/ort-wasm-simd-threaded.mjs",
+      "vendor/portrait-modnet/ort-wasm-simd-threaded.wasm",
+    ].map(async (path) => ({
+      distributedPath: path,
+      npmModule: "onnxruntime-web",
+      sha256: createHash("sha256").update(await readFile(resolve(dist, path))).digest("hex"),
+      upstreamPackageByteIdentity: "PIN_MATCH",
+      correspondingSourceStatus: "NO_COPYLEFT_SOURCE_OBLIGATION",
+    }))),
+    distributedNotices: DONOR_NOTICES_366.map(({ file, packages, spdx, upstream, sha256 }) => ({
+      path: "licenses/" + file, packages, license: spdx, upstream, sha256,
+    })),
+    modules: noticeCoverage,
+  }, null, 2));
+}
+if (noticeCoverage.some((item) => item.status === "NO_GO")) {
+  throw new Error("NO_GO distributed NOTICE/source coverage incomplete: " +
+    noticeCoverage.filter((item) => item.status === "NO_GO").map((item) => item.package).join(", "));
 }
 
 console.log(

@@ -1,8 +1,9 @@
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  auditBundleNoticeCoverage366,
   auditDistributedNotices366,
   auditDonorNotices366,
   auditNoticeDirectory366,
@@ -66,4 +67,59 @@ describe("#366 distributed donor notices", () => {
       "UNREGISTERED_NOTICE public/licenses/unattributed.txt",
     ]);
   });
+
+  it("distributes both MIT and Zlib conditions for bundled pako 1.0.11", () => {
+    const notices = DONOR_NOTICES_366.filter((notice) =>
+      notice.packages.includes("pako@1.0.11"));
+    expect(notices).toHaveLength(2);
+    const licenceTexts = notices.map((notice) =>
+      readFileSync(join(root, "public/licenses", notice.file), "utf8"));
+    expect(licenceTexts.some((text) => text.includes("The MIT License"))).toBe(true);
+    expect(licenceTexts.some((text) =>
+      text.includes("This port is under zlib license") &&
+      text.includes("Jean-loup Gailly and Mark Adler"))).toBe(true);
+    expect(auditDonorNotices366(root)).toEqual([]);
+  });
+
+  it("reports a bundled npm module without a shipped license notice", () => {
+    const packages = [{
+      name: "example", version: "1.2.3", license: "MIT",
+      source: "https://registry.npmjs.org/example/-/example-1.2.3.tgz",
+      integrity: "sha512-pinned",
+    }];
+    const notice = [{
+      file: "example-MIT.txt", packages: ["example@1.2.3"], spdx: "MIT",
+      upstream: "https://github.com/example/example", sha256: "a".repeat(64), marker: "Example",
+    }];
+    const missing = auditBundleNoticeCoverage366(["example@1.2.3"], packages, []);
+    expect(missing[0]).toMatchObject({ status: "NO_GO", failures: ["MISSING_BUNDLED_NOTICE"] });
+    const covered = auditBundleNoticeCoverage366(["example@1.2.3"], packages, notice);
+    expect(covered[0]).toMatchObject({
+      status: "NOTICE_REGISTERED", source: packages[0]?.source, integrity: packages[0]?.integrity,
+      notices: [{ file: "example-MIT.txt", sha256: "a".repeat(64) }], failures: [],
+    });
+    expect(auditBundleNoticeCoverage366(["example@1.2.3"], packages,
+      [{ ...notice[0]!, spdx: "Apache-2.0" }])[0]?.failures).toContain("NOTICE_SPDX_MISMATCH");
+  });
+
+  it("keeps LGPL/MPL bundled sources in NO_GO until corresponding-source review", () => {
+    const packages = [
+      { name: "example-lgpl", version: "2.0.0", license: "LGPL-3.0-only", source: "https://registry.npmjs.org/example-lgpl/-/example-lgpl-2.0.0.tgz", integrity: "sha512-pinned" },
+      { name: "example-mpl", version: "1.0.0", license: "MPL-2.0", source: "https://registry.npmjs.org/example-mpl/-/example-mpl-1.0.0.tgz", integrity: "sha512-pinned" },
+    ];
+    const notices = packages.map(({ name, version, license }) => ({
+      file: name + ".txt", packages: [name + "@" + version], spdx: license,
+      upstream: "https://github.com/example/" + name, sha256: "b".repeat(64), marker: "Example",
+    }));
+    const coverage = auditBundleNoticeCoverage366(packages.map(({ name, version }) => name + "@" + version), packages, notices);
+    expect(coverage.map(({ status }) => status)).toEqual(["NO_GO", "NO_GO"]);
+    expect(coverage.every(({ failures }) => failures.includes("CORRESPONDING_SOURCE_REVIEW_REQUIRED"))).toBe(true);
+    expect(auditBundleNoticeCoverage366(["unmapped@9.9.9"], packages, notices)[0]?.failures)
+      .toContain("MISSING_BUNDLED_LOCK_METADATA");
+    const dual = [{ ...packages[0]!, name: "dual", license: "(MIT OR GPL-3.0-or-later)" }];
+    expect(auditBundleNoticeCoverage366(["dual@2.0.0"], dual, [    {
+      ...notices[0]!, packages: ["dual@2.0.0"], spdx: "(MIT OR GPL-3.0-or-later)",
+    }])[0]?.failures).toEqual(["LICENSE_CHOICE_REVIEW_REQUIRED"]);
+  });
+
 });

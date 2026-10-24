@@ -41,13 +41,15 @@ export function auditDistributedAssets366(
   const failures: string[] = [];
   const dist = resolve(root, "dist");
   if (!existsSync(dist) || !lstatSync(dist).isDirectory()) {
-    return { failures: ["MISSING_DISTRIBUTION dist"], bundledPackages: [], verifiedFiles: 0 };
+    return { failures: ["MISSING_DISTRIBUTION dist"], bundledPackages: [], bundledModuleAssets: [], verifiedFiles: 0 };
   }
   const emitted = allFiles(root, "dist");
   const files = new Set(emitted.filter((path) => !path.includes(":")).map((path) => path.slice("dist/".length)));
   const pinned = new Map(pins.filter((pin) => pin.path.startsWith("public/"))
     .map((pin) => [pin.path.slice("public/".length), pin]));
   let verifiedFiles = 0;
+  const bundledPackages = new Set<string>();
+  const bundledModuleAssets: { path: string; npmPackage: string; upstreamPath: string; sha256: string }[] = [];
 
   for (const marker of emitted.filter((path) => path.startsWith("SYMLINK:") || path.startsWith("UNKNOWN_TYPE:"))) {
     failures.push(`UNSAFE_DISTRIBUTED_ASSET ${marker.slice(marker.indexOf(":") + 1)}`);
@@ -69,6 +71,14 @@ export function auditDistributedAssets366(
   } catch { /* Missing or invalid runtime package is unverified. */ }
   const runtimeVerified = runtime && installedRuntime?.name === runtime.name &&
     installedRuntime.version === runtime.version && installedRuntime.license === runtime.license;
+  const pdfjs = packages.find((entry) => entry.name === "pdfjs-dist");
+  let installedPdf: { name?: string; version?: string; license?: string } | null = null;
+  try {
+    installedPdf = JSON.parse(readFileSync(resolve(root, "node_modules/pdfjs-dist/package.json"), "utf8"));
+  } catch { /* Missing/invalid PDF.js package prevents raw worker attestation. */ }
+  const pdfVerified = pdfjs && installedPdf?.name === pdfjs.name &&
+    installedPdf.version === pdfjs.version && installedPdf.license === pdfjs.license;
+  const pdfWorkers = ["build/pdf.worker.mjs", "legacy/build/pdf.worker.mjs"] as const;
   for (const path of files) {
     if (pinned.has(path)) continue;
     if (GENERATED_RUNTIME.has(path)) {
@@ -80,8 +90,26 @@ export function auditDistributedAssets366(
       } else {
         verifiedFiles++;
       }
+    } else if (path.startsWith("_astro/") && path.endsWith(".mjs")) {
+      // PDF.js ?url workers are opaque assets without JavaScript sourcemaps.
+      // Prove their bytes against the locked, installed package.
+      const isPdfWorker = /^_astro\/pdf\.worker[.-][\w-]+\.mjs$/u.test(path);
+      const sha256 = digest(resolve(dist, path));
+      const upstreamPath = isPdfWorker && pdfVerified ? pdfWorkers.find((candidate) => {
+        const source = resolve(root, "node_modules/pdfjs-dist", candidate);
+        return existsSync(source) && lstatSync(source).isFile() && digest(source) === sha256;
+      }) : undefined;
+      if (!upstreamPath || !pdfjs) {
+        failures.push(`UNVERIFIED_DISTRIBUTED_ES_MODULE ${path}`);
+      } else {
+        verifiedFiles++;
+        const npmPackage = `${pdfjs.name}@${pdfjs.version}`;
+        bundledPackages.add(npmPackage);
+        bundledModuleAssets.push({ path, npmPackage,
+          upstreamPath: `node_modules/pdfjs-dist/${upstreamPath}`, sha256 });
+      }
     } else if (RUNTIME_PAYLOAD_366.test(path) || path.startsWith("vendor/") ||
-               (path.endsWith(".js") && !path.startsWith("_astro/"))) {
+               ((path.endsWith(".js") || path.endsWith(".mjs")) && !path.startsWith("_astro/"))) {
       failures.push(`UNPINNED_DISTRIBUTED_ASSET ${path}`);
     }
   }
@@ -89,7 +117,6 @@ export function auditDistributedAssets366(
     if (!files.has(path)) failures.push(`MISSING_GENERATED_RUNTIME ${path}`);
   }
 
-  const bundledPackages = new Set<string>();
   const scripts = [...files].filter((path) => path.startsWith("_astro/") && path.endsWith(".js"));
   if (!scripts.length) failures.push("MISSING_BUNDLED_SCRIPTS");
   for (const script of scripts) {
@@ -121,5 +148,5 @@ export function auditDistributedAssets366(
       else bundledPackages.add(`${name}@${row.version}`);
     }
   }
-  return { failures, bundledPackages: [...bundledPackages].sort(), verifiedFiles };
+  return { failures, bundledPackages: [...bundledPackages].sort(), bundledModuleAssets, verifiedFiles };
 }

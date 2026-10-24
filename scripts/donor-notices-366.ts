@@ -9,6 +9,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { NPM_NOTICES_463 } from "./donor-notices-463";
 
 export type DonorNotice366 = {
   readonly file: string;
@@ -259,7 +260,7 @@ export const DONOR_NOTICES_366: readonly DonorNotice366[] = [
   },
   {
     file: "onnxruntime-web-274-MIT.txt",
-    packages: ["onnxruntime-web@1.31.0-dev.20260914-8d85527a0"],
+    packages: ["onnxruntime-web@1.31.0-dev.20260914-8d85527a0", "onnxruntime-common@1.30.0"],
     spdx: "MIT",
     upstream: "https://github.com/microsoft/onnxruntime/tree/8d85527a0",
     sha256: "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
@@ -281,6 +282,7 @@ export const DONOR_NOTICES_366: readonly DonorNotice366[] = [
     sha256: "1e9d82b10bab525fd9c813de659e00c33c043b6fbd2cc120c7f5e605b5bfef61",
     marker: "MODNet",
   },
+  ...NPM_NOTICES_463,
 ];
 
 const SOURCE_NOTICE_DIR = "public/licenses";
@@ -349,4 +351,41 @@ export function auditDistributedNotices366(
   notices: readonly DonorNotice366[] = DONOR_NOTICES_366,
 ): string[] {
   return auditDonorNotices366(distRoot, notices, BUILT_NOTICE_DIR);
+}
+
+
+/** Sourcemaps identify npm modules actually emitted in dist, unlike the full lock.
+ * A registered licence is technical evidence, never legal redistribution clearance.
+ */
+export function auditBundleNoticeCoverage366(
+  bundledPackages: readonly string[],
+  packages: readonly { name: string; version: string; license: string; source: string; integrity: string }[],
+  notices: readonly DonorNotice366[] = DONOR_NOTICES_366,
+) {
+  return [...new Set(bundledPackages)].sort().map((pkg) => {
+    const row = packages.find((entry) => pkg === entry.name + "@" + entry.version);
+    const attributed = notices.filter((notice) => notice.packages.includes(pkg));
+    const failures: string[] = [];
+    if (!row) failures.push("MISSING_BUNDLED_LOCK_METADATA");
+    if (attributed.length === 0) failures.push("MISSING_BUNDLED_NOTICE");
+    if (row && attributed.some((notice) => notice.spdx !== row.license)) {
+      failures.push("NOTICE_SPDX_MISMATCH");
+    }
+    // Source availability and licence obligations require owner review.
+    if (row && /(AGPL|LGPL|GPL|MPL|EPL|CDDL)/iu.test(row.license)) {
+      failures.push(/\bOR\b/iu.test(row.license)
+        ? "LICENSE_CHOICE_REVIEW_REQUIRED"
+        : "CORRESPONDING_SOURCE_REVIEW_REQUIRED");
+    }
+    return {
+      package: pkg,
+      version: row?.version ?? "UNKNOWN",
+      license: row?.license ?? "UNKNOWN",
+      source: row?.source ?? "UNKNOWN",
+      integrity: row?.integrity ?? "UNKNOWN",
+      notices: attributed.map(({ file, sha256, upstream }) => ({ file, sha256, upstream })),
+      status: failures.length ? "NO_GO" as const : "NOTICE_REGISTERED" as const,
+      failures,
+    };
+  });
 }
