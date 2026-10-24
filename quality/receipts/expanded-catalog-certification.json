@@ -14927,7 +14927,7 @@
         },
         "module": {
           "path": "src/tools/image-crop/module.ts",
-          "sha256": "5d8b6494c6d7311e33ae772e07f193f4efe036765686e77ebfe103f187841e77"
+          "sha256": "96fbbafe5c9ec8f98f397ab669bf0d917c39d5d4f355bfa16e6070ba2810956e"
         },
         "page": {
           "path": "src/pages/tools/image-crop.astro",

@@ -62,8 +62,8 @@ try {
       const input = page.locator("#image-resize-file");
       await input.setInputFiles({ name: fixture.name, mimeType: fixture.mime, buffer: fixture.buffer });
       await page.locator("[data-resize-estimate]").waitFor();
-      await page.getByLabel("Larghezza").fill(String(fixture.width));
-      await page.getByLabel("Altezza").fill(String(fixture.height));
+      await page.getByLabel("Larghezza", { exact: true }).fill(String(fixture.width));
+      await page.getByLabel("Altezza", { exact: true }).fill(String(fixture.height));
       const inputSha = async () => page.evaluate(async () => {
         const buffer = await document.querySelector("#image-resize-file").files[0].arrayBuffer();
         const sum = await crypto.subtle.digest("SHA-256", buffer);
