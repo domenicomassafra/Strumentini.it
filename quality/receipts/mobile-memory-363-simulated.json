@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "ticket": "STR-363",
+  "evidenceKind": "SIMULATED_DEVICE_ONLY",
+  "physicalDeviceObserved": false,
+  "sourceRevision": "363a519206c1df8a79afc05e2473a68ce84004de",
+  "observedAt": "2026-10-20T08:40:00.000Z",
+  "cases": [
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "pdf",
+      "size": "S",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "pdf",
+      "size": "S",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "pdf",
+      "size": "M",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "pdf",
+      "size": "M",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "pdf",
+      "size": "L",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "pdf",
+      "size": "L",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "image",
+      "size": "S",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "image",
+      "size": "S",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "image",
+      "size": "M",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "image",
+      "size": "M",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "image",
+      "size": "L",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "image",
+      "size": "L",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "csv",
+      "size": "S",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "csv",
+      "size": "S",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "csv",
+      "size": "M",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "csv",
+      "size": "M",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "csv",
+      "size": "L",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "IOS_SIMULATOR",
+      "format": "csv",
+      "size": "L",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "All iOS simulator hardware access remained unavailable for this ticket: the booted iPhone 18 Pro was occupied by STR-278, and the memory-pressured Studio could not safely boot a second device."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "S",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "S",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "M",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "M",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "L",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "pdf",
+      "size": "L",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "S",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "S",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "M",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "M",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "L",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "image",
+      "size": "L",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "S",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "S",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "M",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "M",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "L",
+      "phase": "cold",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    },
+    {
+      "platform": "ANDROID_EMULATOR",
+      "format": "csv",
+      "size": "L",
+      "phase": "warm",
+      "status": "NOT_RUN",
+      "limitation": "The only installed Android AVD str277-api35 was actively owned by STR-277; attaching would interfere with that ticket acceptance run."
+    }
+  ]
+}
