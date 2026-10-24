@@ -103,4 +103,3 @@ export function numberToDisplay(value: number, decimalPlaces = RESULT_DECIMAL_PL
   if (!Number.isFinite(value)) throw new Error("VALUE_OUT_OF_RANGE");
   return value.toFixed(decimalPlaces).replace(/\.0+$/u, "").replace(/(\.\d*?)0+$/u, "$1");
 }
-
