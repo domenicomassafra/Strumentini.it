@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import fontDataUri from "../../../engines/pdf/assets/noto-sans-latin-400-regular.ttf?inline";
 import type { PdfEditableForm136, PdfFormValue136 } from "../../../engines/pdf/form-edit-136";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
+import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
 
 const MAX_SOURCE = 8 * 1024 * 1024;
 
@@ -12,8 +13,7 @@ export function PdfFormEditor136Tool() {
   const [flatten, setFlatten] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [downloadUrl, setDownloadUrl] = useState("");
-  const [downloadSize, setDownloadSize] = useState(0);
+  const [result, setResult] = useState<PreparedPdfResult | null>(null);
   const fileInput = useRef<HTMLInputElement | null>(null);
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
@@ -30,9 +30,7 @@ export function PdfFormEditor136Tool() {
   }
 
   useEffect(() => () => { generation.current++; controller.current?.abort(); }, []);
-  useEffect(() => () => { if (downloadUrl) URL.revokeObjectURL(downloadUrl); }, [downloadUrl]);
-
-  function discardResult() { setDownloadUrl(""); setDownloadSize(0); }
+  function discardResult() { setResult(null); }
   function cancel() {
     generation.current++;
     controller.current?.abort(); controller.current = null;
@@ -89,9 +87,18 @@ export function PdfFormEditor136Tool() {
       if (Object.keys(changed).length === 0) throw new Error("Modifica almeno un campo prima di esportare.");
       const output = await editPdfForm136(bytes, changed, font, { flatten, signal: active.signal });
       if (active.signal.aborted || ticket !== generation.current) return;
-      const url = URL.createObjectURL(new Blob([new Uint8Array(output.bytes).buffer], { type: "application/pdf" }));
-      setDownloadSize(output.bytes.byteLength);
-      setDownloadUrl(url);
+      const filename = flatten ? "modulo-compilato-appiattito.pdf" : "modulo-compilato.pdf";
+      const blob = new Blob([new Uint8Array(output.bytes).buffer], { type: "application/pdf" });
+      const prepared = await preparePdfResult("pdf-page-reorder", {
+        operation: "form-edit", flatten, pageCount: info.pageCount, artifactCount: 1,
+        policy: "Campi PDF compilati localmente, verifica del documento e originale immutato.",
+        artifacts: [{ blob, bytes: new Uint8Array(output.bytes), filename, mime: "application/pdf", pageCount: info.pageCount }],
+      });
+      if (active.signal.aborted || ticket !== generation.current) return;
+      if (prepared.artifacts[0]?.artifact.verification.state !== "verified" || !prepared.artifacts[0].artifact.download.ready) {
+        throw new Error("Il PDF compilato non ha superato la verifica del risultato.");
+      }
+      setResult(prepared);
       recordCompletedTool("pdf-form-inspector");
     } catch (cause) {
       if (ticket === generation.current && !active.signal.aborted) setError(cause instanceof Error ? cause.message : "Esportazione rifiutata");
@@ -135,11 +142,10 @@ export function PdfFormEditor136Tool() {
       </div>}
       {busy && <div class="actions"><p role="status">Verifica locale del documento…</p><button type="button" onClick={cancel}>Annulla elaborazione</button></div>}
       {error && <p role="alert">{error} Il file originale non è stato modificato.</p>}
-      {downloadUrl && <section class="result-panel" data-form-result-136 role="status">
+      {result && file && <div data-form-result-136 role="status">
         <p>PDF compilato e riaperto con due parser locali; {flatten ? "campi appiattiti" : "campi modificabili preservati"}.</p>
-        <p>{(downloadSize / 1024).toFixed(0)} KiB · {info?.pageCount} pagine</p>
-        <a href={downloadUrl} download={flatten ? "modulo-compilato-appiattito.pdf" : "modulo-compilato.pdf"}>Scarica PDF verificato</a>
-      </section>}
+        <PdfResultV2 toolId="pdf-page-reorder" result={result} sourceFiles={[file]} onReset={discardResult} />
+      </div>}
     </section>
   </form>;
 }

@@ -109,6 +109,8 @@ try {
   await client.offline(true);
   await client.click('[data-form-fields-136] button[type=submit]');
   await client.waitFor('!!document.querySelector("[data-form-result-136] a[download]")', "editable export", 30000);
+  assert.equal(await client.evaluate('document.querySelector("[data-form-result-136] [data-result-class=pdf]") !== null'), true,
+    "Editable form output must use the verified PDF Result v2 workspace");
   const editable = await client.download();
   await verifyPdf(editable.bytes, false);
   verifyPypdf(editable.path, false);
