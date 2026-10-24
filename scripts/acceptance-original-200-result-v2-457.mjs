@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { createServer } from "node:http";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { parse } from "parse5";
 
@@ -65,6 +65,7 @@ try {
     builtRouteBodiesSha256: hash.digest("hex"),
     limitation: "Does not claim hydrated Result v2 interaction, positive/refusal, lazy execution, or independent output-file parsing.",
   };
+  await mkdir(receiptDir, { recursive: true });
   await writeFile(resolve(receiptDir, "consumer-html.json"), JSON.stringify(receipt, null, 2) + "\n", "utf8");
   console.log("original 200 static consumer HTTP/HTML:", JSON.stringify(receipt));
   assert.equal(checked, 200, `${failures.length} built HTML routes failed`);
