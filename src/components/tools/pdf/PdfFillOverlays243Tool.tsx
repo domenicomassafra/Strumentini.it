@@ -150,6 +150,7 @@ export function PdfFillOverlays243Tool() {
       <input aria-label="Documento PDF" type="file" accept=".pdf,application/pdf"
         onChange={(event) => { setFile(event.currentTarget.files?.[0] ?? null); setPages([]); invalidate(); }} />
     </label>
+    <p class="file-note"><a href="/tools/pdf-form-inspector/">Vuoi compilare e salvare un modulo lasciando i campi modificabili? Apri l’editor dei campi PDF.</a></p>
     <p class="file-note" data-243-disclosure><strong>Esportazione sempre appiattita:</strong> il testo e le evidenziazioni diventano contenuti visibili della pagina, non annotazioni modificabili. I campi modulo /Tx supportati vengono compilati visivamente, ma rimossi dall'output; nessuna promessa di PDF compilabile, firma o oscuramento sicuro. Firme, script, moduli complessi e annotazioni esistenti sono rifiutati.</p>
     {pages.length > 0 && <>
       <div class="field-grid">
