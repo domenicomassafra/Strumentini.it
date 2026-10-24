@@ -1,13 +1,14 @@
-/** STR-417: compiled browser AES-256 round-trip; recheck outputs with Poppler.
+/** STR-417: compiled browser AES-256 round-trip, reopened with independent PDF.js.
  * Runs against the already-open MiniPC automation-browser CDP. Does not launch Chrome.
  */
 import assert from "node:assert/strict";
-import { execFileSync, spawn } from "node:child_process";
-import { readFile, writeFile, mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18417;
@@ -15,7 +16,7 @@ const base = `http://127.0.0.1:${port}`;
 const password = "legit-STR417-browser";
 const original = fileURLToPath(new URL("../quality/fixtures/pdf-gold/simple-2page.pdf", import.meta.url));
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
-let browser, context, page, temp;
+let browser, context, page;
 const offsite = [], exceptions = [];
 
 async function download(name) {
@@ -34,6 +35,21 @@ async function setInput(bytes) {
 async function waitHydrated() {
   await page.waitForFunction(() => [...document.querySelectorAll("astro-island")].some((island) =>
     island.getAttribute("component-url")?.includes("PdfPasswordCheckRemoveTool") && !island.hasAttribute("ssr")), null, { timeout: 20_000 });
+}
+
+async function readWithIndependentParser(bytes, credential) {
+  const task = getDocument({ data: Uint8Array.from(bytes), ...(credential ? { password: credential } : {}), useSystemFonts: true });
+  try {
+    const pdf = await task.promise;
+    const pages = [];
+    for (let number = 1; number <= pdf.numPages; number++) {
+      const content = await (await pdf.getPage(number)).getTextContent();
+      pages.push(content.items.flatMap((item) => "str" in item ? [item.str] : []).join(" "));
+    }
+    return pages;
+  } finally {
+    await task.destroy();
+  }
 }
 
 try {
@@ -61,14 +77,15 @@ try {
   await page.locator('input[type="password"]').fill(password);
   await page.getByRole("button", { name: "Proteggi con AES-256" }).click();
   const encrypted = await download("protetto-aes256.pdf");
-  temp = await mkdtemp(join(tmpdir(), "pdf417-browser-"));
-  const encryptedFile = join(temp, "locked.pdf");
-  await writeFile(encryptedFile, encrypted);
-  const info = execFileSync("pdfinfo", ["-upw", password, encryptedFile], { encoding: "utf8" });
-  assert.match(info, /Pages:\s+2/u);
-  assert.match(info, /algorithm:AES-256/u);
-  assert.match(execFileSync("pdftotext", ["-upw", password, encryptedFile, "-"], { encoding: "utf8" }), /alpha[\s\S]*beta/u);
-  assert.throws(() => execFileSync("pdfinfo", ["-upw", "sbagliata", encryptedFile], { stdio: "ignore" }));
+  const lockedSource = encrypted.toString("latin1");
+  assert.match(lockedSource, /\/Encrypt\s/u);
+  assert.match(lockedSource, /\/R\s+6\b/u, "encrypted download uses revision R6");
+  assert.match(lockedSource, /\/V\s+5\b/u, "encrypted download uses AES-256");
+  await assert.rejects(readWithIndependentParser(encrypted));
+  await assert.rejects(readWithIndependentParser(encrypted, "sbagliata"));
+  const lockedPages = await readWithIndependentParser(encrypted, password);
+  assert.equal(lockedPages.length, 2);
+  assert.match(lockedPages.join(" "), /alpha[\s\S]*beta/u);
 
   await setInput(encrypted);
   await mode.selectOption("remove");
@@ -79,24 +96,23 @@ try {
   await page.locator('input[type="password"]').fill(password);
   await page.getByRole("button", { name: "Sblocca o copia PDF" }).click();
   const decrypted = await download("sbloccato.pdf");
-  const decryptedFile = join(temp, "unlocked.pdf");
-  await writeFile(decryptedFile, decrypted);
-  const unlockedInfo = execFileSync("pdfinfo", [decryptedFile], { encoding: "utf8" });
-  assert.match(unlockedInfo, /Pages:\s+2/u);
-  assert.match(unlockedInfo, /Encrypted:\s+no/u);
-  assert.match(execFileSync("pdftotext", [decryptedFile, "-"], { encoding: "utf8" }), /alpha[\s\S]*beta/u);
+  assert.doesNotMatch(decrypted.toString("latin1"), /\/Encrypt\s/u);
+  const unlockedPages = await readWithIndependentParser(decrypted);
+  assert.equal(unlockedPages.length, 2);
+  assert.match(unlockedPages.join(" "), /alpha[\s\S]*beta/u);
   assert.deepEqual(exceptions, []);
   assert.deepEqual(offsite, []);
   console.log("STR417_COMPILED_BROWSER_PASS", JSON.stringify({
     inputBytes: (await readFile(original)).length, encryptedBytes: encrypted.length,
-    decryptedBytes: decrypted.length, pages: 2, cipher: "AES-256",
-    incorrectPassword: "REJECTED", offsiteRequests: offsite.length,
+    decryptedBytes: decrypted.length, pages: 2, cipher: "AES-256 R6",
+    encryptedSha256: createHash("sha256").update(encrypted).digest("hex"),
+    decryptedSha256: createHash("sha256").update(decrypted).digest("hex"),
+    independentParser: "PDF.js", incorrectPassword: "REJECTED", offsiteRequests: offsite.length,
     browser: "existing MiniPC automation Chrome", physicalMobile: "NOT_RUN",
   }));
 } finally {
   await page?.close().catch(() => undefined);
   await context?.close().catch(() => undefined);
   await browser?.close().catch(() => undefined);
-  if (temp) await rm(temp, { recursive: true, force: true });
   server.kill("SIGTERM");
 }
