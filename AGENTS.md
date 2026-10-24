@@ -16,10 +16,11 @@ Prima leggi issue e commenti, poi `README.md`, `PROJECT-STATUS.md` (attenzione a
 Il sito pubblico è `https://strumentini.it`, target Cloudflare Worker `strumentini` con D1 `AUTH_DB`. Nessun cambio implicito a binding, database, credenziali o asset di release. Un test nel browser/simulatore non prova un dispositivo fisico. Le issue #80 e #162 governano il gate comune di release.
 
 ## Ambiente e comandi
-Creare un worktree per issue sul MiniPC `ssh minipc` in `~/Code/.worktrees/strumentini-it-<issue>` da `origin/main`. I test pesanti vanno lì con:
+Lavorare sul Mac Studio: creare qui un worktree per issue in `~/Code/.worktrees/strumentini-it-<issue>` da `origin/main`. Eseguire sul Mac Studio anche `npm ci`, build, test, Playwright e simulatori, con ammissione delle build e dei test tramite:
 ```sh
 python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- <comando>
 ```
+Usare il MiniPC soltanto per runtime Linux, servizi installati e letture di verifica.
 Setup di checkout: `npm ci`; per lo spike heavy `npm ci --prefix spikes/heavy-local-feasibility --omit=dev`; `bash scripts/install-public-git-hooks.sh`.
 
 Controlli mirati: `npm run ci:scope -- --base="$(git merge-base HEAD origin/main)" --run`.
