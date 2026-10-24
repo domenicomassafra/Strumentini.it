@@ -23,6 +23,16 @@ for (let i = 0; i < w * h; i++) {
 }
 const transparent = await sharp(rgba, { raw: { width: w, height: h, channels: 4 } }).png().toBuffer();
 const opaque = await sharp(rgba, { raw: { width: w, height: h, channels: 4 } }).flatten({ background: "#ffffff" }).png().toBuffer();
+const presetPixels = Buffer.alloc(96 * 96 * 4);
+let seed = 81;
+for (let offset = 0; offset < presetPixels.length; offset += 4) {
+  seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
+  presetPixels[offset] = seed & 255;
+  presetPixels[offset + 1] = (seed >>> 8) & 255;
+  presetPixels[offset + 2] = (seed >>> 16) & 255;
+  presetPixels[offset + 3] = 255;
+}
+const presetPng = await sharp(presetPixels, { raw: { width: 96, height: 96, channels: 4 } }).png().toBuffer();
 
 async function ready() {
   for (let i = 0; i < 100; i++) {
@@ -70,8 +80,30 @@ try {
   assert.equal(info.format, "jpeg");
   assert.equal(info.width, w);
   assert.equal(info.height, h);
+  const preset = form.locator("[data-jpeg-preset-47] select");
+  assert.equal(await preset.count(), 1, "JPEG normal/compact presets must be visible in the public form");
+  await upload.setInputFiles({ name: "preset.png", mimeType: "image/png", buffer: presetPng });
+  async function downloadPreset(mode) {
+    await preset.selectOption(mode);
+    await form.getByRole("button", { name: "Esegui in locale" }).click();
+    await page.locator(".result-panel[data-state='success']").waitFor({ timeout: 20_000 });
+    const pending = page.waitForEvent("download");
+    await page.locator('[data-result-class="image"] a[download]').first().click();
+    const downloaded = await pending;
+    assert.equal(downloaded.suggestedFilename(), "preset-compressed.jpg");
+    const jpeg = await readFile(await downloaded.path());
+    assert.equal(jpeg.subarray(0, 3).toString("hex"), "ffd8ff");
+    const metadata = await sharp(jpeg).metadata();
+    assert.equal(metadata.format, "jpeg");
+    assert.equal(metadata.width, 96);
+    assert.equal(metadata.height, 96);
+    return jpeg.length;
+  }
+  const normalBytes = await downloadPreset("normal");
+  const compactBytes = await downloadPreset("compact");
+  assert(compactBytes < normalBytes, `High-compression preset must reduce a noisy JPEG (${compactBytes} vs ${normalBytes} B)`);
   assert.deepEqual(offsite, []);
-  console.log("PASS #81 built public consumer: alpha JPEG refused with/without target; opaque JPEG downloaded, signature and Sharp dimensions verified");
+  console.log(`PASS #81 built public consumer: alpha JPEG refusal and valid JPEG downloads; normal ${normalBytes} B vs compact ${compactBytes} B; zero offsite requests`);
 } finally {
   if (browser) await browser.close();
   server.kill("SIGTERM");

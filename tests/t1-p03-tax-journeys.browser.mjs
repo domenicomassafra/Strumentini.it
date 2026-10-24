@@ -25,11 +25,15 @@ try {
   await page.locator("#iva-mode").selectOption("preset");
   await page.locator("#iva-operation").selectOption("add");
   await page.locator("#iva-amount").fill("100");
-  await page.locator("#iva-date").fill("2025-12-20");
+  assert.equal(await page.locator("#iva-date").inputValue(), "", "Transaction date is not guessed");
   await page.locator("#iva-category").selectOption("tabA-ii-3-fresh-milk");
   assert.match(await page.locator("[data-category-scope]").innerText(), /Latte fresco.*non concentrato.*regime speciale agricolo/su);
   await page.locator('[name="scopeConfirmed"]').check();
   await page.locator('[name="taxableConfirmed"]').check();
+  await page.locator('[data-tax-iva] button[type="submit"]').click();
+  assert.equal(await page.locator("[data-tax-iva] output").innerText(), "", "Undated VAT preset must refuse");
+  assert.match(await page.locator("[data-tax-iva] .error").innerText(), /non disponibile/u);
+  await page.locator("#iva-date").fill("2025-12-20");
   await page.locator('[data-tax-iva] button[type="submit"]').click();
   assert.match(await page.locator("[data-tax-iva] output").innerText(), /104,00\s*€/u);
   assert.match(await page.locator("[data-tax-iva] output").innerText(), /2025/u);
@@ -41,6 +45,10 @@ try {
   assert.equal((await page.goto(origin + "/tools/irpef-componenti/", { waitUntil: "domcontentloaded", timeout: 120000 }))?.status(), 200);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
   await page.locator("#irpef-c-income").fill("40000");
+  await page.locator('[data-irpef-components] button[type="submit"]').click();
+  assert.equal(await page.locator("[data-irpef-components] output").innerText(), "", "No implicit tax year");
+  assert.match(await page.locator("[data-irpef-components] .error").innerText(), /seleziona.*anno/iu);
+  await page.locator("#irpef-c-year").selectOption("2025");
   await page.locator('[data-irpef-components] button[type="submit"]').click();
   assert.match(await page.locator("[data-irpef-components] output").innerText(), /10\.640,00\s*€/u);
   assert.match(await page.locator("[data-irpef-components] output").innerText(), /NON calcolate/u);

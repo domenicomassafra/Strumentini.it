@@ -48,7 +48,11 @@ try {
   assert.equal(response?.status(), 200, "canonical annual IRPEF route must exist");
   assert.equal(await scope.count(), 1);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
-  assert.deepEqual(await year.locator("option").evaluateAll((items) => items.map((item) => item.value)), ["2025", "2026"]);
+  assert.deepEqual(await year.locator("option").evaluateAll((items) => items.map((item) => item.value)), ["", "2025", "2026"]);
+  assert.equal(await year.inputValue(), "", "tax year must be explicitly selected");
+  assert.equal((await submit("40000")).trim(), "", "income alone must not trigger an assumed year");
+  assert.match(await error.innerText(), /seleziona.*anno/iu);
+  await year.selectOption("2025");
   assert.match(await scope.innerText(), /2026 detrazioni e addizionali non sono calcolate/isu);
   assert.match(await scope.innerText(), /non è l'imposta personale definitiva/isu);
 

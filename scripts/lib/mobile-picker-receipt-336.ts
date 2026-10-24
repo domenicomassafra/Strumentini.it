@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve, sep } from "node:path";
+import sharp from "sharp";
 import { z } from "zod";
 
 /** A simulator receipt is source-bound evidence only; never a physical-device proof. */
@@ -125,8 +126,16 @@ export async function verifyMobilePickerArtifacts336(
           createHash("sha256").update(bytes).digest("hex") !== proof.sha256) {
         errors.push(`${proof.label}: actual bytes/hash differ from receipt`);
       }
-      if (proof.png && !bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
-        errors.push(`${proof.label}: captured evidence is not PNG`);
+      if (proof.png) {
+        if (!bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
+          errors.push(`${proof.label}: captured evidence is not PNG`);
+        } else {
+          try {
+            await sharp(bytes, { failOn: "error", limitInputPixels: 16_000_000 }).stats();
+          } catch {
+            errors.push(`${proof.label}: captured evidence is not decodable PNG`);
+          }
+        }
       }
     } catch {
       errors.push(`${proof.label}: file cannot be read`);
