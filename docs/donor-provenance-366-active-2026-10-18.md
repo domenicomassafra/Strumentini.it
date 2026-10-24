@@ -73,3 +73,7 @@ Provenance clearance remains **NO_GO**: `npx tsx scripts/donor-provenance-366.ts
 ## #272 — exifr 7.1.3, metadati immagine locali (2026-10-19)
 
 Dettagli del donor MIT, tarball/SRI/commit, gate, fixture positive ICC/IPTC e privacy GPS: [donor-exifr-272.md](donor-exifr-272.md). Nessun deploy o ammissione release da questo ticket.
+
+## #144 — STR-385 project history e persistenza immagine (2026-10-22)
+
+Dettagli di riuso IndexedDB e fake-indexeddb test-only: [donor-project-history-385.md](donor-project-history-385.md).
