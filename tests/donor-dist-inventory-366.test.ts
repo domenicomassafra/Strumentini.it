@@ -59,6 +59,39 @@ describe("#126 actual static distribution provenance", () => {
       writeFileSync(join(root, "dist/_astro/rolldown-runtime.abc.js"),
         'var x=Object.create,y=Object.getOwnPropertyDescriptor;var z="rolldown.rs/in-depth/bundling-cjs";export{x as t};');
       expect(audit().failures).toEqual([]);
+
+      // PDF.js ?url produces raw .mjs workers: each must map to locked npm bytes.
+      const pdfRow = {
+        name: "pdfjs-dist", version: "6.4.299", license: "Apache-2.0",
+        source: "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.4.299.tgz",
+        integrity: packageRow.integrity,
+      };
+      packages.push(pdfRow);
+      Object.assign(lock, { "node_modules/pdfjs-dist": {
+        version: pdfRow.version, license: pdfRow.license,
+        resolved: pdfRow.source, integrity: pdfRow.integrity,
+      } });
+      mkdirSync(join(root, "node_modules/pdfjs-dist/build"), { recursive: true });
+      mkdirSync(join(root, "node_modules/pdfjs-dist/legacy/build"), { recursive: true });
+      writeFileSync(join(root, "node_modules/pdfjs-dist/package.json"),
+        JSON.stringify({ name: pdfRow.name, version: pdfRow.version, license: pdfRow.license }));
+      writeFileSync(join(root, "node_modules/pdfjs-dist/build/pdf.worker.mjs"), "current PDF worker bytes");
+      writeFileSync(join(root, "node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs"), "legacy PDF worker bytes");
+      writeFileSync(join(root, "dist/_astro/pdf.worker.Valid.mjs"), "current PDF worker bytes");
+      writeFileSync(join(root, "dist/_astro/pdf.worker-Legacy.mjs"), "legacy PDF worker bytes");
+      expect(audit().failures).toEqual([]);
+      expect(audit().bundledPackages).toContain("pdfjs-dist@6.4.299");
+      expect(audit().bundledModuleAssets).toHaveLength(2);
+
+      writeFileSync(join(root, "dist/_astro/pdf.worker.Valid.mjs"), "tampered PDF worker");
+      expect(audit().failures).toContain(
+        "UNVERIFIED_DISTRIBUTED_ES_MODULE _astro/pdf.worker.Valid.mjs");
+      writeFileSync(join(root, "dist/_astro/pdf.worker.Valid.mjs"), "current PDF worker bytes");
+      writeFileSync(join(root, "dist/_astro/unreviewed.mjs"), "unknown ESM");
+      expect(audit().failures).toContain(
+        "UNVERIFIED_DISTRIBUTED_ES_MODULE _astro/unreviewed.mjs");
+      rmSync(join(root, "dist/_astro/unreviewed.mjs"));
+
       writeFileSync(join(root, "dist/_astro/other.js"), "var unreviewedExternalSource=1;");
       expect(audit().failures).toContain("UNMAPPED_DISTRIBUTED_SCRIPT _astro/other.js");
       rmSync(join(root, "dist/_astro/other.js"));
