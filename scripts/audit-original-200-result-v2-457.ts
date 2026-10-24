@@ -28,8 +28,8 @@ const oracleRegistry = JSON.parse(await readFile(resolve(root, "quality/oracles/
   entries: Array<{ id: string }>;
 };
 const loaderSource = await readFile(resolve(root, "src/generated/tool-loaders.ts"), "utf8");
-const byCatalog = new Map(catalog.map((tool) => [tool.id, tool]));
-const byResult = new Map(resultV2Inventory.map((entry) => [entry.toolId, entry]));
+const byCatalog = new Map<string, (typeof catalog)[number]>(catalog.map((tool) => [tool.id, tool]));
+const byResult = new Map<string, (typeof resultV2Inventory)[number]>(resultV2Inventory.map((entry) => [entry.toolId, entry]));
 const knownFixture = new Map(fixtureIndex.families.map(({ id, path }) => [id, path]));
 const knownOracle = new Set(oracleRegistry.entries.map(({ id }) => id));
 const rendererFindings = new Map<string, number>();
