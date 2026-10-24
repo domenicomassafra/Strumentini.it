@@ -355,14 +355,6 @@ function localizeResult(value: unknown, raw = false): unknown {
   ]));
 }
 
-function resultText(value: unknown): string {
-  try {
-    return JSON.stringify(localizeResult(value), null, 2) ?? String(value);
-  } catch {
-    return String(value);
-  }
-}
-
 function reusableResultText(value: unknown): string | null {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
@@ -475,10 +467,12 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
   const gutterState = gutterStateFor(operation.status);
   const readableSourceMode = (config.id === "css-minifier" || config.id === "html-minifier") && values.mode === "prettify";
   const sourceFormatLabel = config.id === "css-minifier" ? "CSS" : "HTML";
-  const serializedResult = useMemo(
-    () => operation.result === null ? "" : resultText(operation.result),
-    [operation.result],
-  );
+  const serializedResult = useMemo(() => {
+    const value = operation.result;
+    try {
+      return value === null ? "" : JSON.stringify(config.id === "json-structural-diff" ? value : localizeResult(value), null, 2) ?? String(value);
+    } catch { return String(value); }
+  }, [config.id, operation.result]);
   const transformed = useMemo(
     () => developerTransformDownload(config.id, operation.result, values.text ?? ""),
     [config.id, operation.result, values.text],
