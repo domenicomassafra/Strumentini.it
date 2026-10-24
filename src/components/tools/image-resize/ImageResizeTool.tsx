@@ -10,6 +10,7 @@ import type { ImageResizeProgress } from "../../../tools/image-resize/types";
 import { ToolResultPanel } from "../shared";
 import { recordCompletedTool } from "../../../workbench/completed-tool";
 import { ImageResultV2, prepareImageResult, type PreparedImageResult } from "../image-visual/ImageResultV2";
+import { ImageColorAdjustTool383 } from "./ImageColorAdjustTool383";
 
 type ProcessingState = "idle" | "working" | "done";
 type SizingMode = "pixels" | "percent";
@@ -519,6 +520,10 @@ export function ImageResizeTool() {
           {result !== null && <ImageResultV2 toolId="image-resize" result={result} sourceFiles={file === null ? [] : [file]} onReset={reset} onRetry={runResize} />}
         </ToolResultPanel>
       )}
+      <details>
+        <summary>Regolazioni avanzate: curve, livelli e sRGB</summary>
+        <ImageColorAdjustTool383 />
+      </details>
     </div>
   );
 }
