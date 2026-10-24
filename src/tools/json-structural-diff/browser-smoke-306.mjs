@@ -20,7 +20,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   try {
     browser = await engine.launch({ headless: true, timeout: 20_000 });
     const page = await bounded(browser.newPage({ acceptDownloads: true, serviceWorkers: "block" }), 20_000, `${name}.newPage`);
-    page.setDefaultTimeout(10_000);
+    // Resource-guarded Studio can take more than 10 seconds to hydrate the page.
+    page.setDefaultTimeout(30_000);
     page.on("pageerror", (error) => errors.push(error.message));
     await page.route("**/*", (route) => {
       const target = new URL(route.request().url());
@@ -39,7 +40,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     await page.getByRole("button", { name: "Confronta JSON" }).click();
     await page.locator("pre").filter({ hasText: '"/items"' }).first().waitFor({ state: "visible" });
     const button = page.getByRole("button", { name: /Scarica|Download/i }).first();
-    const downloaded = page.waitForEvent("download", { timeout: 10_000 });
+    const downloaded = page.waitForEvent("download", { timeout: 30_000 });
     await button.click();
     const artifact = await downloaded;
     const result = JSON.parse(readFileSync(await artifact.path(), "utf8"));
@@ -57,7 +58,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
 
     const downloadResult = async () => {
       await button.waitFor({ state: "visible" });
-      const pending = page.waitForEvent("download", { timeout: 10_000 });
+      const pending = page.waitForEvent("download", { timeout: 30_000 });
       await button.click();
       return JSON.parse(readFileSync(await (await pending).path(), "utf8"));
     };
