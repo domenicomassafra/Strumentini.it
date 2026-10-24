@@ -1,6 +1,6 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { catalog } from "../src/generated/catalog";
 import { auditLegacyPrimaryOutputSource } from "../src/quality/legacy-result-primary";
 import { resultV2Inventory } from "../src/catalog/result-v2-inventory.generated";
@@ -8,7 +8,13 @@ import { resultV2Inventory } from "../src/catalog/result-v2-inventory.generated"
 const root = resolve(import.meta.dirname, "..");
 const outputRoot = resolve(root, "quality/functional-audit/result-v2-original-200");
 const write = process.argv.includes("--write");
-const sha = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+const sourceRefs = [
+  "quality/functional-audit/original-200.inventory.json",
+  "src/catalog/result-v2-inventory.generated.ts",
+  "src/generated/tool-loaders.ts",
+];
+const ledgerHash = createHash("sha256");
+for (const sourceRef of sourceRefs) ledgerHash.update(await readFile(resolve(root, sourceRef)));
 const original = JSON.parse(await readFile(resolve(root, "quality/functional-audit/original-200.inventory.json"), "utf8")) as {
   entries: Array<{ toolId: string; category: string; manifestRef: string;
     status: string; fixtureRefs: Array<{ id: string; ref: string }>;
@@ -106,8 +112,8 @@ for (const [category, entries] of [...byCategory].sort(([a], [b]) => a.localeCom
   }
 }
 const summary = {
-  schemaVersion: 1, sha, denominator: 200,
-  source: ["quality/functional-audit/original-200.inventory.json", "src/catalog/result-v2-inventory.generated.ts", "src/generated/tool-loaders.ts"],
+  schemaVersion: 1, ledgerFingerprintSha256: ledgerHash.digest("hex"), denominator: 200,
+  source: sourceRefs,
   outcome: { GAP: rows.filter((row) => row.status === "GAP").length, NO_GO: rows.filter((row) => row.status === "NO_GO").length },
   builtRoutesPresent: rows.filter((row) => (row.consumer as { distExists: boolean }).distExists).length,
   legacyPrimaryRendererFindings: [...rendererFindings.values()].reduce((total, count) => total + count, 0),
