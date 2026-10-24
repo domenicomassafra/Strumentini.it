@@ -1,5 +1,6 @@
 /** STR-417: compiled browser AES-256 round-trip, reopened with independent PDF.js.
- * Runs against the already-open MiniPC automation-browser CDP. Does not launch Chrome.
+ * The static server runs on Studio; reverse SSH forwards MiniPC browser loopback.
+ * Connects to the existing automation-browser CDP; does not launch Chrome.
  */
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -16,6 +17,8 @@ const base = `http://127.0.0.1:${port}`;
 const password = "legit-STR417-browser";
 const original = fileURLToPath(new URL("../quality/fixtures/pdf-gold/simple-2page.pdf", import.meta.url));
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { cwd: root, stdio: "ignore" });
+const tunnel = spawn("ssh", ["-N", "-o", "BatchMode=yes", "-o", "ExitOnForwardFailure=yes",
+  "-R", `127.0.0.1:${port}:127.0.0.1:${port}`, "minipc"], { stdio: "ignore" });
 let browser, context, page;
 const offsite = [], exceptions = [];
 
@@ -68,7 +71,17 @@ try {
     const url = request.url();
     if (!url.startsWith(base) && !url.startsWith("blob:") && !url.startsWith("data:")) offsite.push(url);
   });
-  assert.equal((await page.goto(base + "/tools/pdf-password-check-remove/", { waitUntil: "networkidle" })).status(), 200);
+  let response;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (tunnel.exitCode !== null) throw new Error("MiniPC reverse SSH forwarding failed");
+    try {
+      response = await page.goto(base + "/tools/pdf-password-check-remove/", { waitUntil: "networkidle", timeout: 4_000 });
+      if (response?.status() === 200) break;
+    } catch { /* Reverse forwarding may still be starting. */ }
+    if (attempt === 39) throw new Error("Compiled route unreachable from MiniPC automation browser");
+    await new Promise((resolveDone) => setTimeout(resolveDone, 150));
+  }
+  assert.equal(response?.status(), 200);
   await waitHydrated();
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2), "no horizontal overflow at 390px");
   const mode = page.locator("select").filter({ has: page.locator('option[value="protect"]') });
@@ -108,11 +121,12 @@ try {
     encryptedSha256: createHash("sha256").update(encrypted).digest("hex"),
     decryptedSha256: createHash("sha256").update(decrypted).digest("hex"),
     independentParser: "PDF.js", incorrectPassword: "REJECTED", offsiteRequests: offsite.length,
-    browser: "existing MiniPC automation Chrome", physicalMobile: "NOT_RUN",
+    browser: "existing MiniPC automation Chrome via reverse SSH loopback", physicalMobile: "NOT_RUN",
   }));
 } finally {
   await page?.close().catch(() => undefined);
   await context?.close().catch(() => undefined);
   await browser?.close().catch(() => undefined);
+  tunnel.kill("SIGTERM");
   server.kill("SIGTERM");
 }
