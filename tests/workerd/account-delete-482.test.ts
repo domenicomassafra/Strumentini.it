@@ -122,7 +122,7 @@ describe("#482 account deletion on real Workerd/D1", () => {
     expect(login.status).toBe(401);
     expect(login.headers.has("set-cookie")).toBe(false);
     // Cascades must remove all owned data, not just the authenticating session.
-    for (const table of ["users", "sessions", "favorites"] as const) {
+    for (const table of ["users", "sessions", "favorites", "favorite_sync_events", "favorite_sync_state", "favorite_sync_migrated_accounts"] as const) {
       expect(await env.AUTH_DB.prepare("SELECT COUNT(*) AS n FROM " + table).first("n")).toBe(0);
     }
   });

@@ -448,7 +448,7 @@ async function checkRateLimit() {
   const blocked = await api("/api/auth/login", { method: "POST", body: { email: ALICE.email, password: ALICE.password }, retryKdf: false });
   expectEqual("next login is blocked", blocked.status, 429);
   const retryAfter = Number(blocked.headers.get("retry-after") ?? "");
-  check("429 carries Retry-After seconds", Number.isInteger(retryAfter) && retryAfter > 0 && retryAfter <= 900, blocked.headers.get("retry-after") ?? "missing");
+  check("login limiter window", Number.isInteger(retryAfter) && retryAfter > 60 && retryAfter <= 900, blocked.headers.get("retry-after") ?? "missing");
   check("429 message is Italian", typeof blocked.json?.error === "string" && blocked.json.error.length > 0, JSON.stringify(blocked.json));
 }
 
