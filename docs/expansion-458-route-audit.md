@@ -10,12 +10,18 @@ python3 /Users/domenico/.local/share/controlcenter/resource-guard/workload_launc
 python3 /Users/domenico/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 300 build -- python3 -B scripts/audit-expansion-routes-458.py --write
 python3 /Users/domenico/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 300 build -- python3 -B scripts/audit-expansion-routes-458.py --check
 python3 /Users/domenico/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 300 build -- node scripts/acceptance-expansion-routes-458.mjs
+python3 /Users/domenico/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 300 build -- node scripts/acceptance-expansion-routes-458.mjs --http-only
 ```
 
-The browser runner attaches to the dedicated Studio automation Chrome over CDP
+The browser runner attaches to the dedicated Studio automation Chrome through Playwright CDP
 (`http://127.0.0.1:17630`, or `STRUMENTINI_ACCEPTANCE_CDP` when an authorized
 browser endpoint has been provisioned); it opens and closes only its own tabs.
 It does not create a separate Chrome profile.
+The `--http-only` mode independently reopens each compiled file and compares its
+SHA-256 with the local HTTP response without opening a browser. Its output explicitly
+marks browser, operations, export and physical checks `NOT_RUN`; it is useful when
+the shared Chrome refuses CDP page-domain initialization and cannot substitute
+for acceptance with user inputs or network observation.
 
 The generated, source-bound matrix lives in `quality/expansion-458/routes-*.jsonl` (each file below 20 KB) and `summary.json`. `--check` detects source drift and obsolete matrix partitions; `--write` replaces only its own obsolete route partitions. The 274-entry legacy certification index is indexed by stable tool ID and never treated as a live Gold claim. Every row includes manifest/engine/runtime, oracle and fixture identities, indexed provenance, test references, historical receipt, compiled route byte digest and explicit gaps.
 
