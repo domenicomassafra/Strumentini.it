@@ -77,6 +77,29 @@ Read on 2026-10-25:
 
 ## Verification and limits
 
+### Legal, privacy and copyright review (2026-10-25)
+
+EU GDPR [Article 17](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679)
+provides a qualified right to erasure, subject to its conditions and exceptions.
+For this endpoint, a successful authenticated deletion must give an accurate
+response and revoke the account's server-side access. The fixed atomic DELETE
+removes the `users` row and cascades through `sessions`, `favorites`, and the
+`favorite_sync_*` tables under the existing foreign keys; HTTP204 and the
+expired session cookie now agree with that observable state. Unauthorized,
+expired, revoked or stale-credential callers retain the account. The regression
+uses invented identities and isolated local D1, never real personal data.
+
+This change creates no additional collection, sharing, subprocessors, packages,
+third-party assets or copyright-bearing code. The already installed Cloudflare
+test package's MIT and workers-sdk Apache-2.0 licensing are recorded above;
+SQLite's public-domain status is documented by upstream. This endpoint test
+does **not** independently establish erasure from backups, logs, remote
+production infrastructure or users' local browser storage. `login_attempts`
+is a separate time-window/IP-scope abuse-prevention table without a `user_id`
+foreign key; its existing pruning behavior is unchanged. Accordingly, this
+review approves the narrowly scoped fix and does not assert universal GDPR
+compliance or additional deletion guarantees.
+
 Run npm run test:workerd for the regression and independent authorization
 negative cases, then npm run acceptance:auth for the compiled Wrangler/HTTP
 consumer. Both use synthetic local bindings only. Guard invocation on Studio:
