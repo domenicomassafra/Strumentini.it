@@ -74,7 +74,7 @@
   "research/lanes/06-oss-github-donor-census.md": 34508,
   "research/lanes/09-heavy-browser-dependency-spike.md": 35165,
   "research/tool-catalog-200-qualification-2026-09-24.md": 80465,
-  "scripts/acceptance-auth.mjs": 23392,
+  "scripts/acceptance-auth.mjs": 23310,
   "scripts/acceptance-developer-web-operations.ts": 26773,
   "scripts/acceptance-directory.mjs": 45554,
   "scripts/acceptance-research-knowledge.mjs": 23560,
