@@ -92,6 +92,7 @@ assert(browserVersion);
 const androidFingerprint = adb("shell", "getprop", "ro.build.fingerprint");
 const api = Number(adb("shell", "getprop", "ro.build.version.sdk"));
 let browser;
+let stage = "native-chrome-launch";
 await new Promise((done) => server.listen(port, "127.0.0.1", done));
 try {
   adb("reverse", `tcp:${port}`, `tcp:${port}`);
@@ -128,6 +129,7 @@ try {
   await page.bringToFront();
   const ua = await page.evaluate(() => navigator.userAgent);
   assert.match(ua, /Android.*Chrome\//u);
+  stage = "native-file-picker";
   let nativePickerOpened = false;
   for (let attempt = 0; attempt < 5 && !nativePickerOpened; attempt++) {
     await page.bringToFront();
@@ -173,6 +175,7 @@ try {
     name: "str461-source.png", size: source.length, type: "image/png", sha256: fingerprint(source),
   }, "the actual file delivered through Android's native picker must be byte-identical to the fixture");
   console.log("AVD_FILE_SELECTED str461-source.png");
+  stage = "image-resize";
   const numeric = page.locator('input[type="number"]');
   await numeric.nth(0).fill("160");
   await numeric.nth(1).fill("120");
@@ -184,6 +187,7 @@ try {
   const siteFilename = await link.getAttribute("download");
   assert.match(siteFilename, /^[\w .()-]+\.jpe?g$/iu, "unexpected image download filename");
   // Do not overwrite an existing Android download or confuse it with new output.
+  stage = "android-download";
   let preexistingOutput = false;
   try {
     adb("shell", "stat", "-c", "%s", "/sdcard/Download/" + siteFilename);
@@ -210,6 +214,7 @@ try {
   assert.deepEqual([decoded.format, decoded.width, decoded.height], ["jpeg", 160, 120]);
 
   // Leave the real Chrome app and return through Android's activity manager.
+  stage = "background-resume";
   // The Blob/result must survive; this cannot be reproduced by desktop page events.
   adb("shell", "input", "keyevent", "KEYCODE_HOME");
   await sleep(700);
@@ -220,6 +225,7 @@ try {
   console.log("AVD_BACKGROUND_RESUME_PRESERVED_RESULT");
 
   // Android's real share sheet is identified by system package, not a mocked
+  stage = "share-sheet";
   // navigator.share() rejection. A missing file-share API stays NOT_RUN.
   let nativeShareSheet = "NOT_RUN";
   const shareAction = page.locator('[data-result-action="share"]');
@@ -241,12 +247,13 @@ try {
   assert.deepEqual(errors, []);
   assert.deepEqual(externalRequests, [], "image-resize page attempted offsite requests");
   const capture = execFileSync(adbBin, ["exec-out", "screencap", "-p"], { timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
-  const smallCapture = await sharp(capture).resize({ width: 280 }).jpeg({ quality: 36 }).toBuffer();
-  assert(smallCapture.length < 20_000, "simulated screenshot exceeds agent file budget");
-  const screenshotFile = resolve(root, ".scratch/str461-avd-screenshot.jpg");
-  await writeFile(screenshotFile, smallCapture);
+  assert.equal(capture.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", "ADB did not capture PNG bytes");
+  await sharp(capture, { failOn: "error", limitInputPixels: 16_000_000 }).stats();
+  const screenshotFile = resolve(root, ".scratch/str461-avd-screenshot.png");
+  await writeFile(screenshotFile, capture);
 
   // Negative native picker: Cancel refuses access to another file after reset.
+  stage = "picker-cancel-and-invalid-file";
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.locator("#image-resize-file").click({ force: true });
   assert(pickerNodes().some((node) => node.packageName && node.packageName !== "com.android.chrome"),
@@ -280,7 +287,7 @@ try {
     input: { filename: "str461-source.png", mime: "image/png", bytes: source.length, sha256: fingerprint(source), width: sourceMetadata.width, height: sourceMetadata.height },
     operation: { androidPickerOpened: true, fileSelected: true, resizedInChrome: true, androidDownloadSaved: true, photosPicker: "NOT_RUN", filesPicker: "NOT_RUN", nativeShareSheet, backgroundResume: "OBSERVED", permissionDenial: "NOT_RUN" },
     negative: { pickerCancelledWithoutSelection: true, corruptJpegRefused: true, offsiteRequests: externalRequests.length },
-    screenshot: { file: ".scratch/str461-avd-screenshot.jpg", kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED", bytes: smallCapture.length, sha256: fingerprint(smallCapture) },
+    screenshot: { file: ".scratch/str461-avd-screenshot.png", capture: "ADB_SCREENCAP", kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED", bytes: capture.length, sha256: fingerprint(capture) },
     output: { filename: siteFilename, mime: "image/jpeg", bytes: bytes.length, sha256: fingerprint(bytes), width: decoded.width, height: decoded.height, decoder: "sharp/libvips", reopened: true },
   };
   await writeFile(receiptFile, JSON.stringify(receipt, null, 2) + "\n");
@@ -289,6 +296,18 @@ try {
   // Photos/Files flow, actual OS permission denial, or iOS Safari acceptance.
   // Fail closed until the complete acceptance matrix has its own OS evidence.
   process.exitCode = 2;
+} catch (error) {
+  await writeFile(receiptFile, JSON.stringify({
+    schemaVersion: 1, ticket: "STR-461", evidenceKind: "ANDROID_EMULATOR_CHROME_SIMULATED",
+    physicalDeviceObserved: false, result: "FAIL", observedAt: new Date().toISOString(),
+    build: { revision, compiled: true, route: "/tools/image-resize/", htmlSha256: fingerprint(html) },
+    emulator: { serial: adb("get-serialno"), api, fingerprint: androidFingerprint },
+    browser: { package: "com.android.chrome", version: browserVersion },
+    failedStage: stage, error: String(error),
+    unverified: { photosPicker: "NOT_RUN", filesPicker: "NOT_RUN",
+      permissionDenial: "NOT_RUN", iosSafari: "NOT_RUN" },
+  }, null, 2) + "\n");
+  throw error;
 } finally {
   if (browser) await browser.close();
   await new Promise((done) => server.close(done));
