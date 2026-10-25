@@ -4,9 +4,13 @@ import { spawn } from "node:child_process";
 import { createServer } from "node:net";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
+import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
-const image = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+r5k8AAAAASUVORK5CYII=", "base64");
+const image = await sharp(Buffer.from([
+  255, 0, 0, 255, 0, 255, 0, 255,
+  0, 0, 255, 255, 255, 255, 0, 255,
+]), { raw: { width: 2, height: 2, channels: 4 } }).png().toBuffer();
 const expectedHash = createHash("sha256").update(image).digest("hex");
 const port = await new Promise((done, fail) => {
   const socket = createServer();
@@ -119,7 +123,7 @@ try {
           id: legacyId, revision: 1, name: "Vecchio immagine",
           original: new Blob([new Uint8Array(sourceBytes)], { type: "image/png" }),
           originalName: "source.png", mime: "image/png",
-          width: 1, height: 1, transform: state.history.current,
+          width: 2, height: 2, transform: state.history.current,
         }, legacyId);
         tx.oncomplete = done;
         tx.onerror = () => fail(tx.error);
