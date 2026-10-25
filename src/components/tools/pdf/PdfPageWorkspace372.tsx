@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { adjacentPdfPageId, movePdfPageId } from "../../../engines/pdf/page-order-controls";
 import { openPdfThumbnailSession, PDF_THUMBNAIL_WINDOW, type PdfThumbnailSession } from "../../../engines/pdf/thumbnails";
 import { PDF_LIMITS } from "../../../engines/pdf/types";
-import { runPdfWorkspaceWorker372 } from "../../../engines/pdf/workspace-worker-client-372";
 import {
   createPdfProjectHistory138, recordPdfProjectEdit138, stepPdfProjectHistory138,
   validatePdfProjectHistory138, type PdfProjectHistory138, type PdfProjectEdit138,
 } from "../../../engines/pdf/project-history-138";
 import { deletePdfProject138, inspectPdfProjects138, loadPdfProject138, savePdfProject138, type PdfProjectSummary138 } from "../../../workbench/pdf-project-138";
-import { PdfResultV2, preparePdfResult, type PreparedPdfResult } from "./PdfResultV2";
+import { PdfVersionedProjects412 } from "./PdfVersionedProjects412";
+import { PdfResultV2, type PreparedPdfResult } from "./PdfResultV2";
+import { preparePdfPageResult372 } from "./preparePdfPageResult372";
 import { PdfAnnotationEditor134 } from "./PdfAnnotationEditor134";
 import { PdfImagePlacement375 } from "./PdfImagePlacement375";
 import { PdfProjectControls138 } from "./PdfProjectControls138";
@@ -113,6 +114,7 @@ export function PdfPageWorkspace372() {
   }
   useEffect(() => { void refreshProjects().catch(() => setProjectMessage("Archivio locale non disponibile. Puoi continuare a modificare il PDF.")); }, []);
   function reset() {
+    if (projectBusy) return;
     active.current?.abort();
     active.current = null;
     setFile(null);
@@ -126,6 +128,7 @@ export function PdfPageWorkspace372() {
     setBusy(false);
   }
   function choose(event: Event) {
+    if (projectBusy) return;
     const next = (event.currentTarget as HTMLInputElement).files?.[0] ?? null;
     active.current?.abort();
     active.current = null;
@@ -238,18 +241,8 @@ export function PdfPageWorkspace372() {
     setResult(null);
     setError("");
     try {
-      const artifact = await runPdfWorkspaceWorker372(file, order, selected, mode, controller.signal);
-      if (controller.signal.aborted) return;
-      const prepared = await preparePdfResult("pdf-page-reorder", {
-        artifacts: [artifact], artifactCount: 1,
-        operation: mode === "selected" ? "extract" : "reorder",
-        order: mode === "selected" ? order.filter((page) => selectedSet.has(page)) : order,
-        policy: "Operazione locale; originale immutato. Il file esportato è stato riaperto con pdf-lib e con il parser PDF del risultato. Le miniature non certificano la resa visiva completa.",
-      });
+      const prepared = await preparePdfPageResult372(file, order, selected, mode, controller.signal);
       if (controller.signal.aborted || active.current !== controller) return;
-      if (prepared.artifacts.length !== 1 || prepared.artifacts[0]?.artifact.verification.state !== "verified") {
-        throw new Error("Il risultato PDF non ha superato la verifica: nessun download.");
-      }
       setResult(prepared);
     } catch (reason) {
       if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "PDF non elaborabile, originale intatto.");
@@ -270,8 +263,20 @@ export function PdfPageWorkspace372() {
           onSelect={setProjectId} disabled={busy || projectBusy}
           unreadableProjects={unreadableProjects} message={projectMessage}
           onResume={() => void resumeProject()} onDelete={() => void deleteSelectedProject()} />
+        <PdfVersionedProjects412 file={file} history={history} legacyProjectId={projectId}
+          disabled={busy || projectBusy} onBusyChange={setProjectBusy}
+          onRestore={(restoredFile, restoredHistory) => {
+            restoringHistory.current = restoredHistory;
+            setSession(null);
+            setHistory(null);
+            setShowAnnotator(false);
+            setFile(restoredFile);
+            setStart(0);
+            setResult(null);
+            setError("");
+          }} />
         <label class="field"><span>PDF da modificare</span>
-          <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={busy} aria-label="PDF da modificare" />
+          <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={busy || projectBusy} aria-label="PDF da modificare" />
           <small>Massimo 25 MiB, 200 pagine. Quattro miniature per volta; nessun caricamento su server.</small>
         </label>
         {file && <p role="status">{file.name} · {(file.size / 1024).toFixed(1)} KiB · {order.length ? order.length + " pagine" : "lettura pagine…"}</p>}
@@ -346,7 +351,7 @@ export function PdfPageWorkspace372() {
           <div class="actions">
             <button type="button" onClick={() => void save()} disabled={busy || mode === "selected" && !selected.length}>Crea PDF e verifica</button>
             {busy && <button type="button" onClick={() => { active.current?.abort(); setBusy(false); setError("Operazione annullata. Nessun file generato."); }}>Annulla elaborazione</button>}
-            <button type="button" onClick={reset}>Ricomincia</button>
+            <button type="button" onClick={reset} disabled={projectBusy}>Ricomincia</button>
           </div>
           {busy && <p role="status">Generazione e riapertura PDF in Worker locale…</p>}
         </>}

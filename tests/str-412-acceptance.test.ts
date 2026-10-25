@@ -1,3 +1,4 @@
+import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
 import { PDFDocument } from "pdf-lib";
 import { createMemoryPersistence } from "../src/persistence/persistence";
@@ -71,4 +72,30 @@ describe("STR-412 versioned PDF and image projects", () => {
     expect(JSON.parse(new TextDecoder().decode(reopened?.stateBytes))).toEqual(initial);
     expect(reopened?.files[0]?.bytes).toEqual(image);
   });
+});
+
+it("STR-412 PDF: migrates a saved v1 snapshot into v2 and reopens from IndexedDB", async () => {
+  const { savePdfProject138, loadPdfProject138 } = await import("../src/workbench/pdf-project-138");
+  const { createPdfProjectHistory138, recordPdfProjectEdit138 } = await import("../src/engines/pdf/project-history-138");
+  const { savePdfSnapshot412, migrateSavedPdfProject412, listPdfSnapshots412, loadPdfSnapshot412 } =
+    await import("../src/workbench/pdf-project-412");
+  const document = await PDFDocument.create();
+  document.addPage([300, 420]);
+  document.addPage([320, 440]);
+  const original = await document.save();
+  const file = new File([original.slice().buffer], "old.pdf", { type: "application/pdf" });
+  const history = recordPdfProjectEdit138(createPdfProjectHistory138(2),
+    { order: [2, 1], selected: [2], mode: "selected" }, 2);
+  const legacy = await savePdfProject138(file, history);
+  const migrated = await migrateSavedPdfProject412(legacy.id);
+  expect(migrated.id).toBe(legacy.id);
+  expect(migrated.version).toBe(2);
+  expect((await loadPdfProject138(legacy.id))?.history).toEqual(history);
+  const second = await savePdfSnapshot412(file, history);
+  expect(second.id).not.toBe(legacy.id);
+  expect((await listPdfSnapshots412()).items.map((item) => item.id)).toContain(legacy.id);
+  const reloaded = await loadPdfSnapshot412(legacy.id);
+  expect(reloaded?.history).toEqual(history);
+  expect(new Uint8Array(await reloaded!.file.arrayBuffer())).toEqual(original);
+  expect(new Uint8Array(await file.arrayBuffer())).toEqual(original);
 });
