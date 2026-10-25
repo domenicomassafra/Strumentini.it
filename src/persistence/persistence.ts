@@ -4,6 +4,8 @@ export interface PersistenceAdapter {
   /** Atomic create-only write; supported by the native IndexedDB add operation. */
   add?<T>(key: string, value: T): Promise<void>;
   delete(key: string): Promise<void>;
+  /** Enumerate snapshot keys without reading their potentially large source assets. */
+  keys?(prefix: string): Promise<string[]>;
 }
 
 function clone<T>(value: T): T {
@@ -26,6 +28,9 @@ export function createMemoryPersistence(): PersistenceAdapter {
     },
     async delete(key: string) {
       values.delete(key);
+    },
+    async keys(prefix: string) {
+      return [...values.keys()].filter((key) => key.startsWith(prefix));
     },
   };
 }
@@ -93,6 +98,10 @@ export function createIndexedDbPersistence(
     },
     async delete(key: string) {
       await request("readwrite", (store) => store.delete(key));
+    },
+    async keys(prefix: string) {
+      const keys = await request("readonly", (store) => store.getAllKeys());
+      return keys.filter((key): key is string => typeof key === "string" && key.startsWith(prefix));
     },
   };
 }
