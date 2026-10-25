@@ -1,13 +1,10 @@
-// End-to-end acceptance for the auth worker.
-//
-// Starts `wrangler dev` against a throwaway local D1 database (no account, no
-// network, no secrets), drives the real HTTP API and asserts the behaviour the
-// site depends on. Exits non-zero on the first failed assertion and always
-// stops the dev server it started.
+// Auth acceptance: real Wrangler HTTP + isolated local D1, no account/secrets.
+// Aggregates failed checks; always stops its dev server and removes fixture D1.
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { rm } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { authAcceptanceFetch } from "./lib/auth-acceptance-fetch.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const port = Number(process.env.AUTH_ACCEPTANCE_PORT ?? "18141");
@@ -156,12 +153,12 @@ async function api(path, options = {}) {
   if (body !== undefined) headers["content-type"] = "application/json";
   const cookieHeader = cookie === undefined ? rawCookie : `su_session=${cookie}`;
   if (cookieHeader !== undefined) headers.cookie = cookieHeader;
-  const response = await fetch(`${origin}${path}`, {
+  const response = await authAcceptanceFetch(`${origin}${path}`, {
     method,
     headers,
     body: body === undefined ? undefined : JSON.stringify(body),
     redirect: "manual",
-  });
+  }, options.retryKdf !== false);
   const text = await response.text();
   let json = null;
   try {
@@ -440,23 +437,18 @@ async function checkAccountDeletion(cookie) {
 async function checkRateLimit() {
   console.log("\nrate limit");
   const allowed = Math.max(0, RATE_LIMIT_MAX_FAILURES - failedAttempts);
-  const alreadyFailed = failedAttempts;
   let saw401 = 0;
   for (let attempt = 0; attempt < allowed; attempt += 1) {
     const response = await login(ALICE.email, `wrong-password-${String(attempt)}`);
     if (response.status === 401) saw401 += 1;
     failedAttempts += 1;
   }
-  expectEqual(
-    `failures ${String(alreadyFailed)}..${String(RATE_LIMIT_MAX_FAILURES)} inside the window answer 401`,
-    saw401,
-    allowed,
-  );
+  expectEqual("remaining password failures answer 401", saw401, allowed);
 
-  const blocked = await login(ALICE.email, ALICE.password);
+  const blocked = await api("/api/auth/login", { method: "POST", body: { email: ALICE.email, password: ALICE.password }, retryKdf: false });
   expectEqual("next login is blocked", blocked.status, 429);
   const retryAfter = Number(blocked.headers.get("retry-after") ?? "");
-  check("429 carries Retry-After seconds", Number.isInteger(retryAfter) && retryAfter > 0 && retryAfter <= 900, blocked.headers.get("retry-after") ?? "missing");
+  check("login limiter window", Number.isInteger(retryAfter) && retryAfter > 60 && retryAfter <= 900, blocked.headers.get("retry-after") ?? "missing");
   check("429 message is Italian", typeof blocked.json?.error === "string" && blocked.json.error.length > 0, JSON.stringify(blocked.json));
 }
 
