@@ -38,7 +38,8 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   "worker/bindings.d.ts": "6728f6a0b231d4b1b390434cf79d21d827f84116a5a55bd70a8322c6479c7e4d",
   // #332 independently reviewed: account-pinned favorite writes carry durable
   // operation identifiers for loss-of-ACK recovery, without new public routes.
-  "worker/db.ts": "7a304affb8eb46130b69a0e5c905809d51a65f6673dfc77655326aeb3d06e3d3",
+  // #482: DELETE RETURNING id fixes cascaded-row accounting; same CAS/live-session predicate.
+  "worker/db.ts": "0e5fc207e2f2b33a2b224989b1464e528fcdbeba9559d44444796bb6bd64e93e",
   "worker/favorite-sync-change.ts": "89f17d0d7b495c75fb6983334151ad883edb158c53e30be609b050f217ccccaa",
   "worker/google.ts": "6f9c7095714b197cc7e5a83833efa7098128f3883bba1b5a8423e2760c75f1c9",
   // #470 source-reviewed: all 19 existing routes are unchanged. The JSON

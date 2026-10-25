@@ -1,0 +1,92 @@
+# #482 — account DELETE result, local Workerd/D1
+
+## Diagnosis (2026-10-25)
+
+The regression runs the public Worker HTTP handler against the existing isolated
+Workerd/D1/PasswordKdf runner. Registration, a second login and a favorite succeed.
+DELETE with the correct password removes the account, both sessions and favorites,
+but returns **401** without Set-Cookie. The subsequent session and login checks
+confirm the deletion actually committed. The unmodified helper reports success
+only when D1 `meta.changes === 1`.
+
+A temporary minimal probe removed passwords/KDF, favorites and the second
+session: one Google-only user and one live session still reproduce the error.
+Instrumenting only the result of the actual DELETE measured **meta.changes = 2**,
+HTTP401, no cookie, and zero remaining user/session rows (50 ms test body).
+Removing the sole session would also remove authorization, so this is the
+minimal authorized deletion. The larger public regression took 35,254 ms on
+Mac Studio under resource guard; the two failing assertions were status204/401
+and the absent clear-cookie. These are local samples, not production latency.
+
+Ranked alternatives were a stale/revoked authorization (would retain the user)
+and an exception/routing failure (would return500 or a successful DB result).
+The committed deletion and measured metadata exclude both for this symptom.
+The installed Miniflare D1 driver calculates metadata from the difference of
+SQLite total_changes() before/after the query, which includes foreign-key
+cascade actions. Node SQLite statement.run().changes counts only direct changes;
+that seam did not reveal the D1 response bug. No driver was modified.
+
+## Fix and security boundary
+
+Keep the DELETE WHERE clause unchanged, including all four credential fields,
+user/session ownership and live-session expiry. Add SQL RETURNING id and use
+D1 first() to read the deleted primary key. RETURNING describes only the direct
+user deletion, not its cascades; a nonmatching authorization returns no row.
+There is no read-then-write gap and no inference from a database-wide counter.
+PBKDF2 600,000, stored format, admission limits, private-client timeout and
+fail-closed behavior are unchanged. No migration, remote database or deploy.
+The existing #348 read-only source inventory is rebound only to these reviewed
+worker/db.ts bytes. Regression rejects loss of credential/expiry guards; routes,
+quota thresholds and serverMode=NO_GO remain unchanged. This inventory is not a
+release receipt or production security authorization.
+
+## Existing mechanisms and sources
+
+No package or copied third-party implementation was needed: native SQLite
+RETURNING and the already installed D1 prepared-statement first() API express
+the required result. The application-owned gap was interpreting the aggregate
+metadata as an exact user-row result.
+
+Read on 2026-10-25:
+
+- [D1 return objects](https://developers.cloudflare.com/d1/worker-api/return-object/)
+  (updated 2026-04-21): changes is the number of changes to the database.
+- [D1 prepared statements](https://developers.cloudflare.com/d1/worker-api/prepared-statements/)
+  (updated 2026-06-22): first() returns the first result row, or null.
+- [SQLite RETURNING](https://www.sqlite.org/lang_returning.html)
+  (updated 2025-05-31): only directly modified rows, not foreign keys/triggers;
+  all modifications occur before result rows are emitted.
+- [SQLite total_changes](https://www.sqlite.org/c3ref/total_changes.html): includes
+  foreign-key actions; unlike statement-local changes(). SQLite is public domain.
+- Existing runner donor: @cloudflare/vitest-plugin1.4.4 and nested
+  miniflare5.20261012.1-beta, upstream commit
+  [e7f9e4e99b0674b5e83999fd61cd096831611f4f](https://github.com/cloudflare/workers-sdk/tree/e7f9e4e99b0674b5e83999fd61cd096831611f4f),
+  miniflare tag7d749334e95c19d09f18c92a250a4f7a13e47276. Installed package license
+  MIT; monorepo root Apache-2.0. See existing docs/donor-cloudflare-vitest-285.md.
+  Inspected installed workers/d1/database.worker.js; no source patches or new
+  dependencies, copyleft adoption or assets.
+- Power-user [workers-sdk#16142](https://github.com/cloudflare/workers-sdk/issues/16142)
+  (follow-up 2026-10-17) asks about multi-statement atomic CAS guards and notes
+  post-commit metadata cannot enforce dependent writes. It has no maintainer
+  contract answer; this fix does not rely on that disputed batch mechanism.
+- [Official test APIs](https://developers.cloudflare.com/workers/testing/vitest-integration/test-apis/)
+  (updated 2026-10-10) support both exports.default.fetch() and the exported
+  fetch handler with env/createExecutionContext(). Tests use those public seams;
+  race timing is controlled only at the private KDF service boundary while the
+  real DO still derives the original bytes. No sleeps or mocked D1/SQL.
+
+## Verification and limits
+
+Run npm run test:workerd for the regression and independent authorization
+negative cases, then npm run acceptance:auth for the compiled Wrangler/HTTP
+consumer. Both use synthetic local bindings only. Guard invocation on Studio:
+
+~~~sh
+ssh macstudio 'export PATH=/opt/homebrew/opt/node/bin:$PATH; cd /Users/domenico/Code/.worktrees/Strumentini.it/strumentini-it-482 && python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 300 build -- npm run test:workerd'
+~~~
+
+The positive test covers204, exact clear-cookie, both sessions becoming anonymous,
+favorites denied, login401 and cascade cleanup. Negative race tests retain real
+D1 state and observe the public session/favorite API, not just a boolean from a
+helper. Local bindings do not certify remote D1, edge distribution, physical
+devices or production release admission; #80/#162 remain separate.
