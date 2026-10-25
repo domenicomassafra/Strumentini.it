@@ -40,6 +40,10 @@ try {
     const url = `${origin}/tools/image-crop/`;
     await page.goto(url);
     await page.locator("[data-image-project-412]").waitFor();
+    await page.waitForFunction(() => {
+      const islands = Array.from(document.querySelectorAll("astro-island"));
+      return islands.length > 0 && islands.every(island => !island.hasAttribute("ssr"));
+    }, null, { timeout: 30000 });
     await page.locator('input[type="file"][accept*="image/png"]').setInputFiles({
       name: "source.png", mimeType: "image/png", buffer: image,
     });
