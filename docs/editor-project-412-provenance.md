@@ -39,3 +39,22 @@ strumentini-optin-pdf-341. Il controllo pagine riprende pdf-lib già
 dipendente del progetto (MIT); nessuna nuova dipendenza. Il test
 consumer PDF è tests/str-412-consumer.browser.mjs; la figlia immagine
 #475 rimane responsabile della propria integrazione e verifica.
+
+## Integrazione editor immagini #475 — 25 ottobre 2026
+
+Il paragrafo storico sopra descrive il solo schema del 22 ottobre. Ora lo
+schema v2 e il salvataggio immagini v1 (#144) sono su main. La UI
+`/tools/image-crop/` riutilizza lo schema v2 comune,
+`createIndexedDbPersistence` del repository, le cronologie
+`project-history-385`, la decodifica `readImageTransformSource` e il
+contenitore ZIP/hash già disponibili. Nessun pacchetto aggiunto.
+
+La nuova copia immagine v2 salva i byte della sorgente come asset `source`
+con SHA-256, nome, dimensioni e cronologia di undo/redo (past/current/future).
+Il restore verifica il contenitore e ogni trasformazione prima di sostituire
+lo stato in UI; la decodifica verifica anche le dimensioni effettive.
+L'elenco v2 usa `PersistenceAdapter.keys` per trovare snapshot creati
+atomicamente, senza sovrascrivere le copie preesistenti. L'interfaccia
+continua a leggere il formato immagine v1 di #144; salvarlo di nuovo crea
+una nuova istanza v2 e conserva il record v1. La prospettiva è ancora un
+export PNG separato secondo i limiti già dichiarati da #144.

@@ -23,7 +23,8 @@ import {
   undoImageProject385,
   type ImageProjectHistory385,
 } from "../../../engines/image/project-history-385";
-import { ImageProjectError385, type ImageProjectOpen385, type ImageProjectReference385 } from "../../../engines/image/project-storage-385";
+import { ImageProjectError385 } from "../../../engines/image/project-storage-385";
+import type { ImageSnapshotOpen475, ImageSnapshotReference475 } from "../../../engines/image/editor-project-475";
 import { toolRuntime } from "../../../runtime/tool-runtime";
 import {
   gutterStateFor,
@@ -71,7 +72,7 @@ export function ImageTransformWorkspaceTool() {
   const [file, setFile] = useState<File | null>(null);
   const [source, setSource] = useState<PixelFrame | null>(null);
   const [history, setHistory] = useState<ImageProjectHistory385 | null>(null);
-  const [savedProject, setSavedProject] = useState<ImageProjectReference385 | null>(null);
+  const [savedProject, setSavedProject] = useState<ImageSnapshotReference475 | null>(null);
   const [draft, setDraft] = useState<ImageTransformState | null>(null);
   const [previewError, setPreviewError] = useState("");
   const [preflightNote, setPreflightNote] = useState("");
@@ -277,16 +278,15 @@ export function ImageTransformWorkspaceTool() {
     operation.reset();
   }
 
-  async function openSavedProject(project: ImageProjectOpen385): Promise<void> {
+  async function openSavedProject(project: ImageSnapshotOpen475): Promise<void> {
     const sequence = ++loadSequence.current;
     const frame = await readImageTransformSource(project.original);
     if (sequence !== loadSequence.current) throw new ImageProjectError385("PROJECT_CHANGED");
     if (frame.width !== project.width || frame.height !== project.height) throw new ImageProjectError385("UNSUPPORTED_SCHEMA");
-    const initial = createImageProjectHistory385(defaultImageTransformState(frame.width, frame.height));
     setFile(project.original);
     setSource(frame);
-    setHistory(commitImageProject385(initial, project.transform));
-    setSavedProject({ id: project.id, name: project.name, revision: project.revision });
+    setHistory(project.history);
+    setSavedProject({ id: project.id, name: project.name, version: 2 });
     setWorkspaceMode("transform");
     setPerspectiveCorners(fullPerspectiveCorners(frame));
     setDraft(null);
