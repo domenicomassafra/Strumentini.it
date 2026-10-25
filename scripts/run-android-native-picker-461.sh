@@ -3,15 +3,16 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_dir"
-export STR461_ADB="$repo_dir/scripts/str461-remote-adb.py"
+export STR461_ADB="${STR461_ADB:-/opt/homebrew/bin/adb}"
 
-# CDP: Studio:19222 -> MiniPC:19222 -> AVD Chrome.
-# Site: AVD:18875 -> MiniPC:18875 -> Studio:18875 (compiled dist).
-ssh -o BatchMode=yes -o ExitOnForwardFailure=yes -o ServerAliveInterval=10 \
-  -N -L 19222:127.0.0.1:19222 -R 18875:127.0.0.1:18875 minipc &
-tunnel_pid=$!
-trap 'kill "$tunnel_pid" 2>/dev/null || true' EXIT
-
-sleep 1
-kill -0 "$tunnel_pid"
+if [[ ! -x "$STR461_ADB" ]]; then
+  echo "STR461_NOT_RUN: Android SDK adb missing on Mac Studio: $STR461_ADB" >&2
+  exit 2
+fi
+if [[ ! -f dist/tools/image-resize/index.html ]]; then
+  echo "STR461_NOT_RUN: compiled consumer dist/tools/image-resize/index.html missing" >&2
+  exit 2
+fi
+# Start an exclusive Android Emulator on the Studio in the permitted guarded
+# night window before invoking this runner. This script never boots another AVD.
 node scripts/acceptance-android-chrome-avd-461.mjs

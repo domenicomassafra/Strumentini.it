@@ -1,7 +1,7 @@
 # STR-461 native picker acceptance on the compiled consumer
 
 Run only on the Mac Studio, under the resource guard and with exclusive use of
-the already-running Android emulator. The existing Playwright 1.63.0
+one Android emulator on that host. The existing Playwright 1.63.0
 (Apache-2.0) and Sharp dependencies are reused. No application dependency,
 remote upload service, or third-party application is required.
 
@@ -12,8 +12,8 @@ python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -
 ```
 
 The Android runner uses the installed Chrome app and Android system UI through
-ADB on the MiniPC. An SSH tunnel connects the compiled consumer served on the
-Studio to the existing AVD. The native file choice is driven through the
+the Studio's local Android SDK / ADB (default `/opt/homebrew/bin/adb`;
+override with `STR461_ADB`). The native file choice is driven through the
 Android picker; the browser's received bytes are compared to the original
 fixture by SHA-256. It opens the exported JPEG from the Android Downloads
 directory with Sharp, checks full pixel decoding, and captures OS/browser/build
@@ -35,3 +35,5 @@ global host contract allows one resource-guarded simulator at a time, in the
 night window, followed by shutdown. A desktop WebKit mobile profile and
 `simctl openurl` cannot attest that Safari's native picker or share sheet was
 opened. Production release remains governed by issues #80 and #162.
+The previously observed Linux/MiniPC AVD is only supplemental diagnostics;
+it is not the Studio OS acceptance target for this issue.

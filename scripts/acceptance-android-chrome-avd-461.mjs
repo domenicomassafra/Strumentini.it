@@ -11,7 +11,9 @@ import sharp from "sharp";
 const root = resolve(import.meta.dirname, "..");
 const dist = resolve(root, "dist");
 const temp = resolve(root, ".scratch/str461-avd");
-const adbBin = process.env.STR461_ADB ?? resolve(process.env.HOME ?? "/home/udodo", "Android/Sdk/platform-tools/adb");
+const adbBin = process.env.STR461_ADB ??
+  (process.platform === "darwin" ? "/opt/homebrew/bin/adb"
+    : resolve(process.env.HOME ?? "/home/udodo", "Android/Sdk/platform-tools/adb"));
 const port = 18875;
 const fixture = resolve(root, "tests/fixtures/android-chrome-avd-277-input.png");
 const outputFile = resolve(root, ".scratch/str461-avd-output.jpg");
@@ -79,6 +81,8 @@ async function waitDownloaded(filename) {
 }
 
 await mkdir(temp, { recursive: true });
+assert.match(adb("get-serialno"), /^emulator-\d+$/u,
+  "STR-461 requires an Android emulator, not an attached physical device");
 assert.equal(adb("shell", "getprop", "sys.boot_completed"), "1", "AVD not booted");
 assert.match(adb("shell", "pm", "list", "packages", "com.android.chrome"), /package:com.android.chrome/u);
 const source = await readFile(fixture);
