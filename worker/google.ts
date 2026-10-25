@@ -90,7 +90,7 @@ function parsePart<T>(value: string): T | null {
 }
 
 function cacheTtlMs(response: Response): number {
-  const match = /(?:^|,)s*max-age=(d+)/iu.exec(response.headers.get("cache-control") ?? "");
+  const match = /(?:^|,)\s*max-age=(\d+)/iu.exec(response.headers.get("cache-control") ?? "");
   const seconds = match === null ? 300 : Number(match[1]);
   return Number.isFinite(seconds) ? Math.max(60, Math.min(seconds, 3600)) * 1000 : 300_000;
 }

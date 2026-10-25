@@ -40,7 +40,7 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   // operation identifiers for loss-of-ACK recovery, without new public routes.
   "worker/db.ts": "7a304affb8eb46130b69a0e5c905809d51a65f6673dfc77655326aeb3d06e3d3",
   "worker/favorite-sync-change.ts": "89f17d0d7b495c75fb6983334151ad883edb158c53e30be609b050f217ccccaa",
-  "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
+  "worker/google.ts": "6f9c7095714b197cc7e5a83833efa7098128f3883bba1b5a8423e2760c75f1c9",
   // #470 source-reviewed: all 19 existing routes are unchanged. The JSON
   // request decoder reads at most 4096 UTF-8 bytes and stops oversized streams.
   "worker/index.ts": "e942b4ccbe47f6345946b8023dd6a7d5be3a8b621cb996a6701f066c5c912439",
