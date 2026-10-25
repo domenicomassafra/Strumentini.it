@@ -61,6 +61,7 @@ import { checkViesVat } from "./vies";
 import { PasswordKdfUnavailable, remotePasswordDeriver } from "./kdf-client";
 import type { PrivateKdfNamespace } from "./kdf-client";
 import { applyFavoriteSyncChange } from "./favorite-sync-change";
+import { parseJsonObjectBody } from "./json-request-body";
 
 // Cloudflare's internal-only SQLite-backed Durable Object. Never HTTP-routed.
 export { PasswordKdf } from "./password-kdf";
@@ -168,30 +169,12 @@ type BodyResult =
   | { readonly ok: true; readonly body: Record<string, unknown> }
   | { readonly ok: false; readonly response: Response };
 
-/** Reads a small JSON object body; never throws. */
+/** Reads a bounded JSON object and maps parser errors onto the HTTP contract. */
 async function readJsonObject(request: Request): Promise<BodyResult> {
-  const declaredLength = Number(request.headers.get("content-length") ?? "0");
-  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) {
-    return { ok: false, response: errorResponse(413, MESSAGES.payloadTooLarge) };
-  }
-  let text: string;
-  try {
-    text = await request.text();
-  } catch {
-    return { ok: false, response: errorResponse(400, MESSAGES.invalidBody) };
-  }
-  if (text.length > MAX_BODY_BYTES) return { ok: false, response: errorResponse(413, MESSAGES.payloadTooLarge) };
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    return { ok: false, response: errorResponse(400, MESSAGES.invalidBody) };
-  }
-  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
-    return { ok: false, response: errorResponse(400, MESSAGES.invalidBody) };
-  }
-  return { ok: true, body: parsed as Record<string, unknown> };
+  const result = await parseJsonObjectBody(request, MAX_BODY_BYTES);
+  if (result.ok) return result;
+  return { ok: false, response: errorResponse(result.status,
+    result.status === 413 ? MESSAGES.payloadTooLarge : MESSAGES.invalidBody) };
 }
 
 function readString(body: Record<string, unknown>, key: string): string {

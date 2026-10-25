@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   clearGoogleNonceCookie,
   createGoogleNonce,
@@ -152,4 +152,36 @@ describe("Google authentication verifier", () => {
       fetchImpl: async () => new Response("upstream unavailable", { status: 503 }),
     })).toEqual({ ok: false, reason: "unavailable" });
   });
+
+  it("refreshes Google signing keys after the advertised cache max-age", async () => {
+    const { token, fakeFetch } = await signingFixture();
+    const now = new Date("2026-10-03T12:00:00.000Z");
+    const nowSeconds = Math.floor(now.getTime() / 1000);
+    const credential = await token({
+      iss: "https://accounts.google.com",
+      aud: "client-id",
+      sub: "google-cache-subject",
+      email: "person@example.com",
+      email_verified: true,
+      nonce: "expected-nonce",
+      exp: nowSeconds + 1800,
+    });
+    let fetchCount = 0;
+    vi.stubGlobal("fetch", async () => {
+      fetchCount += 1;
+      const response = await fakeFetch();
+      response.headers.set("cache-control", "public, max-age=60");
+      return response;
+    });
+    try {
+      expect((await verifyGoogleCredential(credential, "client-id", "expected-nonce", { now })).ok).toBe(true);
+      expect((await verifyGoogleCredential(credential, "client-id", "expected-nonce", {
+        now: new Date(now.getTime() + 61_000),
+      })).ok).toBe(true);
+      expect(fetchCount).toBe(2);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
 });

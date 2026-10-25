@@ -40,8 +40,11 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   // operation identifiers for loss-of-ACK recovery, without new public routes.
   "worker/db.ts": "7a304affb8eb46130b69a0e5c905809d51a65f6673dfc77655326aeb3d06e3d3",
   "worker/favorite-sync-change.ts": "89f17d0d7b495c75fb6983334151ad883edb158c53e30be609b050f217ccccaa",
-  "worker/google.ts": "09ee69a8ab31e4eabac118bb2b3d4cdd579d655c260aa452fb8e359f32cba2db",
-  "worker/index.ts": "0724d713a4ab20f68a351644e6b05d6415211572b1da4e2eb7642a8ff56df205",
+  "worker/google.ts": "6f9c7095714b197cc7e5a83833efa7098128f3883bba1b5a8423e2760c75f1c9",
+  // #470 source-reviewed: all 19 existing routes are unchanged. The JSON
+  // request decoder reads at most 4096 UTF-8 bytes and stops oversized streams.
+  "worker/index.ts": "e942b4ccbe47f6345946b8023dd6a7d5be3a8b621cb996a6701f066c5c912439",
+  "worker/json-request-body.ts": "5d548896c9eb60c15f290ddec8d86142937feec6fe7b63179bb5eae0d0fea74c",
   "worker/kdf-client.ts": "d2aa12fce473bbbc598eedc7c957a4f67c5484ce9a03afabafea62e59b4cf539",
   "worker/migrations/0001_init.sql": "5402f41511baf4b74f4bf6b8bb46621d663a00d8352746c6acd1089c4c3f7417",
   "worker/migrations/0002_google_auth.sql": "80f0a007030410b018863ec36ca31fc6dff99ce52762979a071bc4c9af1fa6b9",

@@ -168,5 +168,5 @@
   "tests/qr-local-engine.test.ts": 26040,
   "tests/research-knowledge-engine.test.ts": 32050,
   "tests/url-marketing-tools.test.ts": 24715,
-  "worker/index.ts": 38049
+  "worker/index.ts": 37486
 }
