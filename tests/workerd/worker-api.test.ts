@@ -1,5 +1,6 @@
 import { env, exports } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { remotePasswordDeriver } from "../../worker/kdf-client";
 
 const ORIGIN = "http://localhost:8787";
 const PASSWORD = "synthetic-password-285";
@@ -99,6 +100,18 @@ describe("#285 real workerd Worker/D1/DO integration", () => {
     const result = await derived.json() as { key: number[] };
     expect(result.key).toHaveLength(32);
     expect(result.key).toEqual([89, 188, 27, 238, 131, 42, 198, 100, 213, 46, 194, 169, 74, 50, 66, 193, 138, 95, 73, 199, 43, 221, 195, 165, 218, 223, 128, 200, 176, 225, 48, 115]);
+  });
+
+  it("derives the independent 600k vector through the bounded private KDF client", async () => {
+    // Independent Node crypto.pbkdf2Sync("edge", [1,2,3,4], 600_000, 32, "sha256").
+    // Use the real 20s client deadline, not an unbounded direct DO call.
+    const key = await remotePasswordDeriver(env.PASSWORD_KDF)(
+      "edge", new Uint8Array([1, 2, 3, 4]), 600_000,
+    );
+    expect([...key]).toEqual([
+      215, 162, 35, 58, 234, 235, 220, 193, 94, 181, 26, 48, 149, 187, 236, 93,
+      203, 176, 151, 160, 223, 19, 220, 134, 251, 211, 66, 154, 38, 252, 253, 113,
+    ]);
   });
 
   it("registers, syncs favorites and logs out through real D1 and PasswordKdf", async () => {
