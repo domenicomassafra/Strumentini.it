@@ -3,21 +3,19 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { createServer } from "node:http";
-import { copyFile, mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdtemp, readFile, stat, writeFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
+import { tmpdir } from "node:os";
 import { chromium } from "@playwright/test";
 import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
 const dist = resolve(root, "dist");
-const temp = resolve(root, ".scratch/str461-avd");
 const adbBin = process.env.STR461_ADB ??
   (process.platform === "darwin" ? "/opt/homebrew/bin/adb"
     : resolve(process.env.HOME ?? "/home/udodo", "Android/Sdk/platform-tools/adb"));
 const port = 18875;
 const fixture = resolve(root, "tests/fixtures/android-chrome-avd-277-input.png");
-const outputFile = resolve(root, ".scratch/str461-avd-output.jpg");
-const receiptFile = resolve(root, ".scratch/str461-avd-receipt.json");
 const fingerprint = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const adb = (...args) => execFileSync(adbBin, args, { encoding: "utf8", timeout: 30_000 }).trim();
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
@@ -80,11 +78,13 @@ async function waitDownloaded(filename) {
   throw new Error(`Android Chrome download missing: ${filename}; Downloads=${names.slice(0, 1100)}`);
 }
 
-await mkdir(temp, { recursive: true });
 assert.match(adb("get-serialno"), /^emulator-\d+$/u,
   "STR-461 requires an Android emulator, not an attached physical device");
 assert.equal(adb("shell", "getprop", "sys.boot_completed"), "1", "AVD not booted");
 assert.match(adb("shell", "pm", "list", "packages", "com.android.chrome"), /package:com.android.chrome/u);
+const temp = await mkdtemp(resolve(tmpdir(), "str461-avd-"));
+const outputFile = resolve(temp, "str461-avd-output.jpg");
+const receiptFile = resolve(temp, "str461-avd-receipt.json");
 const source = await readFile(fixture);
 const sourceMetadata = await sharp(source).metadata();
 assert.deepEqual([sourceMetadata.format, sourceMetadata.width, sourceMetadata.height], ["png", 320, 240]);
@@ -266,7 +266,7 @@ try {
     { timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
   assert.equal(capture.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", "ADB did not capture PNG bytes");
   await sharp(capture, { failOn: "error", limitInputPixels: 16_000_000 }).stats();
-  const screenshotFile = resolve(root, ".scratch/str461-avd-screenshot.png");
+  const screenshotFile = resolve(temp, "str461-avd-screenshot.png");
   await writeFile(screenshotFile, capture);
 
   // Negative native picker: Cancel refuses access to another file after reset.
@@ -304,11 +304,12 @@ try {
     input: { filename: "str461-source.png", mime: "image/png", bytes: source.length, sha256: fingerprint(source), width: sourceMetadata.width, height: sourceMetadata.height },
     operation: { androidPickerOpened: true, fileSelected: true, resizedInChrome: true, androidDownloadSaved: true, photosPicker: "NOT_RUN", filesPicker: "NOT_RUN", nativeShareSheet, backgroundResume: "OBSERVED", permissionDenial: "NOT_RUN" },
     negative: { pickerCancelledWithoutSelection: true, corruptJpegRefused: true, offsiteRequests: externalRequests.length },
-    screenshot: { file: ".scratch/str461-avd-screenshot.png", capture: "ADB_SCREENCAP", kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED", bytes: capture.length, sha256: fingerprint(capture) },
+    evidenceDirectory: temp,
+    screenshot: { file: "str461-avd-screenshot.png", capture: "ADB_SCREENCAP", kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED", bytes: capture.length, sha256: fingerprint(capture) },
     output: { filename: siteFilename, mime: "image/jpeg", bytes: bytes.length, sha256: fingerprint(bytes), width: decoded.width, height: decoded.height, decoder: "sharp/libvips", reopened: true },
   };
   await writeFile(receiptFile, JSON.stringify(receipt, null, 2) + "\n");
-  console.log(`ANDROID_CHROME_AVD_461_PARTIAL ${JSON.stringify({ build: revision.slice(0, 12), browser: browserVersion, source: [320, 240, source.length], output: [decoded.width, decoded.height, bytes.length, fingerprint(bytes)], receipt: ".scratch/str461-avd-receipt.json", simulated: true })}`);
+  console.log(`ANDROID_CHROME_AVD_461_PARTIAL ${JSON.stringify({ build: revision.slice(0, 12), browser: browserVersion, source: [320, 240, source.length], output: [decoded.width, decoded.height, bytes.length, fingerprint(bytes)], receipt: receiptFile, simulated: true })}`);
   // A successful native Chrome file flow does not prove the ticket's second
   // Photos/Files flow, actual OS permission denial, or iOS Safari acceptance.
   // Fail closed until the complete acceptance matrix has its own OS evidence.

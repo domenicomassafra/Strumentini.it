@@ -19,7 +19,8 @@ fixture by SHA-256. It opens the exported JPEG from the Android Downloads
 directory with Sharp, checks full pixel decoding, and captures OS/browser/build
 fingerprints. It also probes system Back, app background/resume, sharing, and
 rejection of a malformed image. Its working receipts and artifacts remain in
-`.scratch/str461-*`, not in canonical release receipts.
+a unique OS temporary directory (`str461-avd-*`). The runner prints
+the absolute receipt path; these are not canonical release receipts.
 
 **This runner is intentionally fail-closed.** A successful Android image
 selection is a partial native observation and ends with exit code 2 because
