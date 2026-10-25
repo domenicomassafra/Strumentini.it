@@ -104,6 +104,15 @@ Run npm run test:workerd for the regression and independent authorization
 negative cases, then npm run acceptance:auth for the compiled Wrangler/HTTP
 consumer. Both use synthetic local bindings only. Guard invocation on Studio:
 
+The owner clarified that a confirmed deletion must also return the browser to
+the homepage. `src/pages/impostazioni.astro` navigates to `/` only when the
+client has received HTTP204. HTTP401 leaves the form available and now shows
+its error in the correct sibling element; HTTP200 (for instance an unexpected
+static fallback) also remains on the form with an error. Run
+`node tests/account-delete-navigation-482.browser.mjs` after the build for
+the compiled Chromium/browser-route regression (401, 200 and 204), with
+synthetic account responses and no real account creation.
+
 ~~~sh
 ssh macstudio 'export PATH=/opt/homebrew/opt/node/bin:$PATH; cd /Users/domenico/Code/.worktrees/Strumentini.it/strumentini-it-482 && python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py --max-wait 300 build -- npm run test:workerd'
 ~~~
