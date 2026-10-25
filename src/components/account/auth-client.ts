@@ -224,8 +224,11 @@ export function closeSession(id: string): Promise<ApiResult<undefined>> {
   return request<undefined>(`/api/auth/sessions/${encodeURIComponent(id)}`, "DELETE");
 }
 
-export function deleteAccount(password: string): Promise<ApiResult<undefined>> {
-  return request<undefined>("/api/auth/account", "DELETE", { password });
+export async function deleteAccount(password: string): Promise<ApiResult<undefined>> {
+  const result = await request<undefined>("/api/auth/account", "DELETE", { password });
+  return result.ok && result.status !== 204
+    ? { ok: false, status: result.status, message: UNEXPECTED_RESPONSE }
+    : result;
 }
 
 /** The name if it is set, the email otherwise. */
