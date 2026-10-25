@@ -24,6 +24,9 @@ export default defineConfig({
     include: ["tests/workerd/**/*.test.ts"],
     setupFiles: ["tests/workerd/setup.ts"],
     maxWorkers: 1,
+    // Keep SHA-256 and its hot rotation helpers in one prebundled module, as
+    // Wrangler does, rather than paying Vite live-binding lookups per SHA round.
+    deps: { optimizer: { ssr: { enabled: true, include: ["@noble/hashes/sha2.js"] } } },
     testTimeout: 60_000,
   },
 });

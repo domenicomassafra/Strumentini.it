@@ -50,3 +50,38 @@ test here. Cloudflare upstream [PR #15693](https://github.com/cloudflare/workers
 automatic cleanup after a failed runtime. Staging validation and real
 deployment/rollback remain owned by [#162](https://github.com/domenicomassafra/strumentini-it/issues/162).
 This test adoption performs **no deployment**.
+
+## #472 — local KDF deadline diagnosis (2026-10-25)
+
+On Mac Studio under the resource guard (utility/nice), the isolated registration
+returned 503 after 20,066 ms. `/usr/bin/time -lp` measured 23.70 s wall,
+8.63 s user and 0.73 s system for the CLI/process tree; a `sample` capture
+showed JS execution and V8 property-load/call machinery, not a blocked database.
+The direct private DO completed the same 600k derivation in 40,301 ms, so the
+client deadline was expiring during computation, not a transport deadlock.
+These initial profiles used Node 24.18.0 on the host; the new bounded-client
+vector also failed with Node 26.10.0, matching CI's Node 26 major version.
+CI on `5ebd6d96` had passed the old API suite in 27,977 ms (two full KDFs):
+local CPU scheduling contention amplifies a test-runner-specific overhead.
+
+The same `PasswordKdf` source bundled with esbuild, in the plugin's own
+Miniflare/workerd runtime, completed the independent 600k vector in 7,333 ms
+(8.71 s CLI wall, 3.51 s user, 0.39 s system). Vite's transformed live imports
+add repeated lookups to SHA-256's hot rotation helpers. The native
+[Vitest dependency optimizer](https://vitest.dev/config/deps.html#deps-optimizer)
+now prebundles **only** `@noble/hashes/sha2.js`, keeping those helpers local,
+as a deployment bundle does. Including both SHA-2 and PBKDF2 instead creates
+a shared utils chunk and reproduced the timeout; do not add that second entry
+without rechecking the real bounded-client vector. No donor source was patched
+and no dependency, work factor, async slice, stored format or timeout changed.
+
+Regression: the real private client derives `edge`, salt bytes `[1,2,3,4]`,
+600,000 iterations, 32 bytes, and compares with an independent Node
+`crypto.pbkdf2Sync` vector. Before this config change it failed at 20 s; after
+it passed in 5,444 ms (7.52 s CLI wall, 3.95 s user, 0.44 s system). The entire
+Workerd/D1/DO API file passed **6/6**, including positive register/login,
+in 18.35 s (19.22 s CLI wall, 8.97 s user, 0.55 s system). These are individual
+local measurements, not production latency or a guarantee under arbitrary host
+saturation. PBKDF2 remains 600k, the native per-call cap remains respected, and
+the production client still fails closed at its unchanged 20 s deadline.
+No production outage or production performance fix is claimed.
