@@ -154,6 +154,27 @@ try {
     assert.equal(legacyBytes.revision, 1, "old v1 revision unchanged");
     assert.equal(createHash("sha256").update(Buffer.from(legacyBytes.bytes)).digest("hex"), expectedHash, "old v1 source unchanged");
 
+    // A malformed legacy project must not hide healthy v2 snapshots.
+    await page.evaluate(async () => {
+      const db = await new Promise((done, fail) => {
+        const r = indexedDB.open("strumentini-image-projects-385", 1);
+        r.onsuccess = () => done(r.result);
+        r.onerror = () => fail(r.error);
+      });
+      await new Promise((done, fail) => {
+        const tx = db.transaction("projects", "readwrite");
+        tx.objectStore("projects").add({ schema: "future-image-project", version: 99 }, "33333333-3333-4333-8333-333333333333");
+        tx.oncomplete = done;
+        tx.onerror = () => fail(tx.error);
+      });
+      db.close();
+    });
+    await page.reload();
+    await page.locator("[data-image-project-412]").waitFor();
+    await page.getByLabel("Progetto immagine salvato").selectOption(`v2:${saved[0].id}`);
+    await page.getByRole("button", { name: "Riapri progetto", exact: true }).click();
+    await page.locator("[data-image-project-412] [role=status]").filter({ hasText: "Progetto riaperto" }).waitFor();
+
     await page.evaluate(async () => {
       const db = await new Promise((done, fail) => {
         const r = indexedDB.open("strumentini-editor-projects-412", 1);

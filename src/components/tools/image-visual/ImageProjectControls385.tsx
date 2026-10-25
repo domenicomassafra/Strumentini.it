@@ -56,13 +56,17 @@ export function ImageProjectControls385({ file, source, history, previous, edita
 
   async function refresh() {
     try {
-      const [current, legacy] = await Promise.all([listImageSnapshots475(storage), listImageProjects385()]);
+      const current = await listImageSnapshots475(storage);
+      let legacy: Awaited<ReturnType<typeof listImageProjects385>> = [];
+      let unreadableLegacy = false;
+      try { legacy = await listImageProjects385(); }
+      catch { unreadableLegacy = true; }
       setEntries([
         ...current.items.map((item) => ({ key: `v2:${item.id}`, label: `${item.name} · v2` })),
         ...legacy.map((item) => ({ key: `v1:${item.id}`, label: `${item.name} · v1 rev. ${item.revision}` })),
       ]);
-      if (current.unreadableCount > 0) {
-        setMessage("Alcuni progetti v2 hanno uno schema sconosciuto o file mancanti; le copie sono state conservate.");
+      if (current.unreadableCount > 0 || unreadableLegacy) {
+        setMessage("Alcuni progetti hanno uno schema sconosciuto o file mancanti; le copie sono state conservate.");
       }
     } catch (error) { report(error); }
   }
