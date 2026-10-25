@@ -185,3 +185,6 @@ try {
   }
   server.kill();
 }
+
+// Run the independently isolated image editor v1/v2 consumer on the same compiled dist.
+await import("./str-412-image-consumer.browser.mjs");
