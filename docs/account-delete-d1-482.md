@@ -35,8 +35,8 @@ user deletion, not its cascades; a nonmatching authorization returns no row.
 There is no read-then-write gap and no inference from a database-wide counter.
 PBKDF2 600,000, stored format, admission limits, private-client timeout and
 fail-closed behavior are unchanged. No migration, remote database or deploy.
-The existing #348 read-only source inventory is rebound only to these reviewed
-worker/db.ts bytes. Regression rejects loss of credential/expiry guards; routes,
+The existing #348 read-only source inventory is rebound to the reviewed
+worker/db.ts and auth-client.ts bytes. Regression rejects loss of credential/expiry guards; routes,
 quota thresholds and serverMode=NO_GO remain unchanged. This inventory is not a
 release receipt or production security authorization.
 

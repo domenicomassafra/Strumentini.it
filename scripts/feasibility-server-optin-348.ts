@@ -71,8 +71,10 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // #332: browser bootstrap retries reconnection and preserves account-scoped state.
   "src/components/account/MembershipBootstrap.astro": "ace5b0f626105a65fd4586102688fcfeec032dc32043dd2ae6b407083708e956",
   // #328: login/register now require a fresh same-origin cookie-backed session
-  // probe before reporting success. Any future byte drift still fails closed.
-  "src/components/account/auth-client.ts": "b32363ed352edf1a2b97c5f1cfc4650c0d46d55731cdf2e11e2fc354fb8b8f21",
+  // probe before reporting success. #482: DELETE account reports success only
+  // on HTTP204, without changing the existing routes, credentials or fetch.
+  // Any further byte drift still fails closed.
+  "src/components/account/auth-client.ts": "f107c0f86f6749de889fc95c1d271a66e7963c0f8a0a466cef97c67853153e89",
   // 2026-10-12 #330 reviewed: external GET remains explicit opt-in, no credentials/referrer, no new endpoint, abort/stale guard.
   "src/components/tools/ConnectionDeviceInfoTool.tsx": "fe92363d300ef4ac5e1e73d55f28ddb06eade2d46b218be6e73d3670b92acc84",
   // #274 source-reviewed: opt-in same-origin GET of three fixed /models/portrait-modnet/
