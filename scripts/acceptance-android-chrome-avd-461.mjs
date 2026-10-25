@@ -85,7 +85,15 @@ const source = await readFile(fixture);
 const sourceMetadata = await sharp(source).metadata();
 assert.deepEqual([sourceMetadata.format, sourceMetadata.width, sourceMetadata.height], ["png", 320, 240]);
 const html = await readFile(resolve(dist, "tools/image-resize/index.html"));
-adb("push", fixture, "/sdcard/Download/str461-source.png");
+let existingSourceHash;
+try {
+  existingSourceHash = adb("shell", "sha256sum", "/sdcard/Download/str461-source.png").split(/\s+/u)[0];
+} catch { /* The source fixture has not been uploaded to this AVD. */ }
+if (existingSourceHash) {
+  assert.equal(existingSourceHash, fingerprint(source), "refusing to overwrite an existing Android fixture");
+} else {
+  adb("push", fixture, "/sdcard/Download/str461-source.png");
+}
 const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
 const browserVersion = adb("shell", "dumpsys", "package", "com.android.chrome").match(/versionName=([^\s]+)/u)?.[1];
 assert(browserVersion);
@@ -246,7 +254,10 @@ try {
   }
   assert.deepEqual(errors, []);
   assert.deepEqual(externalRequests, [], "image-resize page attempted offsite requests");
-  const capture = execFileSync(adbBin, ["exec-out", "screencap", "-p"], { timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
+  // Keep screencap as raw bytes: the regular ADB helper intentionally decodes
+  // textual commands to UTF-8, which corrupts arbitrary PNG bytes.
+  const capture = execFileSync(adbBin, ["exec-out", "screencap", "-p"],
+    { timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
   assert.equal(capture.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", "ADB did not capture PNG bytes");
   await sharp(capture, { failOn: "error", limitInputPixels: 16_000_000 }).stats();
   const screenshotFile = resolve(root, ".scratch/str461-avd-screenshot.png");
