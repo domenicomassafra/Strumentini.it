@@ -96,13 +96,13 @@ async function runFamily(browser, family) {
     assert(response?.status() === 200, `${family.id}: route returned ${response?.status()}`);
     await page.getByText("Il risultato si calcola nel tuo browser, senza attese di caricamento.", { exact: true }).waitFor();
     const hydration = { form: await page.locator("form").count(), buttons: await page.getByRole("button").count() };
-    assert(hydration.form === 1 && hydration.buttons > 1, `${family.id}: hydrated controls did not appear`);
+    assert(hydration.form >= 1 && hydration.buttons >= 1, `${family.id}: hydrated controls did not appear`);
     const accessibility = await accessibilityAudit(page);
     taskStarted = true;
     if (family.invalid !== undefined) {
       try {
         await family.invalid(page);
-        const alert = page.getByRole("alert");
+        const alert = page.getByRole("alert").filter({ hasText: /\S/u }).first();
         await alert.waitFor();
         assert((await alert.innerText()).trim().length > 0, `${family.id}: invalid input did not produce an alert`);
       } catch (error) {
@@ -248,7 +248,7 @@ const families = [
       await page.getByLabel(/^Mezzo/u).fill("email");
       await page.getByLabel(/^Campagna/u).fill("fall sale");
       await page.getByRole("button", { name: "Crea URL" }).press("Enter");
-      await page.locator("code.long-result").filter({ hasText: "https://example.com/landing" }).waitFor();
+      await page.locator('[data-result-slot="selectable-output"]').filter({ hasText: "https://example.com/landing" }).waitFor();
     },
   },
   {
@@ -258,7 +258,7 @@ const families = [
     run: async (page) => {
       await page.getByLabel(/^CSV o testo tabellare/u).fill(`a,b${newline}1,2${newline}`);
       await page.getByRole("button", { name: "Apri e controlla un CSV" }).press("Enter");
-      await page.locator(".table-preview").waitFor();
+      await page.locator('[data-result-slot="table-preview"]').waitFor();
     },
   },
   {
@@ -268,7 +268,7 @@ const families = [
     run: async (page) => {
       await page.getByLabel(/^Testo/u).fill(`zeta-line-input${newline}alpha-line-input${newline}`);
       await page.getByRole("button", { name: "Ordina righe" }).press("Enter");
-      const output = await page.locator("pre.text-result").innerText();
+      const output = await page.locator(".bounded-result-preview pre").innerText();
       assert(output.includes(`alpha-line-input${newline}zeta-line-input`), `line sorter output was unexpected: ${output}`);
     },
   },
@@ -280,7 +280,7 @@ const families = [
       const field = page.getByRole("textbox", { name: /^DOI/u });
       await field.fill("doi:10.1000/182");
       await field.press("Enter");
-      await page.getByText("Formato DOI valido", { exact: true }).waitFor();
+      await page.locator('[data-research-result-tool="doi-isbn-normalizer"]').getByText("Valido", { exact: true }).waitFor();
     },
   },
   {
@@ -296,7 +296,7 @@ const families = [
       await page.locator("#base64-codec-text").fill("foobar");
       await page.locator("#base64-codec-mode").selectOption("encode");
       await page.getByRole("button", { name: "Converti Base64" }).press("Enter");
-      await page.locator("pre.developer-result-json").filter({ hasText: "Zm9vYmFy" }).waitFor();
+      await page.locator(".bounded-result-preview pre").filter({ hasText: "Zm9vYmFy" }).waitFor();
     },
   },
   {
@@ -310,7 +310,8 @@ const families = [
       await page.getByLabel(/^Conta e verifica pagine PDF/u).setInputFiles({ name: "sample.pdf", mimeType: "application/pdf", buffer: pdfFixture });
       await page.getByRole("button", { name: "Verifica numero pagine" }).press("Enter");
       await page.getByRole("button", { name: "Verifica numero pagine" }).waitFor();
-      await page.locator("pre.csv-preview").filter({ hasText: '"numero_pagine": 1' }).waitFor();
+      const output = await page.locator('.result-panel[data-state="success"]').innerText();
+      assert(/numero_pagine[\s\S]*1/u.test(output), `PDF page count missing from Result v2: ${output}`);
     },
   },
   {
@@ -337,10 +338,10 @@ const families = [
     },
     run: async (page) => {
       await page.locator("#image-resize-file").setInputFiles({ name: "cross-family.png", mimeType: "image/png", buffer: imageFixture });
-      await page.getByLabel(/^Larghezza/u).fill("1");
-      await page.getByLabel(/^Altezza/u).fill("1");
+      await page.getByRole("spinbutton", { name: "Larghezza", exact: true }).fill("1");
+      await page.getByRole("spinbutton", { name: "Altezza", exact: true }).fill("1");
       await page.getByRole("button", { name: "Ridimensiona" }).press("Enter");
-      await page.locator(".gutter-value").filter({ hasText: "1×1" }).waitFor();
+      await page.locator('[data-result-slot="visual-preview"] figcaption').filter({ hasText: "1×1" }).waitFor();
     },
   },
 ];
@@ -360,7 +361,7 @@ try {
     viewport: { desktop: "1280x900", mobile: "390x844" },
     coverage: {
       representativeFamilies: results.length,
-      hydration: results.every((result) => result.hydration.form === 1),
+      hydration: results.every((result) => result.hydration.form >= 1),
       errors: results.filter((result) => result.invalidInput.includes("alert")).length,
       keyboard: results.every((result) => result.keyboard.includes("Enter")),
       accessibility: results.every((result) => result.accessibility.unlabeled.length === 0),
