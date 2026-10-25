@@ -103,6 +103,8 @@ const browserVersion = adb("shell", "dumpsys", "package", "com.android.chrome").
 assert(browserVersion);
 const androidFingerprint = adb("shell", "getprop", "ro.build.fingerprint");
 const api = Number(adb("shell", "getprop", "ro.build.version.sdk"));
+const avdName = adb("emu", "avd", "name").split(/\r?\n/u)[0];
+assert.match(avdName, /^[A-Za-z0-9_.-]+$/u, "running AVD name missing or malformed");
 let browser;
 let stage = "native-chrome-launch";
 await new Promise((done) => server.listen(port, "127.0.0.1", done));
@@ -296,7 +298,7 @@ try {
   const receipt = {
     schemaVersion: 1, ticket: "STR-461", evidenceKind: "ANDROID_EMULATOR_CHROME_SIMULATED", physicalDeviceObserved: false,
     observedAt: new Date().toISOString(),
-    emulator: { serial: adb("get-serialno"), avd: "str277-api35", api, fingerprint: androidFingerprint },
+    emulator: { serial: adb("get-serialno"), avd: avdName, api, fingerprint: androidFingerprint },
     browser: { package: "com.android.chrome", version: browserVersion, userAgent: ua },
     build: { revision, compiled: true, route: "/tools/image-resize/", htmlSha256: fingerprint(html) },
     input: { filename: "str461-source.png", mime: "image/png", bytes: source.length, sha256: fingerprint(source), width: sourceMetadata.width, height: sourceMetadata.height },
