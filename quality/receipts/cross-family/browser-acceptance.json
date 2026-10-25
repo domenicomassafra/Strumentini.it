@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-05T11:47:22.981Z",
+  "generatedAt": "2026-10-25T01:26:05.836Z",
   "status": "PASS",
   "browser": "Google Chrome",
   "viewport": {
@@ -43,7 +43,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 3,
+      "lazyScriptsAfterAction": 6,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -75,7 +75,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 3,
+      "lazyScriptsAfterAction": 5,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -88,12 +88,12 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 3
+        "buttons": 4
       },
       "accessibility": {
         "main": true,
         "heading": true,
-        "controls": 4,
+        "controls": 5,
         "unlabeled": []
       },
       "keyboard": "submit pressed with Enter",
@@ -107,7 +107,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 4,
+      "lazyScriptsAfterAction": 8,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -120,12 +120,12 @@
       "status": 200,
       "hydration": {
         "form": 1,
-        "buttons": 5
+        "buttons": 7
       },
       "accessibility": {
         "main": true,
         "heading": true,
-        "controls": 2,
+        "controls": 4,
         "unlabeled": []
       },
       "keyboard": "submit pressed with Enter",
@@ -139,7 +139,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 3,
+      "lazyScriptsAfterAction": 6,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -171,7 +171,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 4,
+      "lazyScriptsAfterAction": 9,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -203,7 +203,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 3,
+      "lazyScriptsAfterAction": 7,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -215,13 +215,13 @@
       "route": "/tools/base64-codec/",
       "status": 200,
       "hydration": {
-        "form": 1,
-        "buttons": 4
+        "form": 2,
+        "buttons": 7
       },
       "accessibility": {
         "main": true,
         "heading": true,
-        "controls": 3,
+        "controls": 6,
         "unlabeled": []
       },
       "keyboard": "submit pressed with Enter",
@@ -235,7 +235,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 3,
+      "lazyScriptsAfterAction": 9,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -253,7 +253,7 @@
       "accessibility": {
         "main": true,
         "heading": true,
-        "controls": 1,
+        "controls": 2,
         "unlabeled": []
       },
       "keyboard": "submit pressed with Enter",
@@ -267,7 +267,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 4,
+      "lazyScriptsAfterAction": 6,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -299,7 +299,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 1,
+      "lazyScriptsAfterAction": 5,
       "mobile": {
         "width": 390,
         "height": 844,
@@ -311,13 +311,13 @@
       "route": "/tools/image-resize/",
       "status": 200,
       "hydration": {
-        "form": 1,
+        "form": 2,
         "buttons": 5
       },
       "accessibility": {
         "main": true,
         "heading": true,
-        "controls": 7,
+        "controls": 20,
         "unlabeled": []
       },
       "keyboard": "submit pressed with Enter",
@@ -331,7 +331,7 @@
       "staticEnvironmentFailures": [
         "http://127.0.0.1:18350/api/auth/session"
       ],
-      "lazyScriptsAfterAction": 2,
+      "lazyScriptsAfterAction": 4,
       "mobile": {
         "width": 390,
         "height": 844,

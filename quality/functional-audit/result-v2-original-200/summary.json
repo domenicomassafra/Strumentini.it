@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "ledgerFingerprintSha256": "6e1bd1026a3bb920f8eee83cf028d07a5533a53072cbbbe108954e7b907d11a0",
+  "denominator": 200,
+  "source": [
+    "quality/functional-audit/original-200.inventory.json",
+    "src/catalog/result-v2-inventory.generated.ts",
+    "src/generated/tool-loaders.ts"
+  ],
+  "outcome": {
+    "GAP": 0,
+    "NO_GO": 200
+  },
+  "builtRoutesPresent": 200,
+  "legacyPrimaryRendererFindings": 0,
+  "positiveRefusalConsumerProven": 0,
+  "independentParserProven": 0,
+  "files": [
+    "business-math-01.jsonl",
+    "business-math-02.jsonl",
+    "client-work-math-01.jsonl",
+    "data-01.jsonl",
+    "data-02.jsonl",
+    "data-03.jsonl",
+    "date-time-01.jsonl",
+    "date-time-02.jsonl",
+    "date-time-03.jsonl",
+    "developer-01.jsonl",
+    "developer-02.jsonl",
+    "developer-03.jsonl",
+    "documents-01.jsonl",
+    "documents-02.jsonl",
+    "documents-03.jsonl",
+    "files-01.jsonl",
+    "files-02.jsonl",
+    "files-03.jsonl",
+    "files-assets-01.jsonl",
+    "files-assets-02.jsonl",
+    "image-visual-01.jsonl",
+    "marketing-01.jsonl",
+    "marketing-02.jsonl",
+    "research-01.jsonl",
+    "research-02.jsonl",
+    "research-03.jsonl",
+    "text-01.jsonl",
+    "text-02.jsonl",
+    "text-03.jsonl",
+    "web-operations-01.jsonl"
+  ],
+  "note": "NO_GO denotes unverified runtime, not a broken route. Neither legacy verification nor a dist HTML file certifies a consumer."
+}
