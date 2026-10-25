@@ -22,3 +22,20 @@ La semantica di editing dello stato deve essere controllata dall'editor propriet
 prima di ripristinare la sessione; questa libreria verifica integrità e formato
 del contenitore e non sostituisce i suoi motori. La versione immagine v1 di
 #144 non è ancora definita su main: non viene inventata una sua migrazione.
+
+
+## Integrazione PDF #474 — 25 ottobre 2026
+
+La tranche del 22/10 è stata completata nell'editor PdfPageWorkspace372:
+usa src/workbench/pdf-project-412.ts per salvare snapshot v2 su richiesta,
+elencarli, verificare hash/stato prima del restore e migrare esplicitamente
+i record v1 di #138 con inserimento atomico add-only. I record v1 rimangono
+conservati e accessibili tramite la UI preesistente. Uno schema futuro,
+un allegato mancante, uno storico incoerente o un ID già esistente
+causano rifiuto. L'archivio v2 browser usa createIndexedDbPersistence
+(owner, src/persistence/persistence.ts) e il database
+strumentini-editor-projects-412, object store state, separato dal DB v1
+strumentini-optin-pdf-341. Il controllo pagine riprende pdf-lib già
+dipendente del progetto (MIT); nessuna nuova dipendenza. Il test
+consumer PDF è tests/str-412-consumer.browser.mjs; la figlia immagine
+#475 rimane responsabile della propria integrazione e verifica.

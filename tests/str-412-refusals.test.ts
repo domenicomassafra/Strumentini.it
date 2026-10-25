@@ -1,3 +1,4 @@
+import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
 import { createMemoryPersistence, type PersistenceAdapter } from "../src/persistence/persistence";
 import {
@@ -97,4 +98,46 @@ describe("STR-412 fail-closed refusal at the persistent project seam", () => {
       .rejects.toThrow("FILE_HASH_MISMATCH");
     expect(await loadEditorProject412(storage, original.id)).toEqual(before);
   });
+});
+
+it("STR-412 PDF: refuses ID collision and a future schema without changing the saved legacy PDF", async () => {
+  const { savePdfProject138, loadPdfProject138 } = await import("../src/workbench/pdf-project-138");
+  const { createPdfProjectHistory138 } = await import("../src/engines/pdf/project-history-138");
+  const { migrateSavedPdfProject412, loadPdfSnapshot412, listPdfSnapshots412 } =
+    await import("../src/workbench/pdf-project-412");
+  const { PDFDocument } = await import("pdf-lib");
+  const pdf = await PDFDocument.create();
+  pdf.addPage([80, 90]);
+  const original = await pdf.save();
+  const file = new File([original.slice().buffer], "refuse.pdf", { type: "application/pdf" });
+  const history = createPdfProjectHistory138(1);
+  const legacy = await savePdfProject138(file, history);
+  await migrateSavedPdfProject412(legacy.id);
+  await expect(migrateSavedPdfProject412(legacy.id)).rejects.toThrow("ALREADY_EXISTS");
+  const initial = await loadPdfSnapshot412(legacy.id);
+  const db = await new Promise<IDBDatabase>((resolve, reject) => {
+    const request = indexedDB.open("strumentini-editor-projects-412", 1);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+  const key = "editor-project/412/v2/" + legacy.id;
+  const raw = await new Promise<any>((resolve, reject) => {
+    const req = db.transaction("state", "readonly").objectStore("state").get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  const tampered = { ...raw, version: 3 };
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction("state", "readwrite");
+    tx.objectStore("state").put(tampered, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+  db.close();
+  await expect(loadPdfSnapshot412(legacy.id)).rejects.toThrow("UNSUPPORTED_SCHEMA_OR_MISSING_FILES");
+  expect((await listPdfSnapshots412()).unreadableCount).toBeGreaterThan(0);
+  await expect(migrateSavedPdfProject412(legacy.id)).rejects.toThrow("ALREADY_EXISTS");
+  expect((await loadPdfProject138(legacy.id))?.history).toEqual(history);
+  expect(new Uint8Array(await file.arrayBuffer())).toEqual(original);
+  expect(initial?.history).toEqual(history);
 });
