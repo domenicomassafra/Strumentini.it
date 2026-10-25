@@ -43,7 +43,6 @@
     "video": 1
   },
   "gapCounts": {
-    "COMPILED_ROUTE_NOT_RUN": 74,
     "CURRENT_BROWSER_POSITIVE_REFUSAL_NOT_RUN": 74,
     "RECEIPT_MISSING": 15,
     "TEST_FILE_UNMAPPED": 4
