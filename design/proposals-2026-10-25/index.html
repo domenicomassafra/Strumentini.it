@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Strumentini.it — confronto di tre direzioni visive (prototipi, 25/10/2026)</title>
+  <link rel="stylesheet" href="./proposals-core.css">
+  <link rel="stylesheet" href="./proposals-variants.css">
+  <script src="./proposals.js" defer></script>
+</head>
+<body>
+  <div class="demo-warning" role="status">Anteprima di design • 25/10/2026 • nessun file viene elaborato o inviato • non è il sito pubblico</div>
+  <header class="choice-bar" aria-label="Confronto delle proposte">
+    <div class="choice-bar__title">
+      <strong>Strumentini.it / Studio di direzione</strong>
+      <span>Tre proposte indipendenti. Scelta finale riservata all'owner.</span>
+    </div>
+    <div class="choice-controls" role="group" aria-label="Scegli una direzione visiva">
+      <button type="button" data-variant-choice="minimal" aria-pressed="true">A · Essenziale</button>
+      <button type="button" data-variant-choice="editorial" aria-pressed="false">B · Editoriale</button>
+      <button type="button" data-variant-choice="workspace" aria-pressed="false">C · Workspace</button>
+    </div>
+    <button type="button" class="theme-switch" data-theme-toggle aria-label="Passa al tema scuro" aria-pressed="false">Tema: chiaro</button>
+  </header>
+  <div class="screen-bar" role="group" aria-label="Confronta le stesse quattro schermate">
+    <button type="button" data-screen-choice="home" aria-pressed="true">Home</button>
+    <button type="button" data-screen-choice="tool" aria-pressed="false">Strumento</button>
+    <button type="button" data-screen-choice="result" aria-pressed="false">Risultato</button>
+    <button type="button" data-screen-choice="account" aria-pressed="false">Area personale</button>
+  </div>
+  <div id="prototype" data-variant="minimal">
+    <div class="app-shell">
+      <header class="app-header">
+        <a href="?variant=minimal&amp;view=home" class="app-brand" data-home-link aria-label="Strumentini.it, torna alla home">
+          <span class="brand-mark" aria-hidden="true">s<span>.</span></span><span>strumentini<span class="brand-dot">.</span>it</span>
+        </a>
+        <span class="app-signature">Piccoli lavori. Fatto bene.</span>
+        <span class="privacy-note">Locale per impostazione predefinita</span>
+      </header>
+      <aside class="app-rail" aria-label="Navigazione del prototipo">
+        <div class="rail-label">Esplora</div>
+        <nav class="rail-links">
+          <button type="button" data-screen-choice="home" aria-pressed="true">01 <span>Inizio</span></button>
+          <button type="button" data-screen-choice="tool" aria-pressed="false">02 <span>Uno strumento</span></button>
+          <button type="button" data-screen-choice="result" aria-pressed="false">03 <span>Il risultato</span></button>
+          <button type="button" data-screen-choice="account" aria-pressed="false">04 <span>La tua area</span></button>
+        </nav>
+        <p class="rail-foot">Una direzione di progetto. Nessun accesso o salvataggio simulato come reale.</p>
+      </aside>
+      <main id="preview-content" tabindex="-1">
+        <section class="screen" data-screen="home" aria-labelledby="home-title">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <p class="kicker">01 / IL TUO LAVORO, SUBITO</p>
+              <h1 id="home-title">Uno strumento, il risultato, la prossima cosa.</h1>
+              <p class="intro">PDF, immagini, tabelle e calcoli quotidiani. Inizia con un file oppure scegli un'operazione. Qui vedi la struttura proposta, senza eseguire operazioni reali.</p>
+              <div class="search-panel" role="search" aria-label="Ricerca dimostrativa">
+                <label for="demo-search">Che cosa vuoi fare?</label>
+                <div class="search-row">
+                  <input id="demo-search" type="search" autocomplete="off" placeholder="Es. unire PDF, ridimensionare immagini">
+                  <button type="button" data-next-screen="tool">Esplora <span aria-hidden="true">↗</span></button>
+                </div>
+                <p class="field-help">Ricerca dimostrativa: apre solo la schermata di esempio.</p>
+              </div>
+            </div>
+            <aside class="hero-aside">
+              <span class="aside-index">STRUMENTINI / 01</span>
+              <p class="aside-headline">Il file resta qui.</p>
+              <p>I file vengono elaborati sul dispositivo quando usi un vero strumento che lo supporta. Questa anteprima non legge file.</p>
+              <div class="aside-illustration" aria-hidden="true"><span>PDF</span><span>↗</span><span>OK</span></div>
+              <span class="aside-foot">Privacy leggibile, prima dell'azione.</span>
+            </aside>
+          </div>
+          <div class="section-caption"><span>DA DOVE INIZIARE</span><span>Attività dimostrative</span></div>
+          <div class="task-grid">
+            <button type="button" class="task-card" data-next-screen="tool"><span class="task-code">01 / DOCUMENTI</span><strong>Unisci PDF</strong><small>Da più file a un documento, localmente quando supportato.</small><span class="task-arrow" aria-hidden="true">↗</span></button>
+            <button type="button" class="task-card" data-next-screen="tool"><span class="task-code">02 / IMMAGINI</span><strong>Ridimensiona immagini</strong><small>Dimensioni precise e controllo del formato.</small><span class="task-arrow" aria-hidden="true">↗</span></button>
+            <button type="button" class="task-card" data-next-screen="tool"><span class="task-code">03 / CALCOLI</span><strong>Calcola IVA</strong><small>Importi spiegati, senza risultati inventati.</small><span class="task-arrow" aria-hidden="true">↗</span></button>
+          </div>
+          <div class="trust-strip"><span>In italiano</span><span>Accesso facoltativo</span><span>Operazioni locali quando disponibili</span></div>
+        </section>
+        <section class="screen" data-screen="tool" aria-labelledby="tool-title" hidden>
+          <div class="page-heading">
+            <div><p class="kicker">02 / OPERAZIONE</p><h1 id="tool-title">Unisci PDF</h1><p class="intro">Un percorso chiaro dalla selezione al risultato. Questo è un confronto di interfacce: il motore non è connesso.</p></div>
+            <span class="demo-stamp">DEMO / NON ESEGUE FILE</span>
+          </div>
+          <div class="operation-grid">
+            <article class="operation-pane">
+              <div class="step-label">PASSO 01 · PREPARA</div>
+              <h2>Documenti in ingresso</h2>
+              <div class="dropzone" aria-label="Esempio statico di area per file"><span aria-hidden="true">＋</span><strong>Seleziona o trascina file PDF</strong><small>Zona illustrativa. Nessuna lettura, nessun upload.</small></div>
+              <div class="field-pair"><div><span>Formato previsto</span><strong>PDF</strong></div><div><span>Elaborazione prevista</span><strong>Nel browser</strong></div></div>
+              <button type="button" class="primary-action" data-next-screen="result">Vedi il risultato di esempio <span aria-hidden="true">→</span></button>
+              <p class="field-help">L'anteprima seguente mostra un risultato fittizio, dichiarato.</p>
+            </article>
+            <aside class="guidance-pane">
+              <div class="step-label">PRIMA DI CONTINUARE</div>
+              <h2>Quello che succede</h2>
+              <ol><li>Scegli i documenti nella versione reale.</li><li>Controlli l'ordine delle pagine.</li><li>Scarichi il file solo dopo un'esecuzione riuscita.</li></ol>
+              <p class="privacy-block">Questa proposta mantiene la spiegazione locale accanto all'azione, anche sui telefoni.</p>
+              <button type="button" class="text-action" data-next-screen="home">Torna alle operazioni</button>
+            </aside>
+          </div>
+        </section>
+        <section class="screen" data-screen="result" aria-labelledby="result-title" hidden>
+          <div class="page-heading"><div><p class="kicker">03 / FEEDBACK</p><h1 id="result-title">Un risultato che spiega cosa è successo.</h1><p class="intro">Nella versione reale, lo stato di successo compare soltanto dopo una vera elaborazione.</p></div><span class="demo-stamp">OUTPUT ILLUSTRATIVO</span></div>
+          <div class="result-grid">
+            <article class="result-pane"><span class="demo-tag">ESEMPIO NON ESEGUITO</span><h2>PDF pronto: come apparirebbe</h2><div class="fake-document" aria-label="Illustrazione del risultato PDF, senza file generato"><span>Documento unificato</span><strong>01 / 02 / 03</strong><small>Solo anteprima grafica</small></div><p class="subcopy">Il nome, la dimensione e il pulsante di download qui non sono simulati: nessun file è stato prodotto.</p></article>
+            <aside class="result-summary"><div class="step-label">PASSO 02 · VERIFICA</div><h2>Stato dell'operazione</h2><div class="status-card"><strong>Modalità demo</strong><span>Nessuna operazione eseguita</span></div><dl><div><dt>Input</dt><dd>Non acquisito</dd></div><div><dt>Elaborazione</dt><dd>Non eseguita</dd></div><div><dt>File scaricabile</dt><dd>Non presente</dd></div></dl><button type="button" class="primary-action" data-next-screen="tool">Torna allo strumento <span aria-hidden="true">↗</span></button></aside>
+          </div>
+        </section>
+        <section class="screen" data-screen="account" aria-labelledby="account-title" hidden>
+          <div class="page-heading"><div><p class="kicker">04 / SPAZIO PERSONALE</p><h1 id="account-title">Le tue cose, senza rumore.</h1><p class="intro">Preferiti e attività recenti hanno senso solo se esistono realmente. Questa è una schermata di esempio vuota.</p></div><span class="demo-stamp">OSPITE / ANTEPRIMA</span></div>
+          <div class="account-grid">
+            <article class="account-main"><div class="step-label">AREA LOCALE</div><h2>Il tuo spazio di lavoro</h2><div class="empty-card"><span aria-hidden="true">◎</span><strong>Ancora nessuno strumento salvato</strong><p>Nel prodotto reale i preferiti sono disponibili dove la funzione è attiva. Qui non sono conservati dati.</p><button type="button" class="primary-action" data-next-screen="home">Esplora gli strumenti <span aria-hidden="true">↗</span></button></div></article>
+            <aside class="account-side"><h2>Impostazioni in evidenza</h2><div class="preference-row"><span>Lingua</span><strong>Italiano</strong></div><div class="preference-row"><span>Tema anteprima</span><strong data-current-theme>Chiaro</strong></div><div class="preference-row"><span>Account</span><strong>Facoltativo</strong></div><p class="privacy-block">Il confronto visivo non richiede login, cookie o caricamenti. La navigazione reale resta quella del sito dopo approvazione.</p></aside>
+          </div>
+        </section>
+      </main>
+      <footer class="app-footer"><span>Strumentini.it / Proposta visiva, non funzionale</span><span>Home · Strumento · Risultato · Area / Stessi contenuti per A, B, C</span></footer>
+    </div>
+  </div>
+</body>
+</html>
