@@ -8,6 +8,7 @@ import argparse
 import collections
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -176,11 +177,19 @@ def main():
         parts.append(current)
     outputs = {OUTPUT / f"routes-{i:02d}.jsonl": part for i, part in enumerate(parts, start=1)}
     outputs[OUTPUT / "summary.json"] = json.dumps(summary, ensure_ascii=False, indent=2) + "\n"
+    existing_parts = {p for p in OUTPUT.glob("routes-*.jsonl")
+                      if re.fullmatch(r"routes-\d{2}\.jsonl", p.name)}
+    stale_parts = existing_parts - outputs.keys()
     if opts.write:
         OUTPUT.mkdir(parents=True, exist_ok=True)
         for path, data in outputs.items():
             path.write_text(data, encoding="utf-8")
+        for path in stale_parts:
+            path.unlink()
     if opts.check:
+        if stale_parts:
+            raise SystemExit("STALE_MATRIX_PARTS_458: " + ", ".join(
+                str(p.relative_to(ROOT)) for p in sorted(stale_parts)))
         for path, data in outputs.items():
             if not path.is_file() or path.read_text(encoding="utf-8") != data:
                 raise SystemExit(f"STALE_MATRIX_458: {path.relative_to(ROOT)}")

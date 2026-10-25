@@ -5,10 +5,14 @@
  */
 import { chromium } from "@playwright/test";
 import { readdir, readFile } from "node:fs/promises";
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { createServer } from "node:net";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
+// Refuse stale or extra matrix parts before serving a compiled consumer.
+execFileSync("python3", ["-B", "scripts/audit-expansion-routes-458.py", "--check"], { cwd: root });
 const parts = (await readdir(resolve(root, "quality/expansion-458")))
   .filter((filename) => /^routes-\d{2}\.jsonl$/u.test(filename)).sort();
 if (!parts.length) throw new Error("MATRIX_458_MISSING");
@@ -17,15 +21,25 @@ const rows = (await Promise.all(parts.map((part) => readFile(resolve(root, "qual
 if (rows.length === 0 || new Set(rows.map((row) => row.id)).size !== rows.length)
   throw new Error("MATRIX_458_IDENTITY_INVALID");
 
-const port = 18458;
+const port = await new Promise((done, fail) => {
+  const reservation = createServer();
+  reservation.once("error", fail);
+  reservation.listen(0, "127.0.0.1", () => {
+    const address = reservation.address();
+    reservation.close(() => done(address.port));
+  });
+});
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], {
   cwd: root, stdio: "ignore",
 });
+let serverExited = false;
+server.on("exit", () => { serverExited = true; });
 let browser;
 try {
   let started = false;
   for (let attempt = 0; attempt < 35; attempt++) {
+    if (serverExited) throw new Error("COMPILED_458_SERVER_EXITED");
     try {
       const response = await fetch(origin, { signal: AbortSignal.timeout(400) });
       if (response.ok) { started = true; break; }
@@ -43,15 +57,30 @@ try {
     const page = await context.newPage();
     const requests = [];
     const errors = [];
-    page.on("request", (request) => {
-      if (!request.url().startsWith(origin) || !["GET", "HEAD"].includes(request.method())) {
-        requests.push({ method: request.method(), urlOrigin: (() => { try { return new URL(request.url()).origin; } catch { return "unknown"; } })() });
+    await page.route("**/*", async (route) => {
+      const request = route.request();
+      const url = new URL(request.url());
+      if ((url.origin !== origin && !["blob:", "data:"].includes(url.protocol))
+        || !["GET", "HEAD"].includes(request.method())) {
+        requests.push({ method: request.method(), urlOrigin: url.origin });
+        await route.abort();
+      } else {
+        await route.continue();
       }
     });
     page.on("pageerror", (error) => errors.push(error.message));
     try {
       const response = await page.goto(`${origin}${row.route}/`, { waitUntil: "networkidle", timeout: 20000 });
       if (response?.status() !== 200) throw new Error(`HTTP_${response?.status()}`);
+      const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
+      // Independent readback: reopen the built file and compare it with the
+      // actual HTTP response, both bound to the audited matrix row.
+      const compiledPath = resolve(root, "dist", row.route.replace(/^\/+/, ""), "index.html");
+      const compiledBytes = await readFile(compiledPath);
+      const responseBytes = await response.body();
+      if (!row.compiled.routeSha256 || digest(compiledBytes) !== row.compiled.routeSha256
+        || digest(responseBytes) !== row.compiled.routeSha256)
+        throw new Error("COMPILED_HTTP_BYTES_DRIFT");
       if (await page.locator(`[data-tool-page="${row.id}"]`).count() === 0)
         throw new Error("TOOL_COMPONENT_MISSING");
       const runtime = await page.locator(`[data-tool-page="${row.id}"]`).first().getAttribute("data-runtime");
@@ -69,6 +98,7 @@ try {
     } finally { await context.close(); }
   }
   console.log(JSON.stringify({ audited: rows.length, compiledRouteAndInitialNetwork: rows.length - failures.length,
+    independentCompiledHttpByteReadback: rows.length - failures.length,
     failures, operationPositive: "NOT_RUN", operationRefusal: "NOT_RUN",
     physical: "NOT_RUN", release: "NO_GO" }));
   if (failures.length) process.exitCode = 1;
