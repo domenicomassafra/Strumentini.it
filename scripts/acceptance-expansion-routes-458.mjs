@@ -47,14 +47,16 @@ try {
     await new Promise((done) => setTimeout(done, 150));
   }
   if (!started) throw new Error("COMPILED_458_SERVER_UNAVAILABLE");
-  browser = await chromium.launch({
-    executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    headless: true,
-  });
+  // Reuse the dedicated automation Chrome already running on the Studio.
+  // Opening another Chrome profile would bypass the host's browser ownership.
+  browser = await chromium.connectOverCDP(process.env.STRUMENTINI_ACCEPTANCE_CDP
+    ?? "http://127.0.0.1:17630");
+  const context = browser.contexts()[0];
+  if (!context) throw new Error("AUTOMATION_BROWSER_CONTEXT_UNAVAILABLE");
   const failures = [];
   for (const row of rows) {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await context.newPage();
+    await page.setViewportSize({ width: 390, height: 844 });
     const requests = [];
     const errors = [];
     await page.route("**/*", async (route) => {
@@ -95,7 +97,7 @@ try {
       if (errors.length) throw new Error(`PAGE_ERRORS_${JSON.stringify(errors)}`);
     } catch (error) {
       failures.push({ id: row.id, reason: error instanceof Error ? error.message : String(error) });
-    } finally { await context.close(); }
+    } finally { await page.close(); }
   }
   console.log(JSON.stringify({ audited: rows.length, compiledRouteAndInitialNetwork: rows.length - failures.length,
     independentCompiledHttpByteReadback: rows.length - failures.length,
