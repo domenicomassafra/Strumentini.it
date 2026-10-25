@@ -45,8 +45,18 @@ async function records(page) {
     const legacyDb = await open("strumentini-optin-pdf-341", 2);
     const versionedDb = await open("strumentini-editor-projects-412", 1);
     try {
-      const legacy = await read(legacyDb, "projects");
-      const versioned = (await read(versionedDb, "state")).filter((entry) => entry?.kind === "pdf" || entry?.version >= 2);
+      const digest = async (bytes) => {
+        const result = await crypto.subtle.digest("SHA-256", bytes.slice().buffer);
+        return Array.from(new Uint8Array(result), (n) => n.toString(16).padStart(2, "0")).join("");
+      };
+      const legacy = await Promise.all((await read(legacyDb, "projects")).map(async (entry) => ({
+        id: entry.id, schemaVersion: entry.schemaVersion, hash: await digest(entry.bytes),
+      })));
+      const versioned = await Promise.all((await read(versionedDb, "state"))
+        .filter((entry) => entry?.kind === "pdf" || entry?.version >= 2)
+        .map(async (entry) => ({
+          id: entry.id, version: entry.version, hash: await digest(entry.files[0].bytes),
+        })));
       return { legacy, versioned };
     } finally { legacyDb.close(); versionedDb.close(); }
   });
@@ -84,16 +94,15 @@ try {
   const legacy = (await records(page)).legacy;
   assert.equal(legacy.length, 1);
   assert.equal(legacy[0].schemaVersion, 1);
-  const originalLegacy = legacy[0].bytes;
-  assert.equal(createHash("sha256").update(originalLegacy).digest("hex"), expectedHash);
+  assert.equal(legacy[0].hash, expectedHash);
   await page.getByRole("button", { name: "Migra progetto v1 selezionato a v2" }).click();
   await page.locator("[data-pdf-project-412-message]").getByText(/migrato a v2/u).waitFor();
   let inventory = await records(page);
   assert.equal(inventory.versioned.length, 1);
   assert.equal(inventory.versioned[0].id, legacy[0].id);
   assert.equal(inventory.versioned[0].version, 2);
-  assert.equal(createHash("sha256").update(inventory.versioned[0].files[0].bytes).digest("hex"), expectedHash);
-  assert.equal(createHash("sha256").update(inventory.legacy[0].bytes).digest("hex"), expectedHash);
+  assert.equal(inventory.versioned[0].hash, expectedHash);
+  assert.equal(inventory.legacy[0].hash, expectedHash);
   await page.getByRole("button", { name: "Migra progetto v1 selezionato a v2" }).click();
   await page.locator("[data-pdf-project-412-message]").getByText(/ALREADY_EXISTS/u).waitFor();
   assert.equal((await records(page)).versioned.length, 1, "ID collision must not overwrite existing snapshot");
@@ -129,7 +138,7 @@ try {
   await page.locator("[data-pdf-project-412-message]").getByText(/Salvataggio v2 rifiutato/u).waitFor();
   inventory = await records(page);
   assert.equal(inventory.versioned.length, 2);
-  assert.equal(createHash("sha256").update(inventory.legacy[0].bytes).digest("hex"), expectedHash);
+  assert.equal(inventory.legacy[0].hash, expectedHash);
   await page.evaluate(() => {
     IDBObjectStore.prototype.add = window.__str412Add;
     delete window.__str412Add;
@@ -159,7 +168,7 @@ try {
   await page.locator("[data-pdf-project-412-unreadable]").waitFor();
   assert.equal(await choices.locator('option[value="' + legacy[0].id + '"]').count(), 0);
   assert.equal((await records(page)).legacy[0].schemaVersion, 1);
-  assert.equal(createHash("sha256").update((await records(page)).legacy[0].bytes).digest("hex"), expectedHash);
+  assert.equal((await records(page)).legacy[0].hash, expectedHash);
   assert.deepEqual(offsite, []);
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({
