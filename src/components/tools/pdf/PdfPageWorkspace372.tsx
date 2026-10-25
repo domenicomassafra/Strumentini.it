@@ -114,6 +114,7 @@ export function PdfPageWorkspace372() {
   }
   useEffect(() => { void refreshProjects().catch(() => setProjectMessage("Archivio locale non disponibile. Puoi continuare a modificare il PDF.")); }, []);
   function reset() {
+    if (projectBusy) return;
     active.current?.abort();
     active.current = null;
     setFile(null);
@@ -127,6 +128,7 @@ export function PdfPageWorkspace372() {
     setBusy(false);
   }
   function choose(event: Event) {
+    if (projectBusy) return;
     const next = (event.currentTarget as HTMLInputElement).files?.[0] ?? null;
     active.current?.abort();
     active.current = null;
@@ -274,7 +276,7 @@ export function PdfPageWorkspace372() {
             setError("");
           }} />
         <label class="field"><span>PDF da modificare</span>
-          <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={busy} aria-label="PDF da modificare" />
+          <input type="file" accept="application/pdf,.pdf" onChange={choose} disabled={busy || projectBusy} aria-label="PDF da modificare" />
           <small>Massimo 25 MiB, 200 pagine. Quattro miniature per volta; nessun caricamento su server.</small>
         </label>
         {file && <p role="status">{file.name} · {(file.size / 1024).toFixed(1)} KiB · {order.length ? order.length + " pagine" : "lettura pagine…"}</p>}
@@ -349,7 +351,7 @@ export function PdfPageWorkspace372() {
           <div class="actions">
             <button type="button" onClick={() => void save()} disabled={busy || mode === "selected" && !selected.length}>Crea PDF e verifica</button>
             {busy && <button type="button" onClick={() => { active.current?.abort(); setBusy(false); setError("Operazione annullata. Nessun file generato."); }}>Annulla elaborazione</button>}
-            <button type="button" onClick={reset}>Ricomincia</button>
+            <button type="button" onClick={reset} disabled={projectBusy}>Ricomincia</button>
           </div>
           {busy && <p role="status">Generazione e riapertura PDF in Worker locale…</p>}
         </>}
