@@ -2,7 +2,7 @@
 """Read-only source-bound inventory of the routes added after the original 200.
 
 Outputs are GAP/NO_GO inventories, never Gold or browser acceptance receipts.
---write generates two tracked JSONL partitions; --check compares them byte-for-byte.
+--write generates size-bounded tracked JSONL partitions; --check compares them byte-for-byte.
 """
 import argparse
 import collections

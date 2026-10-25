@@ -4,7 +4,6 @@
  * DOM, runtime declarations, network locality and mobile overflow.
  * Neither mode claims positive/refusal operations, exports or Gold.
  */
-import { chromium } from "@playwright/test";
 import { readdir, readFile } from "node:fs/promises";
 import { spawn, execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -39,7 +38,7 @@ const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "1
 });
 let serverExited = false;
 server.on("exit", () => { serverExited = true; });
-let browser;
+let tab;
 
 async function compareCompiledBytes(row, responseBytes) {
   const compiledPath = resolve(root, "dist", row.route.replace(/^\/+/, ""), "index.html");
@@ -49,42 +48,109 @@ async function compareCompiledBytes(row, responseBytes) {
     throw new Error("COMPILED_HTTP_BYTES_DRIFT");
 }
 
-async function verifyBrowserRoute(context, row) {
-  const page = await context.newPage();
+async function openAutomationTab() {
+  // The dedicated Chrome responds to page-target CDP even when Playwright's
+  // browser-wide Browser.getBrowserContexts handshake hangs on existing tabs.
+  const endpoint = process.env.STRUMENTINI_ACCEPTANCE_CDP ?? "http://127.0.0.1:17630";
+  const response = await fetch(`${endpoint}/json/new?about:blank`, { method: "PUT", signal: AbortSignal.timeout(8000) });
+  if (!response.ok) throw new Error(`AUTOMATION_TAB_HTTP_${response.status}`);
+  const target = await response.json();
+  let socket;
+  const pending = new Map();
   const blocked = [];
-  const errors = [];
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.route("**/*", async (route) => {
-    const request = route.request();
-    const url = new URL(request.url());
-    if ((url.origin !== origin && !["blob:", "data:"].includes(url.protocol))
-      || !["GET", "HEAD"].includes(request.method())) {
-      blocked.push({ method: request.method(), urlOrigin: url.origin });
-      await route.abort();
-    } else {
-      await route.continue();
-    }
+  const failures = [];
+  let id = 0;
+  const send = (method, params = {}) => new Promise((resolveCall, reject) => {
+    const commandId = ++id;
+    const timer = setTimeout(() => { pending.delete(commandId); reject(new Error(`CDP_TIMEOUT_${method}`)); }, 12000);
+    pending.set(commandId, { resolveCall, reject, timer });
+    socket.send(JSON.stringify({ id: commandId, method, params }));
   });
-  page.on("pageerror", (error) => errors.push(error.message));
   try {
-    const response = await page.goto(`${origin}${row.route}/`, { waitUntil: "networkidle", timeout: 20000 });
-    if (response?.status() !== 200) throw new Error(`HTTP_${response?.status()}`);
-    await compareCompiledBytes(row, await response.body());
-    const tool = page.locator(`[data-tool-page="${row.id}"]`).first();
-    if (await tool.count() === 0) throw new Error("TOOL_COMPONENT_MISSING");
-    const runtime = await tool.getAttribute("data-runtime");
-    const network = await tool.getAttribute("data-network");
-    if (runtime !== row.runtime.location || network !== row.runtime.network)
-      throw new Error(`RUNTIME_DECLARATION_DRIFT:${runtime}:${network}`);
-    if (await page.getByRole("heading", { level: 1 }).count() === 0)
-      throw new Error("HEADING_MISSING");
-    if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth))
-      throw new Error("MOBILE_OVERFLOW");
-    if (blocked.length) throw new Error(`UNEXPECTED_REQUESTS_${JSON.stringify(blocked)}`);
-    if (errors.length) throw new Error(`PAGE_ERRORS_${JSON.stringify(errors)}`);
-  } finally {
-    await page.close();
+    socket = new WebSocket(target.webSocketDebuggerUrl);
+    socket.addEventListener("message", (event) => {
+      const message = JSON.parse(String(event.data));
+      if (message.id !== undefined) {
+        const call = pending.get(message.id);
+        if (!call) return;
+        pending.delete(message.id);
+        clearTimeout(call.timer);
+        if (message.error) call.reject(new Error(`${JSON.stringify(message.error)} in CDP`));
+        else call.resolveCall(message.result ?? {});
+      } else if (message.method === "Fetch.requestPaused") {
+        const request = message.params.request;
+        const requestUrl = new URL(request.url);
+        const permitted = (requestUrl.origin === origin || ["blob:", "data:"].includes(requestUrl.protocol))
+          && ["GET", "HEAD"].includes(request.method);
+        if (!permitted) blocked.push({ method: request.method, origin: requestUrl.origin });
+        send(permitted ? "Fetch.continueRequest" : "Fetch.failRequest", permitted
+          ? { requestId: message.params.requestId }
+          : { requestId: message.params.requestId, errorReason: "BlockedByClient" })
+          .catch((error) => failures.push(String(error)));
+      }
+    });
+    await new Promise((resolveOpen, reject) => {
+      const timer = setTimeout(() => reject(new Error("CDP_TARGET_OPEN_TIMEOUT")), 8000);
+      socket.addEventListener("open", () => { clearTimeout(timer); resolveOpen(); }, { once: true });
+      socket.addEventListener("error", (error) => { clearTimeout(timer); reject(error); }, { once: true });
+    });
+    await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+    await send("Fetch.enable", { patterns: [{ urlPattern: "*" }] });
+    await send("Page.addScriptToEvaluateOnNewDocument", { source: `
+      window.__expansion458Errors = [];
+      addEventListener('error', e => window.__expansion458Errors.push(e.message));
+      addEventListener('unhandledrejection', e => window.__expansion458Errors.push(String(e.reason)));
+    ` });
+    return {
+      send, blocked, failures,
+      async evaluate(expression) {
+        const result = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
+        if (result.exceptionDetails) throw new Error(`BROWSER_JS_${JSON.stringify(result.exceptionDetails).slice(0, 300)}`);
+        return result.result?.value;
+      },
+      async close() {
+        socket.close();
+        await fetch(`${endpoint}/json/close/${target.id}`, { signal: AbortSignal.timeout(8000) });
+      },
+    };
+  } catch (error) {
+    socket?.close();
+    await fetch(`${endpoint}/json/close/${target.id}`).catch(() => undefined);
+    throw error;
   }
+}
+
+async function verifyBrowserRoute(browserTab, row) {
+  browserTab.blocked.length = 0;
+  browserTab.failures.length = 0;
+  const destination = `${origin}${row.route}/`;
+  await browserTab.send("Page.navigate", { url: destination });
+  let result;
+  for (let attempt = 0; attempt < 60; attempt++) {
+    result = await browserTab.evaluate(`(() => ({
+      url: location.href, ready: document.readyState,
+      tool: document.querySelector(${JSON.stringify(`[data-tool-page="${row.id}"]`)})?.outerHTML.slice(0, 500),
+      runtime: document.querySelector(${JSON.stringify(`[data-tool-page="${row.id}"]`)})?.getAttribute('data-runtime'),
+      network: document.querySelector(${JSON.stringify(`[data-tool-page="${row.id}"]`)})?.getAttribute('data-network'),
+      heading: !!document.querySelector('h1'),
+      overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      errors: window.__expansion458Errors ?? []
+    }))()`);
+    if (result?.url === destination && result?.ready === "complete") break;
+    await new Promise((done) => setTimeout(done, 150));
+  }
+  if (result?.url !== destination || result.ready !== "complete") throw new Error("BROWSER_PAGE_NOT_LOADED");
+  if (!result.tool) throw new Error("TOOL_COMPONENT_MISSING");
+  if (result.runtime !== row.runtime.location || result.network !== row.runtime.network)
+    throw new Error(`RUNTIME_DECLARATION_DRIFT:${result.runtime}:${result.network}`);
+  if (!result.heading) throw new Error("HEADING_MISSING");
+  if (result.overflow) throw new Error("MOBILE_OVERFLOW");
+  if (result.errors.length) throw new Error(`PAGE_ERRORS_${JSON.stringify(result.errors)}`);
+  if (browserTab.blocked.length) throw new Error(`UNEXPECTED_REQUESTS_${JSON.stringify(browserTab.blocked)}`);
+  if (browserTab.failures.length) throw new Error(`NETWORK_INTERCEPT_FAILURE_${JSON.stringify(browserTab.failures)}`);
+  const response = await fetch(destination, { signal: AbortSignal.timeout(8000) });
+  if (response.status !== 200) throw new Error(`HTTP_${response.status}`);
+  await compareCompiledBytes(row, Buffer.from(await response.arrayBuffer()));
 }
 
 try {
@@ -112,18 +178,15 @@ try {
       }
     }
   } else {
-    // Reuse the existing dedicated Studio Chrome; never create a new profile.
+    // Reuse the existing dedicated Studio Chrome; touch only the tab we create.
     try {
-      browser = await chromium.connectOverCDP(process.env.STRUMENTINI_ACCEPTANCE_CDP
-        ?? "http://127.0.0.1:17630", { timeout: 15000 });
+      tab = await openAutomationTab();
     } catch (error) {
       failures.push({ id: "AUTOMATION_BROWSER_CONNECTION", reason: String(error) });
     }
-    if (browser) {
-      const context = browser.contexts()[0];
-      if (!context) throw new Error("AUTOMATION_BROWSER_CONTEXT_UNAVAILABLE");
+    if (tab) {
       for (const row of rows) {
-        try { await verifyBrowserRoute(context, row); checked++; }
+        try { await verifyBrowserRoute(tab, row); checked++; }
         catch (error) { failures.push({ id: row.id, reason: String(error) }); }
       }
     }
@@ -132,13 +195,13 @@ try {
     audited: rows.length,
     compiledHttpByteReadback: httpOnly ? checked : "NOT_RUN",
     compiledBrowserAndInitialNetwork: httpOnly ? "NOT_RUN" : checked,
-    browserNotRun: httpOnly ? rows.length : browser ? 0 : rows.length,
+    browserNotRun: httpOnly ? rows.length : tab ? 0 : rows.length,
     failures,
     operationPositive: "NOT_RUN", operationRefusal: "NOT_RUN",
     exportedFileReadback: "NOT_RUN", physical: "NOT_RUN", release: "NO_GO",
   }));
   if (failures.length || checked !== rows.length) process.exitCode = 1;
 } finally {
-  if (browser) await browser.close();
+  if (tab) await tab.close();
   server.kill("SIGTERM");
 }
