@@ -109,9 +109,10 @@ try {
   try {
     existingSourceHash = adb("shell", "sha256sum", "/sdcard/Download/str461-source.png").split(/\s+/u)[0];
   } catch { /* The source fixture has not been uploaded to this AVD. */ }
-  if (existingSourceHash) {
+  if (existingSourceHash && existingSourceHash !== fingerprint(Buffer.alloc(0))) {
     assert.equal(existingSourceHash, fingerprint(source), "refusing to overwrite an existing Android fixture");
   } else {
+    // An interrupted previous upload can leave a zero-byte placeholder.
     adb("push", fixture, "/sdcard/Download/str461-source.png");
   }
   revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
