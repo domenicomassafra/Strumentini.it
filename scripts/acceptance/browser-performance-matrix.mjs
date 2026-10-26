@@ -6,6 +6,7 @@ import { gzipSync } from "node:zlib";
 import { basename, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { tsImport } from "tsx/esm/api";
+import { browserMatrixIsSuccessful, SIBLING_ACCEPTANCE } from "./browser-performance-verdict.mjs";
 
 // Runs via `node`; shares the exact release source binding through tsx.
 const { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } =
@@ -333,20 +334,6 @@ const staticData = await staticInspection();
 // The matrix receipt is only trustworthy if every verdict inside it was observed in the
 // same run. Sibling acceptance scripts are therefore executed here and their real exit
 // status is recorded; an unrun or failing script is never reported as a historical PASS.
-const SIBLING_ACCEPTANCE = [
-  { command: "npm run acceptance:browser", script: "scripts/browser-acceptance.mjs" },
-  { command: "npm run acceptance:onboarding", script: "scripts/acceptance-onboarding.mjs" },
-  { command: "npm run acceptance:telemetry", script: "scripts/acceptance-telemetry.mjs" },
-  { command: "node scripts/acceptance-text-research.mjs", script: "scripts/acceptance-text-research.mjs" },
-  { command: "node scripts/acceptance-campaign-url.mjs", script: "scripts/acceptance-campaign-url.mjs" },
-  { command: "node scripts/acceptance-client-time-math.mjs", script: "scripts/acceptance-client-time-math.mjs" },
-  { command: "npm run acceptance:business-math", script: "scripts/acceptance-business-math.mjs" },
-  { command: "npm run acceptance:developer-web", script: "scripts/acceptance-developer-web.mjs" },
-  { command: "node scripts/acceptance-directory.mjs", script: "scripts/acceptance-directory.mjs" },
-  { command: "node scripts/acceptance-table-handoff.mjs", script: "scripts/acceptance-table-handoff.mjs" },
-  { command: "node scripts/acceptance-file-hash.mjs", script: "scripts/acceptance-file-hash.mjs" },
-];
-
 async function runSiblingAcceptance() {
   const entries = [];
   for (const { command, script } of SIBLING_ACCEPTANCE) {
@@ -412,6 +399,12 @@ try {
   await mkdir(receiptDir, { recursive: true });
   await writeFile(resolve(receiptDir, "fresh-browser-matrix.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
   console.log(JSON.stringify({ report: resolve(receiptDir, "fresh-browser-matrix.json"), static: staticData, matrix: results.map((result) => ({ engine: result.engine, status: result.status, classification: result.classification, longTaskGate: result.longTasks?.gate, lazy: result.lazy?.observedEngineChunk })) }, null, 2));
+  const requiredAcceptance = [
+    "npm run build",
+    ...engineDefinitions.map((definition) => `node scripts/acceptance/browser-performance-matrix.mjs (${definition.name})`),
+    ...SIBLING_ACCEPTANCE.map(({ command }) => command),
+  ];
+  if (!browserMatrixIsSuccessful(report, engineDefinitions.map((definition) => definition.name), requiredAcceptance)) process.exitCode = 1;
 } finally {
   server.kill("SIGTERM");
 }
