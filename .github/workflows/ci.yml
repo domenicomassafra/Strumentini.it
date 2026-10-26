@@ -41,6 +41,8 @@ jobs:
         with:
           python-version: '3.13.9'
       - run: npm ci
+      - name: Preflight pinned independent PDF/A validator
+        run: node scripts/preflight-pdfa-validator-419.mjs
       - name: Install pinned independent consumer dependencies
         run: |
           sudo apt-get update -qq
@@ -85,6 +87,8 @@ jobs:
         with:
           python-version: '3.13.9'
       - run: npm ci
+      - name: Preflight pinned independent PDF/A validator
+        run: node scripts/preflight-pdfa-validator-419.mjs
       - name: Install pinned independent consumer dependencies
         run: |
           sudo apt-get update -qq

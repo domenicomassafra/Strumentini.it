@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { spawnSync } from "node:child_process";
 import { readFile, mkdtemp, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -11,6 +12,12 @@ import {
 const fontFile = fileURLToPath(new URL("../src/engines/pdf/assets/noto-sans-latin-400-regular.ttf", import.meta.url));
 const getFont = () => readFile(fontFile);
 const timeLimit = 120_000;
+// CI always provisions the pinned validator in a mandatory preflight. On local
+// machines without a running Docker daemon, only independent-verdict tests skip.
+const independentValidatorIt = process.env.CI
+  ? it
+  : it.skipIf(spawnSync("docker", ["info", "--format", "{{.ServerVersion}}"],
+      { encoding: "utf8", timeout: 5_000 }).status !== 0);
 
 function replaceSameSize(bytes: Uint8Array, from: string, to: string) {
   expect(from.length).toBe(to.length);
@@ -52,7 +59,7 @@ async function makeAttachmentPdf(font: Uint8Array) {
 }
 
 describe("STR-419 PDF/A-2b independent validator decision", () => {
-  it("validates actual PDFKit export with embedded Noto Sans via veraPDF", async () => {
+  independentValidatorIt("validates actual PDFKit export with embedded Noto Sans via veraPDF", async () => {
     const bytes = await makePdfaCandidate419("Documento 2026: città, è già così. Costo € 100.", await getFont());
     const outcome = await validatePdfaCandidate419(bytes);
     expect(outcome.status).toBe("VALIDATED_PDFA_2B");
@@ -60,24 +67,24 @@ describe("STR-419 PDF/A-2b independent validator decision", () => {
     expect(outcome.sha256).toMatch(/^[a-f0-9]{64}$/u);
   }, timeLimit);
 
-  it("REFUSED: invalid unembedded font never receives a PDF/A declaration", async () => {
+  independentValidatorIt("REFUSED: invalid unembedded font never receives a PDF/A declaration", async () => {
     const outcome = await validatePdfaCandidate419(await makeBrokenFontPdf());
     expect(outcome.status).toBe("REFUSED");
   }, timeLimit);
 
-  it("REFUSED: missing ICC OutputIntent", async () => {
+  independentValidatorIt("REFUSED: missing ICC OutputIntent", async () => {
     const valid = await makePdfaCandidate419("Prova ICC", await getFont());
     const corrupt = replaceSameSize(valid, "/OutputIntents", "/OutputIntentz");
     expect((await validatePdfaCandidate419(corrupt)).status).toBe("REFUSED");
   }, timeLimit);
 
-  it("REFUSED: XMP with invalid PDF/A part", async () => {
+  independentValidatorIt("REFUSED: XMP with invalid PDF/A part", async () => {
     const valid = await makePdfaCandidate419("Prova XMP", await getFont());
     const corrupt = replaceSameSize(valid, "<pdfaid:part>2</pdfaid:part>", "<pdfaid:part>9</pdfaid:part>");
     expect((await validatePdfaCandidate419(corrupt)).status).toBe("REFUSED");
   }, timeLimit);
 
-  it("REFUSED: non-PDF/A attachment", async () => {
+  independentValidatorIt("REFUSED: non-PDF/A attachment", async () => {
     const corrupt = await makeAttachmentPdf(await getFont());
     expect((await validatePdfaCandidate419(corrupt)).status).toBe("REFUSED");
   }, timeLimit);
