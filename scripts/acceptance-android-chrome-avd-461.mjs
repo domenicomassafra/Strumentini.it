@@ -1,6 +1,6 @@
 /** STR-461: Android Emulator Chrome + OS picker/download; evidence is SIMULATED, never physical. */
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { createServer } from "node:http";
 import { copyFile, mkdtemp, readFile, stat, writeFile } from "node:fs/promises";
@@ -78,41 +78,55 @@ async function waitDownloaded(filename) {
   throw new Error(`Android Chrome download missing: ${filename}; Downloads=${names.slice(0, 1100)}`);
 }
 
-assert.match(adb("get-serialno"), /^emulator-\d+$/u,
-  "STR-461 requires an Android emulator, not an attached physical device");
-assert.equal(adb("shell", "getprop", "sys.boot_completed"), "1", "AVD not booted");
-assert.match(adb("shell", "pm", "list", "packages", "com.android.chrome"), /package:com.android.chrome/u);
 const temp = await mkdtemp(resolve(tmpdir(), "str461-avd-"));
 const outputFile = resolve(temp, "str461-avd-output.jpg");
 const receiptFile = resolve(temp, "str461-avd-receipt.json");
-const source = await readFile(fixture);
-const sourceMetadata = await sharp(source).metadata();
-assert.deepEqual([sourceMetadata.format, sourceMetadata.width, sourceMetadata.height], ["png", 320, 240]);
-const html = await readFile(resolve(dist, "tools/image-resize/index.html"));
-let existingSourceHash;
-try {
-  existingSourceHash = adb("shell", "sha256sum", "/sdcard/Download/str461-source.png").split(/\s+/u)[0];
-} catch { /* The source fixture has not been uploaded to this AVD. */ }
-if (existingSourceHash) {
-  assert.equal(existingSourceHash, fingerprint(source), "refusing to overwrite an existing Android fixture");
-} else {
-  adb("push", fixture, "/sdcard/Download/str461-source.png");
-}
-const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
-const browserVersion = adb("shell", "dumpsys", "package", "com.android.chrome").match(/versionName=([^\s]+)/u)?.[1];
-assert(browserVersion);
-const androidFingerprint = adb("shell", "getprop", "ro.build.fingerprint");
-const api = Number(adb("shell", "getprop", "ro.build.version.sdk"));
-const avdName = adb("emu", "avd", "name").split(/\r?\n/u)[0];
-assert.match(avdName, /^[A-Za-z0-9_.-]+$/u, "running AVD name missing or malformed");
 let browser;
-let stage = "native-chrome-launch";
-await new Promise((done) => server.listen(port, "127.0.0.1", done));
+let serverStarted = false;
+let stage = "preflight";
+let serial;
+let revision;
+let browserVersion;
+let androidFingerprint;
+let api;
+let html;
 try {
+  serial = adb("get-serialno");
+  assert.match(serial, /^emulator-\d+$/u,
+    "STR-461 requires an Android emulator, not an attached physical device");
+  assert.equal(adb("shell", "getprop", "sys.boot_completed"), "1", "AVD not booted");
+  assert.match(adb("shell", "pm", "list", "packages", "com.android.chrome"), /package:com.android.chrome/u);
+  adb("shell", "input", "keyevent", "KEYCODE_MENU");
+  for (let i = 0; i < 12; i++) {
+    try { adb("shell", "mkdir", "-p", "/sdcard/Download"); break; }
+    catch (error) { if (i === 11) throw error; await sleep(2000); }
+  }
+  const source = await readFile(fixture);
+  const sourceMetadata = await sharp(source).metadata();
+  assert.deepEqual([sourceMetadata.format, sourceMetadata.width, sourceMetadata.height], ["png", 320, 240]);
+  html = await readFile(resolve(dist, "tools/image-resize/index.html"));
+  let existingSourceHash;
+  try {
+    existingSourceHash = adb("shell", "sha256sum", "/sdcard/Download/str461-source.png").split(/\s+/u)[0];
+  } catch { /* The source fixture has not been uploaded to this AVD. */ }
+  if (existingSourceHash) {
+    assert.equal(existingSourceHash, fingerprint(source), "refusing to overwrite an existing Android fixture");
+  } else {
+    adb("push", fixture, "/sdcard/Download/str461-source.png");
+  }
+  revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+  browserVersion = adb("shell", "dumpsys", "package", "com.android.chrome").match(/versionName=([^\s]+)/u)?.[1];
+  assert(browserVersion);
+  androidFingerprint = adb("shell", "getprop", "ro.build.fingerprint");
+  api = Number(adb("shell", "getprop", "ro.build.version.sdk"));
+  const avdName = adb("emu", "avd", "name").split(/\r?\n/u)[0];
+  assert.match(avdName, /^[A-Za-z0-9_.-]+$/u, "running AVD name missing or malformed");
+  await new Promise((done) => server.listen(port, "127.0.0.1", done));
+  serverStarted = true;
+  stage = "native-chrome-launch";
   adb("reverse", `tcp:${port}`, `tcp:${port}`);
   adb("forward", "tcp:19222", "localabstract:chrome_devtools_remote");
   adb("shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", `http://127.0.0.1:${port}/tools/image-resize/`, "com.android.chrome");
-  // Chrome creates its remote-debugging socket asynchronously after activity launch.
   let cdpError;
   for (let attempt = 0; attempt < 20 && !browser; attempt++) {
     try {
@@ -123,8 +137,7 @@ try {
     }
   }
   if (!browser) throw cdpError;
-  // Playwright's default CDP download directory points to the Linux host;
-  // leave Android Chrome's native DownloadManager untouched (Playwright Apache-2.0).
+  // Keep Android Chrome's native DownloadManager.
   console.log("AVD_NATIVE_CHROME_DOWNLOAD_BEHAVIOR", "browser-default/noDefaults");
   const context = browser.contexts()[0];
   const page = context.pages().find((item) => item.url().includes("/tools/image-resize/")) ?? context.pages()[0] ?? await context.newPage();
@@ -200,25 +213,23 @@ try {
   assert(href?.startsWith("blob:"), "output must originate from local Blob");
   const siteFilename = await link.getAttribute("download");
   assert.match(siteFilename, /^[\w .()-]+\.jpe?g$/iu, "unexpected image download filename");
-  // Do not overwrite an existing Android download or confuse it with new output.
+  // Keep AVD output from previous runs.
+  const [, filenameStem, extension] = siteFilename.match(/^(.+?)(\.jpe?g)$/iu);
+  const downloadFilename = `${filenameStem}-str461-${Date.now()}-${randomBytes(4).toString("hex")}${extension}`;
+  await link.evaluate((element, filename) => element.setAttribute("download", filename), downloadFilename);
+  assert.equal(await link.getAttribute("download"), downloadFilename);
   stage = "android-download";
-  let preexistingOutput = false;
-  try {
-    adb("shell", "stat", "-c", "%s", "/sdcard/Download/" + siteFilename);
-    preexistingOutput = true;
-  } catch { /* No existing download at this path. */ }
-  assert.equal(preexistingOutput, false, "refusing to overwrite a prior Android download");
   page.on("download", async (download) => {
     console.log("CDP_DOWNLOAD_EVENT", download.suggestedFilename());
     try { console.log("CDP_DOWNLOAD_PATH", await download.path()); } catch(error) { console.log("CDP_DOWNLOAD_ERROR", String(error)); }
   });
   await link.scrollIntoViewIfNeeded();
   await link.click({ timeout: 15000 });
-  console.log("AVD_CHROME_LINK_CLICKED", siteFilename);
+  console.log("AVD_CHROME_LINK_CLICKED", downloadFilename);
   await sleep(1200);
   console.log("AVD_POST_DOWNLOAD_NODES", JSON.stringify(pickerNodes().filter((n) => n.text || n.description).slice(-18)));
-  const byteCount = await waitDownloaded(siteFilename);
-  adb("pull", `/sdcard/Download/${siteFilename}`, resolve(temp, "android-downloaded.jpg"));
+  const byteCount = await waitDownloaded(downloadFilename);
+  adb("pull", `/sdcard/Download/${downloadFilename}`, resolve(temp, "android-downloaded.jpg"));
   const bytes = await readFile(resolve(temp, "android-downloaded.jpg"));
   assert.equal(bytes.length, byteCount);
   assert.equal(bytes.subarray(0, 3).toString("hex"), "ffd8ff");
@@ -227,20 +238,16 @@ try {
   assert.equal(decodedPixels.length, decoded.width * decoded.height * 4, "download must fully decode");
   assert.deepEqual([decoded.format, decoded.width, decoded.height], ["jpeg", 160, 120]);
 
-  // Leave the real Chrome app and return through Android's activity manager.
   stage = "background-resume";
-  // The Blob/result must survive; this cannot be reproduced by desktop page events.
   adb("shell", "input", "keyevent", "KEYCODE_HOME");
   await sleep(700);
   adb("shell", "am", "start", "-n", "com.android.chrome/org.chromium.chrome.browser.ChromeTabbedActivity");
   await sleep(900);
   assert.equal(await link.getAttribute("href"), href, "background/resume lost the generated Blob");
-  assert.equal(await link.getAttribute("download"), siteFilename, "background/resume lost the output identity");
+  assert.equal(await link.getAttribute("download"), downloadFilename, "background/resume lost the output identity");
   console.log("AVD_BACKGROUND_RESUME_PRESERVED_RESULT");
 
-  // Android's real share sheet is identified by system package, not a mocked
   stage = "share-sheet";
-  // navigator.share() rejection. A missing file-share API stays NOT_RUN.
   let nativeShareSheet = "NOT_RUN";
   const shareAction = page.locator('[data-result-action="share"]');
   if (await shareAction.count()) {
@@ -260,8 +267,6 @@ try {
   }
   assert.deepEqual(errors, []);
   assert.deepEqual(externalRequests, [], "image-resize page attempted offsite requests");
-  // Keep screencap as raw bytes: the regular ADB helper intentionally decodes
-  // textual commands to UTF-8, which corrupts arbitrary PNG bytes.
   const capture = execFileSync(adbBin, ["exec-out", "screencap", "-p"],
     { timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
   assert.equal(capture.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", "ADB did not capture PNG bytes");
@@ -269,7 +274,6 @@ try {
   const screenshotFile = resolve(temp, "str461-avd-screenshot.png");
   await writeFile(screenshotFile, capture);
 
-  // Negative native picker: Cancel refuses access to another file after reset.
   stage = "picker-cancel-and-invalid-file";
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.locator("#image-resize-file").click({ force: true });
@@ -281,8 +285,6 @@ try {
   assert.equal(cancelledPicker, true, "native picker cancellation must not select a file");
   assert.equal(await page.locator('a[download]').count(), 0, "cancelled picker must not create output");
 
-  // Negative format: exercise the real Android renderer's refusal with a test-injected
-  // corrupt image; the successful source selection above used the native picker.
   await page.locator("#image-resize-file").setInputFiles({
     name: "corrupt.jpg", mimeType: "image/jpeg", buffer: Buffer.from([0xff, 0xd8, 0xff, 0x00]),
   });
@@ -306,27 +308,27 @@ try {
     negative: { pickerCancelledWithoutSelection: true, corruptJpegRefused: true, offsiteRequests: externalRequests.length },
     evidenceDirectory: temp,
     screenshot: { file: "str461-avd-screenshot.png", capture: "ADB_SCREENCAP", kind: "ANDROID_EMULATOR_SCREENSHOT_SIMULATED", bytes: capture.length, sha256: fingerprint(capture) },
-    output: { filename: siteFilename, mime: "image/jpeg", bytes: bytes.length, sha256: fingerprint(bytes), width: decoded.width, height: decoded.height, decoder: "sharp/libvips", reopened: true },
+    output: { filename: downloadFilename, mime: "image/jpeg", bytes: bytes.length, sha256: fingerprint(bytes), width: decoded.width, height: decoded.height, decoder: "sharp/libvips", reopened: true },
   };
   await writeFile(receiptFile, JSON.stringify(receipt, null, 2) + "\n");
   console.log(`ANDROID_CHROME_AVD_461_PARTIAL ${JSON.stringify({ build: revision.slice(0, 12), browser: browserVersion, source: [320, 240, source.length], output: [decoded.width, decoded.height, bytes.length, fingerprint(bytes)], receipt: receiptFile, simulated: true })}`);
-  // A successful native Chrome file flow does not prove the ticket's second
-  // Photos/Files flow, actual OS permission denial, or iOS Safari acceptance.
-  // Fail closed until the complete acceptance matrix has its own OS evidence.
+  // Fail closed until the complete dual-OS picker matrix has evidence.
   process.exitCode = 2;
 } catch (error) {
+  const result = stage === "preflight" ? "NOT_RUN" : "FAIL";
   await writeFile(receiptFile, JSON.stringify({
     schemaVersion: 1, ticket: "STR-461", evidenceKind: "ANDROID_EMULATOR_CHROME_SIMULATED",
-    physicalDeviceObserved: false, result: "FAIL", observedAt: new Date().toISOString(),
-    build: { revision, compiled: true, route: "/tools/image-resize/", htmlSha256: fingerprint(html) },
-    emulator: { serial: adb("get-serialno"), api, fingerprint: androidFingerprint },
-    browser: { package: "com.android.chrome", version: browserVersion },
+    physicalDeviceObserved: false, result, observedAt: new Date().toISOString(),
+    build: { revision: revision ?? "NOT_OBSERVED", compiled: Boolean(html), route: "/tools/image-resize/", htmlSha256: html ? fingerprint(html) : "NOT_OBSERVED" },
+    emulator: { serial: serial ?? "NOT_OBSERVED", api: api ?? "NOT_OBSERVED", fingerprint: androidFingerprint ?? "NOT_OBSERVED" },
+    browser: { package: "com.android.chrome", version: browserVersion ?? "NOT_OBSERVED" },
     failedStage: stage, error: String(error),
     unverified: { photosPicker: "NOT_RUN", filesPicker: "NOT_RUN",
       permissionDenial: "NOT_RUN", iosSafari: "NOT_RUN" },
   }, null, 2) + "\n");
-  throw error;
+  console.error(`STR461_${result} receipt=${receiptFile} stage=${stage}: ${String(error)}`);
+  process.exitCode = 2;
 } finally {
   if (browser) await browser.close();
-  await new Promise((done) => server.close(done));
+  if (serverStarted) await new Promise((done) => server.close(done));
 }
