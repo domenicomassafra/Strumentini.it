@@ -21,8 +21,10 @@ export function browserMatrixIsSuccessful(receipt, requiredEngineNames, required
   const commands = new Set(requiredAcceptanceCommands);
   return required.size > 0 && required.size === requiredEngineNames.length
     && Array.isArray(engines) && engines.length === required.size
+    && new Set(engines.map((engine) => engine.engine)).size === required.size
     && engines.every((engine) => required.has(engine.engine) && engine.status === "PASS")
     && commands.size > 0 && commands.size === requiredAcceptanceCommands.length
     && Array.isArray(acceptance) && acceptance.length === commands.size
+    && new Set(acceptance.map((check) => check.command)).size === commands.size
     && acceptance.every((check) => commands.has(check.command) && check.status === "PASS");
 }
