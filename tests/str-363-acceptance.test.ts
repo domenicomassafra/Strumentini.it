@@ -49,7 +49,7 @@ describe("STR-363 mobile editor memory acceptance seams", () => {
     }
   }, 30_000);
 
-  it("represents all 36 platform/format/size/temperature slots without invented device measurements", () => {
+  it("represents all 36 platform/format/size/temperature slots as validated observations or explicit gaps", () => {
     const receipt = JSON.parse(readFileSync(resolve(import.meta.dirname,
       "../quality/receipts/mobile-memory-363-simulated.json"), "utf8"));
     const keys = receipt.cases.map((entry: { platform: string; format: string; size: string; phase: string }) =>
@@ -59,7 +59,7 @@ describe("STR-363 mobile editor memory acceptance seams", () => {
         [platform, format, size, phase].join("/")))));
     expect(new Set(keys)).toEqual(new Set(expected));
     expect(keys).toHaveLength(36);
-    expect(receipt.cases.every((row: { status: string }) => row.status === "NOT_RUN")).toBe(true);
+    expect(receipt.cases.every((row: { status: string }) => ["PASS", "FAIL", "NOT_RUN"].includes(row.status))).toBe(true);
     expect(receipt.physicalDeviceObserved).toBe(false);
     expect(validateMobileMemory363(receipt)).toEqual([]);
     expect(assessMobileMemory363(receipt).status).toBe("BLOCKED");

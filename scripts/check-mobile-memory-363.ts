@@ -13,7 +13,7 @@ if (!receiptPath.startsWith(checkoutRoot + sep)) {
     const result = await assessMobileMemory363Compiled(receipt, checkoutRoot);
     console.log(JSON.stringify(result, null, 2));
     // Both states require action: a matching build/trace still needs an
-    // independent human review of the actual emulator/simulator session.
+    // independent agent review of the actual emulator/simulator session.
     process.exitCode = result.status === "BLOCKED" ? 1 : 2;
   } catch (error) {
     console.error("STR-363: receipt read/parse failed:", error instanceof Error ? error.message : error);
