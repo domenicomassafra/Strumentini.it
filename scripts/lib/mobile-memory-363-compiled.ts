@@ -14,7 +14,7 @@ const obj = (value: unknown): Dict => value !== null && typeof value === "object
 const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 
 /** Independent provenance check against this checkout and its compiled routes.
- * It can only mark a record READY FOR HUMAN DEVICE-TRACE REVIEW. A saved JSON
+ * It can only mark a record READY FOR INDEPENDENT DEVICE-TRACE REVIEW. A saved JSON
  * trace, even when hashed, cannot authenticate real simulator observations.
  */
 export async function assessMobileMemory363Compiled(
@@ -91,7 +91,7 @@ export async function assessMobileMemory363Compiled(
   return {
     status: reasons.length === 0 ? "PROVENANCE_CHECKED_REVIEW_REQUIRED" : "BLOCKED",
     reasons: reasons.length === 0
-      ? ["Compiled SHA and local trace hash match; independent human device-capture review remains mandatory"]
+      ? ["Compiled SHA and local trace hash match; independent agent device-capture review remains mandatory"]
       : reasons,
   };
 }

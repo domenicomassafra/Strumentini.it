@@ -55,6 +55,25 @@ function plausibleButUnobserved() {
 }
 
 describe("STR-363 mobile S/M/L memory/recovery evidence", () => {
+  it("records observed simulator crashes as failed cases while refusing to promote the matrix", () => {
+    const receipt = fixtureReceipt();
+    const failed = receipt.cases[0]!;
+    Object.assign(failed, {
+      status: "FAIL",
+      failure: { kind: "CRASH", detail: "Chrome process exited during the observed PDF operation" },
+      route: MOBILE_363_ROUTES.pdf,
+      evidenceSource: `${MOBILE_363_EVIDENCE_DIR}/ios_simulator-pdf-s-cold.json`,
+      evidenceSha256: fixtureHash,
+    });
+    expect(validateMobileMemory363(receipt)).toEqual([]);
+    expect(assessMobileMemory363(receipt).status).toBe("BLOCKED");
+    Object.assign(failed, { evidenceSha256: "invalid" });
+    expect(validateMobileMemory363(receipt)).toContain("cases[0] observed failure lacks compiled/device/input evidence");
+    Object.assign(failed, { evidenceSha256: fixtureHash });
+    Object.assign(failed, { failure: { kind: "CRASH", detail: "" } });
+    expect(validateMobileMemory363(receipt)).toContain("cases[0] observed failure requires kind and detail");
+  });
+
   it("parses the complete 2 × 3 × 3 × 2 UNIT matrix but never promotes synthetic evidence", () => {
     const fixture = fixtureReceipt();
     expect(fixture.cases).toHaveLength(36);
@@ -174,10 +193,10 @@ describe("STR-363 mobile S/M/L memory/recovery evidence", () => {
     expect(hash(retry.output)).toBe(hash("id,value\n1,ok\n"));
   });
 
-  it("checks the committed NOT_RUN receipt and keeps incomplete device acceptance blocked", () => {
+  it("checks the committed evidence matrix while keeping incomplete device acceptance blocked", () => {
     const receipt = JSON.parse(readFileSync(resolve(import.meta.dirname, "../quality/receipts/mobile-memory-363-simulated.json"), "utf8"));
     expect(receipt.cases).toHaveLength(36);
-    expect(receipt.cases.every((entry: { status: string }) => entry.status === "NOT_RUN")).toBe(true);
+    expect(receipt.cases.every((entry: { status: string }) => ["PASS", "FAIL", "NOT_RUN"].includes(entry.status))).toBe(true);
     expect(receipt.physicalDeviceObserved).toBe(false);
     expect(validateMobileMemory363(receipt)).toEqual([]);
     expect(assessMobileMemory363(receipt).status).toBe("BLOCKED");
