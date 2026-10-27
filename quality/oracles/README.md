@@ -10,14 +10,14 @@ It deliberately separates:
 - **tool/family oracle plans** in `registry.json`;
 - **validation** in `validate.py`.
 
-The version-controlled `sources.json`, `registry.json`, fixture `index.json`, and fixture payloads are the current authority. `build_gold_data.py` is a retired historical bootstrap for the original 200-candidate registry; direct execution fails before any filesystem mutation and it must not be used as a current regeneration source.
+The version-controlled `sources.json`, `registry.json`, fixture `index.json`, and fixture payloads are the current authority. The original 200-candidate bootstrap was retired from the working tree; its historical implementation remains available in Git history. Never regenerate expected values from the implementation under test.
 
 Expected values must come from published vectors, hand-worked literals, a second independent implementation, or explicit project policy. A future tool implementation must not generate its own expected values.
 
 Run:
 
 ```bash
-python3 quality/oracles/validate.py
+npm run certification:check
 ```
 
-The validator fails closed if the registry has fewer than 80 entries, the fixture index has fewer than 25 families, source references are broken, fixture provenance is missing, or indexed fixture files are absent/invalid.
+The certification check runs the existing fail-closed oracle/fixture validator before verifying the generated certification index without rewriting it. The validator rejects fewer than 80 registry entries, fewer than 25 fixture families, broken source references, missing fixture provenance, and missing/invalid indexed fixtures. For a standalone oracle/fixture check, run `python3 quality/oracles/validate.py`.
