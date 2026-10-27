@@ -1,5 +1,7 @@
 # Strumentini.it — rivalutazione indipendente
 
+> [Reperti al commit 7fe2dfd7](https://github.com/domenicomassafra/Strumentini.it/tree/7fe2dfd729cfbc3450de3080324a9a1757f0ea28/docs/audit-2026-10-10). Gli snapshot donor sono ora in provenienza #366.
+
 **Mandato:** CEO, strategia di prodotto, CTO e direzione UX. Audit del sito pubblico e del repository; nessuna implementazione, mutazione di produzione o modifica dei ticket. **Baseline locale:** `d0947cc278416ca966151eae516255b325477230`. **Sorgente distribuito dichiarato dal receipt:** `95be886`; versione Cloudflare verificata `6a1a5eaf-1091-45a7-a7c8-635c321877be`, 100%. Data di riferimento del mandato: 10 ottobre 2026. Gli orari effettivi delle nuove osservazioni sono registrati nel manifest delle prove; questa revisione può attraversare la mezzanotte.
 
 **Stato del mandato complessivo:** audit consegnato nel perimetro esplicitato; grilling PENDING-OWNER, direzione e redesign non ancora approvati né implementati. Non è una certificazione Gold o una chiusura del progetto.
@@ -78,7 +80,7 @@ Etichette: **FATTO** = output nuovo o sorgente letto; **GIUDIZIO** = valutazione
 
 Gli stessi casi sono riusciti a 390 e 1440 px. Tempi rilevati per PNG ~395–1.417 ms tra avvio ed esportazione; PDF ~295–315 ms nel harness. UTM ~414–960 ms include compilazione automatizzata e download. **Non sono P95, tempi di utenti o prove su smartphone.** Per CSV il controllo non si limita all'estensione del file: riapre il contenuto e verifica le celle sensibili.
 
-Loading/abort verificati separatamente: 50 copie sintetiche della fixture PDF, CPU Chrome rallentata 8× per rendere osservabile lo stato, avvio→“Elaborazione in corso”→Annulla→stato annullato, **zero download**. Screenshot [loading](audit-2026-10-10/pdf-loading-390.png) e [annullato](audit-2026-10-10/pdf-cancel-390.png). È una prova UI su batch specifico, non certificazione di cancellazione/peak memory su tutti gli engine o su hardware mobile.
+Loading/abort verificati separatamente: 50 copie sintetiche della fixture PDF, CPU Chrome rallentata 8× per rendere osservabile lo stato, avvio→“Elaborazione in corso”→Annulla→stato annullato, **zero download**. Screenshot loading (`pdf-loading-390.png`) e annullato (`pdf-cancel-390.png`). È una prova UI su batch specifico, non certificazione di cancellazione/peak memory su tutti gli engine o su hardware mobile.
 
 Nei percorsi controllati nessuna richiesta POST/PUT/PATCH di contenuti, nessun upload offsite osservato. Host: `strumentini.it` e, solo nella pagina accesso, `challenges.cloudflare.com`. Questo supporta la privacy di quei percorsi; non certifica ogni formato o eventuale trasporto futuro.
 
@@ -86,13 +88,13 @@ Nei percorsi controllati nessuna richiesta POST/PUT/PATCH di contenuti, nessun u
 
 **Account — priorità alta nel perimetro live.** Tutte le 8 visite iniziali alla pagina accesso producono l'eccezione Turnstile: `Remove async/defer ... before using turnstile.ready()`. A 1024 e nel retry con campi validi sintetici la condizione si ripete. `src/pages/accedi.astro:281` carica con `defer`; `:382` usa `ready`. Il widget resta vuoto; il submit dice “Completa la verifica anti-bot e riprova”, senza una verifica da completare. La [documentazione ufficiale](https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/) distingue `render` con callback/onload e `ready` in script non differito. **Non è il 404 di navigazione sull'endpoint JSON**. Il backend potrebbe essere corretto e rimanere irraggiungibile dall'interazione. Nessuna patch autorizzata in questa fase.
 
-**Recenti — meccanismo non collegato.** `src/workbench/membership.ts:94` definisce `noteToolUse`, ma `rg -n 'noteToolUse' src` trova solo quella definizione; `recordRecentTool` compare nel modello e in quella funzione. Un contesto fresco esegue davvero UTM e poi visita `/preferiti/`: riprendi resta vuoto. Screenshot [recente dopo risultato](audit-2026-10-10/recent-after-result-390.png). Non attribuisco la prima osservazione all'onboarding che avrebbe cancellato dati: il retry è isolato. Inoltre `noteToolUse` non emette il broadcast della membership; un eventuale collegamento futuro deve verificare anche aggiornamento live e identità della persistence.
+**Recenti — meccanismo non collegato.** `src/workbench/membership.ts:94` definisce `noteToolUse`, ma `rg -n 'noteToolUse' src` trova solo quella definizione; `recordRecentTool` compare nel modello e in quella funzione. Un contesto fresco esegue davvero UTM e poi visita `/preferiti/`: riprendi resta vuoto. Screenshot recente dopo risultato (`recent-after-result-390.png`). Non attribuisco la prima osservazione all'onboarding che avrebbe cancellato dati: il retry è isolato. Inoltre `noteToolUse` non emette il broadcast della membership; un eventuale collegamento futuro deve verificare anche aggiornamento live e identità della persistence.
 
 La sync salvati usa unione delle liste. È robusta contro una perdita di aggiunte offline, ma senza tombstone/semantica di rimozione una cancellazione locale durante guasto può riapparire da remoto. È **rischio di modello dal codice**, non un incidente riprodotto su due account reali. Chiarire “strumento salvato”, “recente”, “preset”, “file” evita di estendere questo modello oltre il suo contratto.
 
 ## 4. Catalogo: valore e dispersione
 
-L'[inventario completo](audit-2026-10-10/catalog-review.csv) contiene tutti i 269 ID, engine, runtime, campi di profilo e una classificazione editoriale del reviewer. **Le classi sono ipotesi di investimento, non popolarità misurata né sentenze di guasto.** “Ridondante” indica sovrapposizione di job/interfaccia da riesaminare, non codice sicuramente duplicato. Non si propone cancellazione automatica o rottura di URL.
+L'inventario completo (`catalog-review.csv`) contiene tutti i 269 ID, engine, runtime, campi di profilo e una classificazione editoriale del reviewer. **Le classi sono ipotesi di investimento, non popolarità misurata né sentenze di guasto.** “Ridondante” indica sovrapposizione di job/interfaccia da riesaminare, non codice sicuramente duplicato. Non si propone cancellazione automatica o rottura di URL.
 
 Il gruppo pubblico semplifica 14 categorie interne in 10 famiglie: immagini 21, PDF/documenti 31, file/media 28, testo 29, dati 25, date 22, sviluppo 36, marketing 22, ricerca 21, tariffe/clienti 34. Sono tassonomie, non segmenti utenti. Manutenzione dichiarata: 211 E, 41 H, 10 R, 7 D. Profilo dichiarato in 40 tool su 269; 229 non ne ricevono. Questo riduce il peso reale della tesi “default personali ovunque”. I `roleTags` diretti sono vuoti: esistono invece membership dei contesti curate separatamente; non dedurre che onboarding sia inesistente. Le stringhe `jobs` italiane sono spesso “Usa <nome>”, ma il search index conserva ulteriori keyword: non dedurre una ricerca rotta da quel campo soltanto.
 
@@ -111,21 +113,21 @@ Fiscalità italiana: alcune utility annuali INPS sono **già nel catalogo**, anc
 
 ## 5. Critica visuale e UX
 
-Le [tavole desktop light](audit-2026-10-10/contact-1440-light-all.png) e [dark](audit-2026-10-10/contact-1440-dark-all.png) mostrano, nell'ordine: home/directory/categoria; search/onboarding/UTM; immagini/PDF/CSV; workbench/account/settings; risorse. Sono screenshot reali ridotti per confronto, **non alternative di design**.
+Le tavole desktop light (`contact-1440-light-all.png`) e dark (`contact-1440-dark-all.png`) mostrano, nell'ordine: home/directory/categoria; search/onboarding/UTM; immagini/PDF/CSV; workbench/account/settings; risorse. Sono screenshot reali ridotti per confronto, **non alternative di design**.
 
 | Osservazione concreta | Prova visiva / radice | Impatto |
 |---|---|---|
-| Il titolo potrebbe appartenere a qualunque toolbox | [Home 1440](audit-2026-10-10/home-1440-light.png), `HomeHero.astro`: “Strumenti semplici, utili davvero”, icone flottanti, blob, ricerca | Non identifica utente, lavoro o perché tornare; l'ornamento occupa il posto di un esempio di valore |
+| Il titolo potrebbe appartenere a qualunque toolbox | Home 1440 (`home-1440-light.png`), `HomeHero.astro`: “Strumenti semplici, utili davvero”, icone flottanti, blob, ricerca | Non identifica utente, lavoro o perché tornare; l'ornamento occupa il posto di un esempio di valore |
 | Layout directory-first contro strategia workbench | Home: hero/trust/category prima di recenti; onboarding salva e torna alla home | L'utente genera il proprio spazio e incontra di nuovo la vetrina generale |
 | Gerarchia per container ripetuti | Directory/categoria: card, bordi pastello, icone, contatori, pill, featured e altre card | L'importanza del compito non si distingue dal resto; la scansione richiede lettura di tanti blocchi equivalenti |
 | Tipografia leggibile ma senza voce o contrasto gerarchico sufficiente | `global.css`: Inter per display/UI, 12–15px nei livelli minuti; quasi tutte le differenze da bold, blu e box | È un sistema coerente, ma non costruisce una firma visiva. Non basta sostituire il font |
-| Risultato mobile arriva dopo controlli lunghi | [Image 390 completa](audit-2026-10-10/image-390-light-full.png), [CSV 390 completa](audit-2026-10-10/csv-390-light-full.png) | Su tool complessi serve continuità input→azione→risultato e posizione del nuovo output; non una colonna desktop semplicemente accodata |
+| Risultato mobile arriva dopo controlli lunghi | Image 390 completa (`image-390-light-full.png`), CSV 390 completa (`csv-390-light-full.png`) | Su tool complessi serve continuità input→azione→risultato e posizione del nuovo output; non una colonna desktop semplicemente accodata |
 | La compressione espone la decomposizione ingegneristica | PNG IDAT, palette exact/lossy, quality e metadata tutti visibili con note prima della conclusione | L'utente deve conoscere codec e ramo sperimentale per comprimere un allegato. Distinguere scelta di obiettivo da opzioni avanzate |
 | Ornamentazione incongruente con il contratto visivo | Hero/tool art gradient, angoli/ombre locali; `WORLD.md` promette calma e minima decorazione | La stessa deriva torna su tutte le route: cambiarla a monte nel sistema, non correggere 269 pagine a mano |
 | Fiducia come slogan ripetuto | Gratis/senza account/Verificato + quattro feature + FAQ + footer; account “sempre al sicuro” | Reiterazione occupa spazio senza chiarire i limiti importanti. Una nota vicino al file/risultato è più utile |
 | La ricerca dedicata diluisce una risposta singola | Query “unisci pdf”: pannelli suggeriti/recenti/categorie prima della card trovata | L'utente ha già espresso un intento; mostrargli subito il risultato e un'apertura chiara |
-| Il workbench ha forma di dashboard ma scarso stato operativo | [Workbench 390](audit-2026-10-10/recent-after-result-390.png): rail, hero “Riprendi”, poi stato vuoto | La composizione simula una ricchezza funzionale che non c'è ancora. Il percorso vuoto deve aiutare ad avviare un lavoro reale |
-| Account è un pannello SaaS comune con un errore senza uscita | [Account bloccato](audit-2026-10-10/auth-blocked-390.png) | Il vantaggio promesso è sync di tool, il costo è registrazione; la gestione errore impedisce il beneficio |
+| Il workbench ha forma di dashboard ma scarso stato operativo | Workbench 390 (`recent-after-result-390.png`): rail, hero “Riprendi”, poi stato vuoto | La composizione simula una ricchezza funzionale che non c'è ancora. Il percorso vuoto deve aiutare ad avviare un lavoro reale |
+| Account è un pannello SaaS comune con un errore senza uscita | Account bloccato (`auth-blocked-390.png`) | Il vantaggio promesso è sync di tool, il costo è registrazione; la gestione errore impedisce il beneficio |
 | Aiuto scritto nel lessico dei gate | Wrapper: “contratto di esecuzione”, “oracolo e fixture”, “accesso alla rete vietato dal contratto” | L'utente non può interpretare una policy come sandbox. Spiegare dati inviati, limiti e controlli comprensibili |
 
 Non confermo una critica storica inesatta: nel wrapper condiviso lo slot operativo viene **prima** dei blocchi FAQ e feature. Il problema è il peso complessivo e la genericità, più l'ordine di header/controlli in alcuni tool, non “tutto il testo SEO precede sempre il tool”.
@@ -288,7 +290,7 @@ Uno spike dovrebbe eliminare una precisa responsabilità locale, produrre artifa
 
 ## 10. Triage dei 43 originali
 
-**I ticket restano nello stato originale.** La tabella nell'[allegato completo](audit-2026-10-10/ticket-triage.md) riporta tutti i 43, le dipendenze ancora aperte, fonte e proposta specifica. Non viene rigenerato il dashboard per farlo sembrare più verde. 5 ready + 31 dependency + 2 source + 5 physical = 43. Le 17 refusal fra i 284 chiusi non sono funzionalità vendute.
+**I ticket restano nello stato originale.** La tabella nell'allegato completo (`ticket-triage.md`) riporta tutti i 43, le dipendenze ancora aperte, fonte e proposta specifica. Non viene rigenerato il dashboard per farlo sembrare più verde. 5 ready + 31 dependency + 2 source + 5 physical = 43. Le 17 refusal fra i 284 chiusi non sono funzionalità vendute.
 
 ### Le dodici radici e il valore da sbloccare
 
@@ -389,7 +391,7 @@ Non fare deployment al 100% perché “è solo CSS”: il redesign modifica inpu
 
 ## 14. Prove e verifiche residue
 
-Gli artifact in [audit-2026-10-10](audit-2026-10-10/README.md) contengono dati di superficie, screenshot selezionati, download sintetici, lettura PDF indipendente, inventario/triage e script di audit riproducibili. Nessuna ricevuta canonica Gold viene emessa da questi script. I conteggi dei test integrati storici sono citati come STORICO.
+Gli artifact in audit-2026-10-10 (`README.md`) contengono dati di superficie, screenshot selezionati, download sintetici, lettura PDF indipendente, inventario/triage e script di audit riproducibili. Nessuna ricevuta canonica Gold viene emessa da questi script. I conteggi dei test integrati storici sono citati come STORICO.
 
 **NON_VERIFICATO, con percorso per chiudere la lacuna:**
 

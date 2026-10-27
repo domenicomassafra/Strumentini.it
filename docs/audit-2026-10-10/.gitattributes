@@ -1,3 +1,0 @@
-# Preserve downloaded artifacts byte-for-byte, including CSV quoted CRLF and PDF xref spacing.
-*-csv.csv binary
-*-merge.pdf binary
