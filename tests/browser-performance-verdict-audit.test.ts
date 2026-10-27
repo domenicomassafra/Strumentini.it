@@ -10,7 +10,7 @@ const verdictScript = resolve(import.meta.dirname, "../scripts/acceptance/browse
 
 describe("browser-performance exit status", () => {
   it("only passes with every expected browser and sibling acceptance observed", () => {
-    const engines = ["chromium", "firefox", "webkit"].map((engine) => ({ engine, status: "PASS" }));
+    const engines = ["chrome", "edge", "chromium", "firefox", "webkit"].map((engine) => ({ engine, status: "PASS" }));
     const requiredCommands = [
       "npm run build",
       ...engines.map(({ engine }) => `node scripts/acceptance/browser-performance-matrix.mjs (${engine})`),
