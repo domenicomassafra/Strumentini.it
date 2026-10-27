@@ -73,9 +73,17 @@ The aspirational target is domain-level or similarly small annual infrastructure
 
 ## Repository status
 
-The checkout contains a static Astro/Preact implementation with a **generated tool catalog** (current entries are in `src/generated/catalog.ts`), public static routes, shared local execution seams, and release-validation tooling. At the 2026-10-07 integrated checkpoint the global certification index reports **255 Gold / 2 Partial (`image-resize`, `microphone-recorder`) / 2 Implemented Unverified (`password-strength-estimator`, `xml-formatter-validator`)**. The live machine-readable authority is `quality/receipts/expanded-catalog-certification.json`. The two Partial tools still require genuine physical-device evidence; the two unverified developer tools remain blocked because their current oracles are only medium-confidence. Local or emulated validation never substitutes those missing proofs.
+The checkout contains a static Astro/Preact implementation with a **generated tool catalog** (`src/generated/catalog.ts`), public static routes, shared local execution seams, and release-validation tooling. Read the current tool counts and certification status from `quality/receipts/expanded-catalog-certification.json` at the checked-out SHA. A certification index, a green CI run, and a production deployment are distinct facts; local or emulated validation does not replace physical-device evidence.
 
-For current ticket execution, use the generated live panel in `PROJECT-STATUS.md` and `.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.md` (`npm run tickets:check`). `HANDOFF.md` preserves a dated engineering checkpoint; `ROADMAP.md` covers planning priorities. Verify Git/WIP, certification, CI and deployment against their current authorities.
+For current work, use [GitHub Issues](https://github.com/domenicomassafra/Strumentini.it/issues) for tickets, the current Git SHA for implementation, and the CI run on that SHA for checks. `PROJECT-STATUS.md` and `HANDOFF.md` are dated historical checkpoints; `ROADMAP.md` records planning priorities. The repository's historical donor and licence decisions, including `NO_GO` and `NO_ADOPT`, remain documented in `docs/donor-provenance-366-active-2026-10-18.md` and their linked source records; updating the README does not change those decisions.
+
+On the Mac Studio, use Node 26 and run checks/builds through the resource guard, for example:
+
+```sh
+node --version
+python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- npm run check
+python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- npm run build
+```
 
 The consolidated validator writes ignored evidence under `quality/receipts/release/` and does not deploy externally:
 
