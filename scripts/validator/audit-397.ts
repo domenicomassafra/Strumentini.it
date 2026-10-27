@@ -1,12 +1,9 @@
-/**
- * #397 standalone offline audit: links narrowly supported Italy rules to
- * EXISTING pinned primary-source bytes. No network calls, rule inference or
- * deployment authorization. 2024 AdE and historic ISTAT remain reference-only.
- */
+/** #397 offline audit of pinned sources; no network or inferred validity. */
 import { createHash } from "node:crypto";
 import { lstat, readFile } from "node:fs/promises";
 import { isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 import { VERIFIED_IRPEF_EXCERPTS_117, VERIFIED_FORFETTARIO_COEFFICIENTS_2025_117, INVOICE_STAMP_REFERENCE_2024_117 } from "../../src/reference-data/italy/fiscal-annual-117";
 import { ANNUAL_VAT_2025_WINDOW_117 } from "../../src/reference-data/italy/fiscal-annual-vat-117";
 import { INPS_CONTRIBUTIONS_2026 } from "../../src/reference-data/italy/annual-2026";
@@ -98,7 +95,6 @@ function scopedPath397(root: string, path: unknown): string | null {
   return full.startsWith(allowed + sep) ? full : null;
 }
 
-/** Validate host/provenance, file names and uniqueness before trusting artifact JSON. */
 export function validOfficialEvidence397(
   data: unknown, ticket: number, datasetId: string, checkedAt: string,
 ): data is Evidence397 {
@@ -124,10 +120,7 @@ export function validOfficialEvidence397(
   return true;
 }
 
-/**
- * Physically inspect every path component to reject symlinked ancestor dirs.
- * A lexical prefix alone would permit an artifacts/ -> external symlink.
- */
+/** Reject symlinks in source paths and ancestor directories. */
 export async function inspectOfficialSnapshotPath397(root: string, path: unknown): Promise<boolean> {
   if (scopedPath397(root, path) === null || typeof path !== "string") return false;
   const parts = path.split("/");
@@ -153,14 +146,15 @@ export async function auditAnnualOfficialSources397(options: AuditOptions397 = {
     if (!violations.some(v => v.code === code && v.path === path)) violations.push({ code, path, message });
   };
   const bytesOf = async (path: string): Promise<Uint8Array | null> => {
-    // Always check the type BEFORE path.resolve: artifact paths come from JSON.
-    const full = scopedPath397(root, path);
+    const packed = /^quality\/reference-data\/italy\/artifacts\/115-administrative-geography\/istat-situas-(?:128-suppressed|469-foreign)-2026-10-09\.json$/u.test(path);
+    const diskPath = packed ? `${path}.gz` : path;
+    const full = scopedPath397(root, diskPath);
     if (full === null) {
       report("UNSAFE_PATH", String(path), "Non-string path or path outside reference-data allowlist");
       return null;
     }
     try {
-      if (!options.readBytes && !await inspectOfficialSnapshotPath397(root, path)) {
+      if (!options.readBytes && !await inspectOfficialSnapshotPath397(root, diskPath)) {
         report("UNSAFE_PATH", path, "Symlink or invalid ancestor/source path");
         return null;
       }
@@ -171,7 +165,8 @@ export async function auditAnnualOfficialSources397(options: AuditOptions397 = {
           return null;
         }
       }
-      const data = options.readBytes ? await options.readBytes(path) : await readFile(full);
+      const data = options.readBytes ? await options.readBytes(path) : packed
+        ? gunzipSync(await readFile(full), { maxOutputLength: MAX_BYTES + 1 }) : await readFile(full);
       if (data.byteLength === 0 || data.byteLength > MAX_BYTES) {
         report("UNSAFE_PATH", path, "Artifact exceeds size policy");
         return null;

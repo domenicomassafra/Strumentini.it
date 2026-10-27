@@ -7,6 +7,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import readXlsxFile from "read-excel-file/node";
+import { readOfficialInput } from "./lib/read-official-input-500.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const dir = "quality/reference-data/italy/artifacts/115-administrative-geography";
@@ -17,7 +18,7 @@ const files = {
 };
 const bytes = {};
 for (const [key, [path, pinnedSha256]] of Object.entries(files)) {
-  const buffer = await readFile(resolve(root, path));
+  const buffer = readOfficialInput(root, path);
   const digest = createHash("sha256").update(buffer).digest("hex");
   if (digest !== pinnedSha256) throw new Error(`#115 primary source ${key} SHA256 changed; review required`);
   bytes[key] = buffer;

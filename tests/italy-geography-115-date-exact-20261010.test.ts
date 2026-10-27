@@ -1,24 +1,24 @@
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 import { lookupItalianMunicipalityAtCertifiedDate115, findItalianMunicipalitiesByBelfioreAtCertifiedDate115, ITALY_SITUAS_EXACT_DATES_115 } from "../src/reference-data/italy/geography-115-date-exact-20261010";
 import { codiceFiscaleChecksum121, validateCodiceFiscale121 } from "../src/engines/italy/codice-fiscale-121";
 import existing from "../src/reference-data/italy/geography-115.snapshot.json";
+import { readOfficialInput } from "../scripts/lib/read-official-input-500.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 
 describe("#115 official day-exact historical municipality snapshots, no interpolated validity", () => {
   it("pins literal official SITUAS raw full snapshot and metadata bytes for 3 report periods", async () => {
     for (const source of ITALY_SITUAS_EXACT_DATES_115.sources) {
-      const raw = await readFile(resolve(root, source.path));
+      const raw = readOfficialInput(root, source.path);
       expect(`sha256:${createHash("sha256").update(raw).digest("hex")}`).toBe(source.sha256);
       const parsed = JSON.parse(raw.toString("utf8")) as { resultset: unknown[] };
       expect(parsed.resultset).toHaveLength(source.rows);
     }
     for (const metadata of ITALY_SITUAS_EXACT_DATES_115.metadataSources) {
-      const raw = await readFile(resolve(root, metadata.path));
+      const raw = readOfficialInput(root, metadata.path);
       expect(`sha256:${createHash("sha256").update(raw).digest("hex")}`).toBe(metadata.sha256);
     }
     const output = execFileSync("node", ["scripts/build-italy-geography-115-date-exact-20261010.mjs", "--check"], { cwd: root, encoding: "utf8" });
