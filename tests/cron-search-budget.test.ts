@@ -75,6 +75,27 @@ describe("cron calendar search budget", () => {
     expect(cronNextRunOperation("30 2 * * *", from, 3, zone).runs).toEqual(expected);
   });
 
+  it.each([
+    ["America/New_York", "2026-10-31T00:00:00Z", ["0 1 * * *", "30 1 * * *", "0 2 * * *"]],
+    ["Europe/Rome", "2026-10-24T00:00:00Z", ["0 1 * * *", "30 2 * * *", "0 3 * * *"]],
+    ["Australia/Lord_Howe", "2026-04-04T00:00:00Z", ["15 1 * * *", "45 1 * * *", "0 2 * * *"]],
+  ])("preserves all UTC instants while skipping DST-adjacent hours in %s", (zone, from, expressions) => {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: zone, hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+    });
+    const instants = Array.from({ length: 4 * 24 * 60 }, (_, i) => new Date(Date.parse(from) + (i + 1) * 60_000));
+    const wallTimes = instants.map((at) => {
+      const parts = Object.fromEntries(formatter.formatToParts(at).map(({ type, value }) => [type, value]));
+      return `${parts.hour}:${parts.minute}`;
+    });
+    for (const expression of expressions) {
+      const [minute, hour] = expression.split(" ").map(Number);
+      const target = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+      const expected = instants.filter((_, index) => wallTimes[index] === target).slice(0, 3).map((at) => at.toISOString());
+      expect(cronNextRunOperation(expression, from, 3, zone).runs, `${zone} / ${expression}`).toEqual(expected);
+    }
+  });
+
   it("keeps DOM/DOW OR, spring gap and both autumn occurrences", () => {
     const orRule = cronNextRunOperation("0 9 13 * 5", "2026-01-01T00:00:00Z", 3, "Europe/Rome");
     expect(orRule.runs).toEqual([
