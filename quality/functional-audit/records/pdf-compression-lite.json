@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-compression-lite",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:289",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Crea una copia più pulita rimuovendo metadati e riducendo contenuti testuali non compressi quando possibile. Public jobs: Usa Alleggerisci un PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Crea una copia più pulita rimuovendo metadati e riducendo contenuti testuali non compressi quando possibile. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

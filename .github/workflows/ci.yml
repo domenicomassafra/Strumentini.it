@@ -133,7 +133,6 @@ jobs:
       # all existing acceptance assertions and timeouts remain unchanged.
       - run: npm test -- --maxWorkers=1
       - run: npm run test:workerd
-      - run: npm run tickets:test
       - run: npm run check
       - run: npm run build
       # A queued manual event can become stale while main advances during

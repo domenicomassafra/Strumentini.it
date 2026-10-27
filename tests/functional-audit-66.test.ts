@@ -41,6 +41,23 @@ function readers(
 }
 
 describe("#66 original-200 functional-upgrade evidence gate", () => {
+  it("rejects a forged or other tool's historical source contract at the final evidence gate", async () => {
+    const original = records.find(({ toolId }) => toolId === "regex-tester");
+    if (!original) throw new Error("Missing real regex-tester functional audit record");
+    for (const ref of ["legacy-expansion:999", "legacy-expansion:179"]) {
+      const forged = functionalAuditRecordSchema.parse({
+        ...original,
+        evidence: original.evidence.map((entry) => entry.kind === "source-contract" && entry.ref === "legacy-expansion:178"
+          ? { ...entry, ref } : entry),
+      });
+      const report = await validateOriginal200FunctionalEvidence(
+        tools.filter(({ id }) => id === "regex-tester"), [forged], readers(),
+      );
+      expect(report.ok).toBe(false);
+      expect(report.issues).toContain(`regex-tester: undeclared historical source-contract: ${ref}`);
+    }
+  });
+
   it("links each of the 200 original routes to independent functional decisions and executable acceptance", async () => {
     expect(tools).toHaveLength(200);
     expect(records).toHaveLength(200);
@@ -61,7 +78,6 @@ describe("#66 original-200 functional-upgrade evidence gate", () => {
     };
     const quality = original.evidence.find(({ kind }) => kind === "quality-receipt")?.ref;
     const browser = original.evidence.find(({ kind }) => kind === "browser-acceptance")?.ref;
-    const child = original.childTickets[0];
     if (!quality || !browser) throw new Error("Fixture lacks source bindings: " + toolId);
     if (mutation === "missing-receipt") {
       altered.evidence = altered.evidence.filter(({ kind }) => kind !== "quality-receipt");
@@ -72,6 +88,7 @@ describe("#66 original-200 functional-upgrade evidence gate", () => {
     if (mutation === "promote-refusal") {
       (altered as { decision: string }).decision = "UPGRADED";
     }
+    if (mutation === "unfinished-child") altered.childTickets = ["legacy-expansion:999"];
     const changes = readers(
       (ref, value) => {
         if (ref === quality && mutation === "wrong-tool") return { ...value as object, toolId: "another-tool" };
@@ -84,8 +101,6 @@ describe("#66 original-200 functional-upgrade evidence gate", () => {
         }
         return value;
       },
-      (ref, value) => ref === child && mutation === "unfinished-child"
-        ? value.replace("**Status:** completed", "**Status:** blocked") : value,
     );
     const report = await validateOriginal200FunctionalEvidence(tools.filter(({ id }) => id === toolId), [altered], changes);
     expect(report.ok).toBe(false);

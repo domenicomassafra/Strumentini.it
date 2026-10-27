@@ -1,7 +1,7 @@
 {
   "toolId": "image-rename-batch-preview",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra modifiche deterministiche dei nomi delle immagini senza scrivere né caricare alcun file. Public jobs: Usa Anteprima rinomina multipla immagini",
   "observedFunctionality": "Current job is preview-only deterministic renaming and explicitly does not write files. Unit tests prove stable sanitized names without mutating inputs; browser Gold covers the real route.",

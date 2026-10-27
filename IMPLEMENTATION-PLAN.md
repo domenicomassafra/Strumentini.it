@@ -1,4 +1,4 @@
-> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10: this is historical first-validation architecture and is NOT the current implementation scheduler. Future ticket authority is .scratch/strumentini-expansion-20261005/issues plus generated DAG/dashboard and ROADMAP.md, with all OWN-01–20 mapped in OWNER-DECISION-COVERAGE.md. Planning includes no app changes/deploy.
+> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10: this is historical first-validation architecture and is NOT the current implementation scheduler. Current ticket authority is GitHub Issues; this 2026-10-10 plan is historical. Planning includes no app changes/deploy.
 
 ---
 

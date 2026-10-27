@@ -1,7 +1,7 @@
 {
   "toolId": "csv-viewer",
   "category": "data",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:286",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra struttura, separatore, eventuali problemi e prime righe di un CSV senza caricarlo online. Public job: Usa Apri e controlla un CSV.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/data-table/csv-viewer.gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/data-table/browser-acceptance.json verifies the real route interaction/locality contract.",

@@ -85,6 +85,8 @@ python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -
 python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- npm run build
 ```
 
+The frozen 5 October expansion ticket files remain recoverable in Git at commit `7fe2dfd729cfbc3450de3080324a9a1757f0ea28`. References such as `legacy-expansion:284` identify historical local expansion items, **not** GitHub issue #284; active audit assignments and renderer ownership are declared in `quality/functional-audit/` and `scripts/tool-factory/result-v2-migration-ledger.ts`.
+
 The consolidated validator writes ignored evidence under `quality/receipts/release/` and does not deploy externally:
 
 ```sh

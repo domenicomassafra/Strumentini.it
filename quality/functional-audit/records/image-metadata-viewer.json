@@ -1,7 +1,7 @@
 {
   "toolId": "image-metadata-viewer",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra tipo, dimensioni, firma e peso di un'immagine locale senza caricarla online. Public jobs: Usa Vedi informazioni di un'immagine",
   "observedFunctionality": "The current public summary explicitly promises type, dimensions, signature and byte size; the bounded metadata inspector returns exactly those facts. Ticket 315 concerns richer EXIF-class views, not a missing field from this declared job.",

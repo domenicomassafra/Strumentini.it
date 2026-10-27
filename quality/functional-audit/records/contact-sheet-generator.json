@@ -1,7 +1,7 @@
 {
   "toolId": "contact-sheet-generator",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Unisce più immagini in un unico foglio di anteprime generato localmente nel browser. Public jobs: Usa Crea un foglio di anteprime immagini",
   "observedFunctionality": "Current job composes selected local images into one bounded sheet; browser Gold proves the route/output. Ticket 317 adds ordering/ZIP/export ergonomics beyond this declared one-sheet job.",

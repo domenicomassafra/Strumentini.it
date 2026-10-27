@@ -1,7 +1,7 @@
 {
   "toolId": "doi-normalizer",
   "category": "research",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:294",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Uniforma un DOI e controlla localmente che la sua sintassi sia valida. Public jobs: Usa Pulisci e verifica un DOI.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/doi-normalizer.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

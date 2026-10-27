@@ -51,7 +51,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §3 AVIF compressor",
       "fidelity": "Codec support, decode verification, memory use and mobile behavior must be proven before route promotion.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "Codec support, decode verification, memory use and mobile behavior must be proven before route promotion."
     },
     {
@@ -73,7 +73,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §3 GIF optimizer",
       "fidelity": "Animation frame timing, loop behavior and transparency must survive independent decode checks.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "Animation frame timing, loop behavior and transparency must survive independent decode checks."
     },
     {
@@ -81,7 +81,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §3 HEIC size reduction",
       "fidelity": "Treat size reduction as an explicit format conversion unless a native HEIC encoder is independently proven.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "Treat size reduction as an explicit format conversion unless a native HEIC encoder is independently proven."
     },
     {
@@ -211,7 +211,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §3 7z/RAR",
       "fidelity": "Inspection/extraction requires maintained local codecs, acceptable licensing, bounded memory and zip-slip-equivalent defenses.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/272-archive-codec-feasibility-spike.md",
+      "blocker": "legacy-expansion:272",
       "reason": "Inspection/extraction requires maintained local codecs, acceptable licensing, bounded memory and zip-slip-equivalent defenses."
     },
     {
@@ -264,7 +264,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §3 Audio compressor",
       "fidelity": "Codec, bitrate, duration and channel/sample-rate changes require local codec and mobile-memory proof.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/273-audio-codec-and-dsp-feasibility-spike.md",
+      "blocker": "legacy-expansion:273",
       "reason": "Codec, bitrate, duration and channel/sample-rate changes require local codec and mobile-memory proof."
     },
     {
@@ -272,7 +272,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §3 Video compressor",
       "fidelity": "Codec/CRF/bitrate/resolution transforms require local codec, cancellation and representative mobile-memory proof.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/274-video-codec-and-media-processing-feasibility-spike.md",
+      "blocker": "legacy-expansion:274",
       "reason": "Codec/CRF/bitrate/resolution transforms require local codec, cancellation and representative mobile-memory proof."
     },
     {
@@ -308,7 +308,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §4 JPG/JPEG to AVIF",
       "fidelity": "AVIF encode/decode support and mobile resource cost must be measured before promotion.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "AVIF encode/decode support and mobile resource cost must be measured before promotion."
     },
     {
@@ -344,7 +344,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §4 PNG to AVIF",
       "fidelity": "AVIF encode/decode and alpha handling require capability proof.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "AVIF encode/decode and alpha handling require capability proof."
     },
     {
@@ -380,7 +380,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §4 WebP to AVIF",
       "fidelity": "AVIF encode/decode and alpha behavior require capability proof.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "AVIF encode/decode and alpha behavior require capability proof."
     },
     {
@@ -606,7 +606,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §4 SVG to PNG",
       "fidelity": "Raster dimensions/background and SVG sanitization must be explicit before rendering.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "Raster dimensions/background and SVG sanitization must be explicit before rendering."
     },
     {
@@ -614,7 +614,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §4 SVG to JPG",
       "fidelity": "Raster dimensions/background and SVG sanitization must be explicit before rendering.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "Raster dimensions/background and SVG sanitization must be explicit before rendering."
     },
     {
@@ -622,7 +622,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §4 SVG to WebP",
       "fidelity": "Raster dimensions/background and SVG sanitization must be explicit before rendering.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/268-image-codec-and-svg-optimizer-feasibility-spike.md",
+      "blocker": "legacy-expansion:268",
       "reason": "Raster dimensions/background and SVG sanitization must be explicit before rendering."
     },
     {
@@ -630,7 +630,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §4 SVG to PDF",
       "fidelity": "Do not promise vector-preserving PDF unless the selected renderer proves vector semantics.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/269-advanced-pdf-renderer-and-mutation-feasibility-spike.md",
+      "blocker": "legacy-expansion:269",
       "reason": "Do not promise vector-preserving PDF unless the selected renderer proves vector semantics."
     },
     {
@@ -687,7 +687,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §6 DOCX to PDF",
       "fidelity": "Layout/font fidelity must pass an independent corpus before claiming document rendering fidelity.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/270-office-spreadsheet-parser-writer-and-renderer-feasibility-spike.md",
+      "blocker": "legacy-expansion:270",
       "reason": "Layout/font fidelity must pass an independent corpus before claiming document rendering fidelity."
     },
     {
@@ -765,7 +765,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §6 XLSX to PDF",
       "fidelity": "Pagination, print areas, fonts and sheet rendering require a fidelity corpus before promotion.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/270-office-spreadsheet-parser-writer-and-renderer-feasibility-spike.md",
+      "blocker": "legacy-expansion:270",
       "reason": "Pagination, print areas, fonts and sheet rendering require a fidelity corpus before promotion."
     },
     {
@@ -773,7 +773,7 @@
       "classification": "BLOCKED",
       "source": "docs/11 §6 PPTX to PDF",
       "fidelity": "Slide layout, fonts, images and charts require visual fidelity evidence before promotion.",
-      "blocker": ".scratch/strumentini-expansion-20261005/issues/270-office-spreadsheet-parser-writer-and-renderer-feasibility-spike.md",
+      "blocker": "legacy-expansion:270",
       "reason": "Slide layout, fonts, images and charts require visual fidelity evidence before promotion."
     }
   ]

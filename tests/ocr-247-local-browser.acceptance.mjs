@@ -15,7 +15,7 @@ const server = ownsServer ? spawn("python3", ["-m", "http.server", "4379", "--bi
 const browserName = process.env.OCR247_BROWSER ?? "chromium";
 const browserType = { chromium, firefox, webkit }[browserName];
 if (!browserType) throw new Error("OCR247_BROWSER must be chromium, firefox or webkit");
-const evidenceDir = resolve(".scratch/strumentini-expansion-20261005/evidence/ticket247");
+const evidenceDir = resolve("quality/receipts/ocr-247");
 const png = await readFile(resolve("spikes/heavy-local-feasibility/public/corpus/ocr-it.png"));
 assert.equal(createHash("sha256").update(png).digest("hex"), "1bfc71b54560679f6b6d0e8f978201b2ca27fdfcd84d47ef9344d41db0a2f27b");
 const jpeg = await sharp(png).jpeg({ quality: 96 }).toBuffer();

@@ -1,7 +1,7 @@
 {
   "toolId": "qr-reader",
   "category": "marketing",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:293",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Legge il contenuto di un QR da matrice, SVG o immagine quando il browser supporta la decodifica. Public jobs: Usa Leggi QR code.",
   "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/marketing-media/qr-reader.gold.json, executable functional tests in tests/qr-local-engine.test.ts, and real-route browser acceptance in quality/receipts/marketing-media/browser-acceptance.json. No scoped functional gap is open for this narrow public job.",

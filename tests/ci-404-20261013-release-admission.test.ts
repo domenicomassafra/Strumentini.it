@@ -29,7 +29,7 @@ function releaseAdmissionFailures(source = workflow): string[] {
   if (!main.includes('if: github.event_name == \'workflow_dispatch\'\n        run: test "$GITHUB_REF" = "refs/heads/main"')) {
     failures.push("RELEASE_DISPATCH_MAIN_REF_NOT_GUARDED");
   }
-  for (const command of ["npm test -- --maxWorkers=1", "npm run tickets:test", "npm run check", "npm run build"]) {
+  for (const command of ["npm test -- --maxWorkers=1", "npm run check", "npm run build"]) {
     if (!main.includes(`- run: ${command}`)) failures.push(`MISSING_CUMULATIVE_COMMAND: ${command}`);
   }
   // Inspect executable YAML rather than requiring a one-line `run:`. The
@@ -75,7 +75,7 @@ describe("#404 cumulative main and explicit release source admission", () => {
     expect(buildImpactPlan(["docs/readme.md"], availableTests).status).toBe("DOCS_ONLY");
   });
 
-  it("runs actual Python ticket oracle in main cumulative CI and both suites on release dispatch", () => {
+  it("requires the cumulative source suite on main and release dispatch", () => {
     expect(releaseAdmissionFailures(workflow)).toEqual([]);
     expect(workflow).toContain("branches: [main]");
     const pr = job("changed-source");
@@ -84,9 +84,9 @@ describe("#404 cumulative main and explicit release source admission", () => {
     expect(pr).not.toContain("--require-release-ready");
   });
 
-  it("cannot claim gate coverage if release validator, fail-closed flags or Python tests are removed", () => {
+  it("cannot claim gate coverage if release validator or fail-closed flags are removed", () => {
     const cases = [
-      ["npm run tickets:test", "MISSING_CUMULATIVE_COMMAND: npm run tickets:test"],
+      ["npm test -- --maxWorkers=1", "MISSING_CUMULATIVE_COMMAND: npm test -- --maxWorkers=1"],
       ["--require-ready", "CUMULATIVE_RELEASE_VALIDATOR_NOT_MANDATORY"],
       ["--no-write-receipt", "CUMULATIVE_RELEASE_VALIDATOR_NOT_MANDATORY"],
       ["RELEASE_READ_TOKEN: ${{ github.token }}", "CUMULATIVE_PRIVATE_REMOTE_AUTH_MISSING"],

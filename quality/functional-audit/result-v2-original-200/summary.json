@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "ledgerFingerprintSha256": "6e1bd1026a3bb920f8eee83cf028d07a5533a53072cbbbe108954e7b907d11a0",
+  "ledgerFingerprintSha256": "2b4a05d1e10e8d9b6210c17c30103b3ac9f44121b51fc9f561101575d3633123",
   "denominator": 200,
   "source": [
     "quality/functional-audit/original-200.inventory.json",

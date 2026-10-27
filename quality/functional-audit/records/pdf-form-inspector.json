@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-form-inspector",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:289",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra nomi, tipi, valori e stato dei campi AcroForm senza compilare né inviare il documento. Public jobs: Usa Vedi i campi di un modulo PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Mostra nomi, tipi, valori e stato dei campi AcroForm senza compilare né inviare il documento. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

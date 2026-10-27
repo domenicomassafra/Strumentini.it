@@ -33,7 +33,7 @@ describe("STR-232 — public catalog registration", () => {
       engine: "video",
       rendererSeam: { component: "VideoInspectorTool", kind: "bespoke" },
       resultDeclaration: { state: "declared", class: "file" },
-      migrationOwner: ".scratch/strumentini-expansion-20261005/issues/232-video-inspector-and-target-size-calculator.md",
+      migrationOwner: "legacy-expansion:232",
     });
   });
 

@@ -1,7 +1,7 @@
 {
   "toolId": "csv-join",
   "category": "data",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:286",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Unisce due tabelle usando le colonne chiave che scegli, con join interno, sinistro, destro o completo. Public job: Usa Unisci due CSV.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/data-table/csv-join.gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/data-table/browser-acceptance.json verifies the real route interaction/locality contract.",

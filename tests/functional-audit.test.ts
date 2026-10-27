@@ -11,8 +11,8 @@ import {
   type FunctionalAuditInventoryEntry,
 } from "../src/quality/functional-audit";
 
-const owner = ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md";
-const child = ".scratch/strumentini-expansion-20261005/issues/121-break-even-expanded-scenarios.md";
+const owner = "legacy-expansion:284";
+const child = "legacy-expansion:121";
 const originalAssignmentIndex = JSON.parse(
   readFileSync(new URL("../quality/functional-audit/original-200.assignments.json", import.meta.url), "utf8"),
 ) as { readonly assignments: ReadonlyArray<{ readonly toolId: string }> };
@@ -23,21 +23,21 @@ function assignments(): FunctionalAuditAssignment[] {
   return originalCatalog.map((tool) => ({
     toolId: tool.id,
     category: tool.category,
-    ownerTicket: ".scratch/strumentini-expansion-20261005/issues/"
+    ownerTicket: "legacy-expansion:"
       + ({
-        "business-math": "284-existing-business-math-200-audit-tranche.md",
-        "client-work-math": "285-existing-client-work-math-200-audit-tranche.md",
-        data: "286-existing-data-200-audit-tranche.md",
-        "date-time": "287-existing-date-time-200-audit-tranche.md",
-        developer: "288-existing-developer-200-audit-tranche.md",
-        documents: "289-existing-documents-200-audit-tranche.md",
-        files: "290-existing-files-200-audit-tranche.md",
-        "files-assets": "291-existing-files-assets-200-audit-tranche.md",
-        "image-visual": "292-existing-image-visual-200-audit-tranche.md",
-        marketing: "293-existing-marketing-200-audit-tranche.md",
-        research: "294-existing-research-200-audit-tranche.md",
-        text: "295-existing-text-200-audit-tranche.md",
-        "web-operations": "296-existing-web-operations-200-audit-tranche.md",
+        "business-math": "284",
+        "client-work-math": "285",
+        data: "286",
+        "date-time": "287",
+        developer: "288",
+        documents: "289",
+        files: "290",
+        "files-assets": "291",
+        "image-visual": "292",
+        marketing: "293",
+        research: "294",
+        text: "295",
+        "web-operations": "296",
       } as Record<string, string>)[tool.category],
     status: "pending",
     decision: null,

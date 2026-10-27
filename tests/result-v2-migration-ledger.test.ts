@@ -8,7 +8,7 @@ import {
   RESULT_V2_MIGRATION_OWNER_RULES,
   RESULT_V2_MIGRATION_TICKETS,
   assertResultV2MigrationLedgerComplete,
-  assertResultV2MigrationTicketsExist,
+  assertResultV2MigrationTicketsDeclared,
   assignResultV2MigrationOwners,
   type ResultV2MigrationTicket,
 } from "../scripts/tool-factory/result-v2-migration-ledger";
@@ -17,7 +17,7 @@ const root = resolve(import.meta.dirname, "..");
 
 describe("Result v2 renderer migration ledger", () => {
   it("assigns exactly one real migration ticket to every current tool", async () => {
-    await assertResultV2MigrationTicketsExist(root);
+    assertResultV2MigrationTicketsDeclared();
     const seams = await discoverResultV2RendererSeams(root, catalog.map(({ id }) => id));
     const owners = assignResultV2MigrationOwners(catalog, seams);
     const inventory = projectResultV2Inventory(catalog, seams, owners);
@@ -83,9 +83,9 @@ describe("Result v2 renderer migration ledger", () => {
     const missingTicket: ResultV2MigrationTicket = {
       id: 999,
       title: "Missing migration ticket",
-      path: ".scratch/strumentini-expansion-20261005/issues/999-missing-migration-ticket.md",
+      path: "legacy-expansion:999",
     };
-    await expect(assertResultV2MigrationTicketsExist(root, [missingTicket])).rejects.toThrow(/migration ticket does not exist/u);
+    expect(() => assertResultV2MigrationTicketsDeclared([missingTicket])).toThrow(/unknown migration ticket/u);
 
     const overlappingRules = [RESULT_V2_MIGRATION_OWNER_RULES[0], RESULT_V2_MIGRATION_OWNER_RULES[0]].filter((rule) => rule !== undefined);
     const sharedBusinessMath = catalog.filter(({ engine }) => engine === "business-math").slice(0, 1);

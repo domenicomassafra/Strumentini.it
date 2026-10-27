@@ -1,7 +1,7 @@
 {
   "toolId": "line-sorter",
   "category": "text",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:295",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Ordina un elenco di righe in ordine crescente o decrescente con controllo su maiuscole e minuscole. Public jobs: Usa Ordina righe di testo.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-writing/line-sorter.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

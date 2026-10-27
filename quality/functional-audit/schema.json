@@ -43,7 +43,7 @@
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^\\.scratch/strumentini-expansion-20261005/issues/[0-9]+-[a-z0-9-]+\\.md$"
+        "pattern": "^legacy-expansion:[1-9][0-9]*$"
       }
     }
   },

@@ -1,7 +1,7 @@
 {
   "toolId": "base64-codec",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Codifica o decodifica rigorosamente testo UTF-8 con Base64 o Base64url secondo RFC 4648. Public jobs: Usa Codifica e decodifica Base64",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Codifica o decodifica rigorosamente testo UTF-8 con Base64 o Base64url secondo RFC 4648. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",
