@@ -48,6 +48,16 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // reviewed frontend input, not disposable documentation; unknown design
   // files must still fail closed rather than receive a broad wildcard pass.
   if (path === "design/WORLD.md") return ["frontend"];
+  // Historical research retirement #498: these known reports and the old
+  // Impeccable journal are prose/data, not executable product inputs. Keep
+  // unreviewed design/build paths unknown; a census script still needs CI.
+  if (["IMPLEMENTATION-PLAN.md", "design/FRONTEND-SYSTEM-STANDARDIZATION.md", "research/implementation/10-hash-dependency-gate.md",
+       ".impeccable/build/state.json", "spikes/core-engines/README.md", "spikes/heavy-local-feasibility/README.md"].includes(path)) return ["docs"];
+  if (path === "research/lanes/06-oss-donor-evidence/build_census.py") return ["ci"];
+  if (path.startsWith("research/lanes/")) {
+    if (/\.(?:md|csv|json)$/u.test(path)) return ["docs"];
+    return ["unknown"];
+  }
   // The ticket archive also contains executable validators/generators. Treating
   // every .scratch path as docs would allow a change to the release-facing
   // ticket checks to escape source CI entirely.

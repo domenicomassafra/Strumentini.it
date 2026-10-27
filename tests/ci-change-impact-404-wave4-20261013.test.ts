@@ -43,4 +43,29 @@ describe("#404 reviewed source-input coverage rather than docs-only bypass", () 
     expect(unknown.status).toBe("NO_GO");
     expect(unknown.commands).toEqual([]);
   });
+
+  it("recognizes retired research and design records while keeping executable census work in CI", () => {
+    const historical = [
+      ".impeccable/build/state.json",
+      "IMPLEMENTATION-PLAN.md",
+      "design/FRONTEND-SYSTEM-STANDARDIZATION.md",
+      "research/implementation/10-hash-dependency-gate.md",
+      "research/lanes/01-market-demand-jobs-census.md",
+      "research/lanes/03-name-screen.csv",
+      "research/lanes/06-oss-donor-evidence/deep-primary-metadata.json",
+      "spikes/core-engines/README.md",
+      "spikes/heavy-local-feasibility/README.md",
+    ];
+    const docs = buildImpactPlan(historical, tests);
+    expect(docs.status).toBe("DOCS_ONLY");
+    expect(docs.blockers).toEqual([]);
+
+    const executable = buildImpactPlan([...historical, "research/lanes/06-oss-donor-evidence/build_census.py"], tests);
+    expect(executable.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(executable.domains).toContain("ci");
+    expect(executable.gates.map((gate) => gate.id)).toContain("security-review");
+    for (const unreviewed of ["design/other-plan.md", "research/lanes/bootstrap.sh", ".impeccable/build/plugin.js"]) {
+      expect(buildImpactPlan([unreviewed], tests).status, unreviewed).toBe("NO_GO");
+    }
+  });
 });
