@@ -64,8 +64,26 @@ try {
   if (!fall.includes("2026-10-25T00:30:00.000Z") || !fall.includes("2026-10-25T01:30:00.000Z")) {
     throw new Error("DST overlap did not include both UTC instants");
   }
+
+  // Hold the first lazy runtime module to make cancellation observable by a
+  // real browser click, regardless of machine speed or warmed module caches.
+  const cancelPage = await browser.newPage();
+  await cancelPage.goto(`${origin}/tools/cron-next-run/`, { waitUntil: "networkidle" });
+  let releaseLazyImport;
+  await cancelPage.route(/\/_astro\/registry\.[^/]+\.js$/u, async (route) => {
+    await new Promise((resolve) => { releaseLazyImport = resolve; });
+    await route.continue();
+  });
+  await cancelPage.locator("#cron-next-run-expression").fill("0 0 31 2 *");
+  await cancelPage.locator("[data-tool-run-control]").click();
+  const cancel = cancelPage.getByRole("button", { name: "Annulla" });
+  await cancel.waitFor({ timeout: 3000 });
+  await cancel.click();
+  releaseLazyImport?.();
+  await cancelPage.locator(".gutter[data-state='cancelled']").waitFor({ timeout: 3000 });
+  await cancelPage.close();
   if (externalRequests.length > 0) throw new Error(`Unexpected network requests: ${externalRequests.join(", ")}`);
-  console.log(`cron browser PASS: impossible schedule ${elapsedMs.toFixed(1)} ms, responsive retry, DST gap/overlap, local GET only`);
+  console.log(`cron browser PASS: impossible schedule ${elapsedMs.toFixed(1)} ms, responsive retry and cancel, DST gap/overlap, local GET only`);
 } finally {
   await browser?.close();
   server.kill("SIGTERM");

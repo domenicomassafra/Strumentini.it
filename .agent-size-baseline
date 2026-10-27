@@ -93,7 +93,7 @@
   "spikes/heavy-local-feasibility/src/main.js": 26516,
   "src/components/catalog/CatalogDirectory.astro": 32152,
   "src/components/onboarding/Onboarding.tsx": 20592,
-  "src/components/tools/DeveloperWebTool.tsx": 39129,
+  "src/components/tools/DeveloperWebTool.tsx": 39017,
   "src/components/tools/audio/AudioTimelinePanel231.tsx": 20414,
   "src/components/tools/business-math/BusinessMathTool.tsx": 33158,
   "src/components/tools/business-math/configs.ts": 29772,
