@@ -1,6 +1,6 @@
 # Strumentini.it — implementation wave 05 (source-local)
 
-Baseline `07739ad` on Mac `main`. This wave includes #335, #338, #346 closures and #365 truthful transparency slice. Source-local only: no push/deploy/production provider, D1 change, new Gold, retrospective receipt edit or physical-device certification. The unrelated `tasks/prompt2prompt/.../001-strumentini-ticket-finalization.response.md` remains untouched.
+Baseline `07739ad` on Mac `main`. This wave includes #335, #338, #346 closures and #365 truthful transparency slice. Source-local only: no push/deploy/production provider, D1 change, new Gold, retrospective receipt edit or physical-device certification. The unrelated historical coordinator response remained untouched at that checkpoint and was later retired from the working tree in #498 (recoverable in Git).
 
 ## Tickets completed against original scoped acceptance
 

@@ -6,8 +6,7 @@ Il prossimo agente non è stato lanciato da questa sessione. Il prodotto, il red
 
 ## 1. Mandato immediato
 
-L'owner lancerà personalmente su ChatGPT il prompt:
-`tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/lane-01-coordinator/001-strumentini-ticket-finalization.prompt.md`.
+Il mandato originale del 10 ottobre faceva riferimento a un prompt di coordinamento, ora ritirato dal working tree (#498) e conservato nella storia Git del commit `7fe2dfd`. Questo è uno snapshot storico, non un'istruzione di lancio attuale.
 
 **Unico scopo:** completare il pacchetto operativo di Strumentini.it: riconciliare tutti i ticket presenti, aggiornare quelli che richiedono una revisione, creare quelli mancanti e futuri pertinenti, integrare specifiche/roadmap e preparare prompt di esecuzione. Il destinatario usa **Chat On Steroids** con **quattro subagenti nativi**. Il coordinatore è l'unico integratore delle authority condivise e dell'archivio ticket.
 
@@ -75,11 +74,11 @@ Usare:
 2. `PRODUCT.md`, `PRODUCT-SPEC.md`, `PRODUCT-MARKETING-CONTEXT.md`, `IMPLEMENTATION-PLAN.md`, `DESIGN.md`, `design/WORLD.md`.
 3. `docs/10-tool-expansion-result-system-v2.md`, `docs/11-format-operation-matrix.md`.
 4. `.scratch/strumentini-expansion-20261005/issues/`, `CURRENT-TICKET-DASHBOARD.{md,json}`, `TICKET-DAG.md`, `SKILL-ROUTING.md`.
-5. `quality/oracles/`, `quality/fixtures/`, `quality/receipts/`; `research/lanes/06-09*`, `research/lanes/12-heavy-feasibility-ticket-decisions-267-275.md`, `spikes/`.
+5. `quality/oracles/`, `quality/fixtures/`, `quality/receipts/`, `spikes/` e `docs/RESEARCH-DECISIONS-2026-10-27.md` (decisioni uniche tratte dalle vecchie lane, con recupero integrale da Git).
 6. `PROJECT-STATUS.md`, `HANDOFF.md`, `ROADMAP.md` se aggiornati, receipt release 95be886 come cronologia.
 7. `CONTEXT.md` e `docs/PENDING-GRILLING-2026-10-10.md` per vocabolario/risposte.
 
-Non esisteva `tasks/index.md` locale corrente; non importare task globali di DStack estranei. I run September sotto `tasks/prompt2prompt/` sono dichiarati storici dal loro README: letti e riconciliati nel ledger del nuovo run; non recuperare vecchi worker o worktree come WIP.
+Non esisteva `tasks/index.md` locale corrente; non importare task globali di DStack estranei. I run September, storici già nel 2026-10-10, sono stati ritirati in #498 con decisioni conservate nel registro e originali in Git; non recuperare vecchi worker o worktree come WIP.
 
 ## 5. Donor: piste verificate, non adozioni approvate
 

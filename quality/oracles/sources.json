@@ -624,7 +624,7 @@
       "id": "ris-policy",
       "source_class": "project-policy",
       "authority": "Strumentini.it",
-      "locator": "research/lanes/08-gold-oracle-factory.md",
+      "locator": "docs/RESEARCH-DECISIONS-2026-10-27.md",
       "supports": [
         "RIS minimal tagged-record policy"
       ],

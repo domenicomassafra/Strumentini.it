@@ -137,7 +137,7 @@ Run in this order; each one is unconditional (no env vars, no secrets, no networ
 - `src/generated/catalog.ts`, `src/generated/quality.ts`, `quality/receipts/expanded-catalog-certification.json` — generated catalog and certification truth.
 - `worker/index.ts`, `worker/google.ts`, `worker/migrations/*.sql` — the account API, Google ID-token verifier and schema.
 - `src/catalog/groups.ts` — the public grouping over the internal taxonomy.
-- `tasks/prompt2prompt/`, `research/`, `docs/history/` and most `.scratch/` content — historical provenance; `.scratch/strumentini-expansion-20261005/TICKET-DAG.md` plus its linked issue files are the explicit active exception used as the expansion dependency/scheduling authority.
+- `docs/RESEARCH-DECISIONS-2026-10-27.md` — decisions retained from retired prompt/research history; originals in Git. Other `research/` and `docs/history/` records are historical. `.scratch/strumentini-expansion-20261005/TICKET-DAG.md` remains the expansion dependency authority.
 
 ## Next source-changing tranche
 

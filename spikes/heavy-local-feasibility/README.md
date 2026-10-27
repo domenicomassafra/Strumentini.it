@@ -27,7 +27,9 @@ Generated receipts live in `quality/benchmarks/heavy-local-feasibility/`:
 - `desktop-runtime.json` — per-engine real-file results, runtime, JS heap observations, capability probes, same-origin requests, and blocked external requests.
 - `decision-matrix.json` — candidate decisions, format surface, bundle/runtime/memory evidence, security/license gates, cancellation status, mobile status, and family fallback boundaries.
 
-The human-readable decision record is `research/lanes/10-heavy-local-media-ocr-office-feasibility-refresh.md`.
+The historical human-readable decision summary is
+`docs/RESEARCH-DECISIONS-2026-10-27.md`; the exact measured decisions remain
+in the version-controlled benchmark JSON named above.
 
 ## Corpus
 
