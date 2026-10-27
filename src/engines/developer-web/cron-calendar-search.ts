@@ -68,7 +68,9 @@ export function nextCronWallBoundary(
     return value.year === current.year && value.month === current.month && value.day === current.day &&
       (unit === "day" || value.hour === current.hour);
   };
-  const span = unit === "day" ? 48 * 60 * CRON_MINUTE_MS : 3 * 60 * CRON_MINUTE_MS;
+  // Probe within each period: a multi-hour backward timezone change can
+  // repeat an hour, so probing three hours ahead misses the first occurrence.
+  const span = unit === "day" ? 12 * 60 * CRON_MINUTE_MS : 30 * CRON_MINUTE_MS;
   let lower = start;
   let upper = Math.min(start + span, end);
   while (upper < end && samePeriod(upper)) {

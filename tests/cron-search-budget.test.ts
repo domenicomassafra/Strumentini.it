@@ -106,4 +106,14 @@ describe("cron calendar search budget", () => {
     expect(cronNextRunOperation("30 2 * * *", "2026-10-24T01:31:00Z", 2, "Europe/Rome").runs)
       .toEqual(["2026-10-25T00:30:00.000Z", "2026-10-25T01:30:00.000Z"]);
   });
+
+  it("keeps the first run when a timezone repeats three hours", () => {
+    // Casey moved from UTC+11 to UTC+8 on 2020-03-08, repeating 00:00–02:59.
+    // A wide wall-clock probe can land in the repeated 00 hour and skip 01:00.
+    const result = cronNextRunOperation("0 1 8 3 *", "2020-03-07T12:59:00Z", 2, "Antarctica/Casey");
+    expect(result.runs).toEqual([
+      "2020-03-07T14:00:00.000Z",
+      "2020-03-07T17:00:00.000Z",
+    ]);
+  });
 });
