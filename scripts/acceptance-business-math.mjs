@@ -58,7 +58,7 @@ async function acceptTool(context, toolId) {
   const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`${toolId}: HTTP ${response?.status()}`);
   await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
-  const submit = page.locator("form button[type='submit']");
+  const submit = page.locator("[data-tool-run-control]");
   await submit.waitFor();
   started = true;
   await submit.focus();

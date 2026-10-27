@@ -87,7 +87,7 @@ export function FileHashTool() {
       setProgress(1);
       recordCompletedTool("file-hash");
     } catch (caught) {
-      if (controllerRef.current === controller && !controller.signal.aborted) setError(friendlyError(caught));
+      if (controllerRef.current === controller) setError(friendlyError(caught));
     } finally {
       if (controllerRef.current === controller) { controllerRef.current = null; setRunning(false); }
     }

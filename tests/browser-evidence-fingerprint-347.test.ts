@@ -31,6 +31,8 @@ async function withSourceFixture(run: (root: string) => Promise<void>): Promise<
       await mkdir(resolve(root, folder), { recursive: true });
     }
     await copyFile(resolve(sourceRoot, producerPath), resolve(root, producerPath));
+    await copyFile(resolve(sourceRoot, "scripts/acceptance/browser-performance-verdict.mjs"),
+      resolve(root, "scripts/acceptance/browser-performance-verdict.mjs"));
     await copyFile(resolve(sourceRoot, "scripts/lib/current-revision.ts"), resolve(root, "scripts/lib/current-revision.ts"));
     await writeFile(resolve(root, "worker/index.ts"), "export const mode = 'local';\n");
     await writeFile(resolve(root, "worker/migrations/0001_local.sql"), "CREATE TABLE local_only (id TEXT);\n");

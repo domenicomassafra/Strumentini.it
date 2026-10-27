@@ -12,7 +12,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const PDF_A_PROFILE_419 = "PDF/A-2b";
-export const VERAPDF_IMAGE_419 = "ghcr.io/verapdf/cli@sha256:8cac3d462f6ef749c619b0973186cc9f949678600b2c545bdce3762445b0aec4";
+export const VERAPDF_IMAGE_419 = "verapdf/cli@sha256:d565095c67a083e693aebf7d1a15784007370571053fc1aa5b502665b9a78f9c";
 
 // The bundled OFL font is deliberately subset to these code points (16,032 bytes).
 // Refuse missing glyphs rather than silently replacing characters in an archive.
