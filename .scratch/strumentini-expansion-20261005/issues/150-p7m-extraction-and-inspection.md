@@ -16,4 +16,4 @@
 - [x] The spike exercises valid SignedData, deterministic corrupt input and a valid unsupported non-SignedData envelope with explicit failure behavior; no production route is exposed while the feasibility gate is REFUSE.
 - [x] Spike evidence records `trustChainStatus: NOT_EVALUATED`; no certificate trust/revocation claim is promoted.
 
-**Verification:** Closed as a refusal downstream of ticket 267. Evidence remains in `quality/benchmarks/heavy-local-feasibility/ticket-decisions-267-275.json` and `research/lanes/12-heavy-feasibility-ticket-decisions-267-275.md`; reopen only after the missing physical-mobile/full-memory promotion evidence exists.
+**Verification:** Closed as a refusal downstream of ticket 267. Evidence remains in `quality/benchmarks/heavy-local-feasibility/ticket-decisions-267-275.json` and `docs/RESEARCH-DECISIONS-2026-10-27.md`; reopen only after the missing physical-mobile/full-memory promotion evidence exists.
