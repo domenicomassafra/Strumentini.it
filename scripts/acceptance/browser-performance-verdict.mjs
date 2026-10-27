@@ -1,3 +1,7 @@
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 // The browser command must fail when any observed release prerequisite is not PASS.
 // A complete matrix and sibling suite are required: missing evidence cannot pass.
 export const SIBLING_ACCEPTANCE = [
@@ -27,4 +31,49 @@ export function browserMatrixIsSuccessful(receipt, requiredEngineNames, required
     && Array.isArray(acceptance) && acceptance.length === commands.size
     && new Set(acceptance.map((check) => check.command)).size === commands.size
     && acceptance.every((check) => commands.has(check.command) && check.status === "PASS");
+}
+
+const REQUIRED_ENGINES = ["chrome", "edge", "chromium", "firefox", "webkit"];
+const REQUIRED_ACCEPTANCE = [
+  "npm run build",
+  ...REQUIRED_ENGINES.map((name) => `node scripts/acceptance/browser-performance-matrix.mjs (${name})`),
+  ...SIBLING_ACCEPTANCE.map(({ command }) => command),
+];
+
+/** Require the complete expected matrix, and report every observed rejection. */
+export function browserPerformanceVerdict(report, requiredEngines = REQUIRED_ENGINES, requiredAcceptance = REQUIRED_ACCEPTANCE) {
+  const failures = [];
+  if (report?.staticInspection?.lazyEngineGate !== "PASS") failures.push("static:lazy-engine");
+  if (report?.staticInspection?.bundleBaseline?.gate !== "PASS") failures.push("static:bundle-baseline");
+  const engines = report?.browserMatrix?.requestedEngines;
+  if (!Array.isArray(engines) || engines.length === 0) failures.push("browser:missing");
+  else for (const engine of engines) {
+    if (engine?.status !== "PASS") failures.push(`browser:${engine?.engine ?? "unknown"}:${engine?.status ?? "NOT_RUN"}`);
+  }
+  const acceptance = report?.freshAcceptance;
+  if (!Array.isArray(acceptance) || acceptance.length === 0) failures.push("acceptance:missing");
+  else for (const check of acceptance) {
+    if (check?.status !== "PASS") failures.push(`acceptance:${check?.command ?? "unknown"}:${check?.status ?? "NOT_RUN"}`);
+  }
+  if (!browserMatrixIsSuccessful(report, requiredEngines, requiredAcceptance) && failures.length === 0) {
+    failures.push("browser-or-acceptance:incomplete");
+  }
+  return { status: failures.length === 0 ? "PASS" : "NO_GO", failureCount: failures.length, failures };
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const receipt = process.argv[2];
+  if (!receipt) {
+    process.stderr.write("Usage: node browser-performance-verdict.mjs receipt.json\n");
+    process.exitCode = 2;
+  } else {
+    try {
+      const verdict = browserPerformanceVerdict(JSON.parse(await readFile(receipt, "utf8")));
+      console.log(JSON.stringify(verdict));
+      if (verdict.status !== "PASS") process.exitCode = 1;
+    } catch (error) {
+      process.stderr.write(`Browser-performance verdict unavailable: ${String(error)}\n`);
+      process.exitCode = 2;
+    }
+  }
 }
