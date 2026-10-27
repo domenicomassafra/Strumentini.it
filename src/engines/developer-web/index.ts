@@ -169,6 +169,7 @@ function runById(toolId: DeveloperWebToolId, value: Record<string, unknown>, sig
       from === undefined || from.trim() === "" ? new Date().toISOString() : from,
       optionalCount(value, 5),
       optionalStringField(value, "timezone", "timeZone") ?? "UTC",
+      signal,
     );
   }
   if (toolId === "unix-timestamp") return unixTimestampOperation(value.timestamp ?? value.value ?? value.input, optionalStringField(value, "unit") ?? "seconds", optionalStringField(value, "direction", "operation") ?? "to-date");

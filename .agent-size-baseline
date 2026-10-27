@@ -113,7 +113,7 @@
   "src/engines/developer-web/encoding-crypto.ts": 26645,
   "src/engines/developer-web/structured-data.ts": 31059,
   "src/engines/developer-web/structured-repair.ts": 34265,
-  "src/engines/developer-web/web-reference.ts": 25134,
+  "src/engines/developer-web/web-reference.ts": 24762,
   "src/engines/file-privacy/index.ts": 75471,
   "src/engines/image/advanced-workspace.ts": 31952,
   "src/engines/image/metadata.ts": 23928,
