@@ -1,7 +1,7 @@
 {
   "toolId": "find-replace-preview",
   "category": "text",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:295",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra sostituzioni letterali o con espressioni regolari e ogni corrispondenza prima di copiare il risultato. Public jobs: Usa Anteprima trova e sostituisci.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-writing/find-replace-preview.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

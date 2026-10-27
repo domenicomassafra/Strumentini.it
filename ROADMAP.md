@@ -2,7 +2,7 @@
 
 **Status:** planning-only; this file orders future work and does not attest shipping, Gold, physical-device passing, an approved redesign or donor adoption.
 
-Authority is the 20 confirmed OWN decisions in docs/HANDOFF-DECISIONI-E-TICKET-STRUMENTINI-2026-10-10.md. Use the SINGLE canonical ticket archive .scratch/strumentini-expansion-20261005/issues/ and generated CURRENT-TICKET-DASHBOARD.md/DAG.md for exact current lifecycle. The historical roadmap snapshot is docs/ROADMAP-HISTORICAL-2026-10-08.md; do not use its 259-catalog and older ticket counts as today's state.
+Authority is the 20 confirmed OWN decisions in docs/HANDOFF-DECISIONI-E-TICKET-STRUMENTINI-2026-10-10.md. Use GitHub Issues for the current lifecycle and dependencies; the frozen October expansion archive is historical Git data. The historical roadmap snapshot is docs/ROADMAP-HISTORICAL-2026-10-08.md; do not use its 259-catalog and older ticket counts as today's state.
 
 ## Measured starting point and factual constraints
 
@@ -45,4 +45,4 @@ Two user paths #396 for privati/dipendenti and partite IVA; official primary sna
 - P0 account + recent + privacy truth, standalone donor research and three-option design study can proceed in parallel. #351→#352→#353→#354–361 is a real visual-gate chain, not a hold on bug fixes.
 - Original #115→#121→#122→#008; #117→#126/#127/#133/#134/#152 and #158; #212→#049/#235; #246→#247; #277+#278→#279; #237 is protected by a security hold before any public redaction. An original scope gate cannot be waived by claiming a child done.
 - A feasibility NO_GO, REFUSED, missing hardware, license quote or owner design choice is an honest result. No fake acceptance, no ad/monetization/AI/data sync silently added. Mobile advanced target is preserved; measured partial support must be labeled partial.
-- Scheduling source: .scratch/strumentini-expansion-20261005/EXECUTION-PROMPTS.md and per-batch prompts (planning artifacts only); check actual updated DAG before execution.
+- Scheduling source: the currently open GitHub Issues and their dependency links.

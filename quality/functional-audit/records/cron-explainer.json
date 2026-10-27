@@ -1,7 +1,7 @@
 {
   "toolId": "cron-explainer",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Traduce una regola cron POSIX nei suoi campi, intervalli, liste e giorni coinvolti. Public jobs: Usa Spiega una regola cron",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Traduce una regola cron POSIX nei suoi campi, intervalli, liste e giorni coinvolti. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

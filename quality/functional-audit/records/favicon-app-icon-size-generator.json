@@ -1,7 +1,7 @@
 {
   "toolId": "favicon-app-icon-size-generator",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Genera da un'immagine le principali dimensioni PNG quadrate per favicon e icone app. Public jobs: Usa Crea favicon e icone app",
   "observedFunctionality": "Current job generates and exposes the principal square PNG icon sizes from one source image. Gold browser evidence covers the 16-through-512 outputs; ticket 317 adds ZIP/order/export summaries beyond the current promise.",

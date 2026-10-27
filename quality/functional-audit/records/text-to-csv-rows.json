@@ -1,7 +1,7 @@
 {
   "toolId": "text-to-csv-rows",
   "category": "text",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:295",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Converte righe di testo delimitato in CSV correttamente escapato con intestazioni generate o esplicite. Public jobs: Usa Testo in righe CSV.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/text-writing/text-to-csv-rows.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

@@ -21,7 +21,7 @@ import { missingItalianToolCopy } from "../../src/i18n/it/tool-copy";
 import { discoverResultV2RendererSeams } from "./result-v2-inventory";
 import {
   assertResultV2MigrationLedgerComplete,
-  assertResultV2MigrationTicketsExist,
+  assertResultV2MigrationTicketsDeclared,
   assignResultV2MigrationOwners,
 } from "./result-v2-migration-ledger";
 
@@ -113,7 +113,7 @@ for (const historical of artifacts.searchIndex) {
 }
 const sources = renderCatalogSources(artifacts.summaries, artifacts.loaders, searchDecorations);
 const resultV2RendererSeams = await discoverResultV2RendererSeams(root, artifacts.summaries.map(({ id }) => id));
-await assertResultV2MigrationTicketsExist(root);
+assertResultV2MigrationTicketsDeclared();
 const resultV2MigrationOwners = assignResultV2MigrationOwners(artifacts.summaries, resultV2RendererSeams);
 const resultV2Inventory = projectResultV2Inventory(artifacts.summaries, resultV2RendererSeams, resultV2MigrationOwners);
 assertResultV2MigrationLedgerComplete(resultV2Inventory);

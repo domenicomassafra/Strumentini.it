@@ -135,12 +135,6 @@ export function buildImpactPlan(changedPaths: readonly string[], availableTests:
     if (domains.includes("worker-auth") || domains.includes("d1")) {
       commands.push({ program: "npm", args: ["run", "test:workerd"] });
     }
-    // Ticket generator/test changes need the actual Python oracle.  The
-    // full JS suite's tickets:check is not a substitute for this unittest.
-    if (paths.some((path) => path === "tests/test_ticket_dashboard.py" ||
-        /^\.scratch\/strumentini-expansion-20261005\/(?:ticket_dashboard|validate_backlog)\.py$/u.test(path))) {
-      commands.push({ program: "npm", args: ["run", "tickets:test"] });
-    }
     commands.push({ program: "npm", args: ["run", "check"] }, { program: "npm", args: ["run", "build"] });
   }
   const status: ImpactPlan["status"] = blockers.length ? "NO_GO" :

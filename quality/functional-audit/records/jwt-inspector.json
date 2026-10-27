@@ -1,7 +1,7 @@
 {
   "toolId": "jwt-inspector",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Ispeziona parti, claim, timestamp e avvisi di un JWT senza attribuirgli validità crittografica. Public jobs: Usa Analizzatore JWT",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Ispeziona parti, claim, timestamp e avvisi di un JWT senza attribuirgli validità crittografica. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

@@ -217,7 +217,7 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
     expect(releasePolicy420Enabled({ STRUMENTINI_RELEASE_STRICT: "1" })).toBe(false);
     const policy = prepublishSteps404(SHA, true);
     expect(policy.map((step) => step.name)).toEqual([
-      "source-and-engine-tests", "python-ticket-oracle", "astro-source-validation",
+      "source-and-engine-tests", "astro-source-validation",
       "cumulative-build", "cloudflare-static-dry-run", "owner-policy-automatic-admission",
       "wrangler-production-deploy",
     ]);

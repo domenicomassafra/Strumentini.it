@@ -48,10 +48,10 @@ describe("functional audit tranches 294-296", () => {
   it("binds every decision to existing functional evidence and matching Gold receipts", () => {
     for (const record of records.filter((entry) => targetCategories.includes(entry.category as never))) {
       for (const evidence of record.evidence) {
-        expect(existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing evidence ${evidence.ref}`).toBe(true);
+        expect(evidence.ref.startsWith("legacy-expansion:") ? /^legacy-expansion:[1-9]\d*$/u.test(evidence.ref) : existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing evidence ${evidence.ref}`).toBe(true);
       }
       for (const child of record.childTickets) {
-        expect(existsSync(resolve(root, child)), `${record.toolId}: missing child ticket ${child}`).toBe(true);
+        expect(child, `${record.toolId}: historical child reference`).toMatch(/^legacy-expansion:[1-9]\d*$/u);
       }
       if (record.decision !== "ALREADY_COMPLETE") continue;
       const qualityEvidence = record.evidence.find((item) => item.kind === "quality-receipt");
@@ -77,7 +77,7 @@ describe("functional audit tranches 294-296", () => {
     expect(ris).toMatchObject({
       decision: "UPGRADED",
       childTickets: [
-        ".scratch/strumentini-expansion-20261005/issues/276-ris-bibtex-converter-authoritative-oracle-closure.md",
+        "legacy-expansion:276",
       ],
     });
     expect(ris?.evidence.some((item) => item.kind === "oracle" && item.ref.endsWith("/ORACLE.md"))).toBe(true);

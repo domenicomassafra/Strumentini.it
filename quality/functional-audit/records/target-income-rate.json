@@ -1,7 +1,7 @@
 {
   "toolId": "target-income-rate",
   "category": "business-math",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:284",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola quale tariffa oraria ti serve per raggiungere il reddito desiderato dopo costi e tempo non fatturabile. Public job: Usa Tariffa necessaria per il tuo reddito obiettivo.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/business-math/target-income-rate.gold.json; executable tests/business-tools.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/business-math/browser-acceptance.json verifies the real route interaction/locality contract.",

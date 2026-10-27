@@ -42,8 +42,6 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // Donor provenance reads this JSON as executable audit input, not prose.
   // Altering its package/license records must be reviewed and tested.
   if (path === "docs/donor-provenance-366-candidate-packages-2026-10-10.json") return ["ci"];
-  // These Python unittests are not Vitest and are not part of `npm test`.
-  if (path === "tests/test_ticket_dashboard.py") return ["ci"];
   // design/WORLD.md controls the shipped palette's source contract. It is
   // reviewed frontend input, not disposable documentation; unknown design
   // files must still fail closed rather than receive a broad wildcard pass.
@@ -76,10 +74,6 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
     "research/lanes/13-astronomy-location-date-feasibility.md",
   ].includes(path)) return ["docs"];
   if (path.startsWith("research/lanes/")) return ["unknown"];
-  // The ticket archive also contains executable validators/generators. Treating
-  // every .scratch path as docs would allow a change to the release-facing
-  // ticket checks to escape source CI entirely.
-  if (path.startsWith(".scratch/") && /\.(?:py|mjs|cjs|js|ts|tsx|sh|bash)$/u.test(path)) return ["ci"];
   if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md|HANDOFF\.md|PROJECT-STATUS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
   if (path.startsWith("worker/migrations/")) return ["d1"];
   if (path.startsWith("worker/")) return ["worker-auth"];

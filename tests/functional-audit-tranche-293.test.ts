@@ -10,10 +10,10 @@ import {
 } from "../src/quality/functional-audit";
 
 const root = resolve(import.meta.dirname, "..");
-const ownerTicket = ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md";
-const ticket321 = ".scratch/strumentini-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md";
-const ticket322 = ".scratch/strumentini-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md";
-const ticket325 = ".scratch/strumentini-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md";
+const ownerTicket = "legacy-expansion:293";
+const ticket321 = "legacy-expansion:321";
+const ticket322 = "legacy-expansion:322";
+const ticket325 = "legacy-expansion:325";
 
 const assignments = functionalAuditAssignmentIndexSchema.parse(JSON.parse(
   readFileSync(resolve(root, "quality/functional-audit/original-200.assignments.json"), "utf8"),
@@ -59,7 +59,7 @@ describe("functional audit tranche 293", () => {
       expect(unit, `${record.toolId}: unit evidence`).toBeDefined();
       expect(browser, `${record.toolId}: browser evidence`).toBeDefined();
       for (const evidence of record.evidence) {
-        expect(existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing ${evidence.ref}`).toBe(true);
+        expect(evidence.ref.startsWith("legacy-expansion:") ? /^legacy-expansion:[1-9]\d*$/u.test(evidence.ref) : existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing ${evidence.ref}`).toBe(true);
       }
       const goldReceipt = JSON.parse(readFileSync(resolve(root, gold!.ref), "utf8")) as {
         toolId?: unknown;
@@ -73,15 +73,15 @@ describe("functional audit tranche 293", () => {
   it("traces known additive marketing work to 321/322/325 without duplicating gaps", () => {
     for (const record of records) {
       const roadmapRefs = record.evidence
-        .filter((item) => item.kind === "source-contract" && item.ref.includes("/issues/32"))
+        .filter((item) => item.kind === "source-contract" && item.ref.startsWith("legacy-expansion:32"))
         .map((item) => item.ref)
         .toSorted();
       expect(roadmapRefs, record.toolId).toEqual([...(roadmapByTool[record.toolId] ?? [])].toSorted());
       expect(roadmapRefs, `${record.toolId}: ticket 323 is web-operations, not marketing`).not.toContain(
-        ".scratch/strumentini-expansion-20261005/issues/323-url-normalize-compare-and-bulk-transform-upgrade.md",
+        "legacy-expansion:323",
       );
       expect(roadmapRefs, `${record.toolId}: ticket 324 is web-operations, not marketing`).not.toContain(
-        ".scratch/strumentini-expansion-20261005/issues/324-redirect-chain-and-live-network-diagnostic-upgrade.md",
+        "legacy-expansion:324",
       );
     }
   });

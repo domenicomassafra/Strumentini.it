@@ -1,7 +1,7 @@
 {
   "toolId": "json-formatter",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Valida e formatta JSON in modo deterministico senza caricare il documento. Public jobs: Usa Formattatore e validatore JSON",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Valida e formatta JSON in modo deterministico senza caricare il documento. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

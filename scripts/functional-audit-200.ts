@@ -20,19 +20,19 @@ const checkOnly = process.argv.includes("--check");
 const requireComplete = process.argv.includes("--require-complete");
 
 const ownerByCategory: Readonly<Record<string, string>> = {
-  "business-math": ".scratch/strumentini-expansion-20261005/issues/284-existing-business-math-200-audit-tranche.md",
-  "client-work-math": ".scratch/strumentini-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
-  data: ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
-  "date-time": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
-  developer: ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
-  documents: ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
-  files: ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
-  "files-assets": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
-  "image-visual": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
-  marketing: ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
-  research: ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
-  text: ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
-  "web-operations": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+  "business-math": "legacy-expansion:284",
+  "client-work-math": "legacy-expansion:285",
+  data: "legacy-expansion:286",
+  "date-time": "legacy-expansion:287",
+  developer: "legacy-expansion:288",
+  documents: "legacy-expansion:289",
+  files: "legacy-expansion:290",
+  "files-assets": "legacy-expansion:291",
+  "image-visual": "legacy-expansion:292",
+  marketing: "legacy-expansion:293",
+  research: "legacy-expansion:294",
+  text: "legacy-expansion:295",
+  "web-operations": "legacy-expansion:296",
 };
 
 const persistedAssignmentText = await readFile(assignmentPath, "utf8").catch(() => "");
@@ -133,7 +133,7 @@ if (!inventoryReport.ok) throw new Error(inventoryReport.issues.join("\n"));
 for (const entry of inventory) {
   if (entry.status === "PENDING") continue;
   for (const ref of entry.evidenceRefs) {
-    if (/^[a-z]+:\/\//iu.test(ref)) continue;
+    if (/^[a-z]+:\/\//iu.test(ref) || /^legacy-expansion:[1-9]\d*$/u.test(ref)) continue;
     await access(resolve(root, ref)).catch(() => {
       throw new Error(`${entry.toolId}: functional evidence ref does not resolve: ${ref}`);
     });

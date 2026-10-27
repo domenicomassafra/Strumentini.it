@@ -61,7 +61,6 @@ describe("#66 original-200 functional-upgrade evidence gate", () => {
     };
     const quality = original.evidence.find(({ kind }) => kind === "quality-receipt")?.ref;
     const browser = original.evidence.find(({ kind }) => kind === "browser-acceptance")?.ref;
-    const child = original.childTickets[0];
     if (!quality || !browser) throw new Error("Fixture lacks source bindings: " + toolId);
     if (mutation === "missing-receipt") {
       altered.evidence = altered.evidence.filter(({ kind }) => kind !== "quality-receipt");
@@ -72,6 +71,7 @@ describe("#66 original-200 functional-upgrade evidence gate", () => {
     if (mutation === "promote-refusal") {
       (altered as { decision: string }).decision = "UPGRADED";
     }
+    if (mutation === "unfinished-child") altered.childTickets = ["legacy-expansion:999"];
     const changes = readers(
       (ref, value) => {
         if (ref === quality && mutation === "wrong-tool") return { ...value as object, toolId: "another-tool" };
@@ -84,8 +84,6 @@ describe("#66 original-200 functional-upgrade evidence gate", () => {
         }
         return value;
       },
-      (ref, value) => ref === child && mutation === "unfinished-child"
-        ? value.replace("**Status:** completed", "**Status:** blocked") : value,
     );
     const report = await validateOriginal200FunctionalEvidence(tools.filter(({ id }) => id === toolId), [altered], changes);
     expect(report.ok).toBe(false);

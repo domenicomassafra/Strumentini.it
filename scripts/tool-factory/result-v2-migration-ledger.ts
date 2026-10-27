@@ -1,5 +1,3 @@
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
 import type {
   ResultV2InventoryEntry,
   ResultV2MigrationOwner,
@@ -17,67 +15,67 @@ export const RESULT_V2_MIGRATION_TICKETS = {
   videoInspector: {
     id: 232,
     title: "Video inspector and target-size calculator",
-    path: ".scratch/strumentini-expansion-20261005/issues/232-video-inspector-and-target-size-calculator.md",
+    path: "legacy-expansion:232",
   },
   businessMathShared: {
     id: 88,
     title: "Migrate BusinessMathTool renderer to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/88-migrate-businessmathtool-renderer-to-result-v2.md",
+    path: "legacy-expansion:88",
   },
   dateTimeShared: {
     id: 89,
     title: "Migrate date-time shared renderers to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/89-migrate-date-time-shared-renderers-to-result-v2.md",
+    path: "legacy-expansion:89",
   },
   calculatorMarketingBespoke: {
     id: 90,
     title: "Migrate calculator and marketing bespoke results to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/90-migrate-calculator-and-marketing-bespoke-results-to-result-v2.md",
+    path: "legacy-expansion:90",
   },
   developerWeb: {
     id: 91,
     title: "Migrate DeveloperWebTool renderer to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/91-migrate-developerwebtool-renderer-to-result-v2.md",
+    path: "legacy-expansion:91",
   },
   textWritingLists: {
     id: 92,
     title: "Migrate TextWriting and list renderers to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/92-migrate-textwriting-and-list-renderers-to-result-v2.md",
+    path: "legacy-expansion:92",
   },
   researchReference: {
     id: 93,
     title: "Migrate research and reference renderers to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/93-migrate-research-and-reference-renderers-to-result-v2.md",
+    path: "legacy-expansion:93",
   },
   tableWorkbench: {
     id: 94,
     title: "Migrate TableWorkbench shared path to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/94-migrate-tableworkbench-shared-path-to-result-v2.md",
+    path: "legacy-expansion:94",
   },
   bespokeCsvData: {
     id: 95,
     title: "Migrate bespoke CSV and data renderers to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/95-migrate-bespoke-csv-and-data-renderers-to-result-v2.md",
+    path: "legacy-expansion:95",
   },
   filePrivacyShared: {
     id: 96,
     title: "Migrate file privacy shared renderers to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/96-migrate-file-privacy-shared-renderers-to-result-v2.md",
+    path: "legacy-expansion:96",
   },
   image: {
     id: 97,
     title: "Migrate image shared renderers to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md",
+    path: "legacy-expansion:97",
   },
   pdfDocument: {
     id: 98,
     title: "Migrate PdfTool and document renderers to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/98-migrate-pdftool-and-document-renderers-to-result-v2.md",
+    path: "legacy-expansion:98",
   },
   urlMarketingQrBespoke: {
     id: 99,
     title: "Migrate URL marketing QR and bespoke results to Result v2",
-    path: ".scratch/strumentini-expansion-20261005/issues/99-migrate-url-marketing-qr-and-bespoke-results-to-result-v2.md",
+    path: "legacy-expansion:99",
   },
 } as const satisfies Readonly<Record<string, ResultV2MigrationTicket>>;
 
@@ -160,21 +158,25 @@ export const RESULT_V2_MIGRATION_OWNER_RULES: readonly MigrationOwnerRule[] = [
   },
 ] as const;
 
-export async function assertResultV2MigrationTicketsExist(
-  root: string,
+/** Historical expansion IDs are declarations, not GitHub issue numbers.
+ * The original ticket texts remain recoverable at the pre-retirement Git SHA. */
+export function assertResultV2MigrationTicketsDeclared(
   tickets: readonly ResultV2MigrationTicket[] = Object.values(RESULT_V2_MIGRATION_TICKETS),
-): Promise<void> {
+): void {
   const ids = new Set<number>();
   const paths = new Set<string>();
+  const declarations = new Map<number, ResultV2MigrationTicket>(
+    Object.values(RESULT_V2_MIGRATION_TICKETS).map((ticket) => [ticket.id, ticket]),
+  );
   for (const ticket of tickets) {
     if (ids.has(ticket.id)) throw new Error(`Result v2 migration ledger: duplicate ticket id ${ticket.id}`);
     if (paths.has(ticket.path)) throw new Error(`Result v2 migration ledger: duplicate ticket path ${ticket.path}`);
     ids.add(ticket.id);
     paths.add(ticket.path);
-    const source = await readFile(resolve(root, ticket.path), "utf8").catch(() => {
-      throw new Error(`Result v2 migration ledger: migration ticket does not exist: ${ticket.path}`);
-    });
-    if (!source.startsWith(`# ${ticket.id} — ${ticket.title}\n`)) {
+    const declared = declarations.get(ticket.id);
+    if (declared === undefined) throw new Error(`Result v2 migration ledger: unknown migration ticket: ${ticket.id}`);
+    if (ticket.path !== `legacy-expansion:${ticket.id}` ||
+        ticket.path !== declared.path || ticket.title !== declared.title) {
       throw new Error(`Result v2 migration ledger: migration ticket identity changed: ${ticket.path}`);
     }
   }

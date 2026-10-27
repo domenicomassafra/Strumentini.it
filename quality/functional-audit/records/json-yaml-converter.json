@@ -1,7 +1,7 @@
 {
   "toolId": "json-yaml-converter",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Converte tra JSON e un sottoinsieme YAML sicuro e limitato mostrando direzione e modello dei valori. Public jobs: Usa Convertitore JSON e YAML",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Converte tra JSON e un sottoinsieme YAML sicuro e limitato mostrando direzione e modello dei valori. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

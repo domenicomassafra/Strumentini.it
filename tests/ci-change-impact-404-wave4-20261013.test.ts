@@ -17,23 +17,21 @@ describe("#404 reviewed source-input coverage rather than docs-only bypass", () 
     expect(buildImpactPlan(["docs/donor-provenance-366-active-2026-10-18.md"], tests).status).toBe("DOCS_ONLY");
   });
 
-  it("executes actual Python dashboard tests on script and unittest source changes", () => {
+  it("keeps declared audit inputs in source CI without a frozen dashboard gate", () => {
     for (const path of [
-      ".scratch/strumentini-expansion-20261005/ticket_dashboard.py",
-      ".scratch/strumentini-expansion-20261005/validate_backlog.py",
-      "tests/test_ticket_dashboard.py",
+      "src/quality/functional-audit.ts",
+      "scripts/functional-audit-200.ts",
+      "tests/functional-audit.test.ts",
     ]) {
       const plan = buildImpactPlan([path], tests);
       expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
-      expect(plan.gates).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
-      expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "tickets:test"] });
+      expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
     }
     const docsPR = buildImpactPlan([
-      "PROJECT-STATUS.md", "HANDOFF.md", ".scratch/strumentini-expansion-20261005/ticket_dashboard.py",
-      "tests/test_ticket_dashboard.py",
+      "PROJECT-STATUS.md", "HANDOFF.md", "docs/history/expansion-note.md",
     ], tests);
-    expect(docsPR.status).toBe("SOURCE_CHECKS_REQUIRED");
-    expect(docsPR.commands).toContainEqual({ program: "npm", args: ["run", "tickets:test"] });
+    expect(docsPR.status).toBe("DOCS_ONLY");
+    expect(docsPR.commands).toEqual([]);
   });
 
   it("keeps ordinary docs-only paths source-check-free and unknown paths fail-closed", () => {

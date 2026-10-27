@@ -2,17 +2,17 @@
 
 ## State authority
 
-Use native authenticated `gh` with explicit `--repo domenicomassafra/strumentini-it`
-for new approved work. Verify the account and repository before writing; search
-existing issues and PRs before creating an issue. GitHub Projects is an optional
+Use native authenticated `gh` with explicit `--repo domenicomassafra/Strumentini.it`
+for approved work. Verify the account and repository before writing; search
+existing issues and PRs and update existing issues. GitHub Projects is an optional
 view, not a prerequisite. Do not enable automatic or paid agent reviews.
 
-Existing numeric IDs remain authoritative in
-`.scratch/strumentini-expansion-20261005/issues/`; the ticket dashboard and
-`npm run tickets:check` consume that registry. Do not interpret the same GitHub
-number as a migrated legacy ticket. Preserve original IDs, acceptance, evidence,
-and ownership. Switch a lot only after remote issue/state readback and verified
-updates to all affected readers and writers; no migration is performed here.
+GitHub Issues is the live ticket authority. Historical expansion ticket IDs are
+represented as `legacy-expansion:<id>` in the functional audit and renderer
+ownership declarations. They are distinct from GitHub issue numbers. Original
+historical ticket text remains in Git commit
+`7fe2dfd729cfbc3450de3080324a9a1757f0ea28`; do not reinstate a local
+ticket queue or treat an old dashboard as current status.
 
 Use `Refs` for partial delivery. Close and read back an original only after all
 its acceptance, required install and real consumer proof pass. A branch, PR,

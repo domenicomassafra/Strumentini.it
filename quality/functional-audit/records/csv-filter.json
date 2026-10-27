@@ -1,7 +1,7 @@
 {
   "toolId": "csv-filter",
   "category": "data",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:286",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra solo le righe che rispettano la regola scelta per colonna, testo o valore vuoto. Public job: Usa Filtra righe di un CSV.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/data-table/csv-filter.gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/data-table/browser-acceptance.json verifies the real route interaction/locality contract.",

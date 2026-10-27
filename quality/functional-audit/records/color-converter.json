@@ -1,7 +1,7 @@
 {
   "toolId": "color-converter",
   "category": "image-visual",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:292",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Convert a hexadecimal color to normalized hexadecimal, RGB and HSL values locally with explicit channel rounding.",
   "observedFunctionality": "The current engine parses the color locally and returns deterministic HEX/RGB/HSL values. Unit tests execute the conversion for #336699 and the Gold/browser evidence records the same tool-specific output on the public route.",

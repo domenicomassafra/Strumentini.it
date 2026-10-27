@@ -41,10 +41,10 @@ describe("functional audit tranches 287-289", () => {
   it("binds every complete decision to real Gold, unit, and browser evidence", () => {
     for (const record of scoped) {
       for (const evidence of record.evidence) {
-        expect(existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing evidence ${evidence.ref}`).toBe(true);
+        expect(evidence.ref.startsWith("legacy-expansion:") ? /^legacy-expansion:[1-9]\d*$/u.test(evidence.ref) : existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing evidence ${evidence.ref}`).toBe(true);
       }
       for (const child of record.childTickets) {
-        expect(existsSync(resolve(root, child)), `${record.toolId}: missing child ticket ${child}`).toBe(true);
+        expect(child, `${record.toolId}: historical child reference`).toMatch(/^legacy-expansion:[1-9]\d*$/u);
       }
       if (record.decision !== "ALREADY_COMPLETE") continue;
       const quality = record.evidence.find((item) => item.kind === "quality-receipt");
@@ -66,10 +66,10 @@ describe("functional audit tranches 287-289", () => {
     const upgraded = scoped.filter((record) => record.decision === "UPGRADED");
     expect(upgraded.map((record) => record.toolId).toSorted()).toEqual(["regex-tester", "uuid-generator"]);
     expect(upgraded.find((record) => record.toolId === "regex-tester")?.childTickets).toEqual([
-      ".scratch/strumentini-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md",
+      "legacy-expansion:178",
     ]);
     expect(upgraded.find((record) => record.toolId === "uuid-generator")?.childTickets).toEqual([
-      ".scratch/strumentini-expansion-20261005/issues/179-uuidv7-rfc-9562-conformance-repair.md",
+      "legacy-expansion:179",
     ]);
     expect(scoped.filter((record) => record.category === "date-time" && record.decision !== "ALREADY_COMPLETE")).toEqual([]);
     expect(scoped.filter((record) => record.category === "documents" && record.decision !== "ALREADY_COMPLETE")).toEqual([]);

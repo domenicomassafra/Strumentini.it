@@ -1,11 +1,11 @@
 {
   "toolId": "social-character-limit",
   "category": "marketing",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:293",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Conta punti di codice Unicode rispetto a un limite dichiarato mostrando caratteri rimanenti o eccedenti. Public jobs: Usa Controllo limite caratteri social.",
-  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/marketing-media/social-character-limit.gold.json, executable functional tests in tests/url-marketing-tools.test.ts, and real-route browser acceptance in quality/receipts/marketing-media/browser-acceptance.json. Broader additive work is already owned by .scratch/strumentini-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md, .scratch/strumentini-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
-  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by .scratch/strumentini-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md, .scratch/strumentini-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/marketing-media/social-character-limit.gold.json, executable functional tests in tests/url-marketing-tools.test.ts, and real-route browser acceptance in quality/receipts/marketing-media/browser-acceptance.json. Broader additive work is already owned by legacy-expansion:322, legacy-expansion:325; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by legacy-expansion:322, legacy-expansion:325; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
   "evidence": [
     {
       "kind": "quality-receipt",
@@ -24,12 +24,12 @@
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentini-expansion-20261005/issues/322-meta-opengraph-and-social-preview-preset-upgrade.md",
+      "ref": "legacy-expansion:322",
       "claim": "Existing targeted backlog owns additive functionality beyond social-character-limit's current narrow public job; it is not counted as already shipped by this audit."
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentini-expansion-20261005/issues/325-robots-canonical-campaign-and-naming-helper-upgrades.md",
+      "ref": "legacy-expansion:325",
       "claim": "Existing targeted backlog owns additive functionality beyond social-character-limit's current narrow public job; it is not counted as already shipped by this audit."
     }
   ],

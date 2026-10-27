@@ -1,7 +1,7 @@
 {
   "toolId": "cron-next-run",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola quando scatterà una regola cron POSIX nelle prossime occorrenze UTC. Public jobs: Usa Prossime esecuzioni di una cron",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Calcola quando scatterà una regola cron POSIX nelle prossime occorrenze UTC. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

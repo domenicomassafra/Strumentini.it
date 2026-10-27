@@ -1,7 +1,7 @@
 {
   "toolId": "bulk-domain-extractor",
   "category": "web-operations",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:296",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Estrae i domini univoci da URL o testo incollato e separa subito gli elementi non validi. Public jobs: Usa Estrai domini da una lista.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/bulk-domain-extractor.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",
