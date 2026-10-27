@@ -16,7 +16,7 @@
     "format:coverage:write": "tsx scripts/format-operation-coverage.ts --write",
     "format:coverage:check": "tsx scripts/format-operation-coverage.ts --check",
     "certification:build": "tsx scripts/build-certification-index.ts",
-    "certification:check": "tsx scripts/build-certification-index.ts --check",
+    "certification:check": "python3 quality/oracles/validate.py && tsx scripts/build-certification-index.ts --check",
     "ci:scope": "tsx scripts/ci-change-impact-404.ts",
     "test": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && npm run audit:original-200:final && vitest run",
     "check": "npm run tickets:check && npm run format:coverage:check && npm run catalog:build && npm run certification:check && npm run italy:freshness:158 -- --check && astro check",
