@@ -52,7 +52,7 @@ describe("#404 PR/source impact planning", () => {
     }
   });
   it("classifies reviewed docs without bypassing current source declarations", () => {
-    const docs = buildImpactPlan(["HANDOFF.md", "PROJECT-STATUS.md", "README.md"], suites);
+    const docs = buildImpactPlan(["HANDOFF.md", "PROJECT-STATUS.md", "README.md", "ROADMAP.md"], suites);
     expect(docs.status).toBe("DOCS_ONLY");
     expect(docs.domains).toEqual(["docs"]);
     expect(docs.commands).toEqual([]);

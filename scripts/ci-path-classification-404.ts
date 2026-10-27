@@ -74,7 +74,10 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
     "research/lanes/13-astronomy-location-date-feasibility.md",
   ].includes(path)) return ["docs"];
   if (path.startsWith("research/lanes/")) return ["unknown"];
-  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md|HANDOFF\.md|PROJECT-STATUS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
+  // Retiring the historical archive must not let a later executable under the
+  // same root bypass source CI as ordinary documentation.
+  if (path.startsWith(".scratch/") && /\.(?:py|mjs|cjs|js|ts|tsx|sh|bash)$/u.test(path)) return ["ci"];
+  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md|HANDOFF\.md|PROJECT-STATUS\.md|ROADMAP\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
   if (path.startsWith("worker/migrations/")) return ["d1"];
   if (path.startsWith("worker/")) return ["worker-auth"];
   // The shipped OCR engine is executed in the browser even though its JS,

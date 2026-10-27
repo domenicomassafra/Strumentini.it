@@ -42,6 +42,13 @@ describe("#404 reviewed source-input coverage rather than docs-only bypass", () 
     expect(unknown.commands).toEqual([]);
   });
 
+  it("requires source review for a new executable under the retired scratch root", () => {
+    const probe = buildImpactPlan([".scratch/new-validator.py"], tests);
+    expect(probe.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(probe.domains).toContain("ci");
+    expect(probe.gates.map((gate) => gate.id)).toContain("security-review");
+  });
+
   it("recognizes retired research and design records while keeping executable census work in CI", () => {
     const historical = [
       ".impeccable/build/state.json",
