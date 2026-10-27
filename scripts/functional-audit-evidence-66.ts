@@ -34,6 +34,28 @@ export interface FunctionalEvidenceReaders {
 const completedExpansionImplementations = new Set(["legacy-expansion:178", "legacy-expansion:179", "legacy-expansion:276"]);
 const unfinishedExpansionAcceptance = new Set(["legacy-expansion:277", "legacy-expansion:278", "legacy-expansion:279"]);
 
+// Historical source bindings migrated from the functional audit declarations.
+// Expansion IDs are not GitHub issue numbers; the matching tools and scope
+// remain explicit so another numeric ID cannot impersonate source evidence.
+const historicalSourceContractsByTool: Readonly<Record<string, readonly string[]>> = {
+  "regex-tester": ["legacy-expansion:178"],
+  "uuid-generator": ["legacy-expansion:179"],
+  "ris-bibtex-converter": ["legacy-expansion:276"],
+  "image-resize": ["legacy-expansion:277", "legacy-expansion:278", "legacy-expansion:279"],
+  "platform-size-presets": ["legacy-expansion:317"],
+  "utm-builder": ["legacy-expansion:321"],
+  "tracking-cleaner": ["legacy-expansion:321"],
+  "utm-parser": ["legacy-expansion:321"],
+  "meta-preview": ["legacy-expansion:322"],
+  "social-character-limit": ["legacy-expansion:322", "legacy-expansion:325"],
+  "open-graph-preview": ["legacy-expansion:322"],
+  "campaign-name": ["legacy-expansion:325"],
+};
+
+export function isDeclaredHistoricalFunctionalSourceContract(toolId: string, ref: string): boolean {
+  return historicalSourceContractsByTool[toolId]?.includes(ref) ?? false;
+}
+
 const VISUAL_ONLY = /\b(?:result[ -]?v2|renderer?|screenshot|layout|css|style|appearance)\b/iu;
 const RECEIPT_ROOT = /^quality\/receipts\/[a-z0-9/.-]+\.json$/u;
 const TEST_ROOT = /^tests\/[a-z0-9/-]+\.test\.ts$/u;
@@ -83,6 +105,13 @@ export async function validateOriginal200FunctionalEvidence(
       continue;
     }
     const prefix = `${record.toolId}: `;
+    for (const evidence of record.evidence) {
+      if (evidence.ref.startsWith("legacy-expansion:")
+        && (evidence.kind !== "source-contract"
+          || !isDeclaredHistoricalFunctionalSourceContract(record.toolId, evidence.ref))) {
+        issues.push(prefix + `undeclared historical source-contract: ${evidence.ref}`);
+      }
+    }
     const receiptEvidence = record.evidence.filter(({ kind }) => kind === "quality-receipt");
     if (receiptEvidence.length !== 1 || !safeReceiptRef(receiptEvidence[0]!.ref)
       || !receiptEvidence[0]!.ref.includes(`/${record.toolId}.`)

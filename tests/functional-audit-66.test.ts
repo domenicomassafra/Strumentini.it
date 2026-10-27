@@ -41,6 +41,23 @@ function readers(
 }
 
 describe("#66 original-200 functional-upgrade evidence gate", () => {
+  it("rejects a forged or other tool's historical source contract at the final evidence gate", async () => {
+    const original = records.find(({ toolId }) => toolId === "regex-tester");
+    if (!original) throw new Error("Missing real regex-tester functional audit record");
+    for (const ref of ["legacy-expansion:999", "legacy-expansion:179"]) {
+      const forged = functionalAuditRecordSchema.parse({
+        ...original,
+        evidence: original.evidence.map((entry) => entry.kind === "source-contract" && entry.ref === "legacy-expansion:178"
+          ? { ...entry, ref } : entry),
+      });
+      const report = await validateOriginal200FunctionalEvidence(
+        tools.filter(({ id }) => id === "regex-tester"), [forged], readers(),
+      );
+      expect(report.ok).toBe(false);
+      expect(report.issues).toContain(`regex-tester: undeclared historical source-contract: ${ref}`);
+    }
+  });
+
   it("links each of the 200 original routes to independent functional decisions and executable acceptance", async () => {
     expect(tools).toHaveLength(200);
     expect(records).toHaveLength(200);

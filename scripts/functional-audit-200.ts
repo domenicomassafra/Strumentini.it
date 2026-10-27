@@ -1,7 +1,7 @@
 import { access, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { catalog } from "../src/generated/catalog";
-import { validateOriginal200FunctionalEvidence } from "./functional-audit-evidence-66";
+import { isDeclaredHistoricalFunctionalSourceContract, validateOriginal200FunctionalEvidence } from "./functional-audit-evidence-66";
 import {
   functionalAuditAssignmentIndexSchema,
   functionalAuditInventorySchema,
@@ -133,7 +133,13 @@ if (!inventoryReport.ok) throw new Error(inventoryReport.issues.join("\n"));
 for (const entry of inventory) {
   if (entry.status === "PENDING") continue;
   for (const ref of entry.evidenceRefs) {
-    if (/^[a-z]+:\/\//iu.test(ref) || /^legacy-expansion:[1-9]\d*$/u.test(ref)) continue;
+    if (/^[a-z]+:\/\//iu.test(ref)) continue;
+    if (ref.startsWith("legacy-expansion:")) {
+      if (!isDeclaredHistoricalFunctionalSourceContract(entry.toolId, ref)) {
+        throw new Error(`${entry.toolId}: functional evidence ref has no declared historical source: ${ref}`);
+      }
+      continue;
+    }
     await access(resolve(root, ref)).catch(() => {
       throw new Error(`${entry.toolId}: functional evidence ref does not resolve: ${ref}`);
     });
