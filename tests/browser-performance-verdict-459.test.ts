@@ -21,9 +21,9 @@ describe("#459 browser release evidence exit verdict", () => {
     expect(passes({ ...valid(), freshAcceptance: [...valid().freshAcceptance, ...valid().freshAcceptance] })).toBe(false);
     const required = ["npm run acceptance:onboarding", "npm run acceptance:business-math"];
     const pair = { browserMatrix: { requestedEngines: [{ engine: "chrome", status: "PASS" }, { engine: "edge", status: "PASS" }] },
-      freshAcceptance: [{ command: required[0], status: "PASS" }, { command: required[1], status: "PASS" }] };
+      freshAcceptance: [{ command: required[0]!, status: "PASS" }, { command: required[1]!, status: "PASS" }] };
     expect(passes(pair, ["chrome", "edge"], required)).toBe(true);
-    expect(passes({ ...pair, browserMatrix: { requestedEngines: [pair.browserMatrix.requestedEngines[0], pair.browserMatrix.requestedEngines[0]] } }, ["chrome", "edge"], required)).toBe(false);
-    expect(passes({ ...pair, freshAcceptance: [pair.freshAcceptance[0], pair.freshAcceptance[0]] }, ["chrome", "edge"], required)).toBe(false);
+    expect(passes({ ...pair, browserMatrix: { requestedEngines: [pair.browserMatrix.requestedEngines[0]!, pair.browserMatrix.requestedEngines[0]!] } }, ["chrome", "edge"], required)).toBe(false);
+    expect(passes({ ...pair, freshAcceptance: [pair.freshAcceptance[0]!, pair.freshAcceptance[0]!] }, ["chrome", "edge"], required)).toBe(false);
   });
 });
