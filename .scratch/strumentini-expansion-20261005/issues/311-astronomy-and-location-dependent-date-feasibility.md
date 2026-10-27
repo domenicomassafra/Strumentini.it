@@ -12,7 +12,7 @@
 
 **Suggested skills:** research-primary-sources → plan-tickets
 
-- [x] `research/lanes/13-astronomy-location-date-feasibility.md` records required inputs, authority/algorithm needs and accuracy/model boundaries for seasons, sunrise/sunset/twilight and moon-phase jobs.
+- [x] `docs/RESEARCH-DECISIONS-2026-10-27.md` records required inputs, authority/algorithm needs and accuracy/model boundaries for seasons, sunrise/sunset/twilight and moon-phase jobs.
 - [x] The evidence note documents coordinate privacy, URL/history/telemetry avoidance and the explicit-consent boundary for any future remote reference call.
 - [x] All candidate routes are **REFUSED for this tranche**: NOAA's published solar implementation is explicitly unmaintained, while the authoritative USNO services located are remote and no versioned local ephemeris/algorithm pack is vendored. No guessed astronomy route is shipped.
 

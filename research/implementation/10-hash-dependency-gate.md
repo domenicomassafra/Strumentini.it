@@ -7,8 +7,7 @@ Decision: **`hash-wasm` 4.12.0 for production incremental SHA-256**. **`@noble/h
 
 This gate compares the two packages already pinned for evaluation. It does not add or edit package files. Evidence comes from:
 
-- `research/lanes/09-heavy-browser-dependency-spike.md`;
-- `research/lanes/06-oss-donor-matrix.csv`;
+- `docs/RESEARCH-DECISIONS-2026-10-27.md` (historical browser/donor decisions and immutable Git provenance);
 - `quality/fixtures/sha2-known-answers/vectors.json` and `quality/fixtures/file-hash/vectors.json`;
 - `quality/oracles/registry.json` entry `cand-161`;
 - `quality/receipts/file-hash/browser-acceptance.json`.

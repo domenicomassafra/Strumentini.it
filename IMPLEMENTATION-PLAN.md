@@ -333,10 +333,10 @@ Do not introduce YAML, Markdown, QR, PDF, archive, OCR, or heavy codec dependenc
 
 All four parallel enabler lanes completed while this closure was being assembled:
 
-- `research/lanes/06-oss-github-donor-census.md`: 123 candidates, 55 deep assessments, with a deliberately conservative 3 ADOPT / 28 SPIKE / 86 REFERENCE_ONLY / 6 AVOID disposition. Near-term guidance reinforces Web-Platform-first code and focused parser/math/hash/image spikes rather than blanket dependency installation.
-- `research/lanes/07-core-engine-spike-results.md`: 10 framework-neutral, zero-third-party TypeScript engine families with 38/38 tests green plus sabotage evidence. It already proves useful behavior for list/text, URL/UTM, business-day/date arithmetic, business math, non-streaming Web Crypto hashing, JSON, filename planning, and Work Profile default resolution.
-- `research/lanes/08-gold-oracle-factory.md` + `quality/oracles/` + `quality/fixtures/`: a fail-closed oracle registry covering all 200 current candidates, 44 concrete fixture families, 44 source/cross-check authorities, and synthetic/provenance-safe artifacts. Production Gold must consume this authority through public behavior seams; engines must never generate their own expected values.
-- `research/lanes/09-heavy-browser-dependency-spike.md`: 35 capability/library approaches plus three runnable browser spikes. It confirms bounded native Canvas/ImageBitmap JPEG/WebP resize as Early-Gold-capable, puts AVIF/PDF-heavy work in Wave C, and proves an incremental SHA-256 path while requiring a final `hash-wasm` vs `@noble/hashes` production comparison.
+- `docs/RESEARCH-DECISIONS-2026-10-27.md`: indexed historical donor census decisions (123 candidates; 3 ADOPT / 28 SPIKE / 86 REFERENCE_ONLY / 6 AVOID) with full evidence recoverable from the pinned Git history. Refer to current donor-provenance docs for actual dependency decisions.
+- `spikes/core-engines/` and its README: ten framework-neutral, zero-runtime-dependency TypeScript engine families with 38 historical passing checks; retain bounded semantics and independent current tests.
+- `quality/oracles/` + `quality/fixtures/`: the maintained fail-closed oracle authority; the 200-candidate/44-family September figures are historical. Production Gold must consume current independent vectors through public behavior seams.
+- `spikes/heavy-local-feasibility/` and `docs/RESEARCH-DECISIONS-2026-10-27.md`: executable heavy-browser evidence, historical native Canvas/ImageBitmap and incremental hashing decisions, and explicit mobile/cancellation/rights limitations.
 
 Production integration must **promote behavior and independent fixtures first**, not copy the spike folder structure wholesale. In particular:
 

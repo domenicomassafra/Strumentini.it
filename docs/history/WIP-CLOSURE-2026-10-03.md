@@ -20,7 +20,7 @@ The old WIP therefore did **not** exist as active branches anymore. The remainin
 The following are retained as provenance only:
 
 - `.scratch/strumentini-v1/`
-- `tasks/prompt2prompt/`
+- Prompt/response September 2026 (ritirati dal working tree in #498; conservati in Git e riassunti in `docs/RESEARCH-DECISIONS-2026-10-27.md`)
 - `docs/history/2026-10-01-MEGA-HANDOFF.md`
 
 They now carry explicit historical/superseded markers. Current authority is `PROJECT-STATUS.md`, `HANDOFF.md`, `ROADMAP.md` and the generated certification index.

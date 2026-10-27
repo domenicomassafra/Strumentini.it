@@ -37,7 +37,7 @@ Live ticket counts: `PROJECT-STATUS.md` generated panel / `.scratch/strumentini-
 | `PRODUCT-SPEC.md` | Acceptance criteria US-01…US-17, the contract a change must not break. |
 | `PROJECT-STATUS.md` | Generated live ticket totals at the top; historical 2026-10-08 release blocker context and verification table below. |
 
-Most of `.scratch/`, `tasks/prompt2prompt/`, `research/` and `docs/history/` is historical provenance. The exception is `.scratch/strumentini-expansion-20261005/TICKET-DAG.md` plus its linked issue files, which remain the active dependency/scheduling authority for unfinished expansion work.
+Prompt/response runs and research lanes were retired from the working tree in #498. Their unique decisions are indexed in `docs/RESEARCH-DECISIONS-2026-10-27.md`, with full originals in Git history. Other `research/` and `docs/history/` records remain historical. The `.scratch/strumentini-expansion-20261005/TICKET-DAG.md` and linked issue files remain the existing expansion dependency records until their own migration.
 
 ## 3. The gates and what each proves
 

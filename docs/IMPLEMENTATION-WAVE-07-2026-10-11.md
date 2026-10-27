@@ -1,6 +1,6 @@
 # Strumentini.it — wave 07, download CSV revocabile
 
-Prosecuzione da commit locale `e3af0d1`; implementazione source-local del ticket #339 (parziale). Nessun provider produttivo, push, deploy, D1 o Gold. Il file storico untracked `tasks/prompt2prompt/.../001-strumentini-ticket-finalization.response.md` resta invariato.
+Prosecuzione da commit locale `e3af0d1`; implementazione source-local del ticket #339 (parziale). Nessun provider produttivo, push, deploy, D1 o Gold. La risposta storica untracked del coordinatore del 10/10 rimase invariata allora; quel corpus è stato poi ritirato in #498 e resta recuperabile nella storia Git.
 
 ## Cambiamenti reali
 

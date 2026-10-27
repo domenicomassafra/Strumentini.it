@@ -10,7 +10,7 @@ Source authorities: PRODUCT-SPEC.md, DESIGN.md, PRODUCT-MARKETING-CONTEXT.md, IM
 
 Work the dependency frontier only. A ticket is ready when every listed blocker is complete. Every ticket is a vertical, independently verifiable slice; family tickets may proceed in parallel once Ticket 01 establishes the real runtime/build seams.
 
-The separate `tasks/prompt2prompt/20260923-181500-strumentini-parallel-enablers/` wave is intentionally outside this DAG. It may run concurrently and provide promotion inputs, but it does not block Ticket 01.
+The September 2026 parallel-enabler wave (archived at Git baseline 7fe2dfd; decisions indexed in `docs/RESEARCH-DECISIONS-2026-10-27.md`) is intentionally outside this historical DAG. It may run concurrently and provide promotion inputs, but it does not block Ticket 01.
 
 ## Graph
 

@@ -50,5 +50,5 @@ Node, npm, JSR, HTTP, framework, server, or network package.
   bind fields to the canonical Work Profile schema.
 
 See `DESIGN.md` for the public seams and
-`../../research/lanes/07-core-engine-spike-results.md` for promotion decisions
-and verification receipts.
+`../../docs/RESEARCH-DECISIONS-2026-10-27.md` for the historical promotion
+boundary. The executable spike and its tests remain the current evidence.
