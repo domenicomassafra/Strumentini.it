@@ -1,6 +1,5 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -8,6 +7,7 @@ import {
   lookupItalianGeography115,
 } from "../src/reference-data/italy/geography-115";
 import snapshot from "../src/reference-data/italy/geography-115.snapshot.json";
+import { readOfficialInput } from "../scripts/lib/read-official-input-500.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const sha256 = (input: Uint8Array) => `sha256:${createHash("sha256").update(input).digest("hex")}`;
@@ -22,12 +22,12 @@ describe("#115 frozen ISTAT/SITUAS administrative geography source pack", () => 
 
   it("checks original official source integrity and measures all 3 source data subsets", async () => {
     for (const source of Object.values(snapshot.sources)) {
-      expect(sha256(await readFile(resolve(root, source.path)))).toBe(source.sha256);
+      expect(sha256(readOfficialInput(root, source.path))).toBe(source.sha256);
     }
-    const suppressed = JSON.parse(await readFile(resolve(root, snapshot.sources.suppressed.path), "utf8")) as {
+    const suppressed = JSON.parse(readOfficialInput(root, snapshot.sources.suppressed.path).toString("utf8")) as {
       resultset: Array<{ PRO_COM_T: string; COMUNE: string; COD_CATASTO: string }>;
     };
-    const foreign = JSON.parse(await readFile(resolve(root, snapshot.sources.foreign.path), "utf8")) as {
+    const foreign = JSON.parse(readOfficialInput(root, snapshot.sources.foreign.path).toString("utf8")) as {
       resultset: Array<{ COD_AT?: string; DENOMINAZIONE_IT: string }>;
     };
     expect(ITALIAN_GEOGRAPHY_115_METADATA.coverage).toMatchObject({

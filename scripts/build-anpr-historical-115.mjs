@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import Papa from "papaparse";
+import { readOfficialInput } from "./lib/read-official-input-500.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const csvRel = "quality/reference-data/italy/artifacts/115-administrative-geography/anpr-archivio-comuni-2023-10-03.csv";
@@ -15,8 +16,8 @@ const expected = {
   legend: "70f12753ac0569627c1a4264cd658ba1ec4c6f89e60268a4d6391e7b03d3bd4a",
 };
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const csv = readFileSync(resolve(root, csvRel));
-const legend = readFileSync(resolve(root, legendRel));
+const csv = readOfficialInput(root, csvRel);
+const legend = readOfficialInput(root, legendRel);
 if (sha(csv) !== expected.csv || sha(legend) !== expected.legend) {
   throw new Error("ANPR_SOURCE_HASH_MISMATCH: refusing to normalize changed official bytes");
 }

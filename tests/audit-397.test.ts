@@ -3,13 +3,16 @@ import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promis
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { readOfficialInput } from "../scripts/lib/read-official-input-500.mjs";
 import {
   auditAnnualOfficialSources397, resolveAnnualOfficialRule397,
   validOfficialEvidence397, inspectOfficialSnapshotPath397,
 } from "../scripts/validator/audit-397";
 
 const root = resolve(import.meta.dirname, "..");
-const pinned = (path: string) => readFile(resolve(root, path));
+const pinned = (path: string) =>
+  path.startsWith("quality/reference-data/italy/artifacts/115-administrative-geography/istat-situas-")
+    ? Promise.resolve(readOfficialInput(root, path)) : readFile(resolve(root, path));
 
 describe("ticket #397 offline source-year ledger (official snapshots only)", () => {
   it("binds independent primary-source bytes/URLs and bounded annual subpacks across three authorities", async () => {
