@@ -320,7 +320,7 @@ export function auditRepository366(root: string) {
   const packages = auditLockedPackages366(lock, manifest);
   const assets = auditVendoredAssets366(root, pins, VENDORED_DIRS_366);
   const primary = verifyPrimarySource366(root);
-  const snapshots = JSON.parse(readFileSync(resolve(root, "docs/audit-2026-10-10/donor-packages.json"), "utf8")) as Candidate[];
+  const snapshots = JSON.parse(readFileSync(resolve(root, "docs/donor-provenance-366-candidate-packages-2026-10-10.json"), "utf8")) as Candidate[];
   const candidates = snapshots.map((item) => auditCandidate366(item, lock.packages?.[`node_modules/${item.name}`] ?? null, lock));
   const forbidden = auditForbiddenCodecs126(root, lock, manifest);
   const rights = primary.failures.length === 0 && primary.unresolved === 0 ? [] : ["PRIMARY_ASSET_RIGHTS_NOT_VERIFIED"];

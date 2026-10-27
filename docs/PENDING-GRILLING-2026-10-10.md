@@ -4,7 +4,7 @@
 
 **Checkpoint finale del grilling:** l'owner ha confermato le otto decisioni finali e dato `go` alla preparazione del pacchetto. L'intesa di prodotto è confermata; il progetto e il redesign non sono completati. Il prossimo incarico è **solo ticket/spec/roadmap/prompt**, con quattro subagenti nativi Chat On Steroids; autorizzata la creazione e revisione dei ticket nel prossimo incarico. Leggere prima [l'handoff decisionale finale](HANDOFF-DECISIONI-E-TICKET-STRUMENTINI-2026-10-10.md). Il nuovo prompt di lancio è `tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/lane-01-coordinator/001-strumentini-ticket-finalization.prompt.md`; i vecchi prompt audit/grilling restano documentazione storica, non una richiesta di ricominciare il questionario.
 
-Il nuovo [audit indipendente](AUDIT-INDIPENDENTE-STRUMENTINI-2026-10-10.md), con [prove](audit-2026-10-10/README.md) e [triage dei 43 originali](audit-2026-10-10/ticket-triage.md), è il checkpoint della fase A. Non modifica authority di prodotto/design, ticket o produzione. Il mandato complessivo resta aperto; nuovo sviluppo non autorizzato.
+Il nuovo [audit indipendente](AUDIT-INDIPENDENTE-STRUMENTINI-2026-10-10.md), con prove e triage dei 43 originali nel rapporto, è il checkpoint della fase A. Non modifica authority di prodotto/design, ticket o produzione. Il mandato complessivo resta aperto; nuovo sviluppo non autorizzato.
 
 **Fase B conclusa con `plan-grill-with-docs`, `plan-grilling`, `plan-domain-modeling`. Tre round risposti; intesa confermata dall'owner e successivo `go`.** Le risposte del round 1 aggiornano il mandato come segue:
 
