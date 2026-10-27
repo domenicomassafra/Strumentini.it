@@ -15,6 +15,7 @@ import {
   ResultProvenance,
   ToolGutter,
   ToolActions,
+  ToolCancelButton,
   ToolResetButton,
   ToolSurface,
   ToolSubmitButton,
@@ -445,9 +446,7 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
   const fieldIds = useMemo(() => Object.fromEntries(config.fields.map((field) => [field.key, `${config.id}-${field.key}`])), [config]);
 
   function update(key: string, value: string) {
-    // Every result belongs to the exact input + selected operation that
-    // produced it. Invalidate and abort an in-flight run before either changes;
-    // retaining it would offer a stale download with misleading byte savings.
+    // Abort pending work and invalidate downloads when inputs change.
     operation.reset();
     setActionStatus("");
     setValues((current) => ({ ...current, [key]: value }));
@@ -477,8 +476,7 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
     () => developerTransformDownload(config.id, operation.result, values.text ?? ""),
     [config.id, operation.result, values.text],
   );
-  // Only a successfully parsed and rejected-of-active-elements static SVG can
-  // ever reach these local image previews. Never render an unvalidated input.
+  // Render SVG previews only after validation rejects active content.
   const svgVisualPreview = useMemo(() => {
     if (config.id !== "xml-formatter-validator" || values.mode !== "svg-minify" || transformed === null ||
       transformed.mime !== "image/svg+xml" || typeof values.text !== "string") return null;
@@ -664,6 +662,7 @@ export function DeveloperWebTool({ config }: DeveloperWebToolProps) {
         <InlineError message={operation.error} />
         <ToolActions>
           <ToolSubmitButton busy={operation.isRunning} busyLabel={it(CONTROL.working)}>{readableSourceMode ? `Formatta ${sourceFormatLabel}` : config.submitLabel}</ToolSubmitButton>
+          {config.id === "cron-next-run" && operation.isRunning && <ToolCancelButton onCancel={operation.cancel} />}
           <ToolResetButton onClick={reset} disabled={operation.isRunning}>{it(CONTROL.reset)}</ToolResetButton>
         </ToolActions>
       </form>
