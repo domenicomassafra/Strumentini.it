@@ -14,7 +14,7 @@ The artifacts are deliberately separate from future production engines:
 - `quality/fixtures/index.json` records every fixture family, provenance, rights statement, source references and coverage.
 - `quality/fixtures/*/vectors.json` contains known-answer, hand-worked, policy or synthetic vectors.
 - `quality/oracles/validate.py` fails closed on count, schema, missing source references, missing provenance, missing fixture files and missing synthetic artifacts.
-- The old bootstrap for this 200-candidate snapshot has been removed from the working tree. Its implementation remains available in Git history; the version-controlled oracles, fixtures, and `quality/oracles/validate.py` remain canonical.
+- `quality/oracles/build_gold_data.py` is preserved only as the retired bootstrap that originally produced this 200-candidate snapshot. It now fails before any filesystem mutation and must not be used to regenerate current canonical data.
 
 ## Oracle hierarchy
 
