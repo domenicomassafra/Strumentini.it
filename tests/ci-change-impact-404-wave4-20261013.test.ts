@@ -64,7 +64,7 @@ describe("#404 reviewed source-input coverage rather than docs-only bypass", () 
     expect(executable.status).toBe("SOURCE_CHECKS_REQUIRED");
     expect(executable.domains).toContain("ci");
     expect(executable.gates.map((gate) => gate.id)).toContain("security-review");
-    for (const unreviewed of ["design/other-plan.md", "research/lanes/bootstrap.sh", ".impeccable/build/plugin.js"]) {
+    for (const unreviewed of ["design/other-plan.md", "research/lanes/bootstrap.sh", "research/lanes/future-policy.json", ".impeccable/build/plugin.js"]) {
       expect(buildImpactPlan([unreviewed], tests).status, unreviewed).toBe("NO_GO");
     }
   });

@@ -54,10 +54,28 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (["IMPLEMENTATION-PLAN.md", "design/FRONTEND-SYSTEM-STANDARDIZATION.md", "research/implementation/10-hash-dependency-gate.md",
        ".impeccable/build/state.json", "spikes/core-engines/README.md", "spikes/heavy-local-feasibility/README.md"].includes(path)) return ["docs"];
   if (path === "research/lanes/06-oss-donor-evidence/build_census.py") return ["ci"];
-  if (path.startsWith("research/lanes/")) {
-    if (/\.(?:md|csv|json)$/u.test(path)) return ["docs"];
-    return ["unknown"];
-  }
+  // Only the exact retired records are reviewed documentation. Future inputs
+  // under this deleted tree must be evaluated before CI can skip them.
+  if ([
+    "research/lanes/01-market-demand-jobs-census.md",
+    "research/lanes/02-competitor-business-model-stress-test.md",
+    "research/lanes/03-brand-naming-gtm.md",
+    "research/lanes/03-name-screen.csv",
+    "research/lanes/06-oss-donor-evidence/census-summary.json",
+    "research/lanes/06-oss-donor-evidence/deep-primary-metadata.json",
+    "research/lanes/06-oss-donor-evidence/npm-latest-metadata.json",
+    "research/lanes/06-oss-donor-evidence/package-seed.json",
+    "research/lanes/06-oss-donor-matrix.csv",
+    "research/lanes/06-oss-github-donor-census.md",
+    "research/lanes/07-core-engine-spike-results.md",
+    "research/lanes/08-gold-oracle-factory.md",
+    "research/lanes/09-heavy-browser-dependency-spike.md",
+    "research/lanes/10-heavy-local-media-ocr-office-feasibility-refresh.md",
+    "research/lanes/11-italian-syllabification-feasibility.md",
+    "research/lanes/12-heavy-feasibility-ticket-decisions-267-275.md",
+    "research/lanes/13-astronomy-location-date-feasibility.md",
+  ].includes(path)) return ["docs"];
+  if (path.startsWith("research/lanes/")) return ["unknown"];
   // The ticket archive also contains executable validators/generators. Treating
   // every .scratch path as docs would allow a change to the release-facing
   // ticket checks to escape source CI entirely.
