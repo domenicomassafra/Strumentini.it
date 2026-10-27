@@ -54,11 +54,26 @@ describe("#126 actual static distribution provenance", () => {
 
       writeFileSync(join(root, "dist/_astro/facade.js"),
         'import{n as e}from"./tool.js";export{e as PublicTool};');
+      // Vite 8.3.5 / Rolldown may emit an export-from-only facade without a sourcemap.
+      writeFileSync(join(root, "dist/_astro/reexport.js"),
+        'export{n as DeveloperWebTool}from"./tool.js";');
+      writeFileSync(join(root, "dist/_astro/unsigned.js"), "export {};");
+      writeFileSync(join(root, "dist/_astro/unsigned-facade.js"),
+        'export{n as DeveloperWebTool}from"./unsigned.js";');
+      expect(audit().failures).toContain("UNMAPPED_DISTRIBUTED_SCRIPT _astro/unsigned-facade.js");
+      rmSync(join(root, "dist/_astro/unsigned-facade.js"));
+      rmSync(join(root, "dist/_astro/unsigned.js"));
       writeFileSync(join(root, "dist/_astro/preload-helper.abc.js"),
         'var x=document.createElement("link");var y="modulepreload";export{x as t};');
       writeFileSync(join(root, "dist/_astro/rolldown-runtime.abc.js"),
         'var x=Object.create,y=Object.getOwnPropertyDescriptor;var z="rolldown.rs/in-depth/bundling-cjs";export{x as t};');
       expect(audit().failures).toEqual([]);
+
+      writeFileSync(join(root, "dist/_astro/reexport.js"),
+        'export{n as DeveloperWebTool}from"./tool.js";globalThis.unverified=1;');
+      expect(audit().failures).toContain("UNMAPPED_DISTRIBUTED_SCRIPT _astro/reexport.js");
+      writeFileSync(join(root, "dist/_astro/reexport.js"),
+        'export{n as DeveloperWebTool}from"./tool.js";');
 
       // PDF.js ?url produces raw .mjs workers: each must map to locked npm bytes.
       const pdfRow = {

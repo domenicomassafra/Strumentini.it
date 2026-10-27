@@ -23,8 +23,8 @@ const vitePath = "node_modules/vite";
 const peers = ["@types/node", "tsx", "yaml"] as const;
 function graph() {
   const vite = structuredClone(source.packages[vitePath]);
-  if (vite?.version !== "8.3.0" || !vite.license || !vite.integrity || !vite.resolved) {
-    throw new Error("Expected actual pinned Vite@8.3.0 package metadata");
+  if (vite?.version !== "8.3.5" || !vite.license || !vite.integrity || !vite.resolved) {
+    throw new Error("Expected actual pinned Vite@8.3.5 package metadata");
   }
   // Isolate the real Vite optional peer contract from unrelated transitive
   // packages; retain all actual peer ranges and peerDependenciesMeta flags.

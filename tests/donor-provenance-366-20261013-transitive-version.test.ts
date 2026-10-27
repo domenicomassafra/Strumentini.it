@@ -57,7 +57,7 @@ describe("#366 transitive lockfile pinning: effective resolved version", () => {
     "refuses %s's %s resolved to an incompatible version, even with a well-shaped registry URL and SRI",
     (parent, dep, incompatible) => {
       const { lock, manifest, declaredRange, childKey } = lockedAstroEdge(parent, dep);
-      expect(declaredRange).toBe(parent === "@astrojs/compiler-rs" ? "0.4.1" : "^3.0.4");
+      expect(declaredRange).toBe(parent === "@astrojs/compiler-rs" ? "0.5.2" : "^3.0.4");
       expect(auditLockedPackages366(lock, manifest).status).toBe("VERIFIED_METADATA");
       // Simulate a disagreeing lock record that has otherwise plausible
       // metadata, rather than poisoning SRI shape or source hostname.

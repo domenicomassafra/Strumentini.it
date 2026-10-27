@@ -25,6 +25,10 @@ function knownGeneratedChunk366(path: string, code: string, files: ReadonlySet<s
   if (Buffer.byteLength(code) > 3_000) return false;
   const facade = code.match(/^import\{[^}]+\}from["']\.\/([^"']+\.js)["'];export\{[^}]+\};?$/u);
   if (facade) return files.has(`_astro/${facade[1]}`);
+  // Rolldown also emits source-free direct re-export facades. Accept only a
+  // pure symbol list targeting an existing chunk with its own source map.
+  const reexport = code.match(/^export\{[\w$\s,]+\}from["']\.\/([\w.-]+\.js)["'];?$/u);
+  if (reexport) return files.has(`_astro/${reexport[1]}`) && files.has(`_astro/${reexport[1]}.map`);
   if (/^_astro\/preload-helper\.[\w-]+\.js$/u.test(path)) {
     return code.includes("modulepreload") && code.includes("document.createElement") && code.includes("export{");
   }
