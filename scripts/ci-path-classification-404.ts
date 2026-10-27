@@ -17,7 +17,7 @@ const fiscalToolComponent = /^src\/components\/tools\/(?:ItalyContributionTools\
 export function classifyPath(path: string): readonly ChangeDomain[] {
   if (!path || path.startsWith("/") || path.includes("\\") || /[\u0000-\u001f\u007f\ufffd]/u.test(path) || path.split("/").some((part) => part === "." || part === ".." || part === "")) return ["unknown"];
   // Reviewed root hooks and agent budget files require CI/security gates.
-  if ([".githooks/pre-push", ".githooks/pre-commit", ".gitattributes", ".agent-size-baseline", ".agent-size-ignore", "orca.yaml", "scripts/ci-path-classification-404.ts"].includes(path)) return ["ci"];
+  if ([".githooks/pre-push", ".githooks/pre-commit", ".gitattributes", ".gitignore", ".agent-size-baseline", ".agent-size-ignore", "orca.yaml", "scripts/ci-path-classification-404.ts"].includes(path)) return ["ci"];
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   // Both Cloudflare deploy contracts can route the Worker or bind D1, so
@@ -41,7 +41,7 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (/^(scripts\/(ci-change-impact-404\.ts|ci-path-classification-404\.ts|validate-release\.ts|audit-gold-source-binding-347\.ts|lib\/(?:current-revision|current-remote-main-404)\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
   // Donor provenance reads this JSON as executable audit input, not prose.
   // Altering its package/license records must be reviewed and tested.
-  if (path === "docs/audit-2026-10-10/donor-packages.json") return ["ci"];
+  if (path === "docs/donor-provenance-366-candidate-packages-2026-10-10.json") return ["ci"];
   // These Python unittests are not Vitest and are not part of `npm test`.
   if (path === "tests/test_ticket_dashboard.py") return ["ci"];
   // design/WORLD.md controls the shipped palette's source contract. It is

@@ -57,7 +57,7 @@ Baseline dell'audit: `d0947cc278416ca966151eae516255b325477230`; sorgente distri
 - iPhone fisico collegato nell'audit, Android/adb non verificati; prove physical NOT_RUN. Non ripetere vecchia affermazione “iPhone assente”.
 - Suite 1.791 test / 233 suite, check 1.949 file, build 291 pagine sono **storici**, non nuovi esiti di questa consegna.
 
-L'audit completo e le prove sono `docs/AUDIT-INDIPENDENTE-STRUMENTINI-2026-10-10.md` e `docs/audit-2026-10-10/`. Le raccomandazioni del reviewer di restringere il prodotto e sospendere fiscalità/CF **non sono state adottate**. I fatti negativi rimangono validi al loro snapshot; le priorità si aggiornano con OWN-01–20.
+L'audit completo e le prove sono `docs/AUDIT-INDIPENDENTE-STRUMENTINI-2026-10-10.md` e [snapshot delle prove al commit 7fe2dfd7](https://github.com/domenicomassafra/Strumentini.it/tree/7fe2dfd729cfbc3450de3080324a9a1757f0ea28/docs/audit-2026-10-10). Le raccomandazioni del reviewer di restringere il prodotto e sospendere fiscalità/CF **non sono state adottate**. I fatti negativi rimangono validi al loro snapshot; le priorità si aggiornano con OWN-01–20.
 
 ## 4. Codebase e authority da usare
 

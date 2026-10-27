@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { readOfficialInput } from "./lib/read-official-input-500.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const artifacts = "quality/reference-data/italy/artifacts/115-administrative-geography/situas-date-exact-20261010";
@@ -21,7 +22,7 @@ const metadata = [
 ];
 const digest = (buffer) => createHash("sha256").update(buffer).digest("hex");
 const readPinned = (path, expectedSha) => {
-  const body = readFileSync(resolve(root, path));
+  const body = readOfficialInput(root, path);
   if (digest(body) !== expectedSha) throw new Error(`SITUAS_OFFICIAL_SOURCE_HASH_MISMATCH: ${path}`);
   return JSON.parse(body.toString("utf8"));
 };

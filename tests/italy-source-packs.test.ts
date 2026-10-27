@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { readOfficialInput } from "../scripts/lib/read-official-input-500.mjs";
 import {
   getItalySourcePackDecision,
   listItalySourcePackDecisions,
@@ -100,7 +101,7 @@ describe("Italy source-pack decisions 115-120", () => {
     expect(evidence.frozenOfficialBulkArtifacts.map(({ rows, rowsWithCode, rowsWithoutCode }) => ({ rows, rowsWithCode, rowsWithoutCode })))
       .toEqual([{ rows: 2637, rowsWithCode: 2619, rowsWithoutCode: 18 }, { rows: 262, rowsWithCode: 239, rowsWithoutCode: 23 }]);
     for (const { path, sha256: expectedSha } of evidence.frozenOfficialBulkArtifacts) {
-      expect(sha256(await readFile(resolve(root, path)))).toBe(expectedSha);
+      expect(sha256(readOfficialInput(root, path))).toBe(expectedSha);
     }
     expect(evidence.normalizedLocalPack).toMatchObject({
       builder: "scripts/build-italy-geography-115.mjs", currentMunicipalityRows: 7894,

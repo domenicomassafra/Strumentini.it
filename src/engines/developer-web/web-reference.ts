@@ -6,6 +6,10 @@ import {
   optionalStringField,
   stringField,
 } from "./types";
+import {
+  cronTimeZoneFormatter, wallClock, wallClockIso, nextCronWallBoundary, CRON_MINUTE_MS, CRON_SEARCH_MINUTES,
+} from "./cron-calendar-search";
+import type { CronWallClock } from "./cron-calendar-search";
 
 const HTTP_STATUSES: Readonly<Record<number, { reason: string; description: string }>> = {
   100: { reason: "Continua", description: "Le intestazioni della richiesta sono state ricevute." },
@@ -317,55 +321,7 @@ function matchesCron(schedule: CronSchedule, date: Date): boolean {
   return true;
 }
 
-interface CronWallClock {
-  readonly year: number;
-  readonly month: number;
-  readonly day: number;
-  readonly hour: number;
-  readonly minute: number;
-  readonly dayOfWeek: number;
-}
-
-function cronTimeZoneFormatter(timeZone: string): Intl.DateTimeFormat {
-  try {
-    return new Intl.DateTimeFormat("en-CA", {
-      timeZone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    });
-  } catch {
-    invalid("INVALID_TIMEZONE", "The selected IANA timezone is not supported by this browser.");
-  }
-}
-
-function wallClock(formatter: Intl.DateTimeFormat, date: Date): CronWallClock {
-  const parts = Object.fromEntries(
-    formatter.formatToParts(date)
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, part.value]),
-  );
-  const year = Number(parts.year);
-  const month = Number(parts.month);
-  const day = Number(parts.day);
-  const hour = Number(parts.hour);
-  const minute = Number(parts.minute);
-  return {
-    year,
-    month,
-    day,
-    hour,
-    minute,
-    dayOfWeek: new Date(Date.UTC(year, month - 1, day)).getUTCDay(),
-  };
-}
-
-function matchesCronWallClock(schedule: CronSchedule, value: CronWallClock): boolean {
-  if (!schedule.minute.values.includes(value.minute)) return false;
-  if (!schedule.hour.values.includes(value.hour)) return false;
+function matchesCronWallDay(schedule: CronSchedule, value: Pick<CronWallClock, "month" | "day" | "dayOfWeek">): boolean {
   if (!schedule.month.values.includes(value.month)) return false;
   const domMatch = schedule.dayOfMonth.values.includes(value.day);
   const dowMatch = schedule.dayOfWeek.values.includes(value.dayOfWeek);
@@ -373,11 +329,6 @@ function matchesCronWallClock(schedule: CronSchedule, value: CronWallClock): boo
   if (schedule.dayOfMonth.restricted) return domMatch;
   if (schedule.dayOfWeek.restricted) return dowMatch;
   return true;
-}
-
-function wallClockIso(value: CronWallClock): string {
-  const two = (part: number) => part.toString().padStart(2, "0");
-  return `${value.year.toString().padStart(4, "0")}-${two(value.month)}-${two(value.day)}T${two(value.hour)}:${two(value.minute)}`;
 }
 
 export function nextCronRuns(input: string, from: string, count: number): string[] {
@@ -388,10 +339,20 @@ export function nextCronRuns(input: string, from: string, count: number): string
   let cursor = new Date(startMilliseconds);
   cursor.setUTCSeconds(0, 0);
   cursor = new Date(cursor.getTime() + 60_000);
+  const searchEnd = cursor.getTime() + CRON_SEARCH_MINUTES * CRON_MINUTE_MS;
   const output: string[] = [];
-  for (let step = 0; step < 527_000 && output.length < count; step += 1) {
-    if (matchesCron(schedule, cursor)) output.push(cursor.toISOString());
-    cursor = new Date(cursor.getTime() + 60_000);
+  while (cursor.getTime() < searchEnd && output.length < count) {
+    if (!matchesCronWallDay(schedule, {
+      month: cursor.getUTCMonth() + 1, day: cursor.getUTCDate(), dayOfWeek: cursor.getUTCDay(),
+    })) {
+      cursor.setUTCDate(cursor.getUTCDate() + 1);
+      cursor.setUTCHours(0, 0, 0, 0);
+    } else if (!schedule.hour.values.includes(cursor.getUTCHours())) {
+      cursor.setUTCHours(cursor.getUTCHours() + 1, 0, 0, 0);
+    } else {
+      if (matchesCron(schedule, cursor)) output.push(cursor.toISOString());
+      cursor = new Date(cursor.getTime() + CRON_MINUTE_MS);
+    }
   }
   if (output.length < count) invalid("CRON_NOT_FOUND", "No matching run was found within one local search year.");
   return output;
@@ -402,27 +363,34 @@ export function nextCronRunsInTimeZone(
   from: string,
   count: number,
   timeZone: string,
+  signal?: AbortSignal,
 ): Array<{ readonly utc: string; readonly local: string }> {
   if (!Number.isSafeInteger(count) || count < 1 || count > 20) invalid("INVALID_CRON_COUNT", "Next-run count must be an integer from 1 through 20.");
   const schedule = parseCronExpression(input);
   const startMilliseconds = Date.parse(from);
   if (!Number.isFinite(startMilliseconds)) invalid("INVALID_CRON_FROM", "The from time must be an ISO date-time.");
   const formatter = cronTimeZoneFormatter(timeZone);
-  let cursor = new Date(startMilliseconds);
-  cursor.setUTCSeconds(0, 0);
-  cursor = new Date(cursor.getTime() + 60_000);
+  let cursor = Math.floor(startMilliseconds / CRON_MINUTE_MS) * CRON_MINUTE_MS + CRON_MINUTE_MS;
+  const searchEnd = cursor + CRON_SEARCH_MINUTES * CRON_MINUTE_MS;
   const output: Array<{ utc: string; local: string }> = [];
-  for (let step = 0; step < 527_000 && output.length < count; step += 1) {
-    const local = wallClock(formatter, cursor);
-    if (matchesCronWallClock(schedule, local)) output.push({ utc: cursor.toISOString(), local: wallClockIso(local) });
-    cursor = new Date(cursor.getTime() + 60_000);
+  while (cursor < searchEnd && output.length < count) {
+    if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
+    const local = wallClock(formatter, new Date(cursor));
+    if (!matchesCronWallDay(schedule, local)) {
+      cursor = nextCronWallBoundary(formatter, cursor, searchEnd, local, "day");
+    } else if (!schedule.hour.values.includes(local.hour)) {
+      cursor = nextCronWallBoundary(formatter, cursor, searchEnd, local, "hour");
+    } else {
+      if (schedule.minute.values.includes(local.minute)) output.push({ utc: new Date(cursor).toISOString(), local: wallClockIso(local) });
+      cursor += CRON_MINUTE_MS;
+    }
   }
   if (output.length < count) invalid("CRON_NOT_FOUND", "No matching run was found within one local search year.");
   return output;
 }
 
-export function cronNextRunOperation(input: string, from: string, count: number, timeZone = "UTC"): DeveloperWebResult {
-  const occurrences = nextCronRunsInTimeZone(input, from, count, timeZone);
+export function cronNextRunOperation(input: string, from: string, count: number, timeZone = "UTC", signal?: AbortSignal): DeveloperWebResult {
+  const occurrences = nextCronRunsInTimeZone(input, from, count, timeZone, signal);
   return {
     valid: true,
     expression: parseCronExpression(input).expression,

@@ -37,21 +37,34 @@ jobs:
           # PDF.js uses Promise.try and Uint8Array.toHex; match the tested Node 26 runtime.
           node-version: '26'
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            spikes/heavy-local-feasibility/package-lock.json
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13.9'
+          cache: pip
+          cache-dependency-path: .github/ci-consumer-requirements.txt
+      # Archive only the downloaded .deb files; apt still verifies and installs
+      # Ubuntu packages normally, with no custom cache service.
+      - name: Cache FFmpeg apt packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/strumentini-apt-archives/*.deb
+          key: ${{ runner.os }}-${{ runner.arch }}-apt-ffmpeg-ubuntu24-v1
       - run: npm ci
       - name: Preflight pinned independent PDF/A validator
         run: node scripts/preflight-pdfa-validator-419.mjs
       - name: Install pinned independent consumer dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg
+          mkdir -p "$RUNNER_TEMP/strumentini-apt-archives/partial"
+          sudo apt-get -o Dir::Cache::archives="$RUNNER_TEMP/strumentini-apt-archives" -o APT::Keep-Downloaded-Packages=true install -y --no-install-recommends ffmpeg
           # Keep installer-generated files outside the source checkout: the
           # fail-closed change-impact gate rejects unknown working-tree paths.
           python3 -m venv "$RUNNER_TEMP/strumentini-ci-python"
           echo "$RUNNER_TEMP/strumentini-ci-python/bin" >> "$GITHUB_PATH"
-          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
+          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install -r .github/ci-consumer-requirements.txt
           sha256sum -c quality/donors/fatturapa/SHA256SUMS
           "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-index --no-deps quality/donors/fatturapa/fatturapa-0.2.0-py3-none-any.whl
           "$RUNNER_TEMP/strumentini-ci-python/bin/python" -c 'import sys,importlib.metadata;assert sys.version_info[:3] == (3,13,9);assert importlib.metadata.version("fatturapa") == "0.2.0"'
@@ -83,19 +96,32 @@ jobs:
         with:
           node-version: '26'
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            spikes/heavy-local-feasibility/package-lock.json
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13.9'
+          cache: pip
+          cache-dependency-path: .github/ci-consumer-requirements.txt
+      # Archive only the downloaded .deb files; apt still verifies and installs
+      # Ubuntu packages normally, with no custom cache service.
+      - name: Cache FFmpeg apt packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/strumentini-apt-archives/*.deb
+          key: ${{ runner.os }}-${{ runner.arch }}-apt-ffmpeg-ubuntu24-v1
       - run: npm ci
       - name: Preflight pinned independent PDF/A validator
         run: node scripts/preflight-pdfa-validator-419.mjs
       - name: Install pinned independent consumer dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg
+          mkdir -p "$RUNNER_TEMP/strumentini-apt-archives/partial"
+          sudo apt-get -o Dir::Cache::archives="$RUNNER_TEMP/strumentini-apt-archives" -o APT::Keep-Downloaded-Packages=true install -y --no-install-recommends ffmpeg
           python3 -m venv "$RUNNER_TEMP/strumentini-ci-python"
           echo "$RUNNER_TEMP/strumentini-ci-python/bin" >> "$GITHUB_PATH"
-          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-cache-dir 'Pillow==12.2.0' 'pypdf==6.16.1' 'python-pptx==1.0.2'
+          "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install -r .github/ci-consumer-requirements.txt
           sha256sum -c quality/donors/fatturapa/SHA256SUMS
           "$RUNNER_TEMP/strumentini-ci-python/bin/python" -m pip install --no-index --no-deps quality/donors/fatturapa/fatturapa-0.2.0-py3-none-any.whl
           "$RUNNER_TEMP/strumentini-ci-python/bin/python" -c 'import sys,importlib.metadata;assert sys.version_info[:3] == (3,13,9);assert importlib.metadata.version("fatturapa") == "0.2.0"'

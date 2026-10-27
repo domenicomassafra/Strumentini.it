@@ -9,12 +9,12 @@ const tests = [
 
 describe("#404 reviewed source-input coverage rather than docs-only bypass", () => {
   it("does not skip provenance audit when the exact source donor snapshot changes", () => {
-    const plan = buildImpactPlan(["docs/audit-2026-10-10/donor-packages.json"], tests);
+    const plan = buildImpactPlan(["docs/donor-provenance-366-candidate-packages-2026-10-10.json"], tests);
     expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
     expect(plan.domains).toContain("ci");
     expect(plan.gates).toContainEqual(expect.objectContaining({ id: "security-review", status: "NOT_RUN" }));
     expect(plan.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
-    expect(buildImpactPlan(["docs/audit-2026-10-10/README.md"], tests).status).toBe("DOCS_ONLY");
+    expect(buildImpactPlan(["docs/donor-provenance-366-active-2026-10-18.md"], tests).status).toBe("DOCS_ONLY");
   });
 
   it("executes actual Python dashboard tests on script and unittest source changes", () => {
