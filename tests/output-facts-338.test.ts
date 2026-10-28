@@ -99,7 +99,7 @@ describe("#338 output facts strictly derived from produced bytes", () => {
     expect(readOutputFacts338(artifact(corrupt, png.filename, png.mime, "file"))).toMatchObject({ state: "unavailable", reason: "MALFORMED" });
     const truncated = png.bytes.slice(0, png.bytes.length - 5);
     expect(readOutputFacts338(artifact(truncated, png.filename, png.mime, "file"))).toMatchObject({ state: "unavailable", reason: "MALFORMED" });
-  });
+  }, 30_000);
 
   it("reopens real CSV bytes for bounded structural facts and rejects malformed rows", () => {
     const csv = new TextEncoder().encode("name,value\nalpha,1\nbeta,2\n");

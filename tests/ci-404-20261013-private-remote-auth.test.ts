@@ -60,7 +60,7 @@ if [ "$1" = "ls-remote" ]; then
   printf '%s\\t%s\\n' "$sha" refs/heads/main
   exit 0
 fi
-if [ "$1" = "status" ] && [ "$2" = "--porcelain" ]; then exit 0; fi
+if [ "$1" = "status" ] && [ "$2" = "--porcelain=v1" ] && [ "$3" = "-z" ] && [ "$4" = "--untracked-files=all" ] && [ "$5" = "--ignore-submodules=none" ]; then exit 0; fi
 exec /usr/bin/git "$@"
 `;
     writeFileSync(path, program, { mode: 0o700 });

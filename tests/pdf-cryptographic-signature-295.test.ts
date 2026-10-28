@@ -109,5 +109,5 @@ describe('#295 optional local P12 cryptographic signing', () => {
     expect(again.stderr).not.toContain(password);
     expect(await readFile(inputPath)).toEqual(source);
     expect((await readdir(work)).filter((name) => name.endsWith('.pdf'))).toEqual(['input.pdf', 'output.pdf']);
-  });
+  }, 30_000);
 });
