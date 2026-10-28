@@ -731,7 +731,7 @@ export function generateRecurringDates(input: RecurrenceInput): { dates: readonl
   const addCandidate = (candidate: Date): boolean => {
     const value = formatIsoDate(candidate);
     if (input.endDate !== undefined && value > input.endDate) return false;
-    if (value < startValue(start)) return true;
+    if (value < formatIsoDate(start)) return true;
     if (allowed.size > 0 && !allowed.has(candidate.getUTCDay())) return true;
     if (!seen.has(value)) { dates.push(value); seen.add(value); }
     return true;
@@ -773,18 +773,16 @@ export function generateRecurringDates(input: RecurrenceInput): { dates: readonl
   return { dates, policy: { frequency: input.frequency, interval, monthOverflowPolicy: overflow, ...(weekdays.length === 0 ? {} : { weekdays }) } };
 }
 
-function startValue(date: Date): string {
-  return formatIsoDate(date);
-}
-
 function monthDayDifference(start: Date, end: Date): { years: number; months: number; days: number } {
   let years = end.getUTCFullYear() - start.getUTCFullYear();
   let months = end.getUTCMonth() - start.getUTCMonth();
   let days = end.getUTCDate() - start.getUTCDate();
-  if (days < 0) {
+  let borrow = 0;
+  while (days < 0) {
     months -= 1;
-    const previousMonth = utcDate(end.getUTCFullYear(), end.getUTCMonth(), 0);
+    const previousMonth = utcDate(end.getUTCFullYear(), end.getUTCMonth() - borrow, 0);
     days += previousMonth.getUTCDate();
+    borrow += 1;
   }
   if (months < 0) { years -= 1; months += 12; }
   return { years, months, days };
@@ -815,7 +813,7 @@ export function calendarDateList(startDate: string, endDate: string, stepDays: n
 }
 
 function escapeIcsText(value: string): string {
-  return value.replace(/\\/gu, "\\\\").replace(/;/gu, "\\;").replace(/,/gu, "\\,").replace(/\r?\n/gu, "\\n");
+  return value.replace(/\\/gu, "\\\\").replace(/;/gu, "\\;").replace(/,/gu, "\\,").replace(/\r\n|\r|\n/gu, "\\n");
 }
 
 function foldIcsLine(value: string): string {
