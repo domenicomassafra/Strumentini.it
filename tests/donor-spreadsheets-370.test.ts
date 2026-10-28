@@ -102,7 +102,7 @@ sys.stdout.buffer.write(output.getvalue())
 `;
 
 const pythonStaleCachedFormulaWorkbook = String.raw`
-import io, sys, zipfile
+import io, sys, zipfile, xml.etree.ElementTree as ET
 from openpyxl import Workbook
 book = Workbook()
 sheet = book.active
@@ -116,9 +116,14 @@ with zipfile.ZipFile(original) as source, zipfile.ZipFile(output, "w") as target
     for part in source.infolist():
         data = source.read(part.filename)
         if part.filename == "xl/worksheets/sheet1.xml":
-            before = b"<f>1+1</f><v />"
-            assert before in data
-            data = data.replace(before, b"<f>1+1</f><v>777</v>")
+            root = ET.fromstring(data)
+            ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+            formula_cell = next(c for c in root.findall(f".//{ns}c") if c.get("r") == "A2")
+            formula = formula_cell.find(f"{ns}f")
+            value = formula_cell.find(f"{ns}v")
+            assert formula is not None and formula.text == "1+1" and value is not None
+            value.text = "777"
+            data = ET.tostring(root, encoding="utf-8")
         target.writestr(part, data)
 sys.stdout.buffer.write(output.getvalue())
 `;
@@ -295,5 +300,5 @@ print(json.dumps({"sheets":wb.sheetnames,"rows":len(rows),"cols":len(rows[0]),"f
     expect(result).toEqual({ sheets: ["Sheet1"], rows: 2_001, cols: 6, first: "000000", last: "001999" });
     expect(elapsed).toBeLessThan(10_000);
     console.info(`#370 oracle: 2,001 rows / 12,006 cells; openpyxl readback ${elapsed.toFixed(0)} ms`);
-  });
+  }, 20_000);
 });

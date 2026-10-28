@@ -74,6 +74,7 @@ jobs:
       - name: Git change impact + selected source checks
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          SPREADSHEET370_PYTHON: ${{ runner.temp }}/strumentini-ci-python/bin/python
         run: npm run ci:scope -- --base="$BASE_SHA" --run
 
   cumulative-on-main:
@@ -132,6 +133,8 @@ jobs:
       # timeouts caused by unrelated tests competing for the same runner CPU;
       # all existing acceptance assertions and timeouts remain unchanged.
       - run: npm test -- --maxWorkers=1
+        env:
+          SPREADSHEET370_PYTHON: ${{ runner.temp }}/strumentini-ci-python/bin/python
       - run: npm run test:workerd
       - run: npm run check
       - run: npm run build
