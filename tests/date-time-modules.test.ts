@@ -59,6 +59,31 @@ describe("date/time/planning tool modules", () => {
     expect(publicHolidayLookup.run({ country: "US", year: 2026 }, context)).toMatchObject({ source: "embedded-calendar-v2" });
   });
 
+  it("returns non-negative elapsed age parts across shorter February months", () => {
+    expect(ageDateAnniversary.run({ birthDate: "2023-01-31", asOfDate: "2023-03-01" }, context)).toMatchObject({
+      years: 0, months: 0, days: 29, totalDays: 29,
+    });
+    expect(ageDateAnniversary.run({ birthDate: "2024-01-31", asOfDate: "2024-03-01" }, context)).toMatchObject({
+      years: 0, months: 0, days: 30, totalDays: 30,
+    });
+  });
+
+  it("keeps carriage returns inside ICS descriptions instead of creating new event properties", () => {
+    const built = icsEventBuilder.run({
+      summary: "Revisione",
+      start: "2024-01-15T12:00:00Z",
+      description: "Note locali\rDTSTART:20300101T090000Z",
+    }, context) as { text: string };
+    const parsed = icsViewer.run({ text: built.text }, context) as {
+      events: Array<{ start: string; description?: string }>;
+    };
+    expect(parsed.events).toHaveLength(1);
+    expect(parsed.events[0]).toMatchObject({
+      start: "2024-01-15T12:00:00Z",
+      description: "Note locali\nDTSTART:20300101T090000Z",
+    });
+  });
+
   it("normalizes invalid module input instead of returning a fake result", () => {
     expect(() => dateDifference.run({ start: "not-a-date", end: "2024-01-01" }, context)).toThrow("INVALID_DATE");
     expect(() => icsViewer.run({ text: "BEGIN:VCALENDAR\nEND:VCALENDAR" }, context)).toThrow("INVALID_ICS");
