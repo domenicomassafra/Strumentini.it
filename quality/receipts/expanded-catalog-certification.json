@@ -2206,7 +2206,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/break-even.gold.json",
-          "sha256": "070871bea7e0eb356da256e95fa5a2daa3322d90130da62a49fa4c3d96ed50e9",
+          "sha256": "1b9ac8fe8f1020b66bd786f0ab2d4d90b2e915fe1d36bafe97d428891cd46e23",
           "status": "PASS"
         },
         {
@@ -3137,7 +3137,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/capacity-planner.gold.json",
-          "sha256": "e7a9fb532f1b1f1fe827f89dab96740cc3df8458b42e46671e56cbd51b96e269",
+          "sha256": "4fb21bb84ea38f88ac02ca49bc7a13ae342b47bcfa84bdf0d09df52f19e6f2bd",
           "status": "PASS"
         },
         {
@@ -8355,7 +8355,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/currency-scenario.gold.json",
-          "sha256": "436ab0c28d3549220c153d900299319bb6dfa142741d43ad4c7ce91e769f4017",
+          "sha256": "b9766288eeefaad22c6ecde8805817e570cd62f907385515a3db0283b80c1baa",
           "status": "PASS"
         },
         {
@@ -9015,7 +9015,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/discount-impact.gold.json",
-          "sha256": "831c841d119d1d852feee81cf7c86ec19a5d04c3375d1a2191a8b7d4c3c51826",
+          "sha256": "c5cec2ca6a13035f7ae1d5e952d69a506816dd9beae5540be25ee680da4690fc",
           "status": "PASS"
         },
         {
@@ -10460,7 +10460,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/effective-hourly-rate.gold.json",
-          "sha256": "129b0aca91d354cbaf838a80384c0f4992509855899e9ffdaaf323e0b5124649",
+          "sha256": "78c49b71801358d6d1c587f180bdd32802934b9aaa90ae8b1ba22f745918716d",
           "status": "PASS"
         },
         {
@@ -16452,7 +16452,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-math-validator.gold.json",
-          "sha256": "a258badf2a1d47cd868030f175cd9608ab592117e2f2e00f4b1ccf83f0529341",
+          "sha256": "e3c35e1d7a1f88f1a03cd72ff2929b8773134eddd152565086727633deab7b90",
           "status": "PASS"
         },
         {
@@ -16575,7 +16575,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-number-generator.gold.json",
-          "sha256": "f9cba370fc18bb44c11201a071df17718556e106ee86a9af7c20e92f3b96d290",
+          "sha256": "2a7cd269d2bd5ce61746c77042efc2648c3738442e9b63a0649acdde2a0a80b3",
           "status": "PASS"
         },
         {
@@ -18453,7 +18453,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/late-payment-interest.gold.json",
-          "sha256": "d40545644353963b3c22b7310e45e08497547e6e1a480c1273fddfc4ca7837ff",
+          "sha256": "b5b272a1be320e9e6e2fc7aaf2824e2a8467bcccaf89730e8bac0fa3a9947dc4",
           "status": "PASS"
         },
         {
@@ -21858,7 +21858,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
-          "sha256": "bc352141a7b0ca7994accf089fe42f34e77abd3624c264fbf805c817f3aab94b",
+          "sha256": "b807b5d66b87bb3524864a672c50b4dc69272ca1e8ffaaf09af89eb43adaf7e2",
           "status": "PASS"
         },
         {
@@ -25897,7 +25897,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/percentage-helper.gold.json",
-          "sha256": "0364568e53210d54755afc8a8796e5cdaa5cb0cb586d1df1729ce3df703bb390",
+          "sha256": "4940bdc53dae4b788f0db8b50896e992bca572f106e0b46a1b1b84c19c55bdc2",
           "status": "PASS"
         },
         {
@@ -26648,7 +26648,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/project-profitability.gold.json",
-          "sha256": "dbf36a29f2fe0d836cb97bd34f36d51d65444204132f8cf6d915ebbac5f6735f",
+          "sha256": "0ca2db7b51ce2359c70214b255d97c8a4b59028f46bfda276ac8641b0ec3a442",
           "status": "PASS"
         },
         {
@@ -26771,7 +26771,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/proposal-budget-checker.gold.json",
-          "sha256": "87c50833cae20c137bef835b053cde87d24e8caa911bed97adcea8d88cbf165f",
+          "sha256": "aa32c8bf5c7d3327fc6dbcac45b68ff0d503c6656b697ab5fcff2116e00639b4",
           "status": "PASS"
         },
         {
@@ -29259,7 +29259,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/retainer-capacity.gold.json",
-          "sha256": "04cd25c5c8043fed044ca46812c37b5a00cadcbbf92648cecc296d35362fb5a8",
+          "sha256": "d054af7448adf35829790c7f8823ea9674e8ffcf53ac3e22703fb00cbd96cf0e",
           "status": "PASS"
         },
         {
@@ -30037,7 +30037,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/scope-creep-cost.gold.json",
-          "sha256": "02223b35f846c27751f18a102abae7fe011b7f887c93aee37631fd0f6ef746f6",
+          "sha256": "7dc70bba4f91f59819c4f739b7886b4025f08a3d7dc20034af896249b160e4b9",
           "status": "PASS"
         },
         {
@@ -31870,7 +31870,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/target-income-rate.gold.json",
-          "sha256": "429519ba79b83d1bdc24a7a3ed9a8184f7e45b4d47115b1526c8fcb0990f2efc",
+          "sha256": "13f626c8b93c8210fc4278280b7bcc18a49d7f0b62ee7e8f9074f0c6a268fb7f",
           "status": "PASS"
         },
         {
@@ -34230,7 +34230,7 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/utilization-calculator.gold.json",
-          "sha256": "1b066722b58edcd1ad2b5fc88faad39350083625f1cf3eb7ba24c4272bff3110",
+          "sha256": "ef5ff04f60cd39cdfb982b37ea4f2da4d771095340eaae32502ad61ab648cb1a",
           "status": "PASS"
         },
         {

@@ -15,6 +15,7 @@ const sha256 = (bytes: Uint8Array | string) => createHash("sha256").update(bytes
 describe("#347 public Gold source-bound receipt ownership", () => {
   it("fails closed when a fully hashed real-tool receipt is stored under another tool's filename", async () => {
     const root = resolve(import.meta.dirname, "..");
+    const initialPublicIndex = await readFile(join(root, "src/generated/quality.ts"), "utf8");
     const tool = catalog.find(item => item.id === "business-day")!;
     const [original, sourceFingerprint, revision, manifest, registry, fixtureIndex] = await Promise.all([
       readFile(join(root, "quality/receipts/business-day.gold.json"), "utf8"),
@@ -63,9 +64,9 @@ describe("#347 public Gold source-bound receipt ownership", () => {
       expect(borrowed.excludedToolIds).toEqual([tool.id]);
       const nonGoldLeaf = await render("quality/receipts/date-time/business-day.json");
       expect(nonGoldLeaf.index.tools).toEqual([]);
-      // No valid repository Gold is issued; the real public index is empty.
+      // Synthetic receipt probes must leave the real generated public index intact.
       const generated = await readFile(join(root, "src/generated/quality.ts"), "utf8");
-      expect(generated).toContain('"tools": []');
+      expect(generated).toBe(initialPublicIndex);
     } finally {
       await rm(isolated, { recursive: true, force: true });
     }

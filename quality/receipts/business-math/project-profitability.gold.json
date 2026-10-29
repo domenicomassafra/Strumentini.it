@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "f8c756ed0bae9ae9329a6fe0cce91fc7b7cd2ba9",
-  "sourceFingerprint": "7c8548acdffd92f9e061e46963da167d6442d1c4dbc71988caa629d06294ffe9",
+  "revision": "747cb4d547bd4ffc5832792abec0c25bc49d851a",
+  "sourceFingerprint": "86044689c41d85d27cb8fef92b0a2e04d3d953b15bd8ecac5a272ef80735fb81",
   "toolId": "project-profitability",
   "runtime": {
     "location": "LOCAL",
