@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "GOLD",
-  "revision": "747cb4d547bd4ffc5832792abec0c25bc49d851a",
-  "sourceFingerprint": "86044689c41d85d27cb8fef92b0a2e04d3d953b15bd8ecac5a272ef80735fb81",
+  "revision": "3032fbb35164ce303b6127da9ab4010e8c78f104",
+  "sourceFingerprint": "27954d3164419b034ed98eb63bf23586cda14b97d340972df993cc2451f35bfd",
   "toolId": "target-income-rate",
   "runtime": {
     "location": "LOCAL",
