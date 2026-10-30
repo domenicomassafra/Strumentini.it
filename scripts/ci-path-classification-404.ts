@@ -48,6 +48,12 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   // reviewed frontend input, not disposable documentation; unknown design
   // files must still fail closed rather than receive a broad wildcard pass.
   if (path === "design/WORLD.md") return ["frontend"];
+  // #114 owner-choice comparison is an isolated browser prototype. Route its
+  // executable HTML/CSS/JS through full frontend CI, and keep the exact
+  // presentation notes/screenshots as docs. Unknown design files fail closed.
+  if (/^design\/proposals-2026-10-25\/(?:index\.html|proposals(?:-core|-variants)?\.css|proposals\.js)$/u.test(path)) return ["frontend"];
+  if (path === "design/proposals-2026-10-25/README.md" ||
+      /^design\/proposals-2026-10-25\/previews\/(?:minimal|editorial|workspace)-home-(?:desktop|mobile)\.png$/u.test(path)) return ["docs"];
   // The ticket archive also contains executable validators/generators. Treating
   // every .scratch path as docs would allow a change to the release-facing
   // ticket checks to escape source CI entirely.
