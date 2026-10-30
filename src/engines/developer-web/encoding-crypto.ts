@@ -2,10 +2,7 @@ import {
   MAX_DEVELOPER_INPUT,
   type DeveloperWebResult,
   assertInputSize,
-  booleanField,
   invalid,
-  optionalStringField,
-  stringField,
 } from "./types";
 import { inspectImageHeader, type SupportedImageMime } from "../image/format";
 
@@ -490,41 +487,6 @@ export function inspectJwt(token: string, referenceTime?: string | number): Deve
       ...(algorithm.toLowerCase() === "none" ? ["JWT non protetto: il token con alg=none non garantisce l'integrità."] : []),
     ],
   } as DeveloperWebResult;
-}
-
-export function base64EncodeUtf8(input: string): string {
-  return encodeBase64Bytes(new TextEncoder().encode(input));
-}
-
-export function base64DecodeUtf8(input: string): string {
-  try {
-    return new TextDecoder("utf-8", { fatal: true }).decode(decodeBase64Bytes(input));
-  } catch {
-    invalid("INVALID_UTF8_BASE64", "Decoded bytes are not valid UTF-8 text.");
-  }
-}
-
-export async function digestHex(input: string, algorithm: DeveloperHashAlgorithm = "SHA-256"): Promise<string> {
-  return hashText(input, algorithm);
-}
-
-export async function verifyDigestHex(input: string, expectedHex: string, algorithm: DeveloperHashAlgorithm = "SHA-256"): Promise<boolean> {
-  if (!/^[0-9a-f]+$/iu.test(expectedHex)) return false;
-  return (await hashText(input, algorithm)) === expectedHex.toLowerCase();
-}
-
-export function encodingInput(input: Record<string, unknown>, modeKeys: readonly string[]): string {
-  return stringField(input, ...modeKeys);
-}
-
-export function parseEncodingOptions(input: Record<string, unknown>): { mode: string; urlSafe: boolean; numeric: boolean; algorithm: string | undefined; set: string } {
-  return {
-    mode: optionalStringField(input, "mode", "operation") ?? "encode",
-    urlSafe: booleanField(input, false, "urlSafe", "base64url"),
-    numeric: booleanField(input, false, "numeric"),
-    algorithm: optionalStringField(input, "algorithm", "hashAlgorithm", "hash"),
-    set: optionalStringField(input, "set", "component", "encodingSet") ?? "component",
-  };
 }
 
 export { MAX_DEVELOPER_INPUT };
