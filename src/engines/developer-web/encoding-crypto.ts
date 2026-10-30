@@ -2,10 +2,7 @@ import {
   MAX_DEVELOPER_INPUT,
   type DeveloperWebResult,
   assertInputSize,
-  booleanField,
   invalid,
-  optionalStringField,
-  stringField,
 } from "./types";
 import { inspectImageHeader, type SupportedImageMime } from "../image/format";
 
