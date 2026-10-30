@@ -1,23 +1,14 @@
 import slugify from "@sindresorhus/slugify";
 import { generateSlug, type SlugResult } from "../../engines/text-writing";
 
-const LETTER = /\p{L}/u;
-const LATIN = /\p{Script=Latin}/u;
-
 /** Keep Unicode-script slugs that the ASCII transliterator would erase or rename. */
-function containsNonLatinLetters(text: string): boolean {
-  if (!/[^\x00-\x7f]/u.test(text)) return false;
-  for (const character of text) {
-    if (LETTER.test(character) && !LATIN.test(character)) return true;
-  }
-  return false;
-}
+const NON_LATIN_LETTER = /[\p{L}--\p{Script=Latin}]/v;
 
 export function generateDonorSlug(value: unknown): SlugResult {
   // The original engine owns validation, input-size refusals and rollback semantics.
   const legacy = generateSlug(value);
   const input = value as { text: string; lowercase?: boolean; maxLength?: number | string };
-  if (containsNonLatinLetters(input.text)) return legacy;
+  if (NON_LATIN_LETTER.test(input.text)) return legacy;
 
   // Preserve existing punctuation and NFKD semantics; donor adds transliteration
   // for Latin letters that NFKD cannot decompose (ß, æ, œ, ø, ł, ...).
