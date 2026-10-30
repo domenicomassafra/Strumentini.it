@@ -78,7 +78,7 @@
   "src/engines/business-math/index.ts": 108657,
   "src/engines/date-time/index.ts": 54228,
   "src/engines/developer-web/encoding-crypto.ts": 25033,
-  "src/engines/developer-web/structured-data.ts": 31059,
+  "src/engines/developer-web/structured-data.ts": 30638,
   "src/engines/developer-web/structured-repair.ts": 34265,
   "src/engines/developer-web/web-reference.ts": 24366,
   "src/engines/file-privacy/index.ts": 75471,

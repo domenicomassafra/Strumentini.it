@@ -679,18 +679,6 @@ export function queryJsonPath(document: unknown, path: string): { matches: Array
   };
 }
 
-export function formatJsonText(input: string, indent = 2): string {
-  return formatJson(input, indent).formatted;
-}
-
-export function jsonToYaml(input: string, indent = 2): string {
-  return jsonYamlConverterOperation(input, "json-to-yaml", indent).output as string;
-}
-
-export function yamlToJson(input: string, indent = 2): string {
-  return jsonYamlConverterOperation(input, "yaml-to-json", indent).output as string;
-}
-
 export function jsonPathOperation(input: string, path: string): DeveloperWebResult {
   const parsed = parseJsonWithMetadata(input);
   const result = queryJsonPath(parsed.value, path);
