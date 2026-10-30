@@ -406,12 +406,3 @@ export function cronNextRunOperation(input: string, from: string, count: number,
     semantics: "Sintassi POSIX a cinque campi; DOM/DOW conserva la semantica OR quando entrambi sono limitati.",
   } as DeveloperWebResult;
 }
-
-export const lookupHttpStatus = httpStatusOperation;
-export const lookupMimeType = mimeTypeOperation;
-export const explainCron = explainCronOperation;
-export const calculateNextCronRuns = nextCronRuns;
-export const convertUnixTimestamp = unixTimestampOperation;
-export const editQueryString = queryStringOperation;
-
-export { HTTP_STATUSES, MIME_BY_EXTENSION, parseCronExpression, matchesCron };
