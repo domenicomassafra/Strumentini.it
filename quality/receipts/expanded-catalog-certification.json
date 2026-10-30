@@ -49,7 +49,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
           "status": "PASS"
         }
       ],
@@ -63,7 +63,7 @@
         {
           "dimension": "mobileA11y",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
           "status": "PASS"
         }
       ],
@@ -77,7 +77,7 @@
         {
           "dimension": "lazyLoad",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
           "status": "UNVERIFIED"
         },
         {
@@ -97,7 +97,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
           "status": "PARTIAL"
         },
         {
@@ -2168,7 +2168,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -2179,7 +2179,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -2190,7 +2190,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -2206,13 +2206,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/break-even.gold.json",
-          "sha256": "1eb198dd21e1d703a7c5eed16d9975e57cc0da0fdd64cc976a049c53cdb60dcc",
+          "sha256": "ef5481fd770d35dc4bee78717c9d0fdddb611dc8184e28461914faa93eee1122",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -2567,7 +2567,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+            "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
             "status": "PASS"
           }
         ]
@@ -2578,7 +2578,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+            "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
             "status": "PASS"
           }
         ]
@@ -2589,7 +2589,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+            "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
             "status": "UNVERIFIED"
           },
           {
@@ -2617,7 +2617,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "4468b38ae96a7018fdb4cda2b9b6c9134b10ca03f1b90d143a1b28ca303dcc8f",
+          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
           "status": "PASS"
         },
         {
@@ -3099,7 +3099,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -3110,7 +3110,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -3121,7 +3121,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -3137,13 +3137,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/capacity-planner.gold.json",
-          "sha256": "848eb2be71314a70695cf3769d28553aed4c8e1de9b3619ff67e5203e28316b7",
+          "sha256": "0b8f0964fb204f5a539f2f98d323ac14a5605ad43806afb67ffbc06d2260dbf7",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -8317,7 +8317,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -8328,7 +8328,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -8339,7 +8339,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -8355,13 +8355,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/currency-scenario.gold.json",
-          "sha256": "5c7339ebb4a4b06ba447eba243328b21f68313def5d02ceca7a672c89488d921",
+          "sha256": "4bcf56ac32cc0d874b98412fd41a4598f09e375b7fcba4822df9335008a57b72",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -8977,7 +8977,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -8988,7 +8988,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -8999,7 +8999,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -9015,13 +9015,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/discount-impact.gold.json",
-          "sha256": "5e8b77e3b86d8c26d6b91d456c46c287fa8833ab48a843a889ab79a5098b2c34",
+          "sha256": "e3c5a7449df47a1ad0920b1533b6db01769a48bd2c349b8d8e90684621d78304",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -9249,7 +9249,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/text-research/browser-acceptance.json",
-            "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+            "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
             "status": "PASS"
           }
         ]
@@ -9260,7 +9260,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/text-research/browser-acceptance.json",
-            "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+            "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
             "status": "PASS"
           }
         ]
@@ -9293,7 +9293,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/text-research/browser-acceptance.json",
-          "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+          "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
           "status": "PASS"
         },
         {
@@ -10422,7 +10422,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -10433,7 +10433,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -10444,7 +10444,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -10460,13 +10460,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/effective-hourly-rate.gold.json",
-          "sha256": "ef52b3923ab94e1b203f43b9fad463d5666eeba392fe1ee9ccb78a0731373a39",
+          "sha256": "6b3ce254fdb9caed9d785f6cc49e3fb0a8b0f3690c2979eee68b6807c68347f6",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -16414,7 +16414,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -16425,7 +16425,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -16436,7 +16436,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -16452,13 +16452,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-math-validator.gold.json",
-          "sha256": "3935f018e69a7252eb0ea50d8a741570c2add9432b93f2521251e681e52c7794",
+          "sha256": "e23451dac0167cfc81b9858796b459c4217d460bc1585457ef06c8ab838d4709",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -16537,7 +16537,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -16548,7 +16548,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -16559,7 +16559,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -16575,13 +16575,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/invoice-number-generator.gold.json",
-          "sha256": "5739e5b91d66c0a0e00f89d063126382cfc441c14655e33b86edf50acd7ce7e8",
+          "sha256": "4729f035db91752e0d72c297f277712f5a90c9e669aec1d6adaeabae141e0f93",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -18415,7 +18415,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -18426,7 +18426,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -18437,7 +18437,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -18453,13 +18453,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/late-payment-interest.gold.json",
-          "sha256": "d4416a016eb9a93148f1c90eeccc9ed47afa06296cf5c79e1503929880bd5206",
+          "sha256": "be4414a7de332da00b8b305f273a7099b0fe24b327d87f019b0d7f7592cbad25",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -18835,7 +18835,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/text-research/browser-acceptance.json",
-            "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+            "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
             "status": "PASS"
           }
         ]
@@ -18846,7 +18846,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/text-research/browser-acceptance.json",
-            "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+            "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
             "status": "PASS"
           }
         ]
@@ -18879,7 +18879,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/text-research/browser-acceptance.json",
-          "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+          "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
           "status": "PASS"
         },
         {
@@ -21820,7 +21820,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -21831,7 +21831,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -21842,7 +21842,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -21858,13 +21858,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/payment-fee-gross-up.gold.json",
-          "sha256": "6c433a58039f70f579d4064e1b83ec4c4cc9570956416558718ce775b4b8b797",
+          "sha256": "021607d2e04abaf9e1e7b7746137ae0d461c715d577c1ff50be9d7c6dc3bd418",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -25859,7 +25859,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -25870,7 +25870,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -25881,7 +25881,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -25897,13 +25897,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/percentage-helper.gold.json",
-          "sha256": "5cec6666315e6f12b3e69c6f47921649ce1291c5fe23b164ce86f2ac4736aa14",
+          "sha256": "829ad8c7333b8dcd56c290b9377926513631e401ffd1d945d2331b0b3144d57a",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -26610,7 +26610,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -26621,7 +26621,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -26632,7 +26632,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -26648,13 +26648,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/project-profitability.gold.json",
-          "sha256": "9e2f667e64c4e8d95a5dcb8a28fc3423eae198d184111287f3b398456188c3a9",
+          "sha256": "cc27785ff826f115e50602b2f2021ea5bd6af5614d6ac077e87590eccfab85e7",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -26733,7 +26733,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -26744,7 +26744,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -26755,7 +26755,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -26771,13 +26771,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/proposal-budget-checker.gold.json",
-          "sha256": "318d2dabd038a1936e940d63f6804b482f492f353eac064040e894966aa1c49c",
+          "sha256": "e22e73b505f5a306cf71c99d0e627317956c5b7f4468c02f6789406e1f3aa814",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -29221,7 +29221,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -29232,7 +29232,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -29243,7 +29243,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -29259,13 +29259,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/retainer-capacity.gold.json",
-          "sha256": "82f67582769c4fa70376b4f2a1762043288a7afcd05b7d32d6f93a3a94de297f",
+          "sha256": "5c2c51d6c4249b4092fb517dbddad5ec517349f4ac1366972033faf396671faa",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -29999,7 +29999,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -30010,7 +30010,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -30021,7 +30021,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -30037,13 +30037,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/scope-creep-cost.gold.json",
-          "sha256": "22aa0c57f7943be0059573518565986309c13bc72ea59e3de113eb11aa358d82",
+          "sha256": "e0e0618b82cd9def95d8ae7dfc19b9e769764b85507d7acd5bf29b35138a6d76",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -31832,7 +31832,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -31843,7 +31843,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -31854,7 +31854,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -31870,13 +31870,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/target-income-rate.gold.json",
-          "sha256": "7d6b3dc8f093ecac444418f95466dd29eb2592cc61bb8b59fb56b75145f1ce71",
+          "sha256": "1e392d335e240a687ecf03472ba40642ab509616ef026f7c235bca602374ec33",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
@@ -31970,7 +31970,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/text-research/browser-acceptance.json",
-            "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+            "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
             "status": "PASS"
           }
         ]
@@ -31981,7 +31981,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/text-research/browser-acceptance.json",
-            "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+            "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
             "status": "PASS"
           }
         ]
@@ -32014,7 +32014,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/text-research/browser-acceptance.json",
-          "sha256": "a3bc69e4724031f315ccecb92324af8c3638278444c013ac759a0938d950618a",
+          "sha256": "6342cdc1d8881e29089bcd8df06f7d726c648b9ee2626675b3aacc4a8dc6d847",
           "status": "PASS"
         },
         {
@@ -34192,7 +34192,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -34203,7 +34203,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -34214,7 +34214,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/business-math/browser-acceptance.json",
-            "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+            "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
             "status": "PASS"
           }
         ]
@@ -34230,13 +34230,13 @@
         {
           "dimension": "oracle",
           "path": "quality/receipts/business-math/utilization-calculator.gold.json",
-          "sha256": "c196d3d8b1eb50e98654bfd61e9c9ca26f81ac7875b1d77093979ca878a73068",
+          "sha256": "8d9a82c5929dd8ce6c88d2b56fdb13b71dc33fe335bb7197c4e5ab92b454f430",
           "status": "PASS"
         },
         {
           "dimension": "locality",
           "path": "quality/receipts/business-math/browser-acceptance.json",
-          "sha256": "7a346e7cf06c47da4dee0455261c658fb0f36db34188f226fbcdd6177dd8b8e7",
+          "sha256": "00d41caffde5d155b206d7fb00b02c26785c9bef5f3ac6faec83b0d8c1041a6d",
           "status": "PASS"
         }
       ],
