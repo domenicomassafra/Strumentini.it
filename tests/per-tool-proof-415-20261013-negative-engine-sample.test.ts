@@ -40,15 +40,20 @@ describe("#415 representative independent real engine proof (source-only, no Gol
       if (entry.currentProof === "PENDING") expect(entry.currentReceipt, entry.toolId).toBeNull();
       else expect(entry.currentReceipt, entry.toolId).toMatch(/^quality\/receipts\/[a-z0-9_/-]+\.gold\.json$/u);
     }
+    const publicGoldIds = new Set<string>(qualityIndex.tools.map((item) => item.toolId));
     expect(map.summary).toMatchObject({
-      tools: 274, verified: 0, pending: 274, sourceErrors: 0,
+      tools: 274, sourceErrors: 0,
       runtimeLimitsPending: 231, registryBindingsPending: 0,
     });
+    expect(map.summary.verified + map.summary.pending).toBe(274);
     expect(map.entries.filter((item) => item.limitsStatus === "DECLARED_HANDOFF_LIMITS_ONLY")).toHaveLength(43);
-    expect(map.entries.every((item) => item.currentProof === "PENDING" && item.currentReceipt === null)).toBe(true);
-    // The shipped onboarding/search-side current-source projection must not
-    // mistake the historical 257 GOLD rows for present Gold proof.
-    expect(qualityIndex.tools).toEqual([]);
+    expect(map.entries.filter((item) => item.currentProof === "PENDING").every((item) => item.currentReceipt === null)).toBe(true);
+    // Public Gold is source-fingerprint-bound; the stricter audit also requires
+    // each receipt to name this exact Git HEAD. A receipt from a parent commit
+    // may stay in the public projection but must remain PENDING in this audit.
+    // No audited positive may come from outside the public Gold candidates.
+    expect(map.entries.filter((item) => item.currentProof === "VERIFIED")
+      .every((item) => publicGoldIds.has(item.toolId) && item.currentReceipt !== null)).toBe(true);
   }, 20_000);
 
   it("checks real catalog ZIP creator output using independent ZIP reader; rejected and cancelled attempts preserve earlier bytes", async () => {

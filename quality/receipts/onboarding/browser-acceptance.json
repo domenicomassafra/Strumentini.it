@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "onboarding",
   "generatedBy": "scripts/acceptance-onboarding.mjs",
-  "revision": "7b2fdc2060948df9ac772783439db623d9cca15e",
+  "revision": "f8c756ed0bae9ae9329a6fe0cce91fc7b7cd2ba9",
   "status": "PASS",
   "browser": "chrome",
   "viewport": {
@@ -40,7 +40,7 @@
       "id": "starter-set-bounded",
       "description": "The starter review offers a small, distinct, editable set",
       "status": "PASS",
-      "observed": "10 starter tool(s): business-day, timezone-overlap, rate-converter, margin-markup, list-compare, text-diff, file-hash, csv-cleaner, csv-dedupe, csv-column-map"
+      "observed": "10 starter tool(s): break-even, capacity-planner, currency-scenario, discount-impact, effective-hourly-rate, invoice-math-validator, invoice-number-generator, late-payment-interest, payment-fee-gross-up, percentage-helper"
     },
     {
       "id": "starter-tools-gold",

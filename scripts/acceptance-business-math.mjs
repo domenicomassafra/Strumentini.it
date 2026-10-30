@@ -1,10 +1,26 @@
 import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
+import { createServer } from "node:net";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const port = 18143;
+async function freeLoopbackPort() {
+  return new Promise((resolvePort, rejectPort) => {
+    const probe = createServer();
+    probe.once("error", rejectPort);
+    probe.listen(0, "127.0.0.1", () => {
+      const address = probe.address();
+      if (address === null || typeof address === "string") {
+        probe.close(() => rejectPort(new Error("could not allocate loopback port")));
+        return;
+      }
+      probe.close((error) => error ? rejectPort(error) : resolvePort(address.port));
+    });
+  });
+}
+
+const port = await freeLoopbackPort();
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], {
   cwd: root,
@@ -34,8 +50,8 @@ const toolIds = [
 async function waitForServer() {
   for (let attempt = 0; attempt < 40; attempt += 1) {
     try {
-      const response = await fetch(origin);
-      if (response.ok) return;
+      const response = await fetch(`${origin}/tools/business-day/`);
+      if (response.ok && (await response.text()).includes('data-tool-page="business-day"')) return;
     } catch {
     }
     await sleep(100);
