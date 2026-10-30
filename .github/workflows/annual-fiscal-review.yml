@@ -8,7 +8,7 @@ name: Annual fiscal source review (#117)
 
 on:
   schedule:
-    # First day of every month, 06:00 UTC (08:00 Rome in winter).
+    # First day of every month, 06:00 UTC (07:00 CET / 08:00 CEST in Rome).
     - cron: '0 6 1 * *'
   workflow_dispatch:
   push:

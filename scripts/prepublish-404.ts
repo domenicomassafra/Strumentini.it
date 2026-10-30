@@ -56,7 +56,6 @@ export function prepublishSteps404(expectedSha: string, policy420 = releasePolic
       ];
   return [
     { name: "source-and-engine-tests", program: "npm", args: ["test", "--", "--maxWorkers=1"], publishes: false },
-    { name: "python-ticket-oracle", program: "npm", args: ["run", "tickets:test"], publishes: false },
     { name: "astro-source-validation", program: "npm", args: ["run", "check"], publishes: false },
     { name: "cumulative-build", program: "npm", args: ["run", "build"], publishes: false },
     { name: "cloudflare-static-dry-run", program: "npm", args: ["run", "deploy:check"], publishes: false },

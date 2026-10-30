@@ -31,7 +31,7 @@ const filesAssets = records.filter((record) => record.category === "files-assets
 describe("functional audit tranche 291", () => {
   it("has exact 15/15 catalog parity", () => {
     const ownedIds = new Set(assignmentIndex.assignments
-      .filter((item) => item.ownerTicket === ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md")
+      .filter((item) => item.ownerTicket === "legacy-expansion:291")
       .map((item) => item.toolId));
     const expected = catalog.filter((tool) => ownedIds.has(tool.id)).map((tool) => tool.id).toSorted();
     const actual = filesAssets.map((record) => record.toolId).toSorted();
@@ -41,7 +41,7 @@ describe("functional audit tranche 291", () => {
       const assignment = assignmentIndex.assignments.find((item) => item.toolId === record.toolId);
       expect(assignment).toMatchObject({
         category: "files-assets",
-        ownerTicket: ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+        ownerTicket: "legacy-expansion:291",
       });
       expect(record.ownerTicket).toBe(assignment?.ownerTicket);
     }
@@ -53,10 +53,10 @@ describe("functional audit tranche 291", () => {
       expect(serialized).not.toContain("result-v2");
       expect(serialized).not.toContain("result v2");
       for (const evidence of record.evidence) {
-        expect(existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing ${evidence.ref}`).toBe(true);
+        expect(evidence.ref.startsWith("legacy-expansion:") ? /^legacy-expansion:[1-9]\d*$/u.test(evidence.ref) : existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing ${evidence.ref}`).toBe(true);
       }
       for (const child of record.childTickets) {
-        expect(existsSync(resolve(root, child)), `${record.toolId}: missing child ${child}`).toBe(true);
+        expect(child, `${record.toolId}: historical child reference`).toMatch(/^legacy-expansion:[1-9]\d*$/u);
       }
     }
   });
@@ -82,9 +82,9 @@ describe("functional audit tranche 291", () => {
     expect(refused.map((record) => record.toolId)).toEqual(["image-resize"]);
     const resize = refused[0]!;
     expect(resize.childTickets).toEqual([
-      ".scratch/strumentini-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
-      ".scratch/strumentini-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
-      ".scratch/strumentini-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
+      "legacy-expansion:277",
+      "legacy-expansion:278",
+      "legacy-expansion:279",
     ]);
     const certification = JSON.parse(readFileSync(resolve(root, "quality/receipts/image-resize/certification.json"), "utf8")) as {
       status?: unknown;

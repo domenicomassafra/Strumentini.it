@@ -1,11 +1,11 @@
 {
   "toolId": "utm-builder",
   "category": "marketing",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/293-existing-marketing-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:293",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Aggiunge parametri UTM a un URL di campagna senza modificare il resto dell'indirizzo. Public jobs: Usa Crea URL con UTM.",
-  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/campaign-url/utm-builder.gold.json, executable functional tests in tests/campaign-url-engine.test.ts, and real-route browser acceptance in quality/receipts/campaign-url/browser-acceptance.json. Broader additive work is already owned by .scratch/strumentini-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
-  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by .scratch/strumentini-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "observedFunctionality": "The current narrow public job is covered by tool-specific Gold receipt quality/receipts/campaign-url/utm-builder.gold.json, executable functional tests in tests/campaign-url-engine.test.ts, and real-route browser acceptance in quality/receipts/campaign-url/browser-acceptance.json. Broader additive work is already owned by legacy-expansion:321; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
+  "rationale": "No correctness or required-option gap was found in the currently declared public job. Broader additive work is already owned by legacy-expansion:321; this audit does not claim those roadmap extensions are shipped and does not create duplicate tickets.",
   "evidence": [
     {
       "kind": "quality-receipt",
@@ -24,7 +24,7 @@
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentini-expansion-20261005/issues/321-utm-builder-parser-cleaner-round-trip-and-bulk.md",
+      "ref": "legacy-expansion:321",
       "claim": "Existing targeted backlog owns additive functionality beyond utm-builder's current narrow public job; it is not counted as already shipped by this audit."
     }
   ],

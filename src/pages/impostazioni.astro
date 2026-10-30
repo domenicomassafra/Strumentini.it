@@ -1367,7 +1367,7 @@ const unitSystems = [
       event.preventDefault();
       const form = deleteForm;
       clearFieldErrors(form);
-      const message = form.querySelector<HTMLElement>("[data-delete-message]");
+      const message = form.parentElement?.querySelector<HTMLElement>("[data-delete-message]") ?? null;
       setMessage(message, null);
       const password = form.querySelector<HTMLInputElement>("#delete-password")?.value ?? "";
       const confirmation = form.querySelector<HTMLInputElement>("#delete-confirm")?.value.trim() ?? "";
@@ -1386,12 +1386,7 @@ const unitSystems = [
           setMessage(message, result.message);
           return;
         }
-        form.hidden = true;
-        setMessage(
-          message,
-          "Account eliminato. I dati su questo dispositivo restano: puoi cancellarli dal blocco qui sopra.",
-          "success",
-        );
+        window.location.assign("/");
       });
     });
 

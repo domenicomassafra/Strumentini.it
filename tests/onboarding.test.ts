@@ -72,7 +72,7 @@ describe("deterministic onboarding", () => {
     const suppliedGold = catalog.filter(({ id }) => goldToolIds(fixtureQuality).has(id));
     expect(recommendStarter("client-services", [], suppliedGold)).toHaveLength(10);
     // A real zero-Gold source revision must never substitute synthetic starters.
-    if (qualityIndex.tools.length === 0) {
+    if (goldToolIds(qualityIndex).size === 0) {
       expect(recommendStarter(input, catalog, qualityIndex)).toEqual([]);
     }
   });

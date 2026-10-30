@@ -1,7 +1,7 @@
 {
   "toolId": "csv-cleaner",
   "category": "data",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/286-existing-data-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:286",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Normalizza terminatori di riga e BOM UTF-8 di un CSV senza caricare il file online. Public job: Usa Pulisci un CSV.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/csv-cleaner/gold.json; executable tests/table-expansion.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/csv-cleaner/browser-acceptance.json verifies the real route interaction/locality contract.",

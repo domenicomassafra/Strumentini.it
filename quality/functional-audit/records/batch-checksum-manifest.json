@@ -1,7 +1,7 @@
 {
   "toolId": "batch-checksum-manifest",
   "category": "files",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:290",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola gli SHA-256 di più file in locale e crea un elenco checksum portabile. Public job: Usa Checksum di più file.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/expanded-local/batch-checksum-manifest.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/expanded-local/browser-acceptance.json verifies the real route interaction and local-only contract.",

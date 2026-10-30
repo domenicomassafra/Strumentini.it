@@ -1,7 +1,7 @@
 {
   "toolId": "citation-key-generator",
   "category": "research",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:294",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Genera chiavi stabili autore-anno-titolo per BibTeX e gestisce automaticamente i duplicati. Public jobs: Usa Crea chiavi per citazioni.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/research-knowledge/citation-key-generator.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

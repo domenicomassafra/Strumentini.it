@@ -1,7 +1,7 @@
 {
   "toolId": "timezone-converter",
   "category": "date-time",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:287",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Converte una data e ora tra fusi IANA tenendo conto automaticamente dell'ora legale. Public jobs: Usa Converti tra fusi orari",
   "observedFunctionality": "The current implementation performs the declared date/time job locally and deterministically: Converte una data e ora tra fusi IANA tenendo conto automaticamente dell'ora legale. Tool-specific Gold evidence plus engine/module tests cover boundary/error behavior; browser acceptance covers the real route. Unsupported scope is surfaced rather than silently broadened.",

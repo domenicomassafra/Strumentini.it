@@ -1,7 +1,7 @@
 {
   "toolId": "image-resize",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "REFUSED",
   "expectedFunctionality": "Ridimensiona o ritaglia JPEG, PNG e WebP in locale producendo un JPEG o WebP entro limiti definiti. Public jobs: Usa Ridimensiona immagine",
   "observedFunctionality": "Current real-route Chrome and Edge ticket-314 receipts independently verify manual dimensions, aspect lock, percent scaling, contain versus cover/crop, no-upscale, JPEG/WebP choice, downloaded output dimensions and 390px usability. Existing canonical desktop acceptance also covers cancellation, corrupt-input handling, memory preflight and locality. The canonical certification nevertheless remains PARTIAL/goldEligible=false because required physical iOS Safari and Android Chrome receipts are missing.",
@@ -39,23 +39,23 @@
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentini-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
+      "ref": "legacy-expansion:277",
       "claim": "Ticket 277 owns the missing physical Android Chrome proof required by the canonical certification policy."
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentini-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
+      "ref": "legacy-expansion:278",
       "claim": "Ticket 278 owns the missing physical iOS Safari proof and forbids substituting desktop WebKit."
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentini-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md",
+      "ref": "legacy-expansion:279",
       "claim": "Ticket 279 owns the final evidence-derived Gold re-evaluation only after both physical receipts exist."
     }
   ],
   "childTickets": [
-    ".scratch/strumentini-expansion-20261005/issues/277-physical-android-chrome-image-resize-acceptance.md",
-    ".scratch/strumentini-expansion-20261005/issues/278-physical-ios-safari-image-resize-acceptance.md",
-    ".scratch/strumentini-expansion-20261005/issues/279-image-resize-gold-promotion-gate.md"
+    "legacy-expansion:277",
+    "legacy-expansion:278",
+    "legacy-expansion:279"
   ]
 }

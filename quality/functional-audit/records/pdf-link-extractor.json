@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-link-extractor",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:289",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Elenca gli URL presenti nelle annotazioni e nelle azioni del PDF senza aprirli. Public jobs: Usa Estrai link da PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Elenca gli URL presenti nelle annotazioni e nelle azioni del PDF senza aprirli. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

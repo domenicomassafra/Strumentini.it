@@ -8,7 +8,7 @@ import { resultV2Inventory } from "../src/catalog/result-v2-inventory.generated"
 import { IMAGE_RESULT_DECLARATIONS } from "../src/tools/image-result-declarations";
 import { catalog } from "../src/generated/catalog";
 
-const ticket97 = ".scratch/strumentini-expansion-20261005/issues/97-migrate-image-shared-renderers-to-result-v2.md";
+const ticket97 = "legacy-expansion:97";
 
 describe("ticket 97 image Result v2 migration", () => {
   it("declares every current image/image-visual tool with semantic result classes", () => {
@@ -129,9 +129,9 @@ describe("ticket 97 image Result v2 migration", () => {
     };
     expect(audit.decision).toBe("REFUSED");
     expect(audit.childTickets).toEqual(expect.arrayContaining([
-      expect.stringContaining("/277-"),
-      expect.stringContaining("/278-"),
-      expect.stringContaining("/279-"),
+      "legacy-expansion:277",
+      "legacy-expansion:278",
+      "legacy-expansion:279",
     ]));
     const certification = JSON.parse(readFileSync(new URL("../quality/receipts/image-resize/certification.json", import.meta.url), "utf8")) as {
       status: string;

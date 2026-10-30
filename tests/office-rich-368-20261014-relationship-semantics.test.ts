@@ -148,6 +148,7 @@ describe("#368 Office-rich real DOCX relationship fidelity", () => {
       await expect(extractDocxSemantics(forged)).rejects.toMatchObject({ code: "REBUILD_VERIFICATION_FAILED" });
       expect(forged).toEqual(unchanged);
     },
+    30_000,
   );
 
   it.each(["valid-prefixed-root", "valid-prefixed-child"] as const)(

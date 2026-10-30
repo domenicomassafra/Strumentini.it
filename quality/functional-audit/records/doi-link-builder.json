@@ -1,7 +1,7 @@
 {
   "toolId": "doi-link-builder",
   "category": "research",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:294",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Crea l'URL doi.org a partire da un DOI valido senza effettuare richieste di rete. Public jobs: Usa Trasforma un DOI in link.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/doi-link-builder.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

@@ -1,7 +1,7 @@
 {
   "toolId": "palette-extractor",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Trova una palette di colori rappresentativa da un'immagine direttamente nel browser. Public jobs: Usa Estrai palette da un'immagine",
   "observedFunctionality": "Current job extracts a representative bounded palette from local pixels; unit tests cover deterministic quantization and pixel limits, while Gold acceptance covers the real route.",

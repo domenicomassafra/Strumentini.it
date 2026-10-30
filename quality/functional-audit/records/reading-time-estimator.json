@@ -1,7 +1,7 @@
 {
   "toolId": "reading-time-estimator",
   "category": "text",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:295",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Stima il tempo di lettura da una velocità configurabile in parole al minuto senza caricare il testo. Public jobs: Usa Stima tempo di lettura.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/local-jobs/reading-time-estimator.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

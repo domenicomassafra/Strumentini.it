@@ -1,7 +1,7 @@
 {
   "toolId": "dominant-color-extractor",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Trova il colore principale di un'immagine elaborandola direttamente nel browser. Public jobs: Usa Trova il colore dominante",
   "observedFunctionality": "Current job returns the dominant quantized color from bounded local pixel data; deterministic image tests and route Gold cover that narrow promise.",

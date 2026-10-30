@@ -170,6 +170,16 @@ export function auditFormatOperationCoverage65(
   }
 
   const output: FormatCoverageRecord65[] = [];
+  // Historical format decisions are preserved in this registry under their
+  // original expansion IDs. They do not refer to matching GitHub issues.
+  // Keep the set finite so a forged ID cannot satisfy a source-decision gate.
+  const historicalFormatDecisionIds = new Set([
+    161, 207, 208, 209, 210, 211, 218, 219, 222, 223,
+    226, 227, 264, 268, 269, 270, 272, 273, 274,
+  ]);
+  const declaredHistoricalDecision = (ticket: string | undefined) =>
+    typeof ticket === "string" && /^legacy-expansion:[1-9]\d*$/u.test(ticket)
+    && historicalFormatDecisionIds.has(Number(ticket.slice("legacy-expansion:".length)));
   for (const row of registry.rows) {
     const proof = byId.get(row.id);
     if (row.state === "IMPLEMENT") {
@@ -186,13 +196,13 @@ export function auditFormatOperationCoverage65(
           proof: proof.test, checks: proof.checks } : {}),
         ...(coverage.releaseRestrictions?.[row.id] ? { releaseEligible: false as const, releaseReason: coverage.releaseRestrictions[row.id] } : {}) });
     } else if (row.state === "SPIKE") {
-      if (!row.ticket || !safeRelative(row.ticket) || !hasFile(row.ticket)) errors.push(`BLOCKED row missing source decision: ${row.id}`);
+      if (!declaredHistoricalDecision(row.ticket) && (!row.ticket || !safeRelative(row.ticket) || !hasFile(row.ticket))) errors.push(`BLOCKED row missing source decision: ${row.id}`);
       if (proof) errors.push(`non-implemented row advertises implementation evidence: ${row.id}`);
       output.push({ id: row.id, classification: "BLOCKED", source: row.source, fidelity: row.fidelity,
         ...(row.ticket ? { blocker: row.ticket } : {}), reason: row.fidelity });
     } else {
       if (!row.reason?.trim() || (!row.ticket && !row.source)) errors.push(`REFUSED row missing source and reason: ${row.id}`);
-      if (row.ticket && (!safeRelative(row.ticket) || !hasFile(row.ticket))) errors.push(`REFUSED row has no source decision file: ${row.id}`);
+      if (row.ticket && !declaredHistoricalDecision(row.ticket) && (!safeRelative(row.ticket) || !hasFile(row.ticket))) errors.push(`REFUSED row has no source decision file: ${row.id}`);
       if (proof) errors.push(`refused row advertises implementation evidence: ${row.id}`);
       output.push({ id: row.id, classification: "REFUSED", source: row.source, fidelity: row.fidelity, reason: row.reason ?? "" });
     }

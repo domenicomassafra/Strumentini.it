@@ -1,7 +1,7 @@
 {
   "toolId": "margin-markup",
   "category": "client-work-math",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/285-existing-client-work-math-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:285",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola margine e ricarico partendo da prezzo e costo e mostra chiaramente la differenza tra i due. Public job: Usa Calcola margine e ricarico.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow job at quality/receipts/client-time-math/margin-markup.gold.json; executable tests/client-time-math-engine.test.ts coverage exercises the underlying calculation/table behavior and error handling, while quality/receipts/client-time-math/browser-acceptance.json verifies the real route interaction/locality contract.",

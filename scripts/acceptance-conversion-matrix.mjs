@@ -134,7 +134,7 @@ try {
     }
 
     const evidence = { schemaVersion: 1, status: "PASS", conversionMatrix: result, routes: ["image-format-conversion", "images-to-pdf", "pdf-to-images"], locality: "no task-time external or non-GET requests", viewport: "390x844" };
-    const evidenceDir = resolve(root, ".scratch/strumentini-expansion-20261005/evidence");
+    const evidenceDir = resolve(root, "quality/receipts/conversion-matrix");
     await mkdir(evidenceDir, { recursive: true });
     await writeFile(resolve(evidenceDir, "conversion-matrix-browser.json"), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
     const receiptDir = resolve(root, "quality/receipts/pdf");

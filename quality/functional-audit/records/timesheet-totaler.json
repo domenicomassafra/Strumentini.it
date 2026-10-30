@@ -1,7 +1,7 @@
 {
   "toolId": "timesheet-totaler",
   "category": "date-time",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:287",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Somma turni e pause di più giornate e mostra il totale in minuti e ore decimali. Public jobs: Usa Somma le ore del timesheet",
   "observedFunctionality": "The current implementation performs the declared date/time job locally and deterministically: Somma turni e pause di più giornate e mostra il totale in minuti e ore decimali. Tool-specific Gold evidence plus engine/module tests cover boundary/error behavior; browser acceptance covers the real route. Unsupported scope is surfaced rather than silently broadened.",

@@ -6,11 +6,14 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { readOfficialInput } from "../scripts/lib/read-official-input-500.mjs";
 import { auditAnnualOfficialSources397, resolveAnnualOfficialRule397 } from "../scripts/validator/audit-397";
 import { ITALY_SOURCE_PACK_DECISIONS } from "../src/reference-data/italy/source-packs";
 
 const root = resolve(import.meta.dirname, "..");
-const physical = (path: string) => readFile(resolve(root, path));
+const physical = (path: string) =>
+  path.startsWith("quality/reference-data/italy/artifacts/115-administrative-geography/istat-situas-")
+    ? Promise.resolve(readOfficialInput(root, path)) : readFile(resolve(root, path));
 const corrupt = (pathToCorrupt: string) => auditAnnualOfficialSources397({
   root,
   readBytes: async path => {

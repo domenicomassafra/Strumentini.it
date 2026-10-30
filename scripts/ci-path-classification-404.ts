@@ -17,7 +17,7 @@ const fiscalToolComponent = /^src\/components\/tools\/(?:ItalyContributionTools\
 export function classifyPath(path: string): readonly ChangeDomain[] {
   if (!path || path.startsWith("/") || path.includes("\\") || /[\u0000-\u001f\u007f\ufffd]/u.test(path) || path.split("/").some((part) => part === "." || part === ".." || part === "")) return ["unknown"];
   // Reviewed root hooks and agent budget files require CI/security gates.
-  if ([".githooks/pre-push", ".githooks/pre-commit", ".gitattributes", ".agent-size-baseline", ".agent-size-ignore", "orca.yaml", "scripts/ci-path-classification-404.ts"].includes(path)) return ["ci"];
+  if ([".githooks/pre-push", ".githooks/pre-commit", ".gitattributes", ".gitignore", ".agent-size-baseline", ".agent-size-ignore", "orca.yaml", "scripts/ci-path-classification-404.ts"].includes(path)) return ["ci"];
   if (path.startsWith(".github/") || path === "package.json" || path === "package-lock.json" || path === "astro.config.mjs" ||
       path === "tsconfig.json" || path === "vitest.config.ts" || path === "wrangler.toml") return ["ci"];
   // Both Cloudflare deploy contracts can route the Worker or bind D1, so
@@ -41,9 +41,7 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (/^(scripts\/(ci-change-impact-404\.ts|ci-path-classification-404\.ts|validate-release\.ts|audit-gold-source-binding-347\.ts|lib\/(?:current-revision|current-remote-main-404)\.ts|build-certification-index\.ts)|src\/(release\/|quality\/)|tests\/release-validation\.test\.ts)/u.test(path)) return ["ci"];
   // Donor provenance reads this JSON as executable audit input, not prose.
   // Altering its package/license records must be reviewed and tested.
-  if (path === "docs/audit-2026-10-10/donor-packages.json") return ["ci"];
-  // These Python unittests are not Vitest and are not part of `npm test`.
-  if (path === "tests/test_ticket_dashboard.py") return ["ci"];
+  if (path === "docs/donor-provenance-366-candidate-packages-2026-10-10.json") return ["ci"];
   // design/WORLD.md controls the shipped palette's source contract. It is
   // reviewed frontend input, not disposable documentation; unknown design
   // files must still fail closed rather than receive a broad wildcard pass.
@@ -54,11 +52,38 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (/^design\/proposals-2026-10-25\/(?:index\.html|proposals(?:-core|-variants)?\.css|proposals\.js)$/u.test(path)) return ["frontend"];
   if (path === "design/proposals-2026-10-25/README.md" ||
       /^design\/proposals-2026-10-25\/previews\/(?:minimal|editorial|workspace)-home-(?:desktop|mobile)\.png$/u.test(path)) return ["docs"];
-  // The ticket archive also contains executable validators/generators. Treating
-  // every .scratch path as docs would allow a change to the release-facing
-  // ticket checks to escape source CI entirely.
+  // Historical research retirement #498: these known reports and the old
+  // Impeccable journal are prose/data, not executable product inputs. Keep
+  // unreviewed design/build paths unknown; a census script still needs CI.
+  if (["IMPLEMENTATION-PLAN.md", "design/FRONTEND-SYSTEM-STANDARDIZATION.md", "research/implementation/10-hash-dependency-gate.md",
+       ".impeccable/build/state.json", "spikes/core-engines/README.md", "spikes/heavy-local-feasibility/README.md"].includes(path)) return ["docs"];
+  if (path === "research/lanes/06-oss-donor-evidence/build_census.py") return ["ci"];
+  // Only the exact retired records are reviewed documentation. Future inputs
+  // under this deleted tree must be evaluated before CI can skip them.
+  if ([
+    "research/lanes/01-market-demand-jobs-census.md",
+    "research/lanes/02-competitor-business-model-stress-test.md",
+    "research/lanes/03-brand-naming-gtm.md",
+    "research/lanes/03-name-screen.csv",
+    "research/lanes/06-oss-donor-evidence/census-summary.json",
+    "research/lanes/06-oss-donor-evidence/deep-primary-metadata.json",
+    "research/lanes/06-oss-donor-evidence/npm-latest-metadata.json",
+    "research/lanes/06-oss-donor-evidence/package-seed.json",
+    "research/lanes/06-oss-donor-matrix.csv",
+    "research/lanes/06-oss-github-donor-census.md",
+    "research/lanes/07-core-engine-spike-results.md",
+    "research/lanes/08-gold-oracle-factory.md",
+    "research/lanes/09-heavy-browser-dependency-spike.md",
+    "research/lanes/10-heavy-local-media-ocr-office-feasibility-refresh.md",
+    "research/lanes/11-italian-syllabification-feasibility.md",
+    "research/lanes/12-heavy-feasibility-ticket-decisions-267-275.md",
+    "research/lanes/13-astronomy-location-date-feasibility.md",
+  ].includes(path)) return ["docs"];
+  if (path.startsWith("research/lanes/")) return ["unknown"];
+  // Retiring the historical archive must not let a later executable under the
+  // same root bypass source CI as ordinary documentation.
   if (path.startsWith(".scratch/") && /\.(?:py|mjs|cjs|js|ts|tsx|sh|bash)$/u.test(path)) return ["ci"];
-  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md|HANDOFF\.md|PROJECT-STATUS\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
+  if (/^(README\.md|CHANGELOG\.md|LICENSE|AGENTS\.md|HANDOFF\.md|PROJECT-STATUS\.md|ROADMAP\.md)$/u.test(path) || /^(docs|tasks|\.scratch)\//u.test(path)) return ["docs"];
   if (path.startsWith("worker/migrations/")) return ["d1"];
   if (path.startsWith("worker/")) return ["worker-auth"];
   // The shipped OCR engine is executed in the browser even though its JS,

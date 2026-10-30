@@ -1,7 +1,7 @@
 {
   "toolId": "domain-frequency-counter",
   "category": "research",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:294",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra quante fonti provengono da ciascun dominio e ordina il risultato per frequenza. Public jobs: Usa Conta le fonti per dominio.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/research-knowledge/domain-frequency-counter.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

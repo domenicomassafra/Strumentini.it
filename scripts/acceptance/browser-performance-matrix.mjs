@@ -6,6 +6,8 @@ import { gzipSync } from "node:zlib";
 import { basename, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { tsImport } from "tsx/esm/api";
+import { browserPerformanceVerdict } from "./browser-performance-verdict.mjs";
+import { runSiblingAcceptance } from "./browser-performance-siblings.mjs";
 
 // Runs via `node`; shares the exact release source binding through tsx.
 const { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } =
@@ -330,49 +332,6 @@ async function runEngine(definition, engineChunkNames) {
 
 const staticData = await staticInspection();
 
-// The matrix receipt is only trustworthy if every verdict inside it was observed in the
-// same run. Sibling acceptance scripts are therefore executed here and their real exit
-// status is recorded; an unrun or failing script is never reported as a historical PASS.
-const SIBLING_ACCEPTANCE = [
-  { command: "npm run acceptance:browser", script: "scripts/browser-acceptance.mjs" },
-  { command: "npm run acceptance:onboarding", script: "scripts/acceptance-onboarding.mjs" },
-  { command: "npm run acceptance:telemetry", script: "scripts/acceptance-telemetry.mjs" },
-  { command: "node scripts/acceptance-text-research.mjs", script: "scripts/acceptance-text-research.mjs" },
-  { command: "node scripts/acceptance-campaign-url.mjs", script: "scripts/acceptance-campaign-url.mjs" },
-  { command: "node scripts/acceptance-client-time-math.mjs", script: "scripts/acceptance-client-time-math.mjs" },
-  { command: "npm run acceptance:business-math", script: "scripts/acceptance-business-math.mjs" },
-  { command: "npm run acceptance:developer-web", script: "scripts/acceptance-developer-web.mjs" },
-  { command: "node scripts/acceptance-directory.mjs", script: "scripts/acceptance-directory.mjs" },
-  { command: "node scripts/acceptance-table-handoff.mjs", script: "scripts/acceptance-table-handoff.mjs" },
-  { command: "node scripts/acceptance-file-hash.mjs", script: "scripts/acceptance-file-hash.mjs" },
-];
-
-async function runSiblingAcceptance() {
-  const entries = [];
-  for (const { command, script } of SIBLING_ACCEPTANCE) {
-    const path = resolve(root, script);
-    if (!existsSync(path)) {
-      entries.push({ command, status: "NOT_RUN", evidence: `${script} does not exist` });
-      continue;
-    }
-    const outcome = await new Promise((resolveOutcome) => {
-      const child = spawn(process.execPath, [script], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
-      let output = "";
-      child.stdout.on("data", (chunk) => { output += chunk; });
-      child.stderr.on("data", (chunk) => { output += chunk; });
-      child.on("close", (code) => resolveOutcome({ code, output }));
-      child.on("error", (error) => resolveOutcome({ code: null, output: String(error) }));
-    });
-    const summary = outcome.output.trim().split("\n").filter(Boolean).slice(-1)[0] ?? "";
-    entries.push({
-      command,
-      status: outcome.code === 0 ? "PASS" : "FAIL",
-      evidence: summary.length > 0 ? summary.slice(0, 300) : `exit ${outcome.code}`,
-    });
-  }
-  return entries;
-}
-
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { cwd: root, stdio: "ignore" });
 try {
   await waitForServer();
@@ -380,7 +339,7 @@ try {
   const engineChunkNames = staticData.engineChunks.map((entry) => entry.file);
   const results = [];
   for (const definition of engineDefinitions) results.push(await runEngine(definition, engineChunkNames));
-  const freshScriptResults = await runSiblingAcceptance();
+  const freshScriptResults = await runSiblingAcceptance(root);
   const report = {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
@@ -409,9 +368,11 @@ try {
       ...freshScriptResults,
     ],
   };
+  const verdict = browserPerformanceVerdict(report);
   await mkdir(receiptDir, { recursive: true });
   await writeFile(resolve(receiptDir, "fresh-browser-matrix.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  console.log(JSON.stringify({ report: resolve(receiptDir, "fresh-browser-matrix.json"), static: staticData, matrix: results.map((result) => ({ engine: result.engine, status: result.status, classification: result.classification, longTaskGate: result.longTasks?.gate, lazy: result.lazy?.observedEngineChunk })) }, null, 2));
+  console.log(JSON.stringify({ report: resolve(receiptDir, "fresh-browser-matrix.json"), verdict, static: staticData, matrix: results.map((result) => ({ engine: result.engine, status: result.status, classification: result.classification, longTaskGate: result.longTasks?.gate, lazy: result.lazy?.observedEngineChunk })) }, null, 2));
+  if (verdict.status !== "PASS") process.exitCode = 1;
 } finally {
   server.kill("SIGTERM");
 }

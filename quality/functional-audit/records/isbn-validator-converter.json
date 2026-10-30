@@ -1,7 +1,7 @@
 {
   "toolId": "isbn-validator-converter",
   "category": "research",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/294-existing-research-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:294",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Verifica le cifre di controllo ISBN-10 e ISBN-13 e converte localmente gli ISBN-10 validi. Public jobs: Usa Validatore e convertitore ISBN.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/isbn-validator-converter.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

@@ -66,8 +66,8 @@ export interface FunctionalAuditInventoryEntry {
 }
 
 const ticketPath = z.string().regex(
-  /^\.scratch\/strumentini-expansion-20261005\/issues\/\d+-[a-z0-9-]+\.md$/u,
-  "ticket path must point to the expansion backlog",
+  /^legacy-expansion:[1-9]\d*$/u,
+  "ticket reference must use the legacy expansion identifier",
 );
 
 export const functionalAuditEvidenceSchema = z.object({

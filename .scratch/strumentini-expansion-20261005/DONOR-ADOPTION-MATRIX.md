@@ -1,6 +1,6 @@
 # Donor adoption / reuse decisions — planning only
 
-Based on worker C detailed engine/donor evidence in tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/native-work/engineering/DONOR-ENGINE-MATRIX.md. Observations as of 2026-10-10; versions/prices must be independently refreshed before any future import. No adoption/license/install is authorized by this file.
+Based on the dated engine/donor decisions indexed in docs/RESEARCH-DECISIONS-2026-10-27.md (full original worker matrix recoverable at Git baseline 7fe2dfd). Observations as of 2026-10-10; versions/prices must be independently refreshed before any future import. No adoption/license/install is authorized by this file.
 
 | Candidate | Rights and provenance boundary | Decision now | Ticket links | Next proof |
 |---|---|---|---|---|

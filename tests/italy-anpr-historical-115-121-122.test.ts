@@ -1,5 +1,4 @@
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -11,6 +10,7 @@ import { verifyCodiceFiscaleBirthPlace121 } from "../src/engines/italy/codice-fi
 import { decodeCodiceFiscaleWithAnpr122 } from "../src/engines/italy/codice-fiscale-122-anpr";
 import { codiceFiscaleChecksum121 } from "../src/engines/italy/codice-fiscale-121";
 import frozen from "../src/reference-data/italy/geography-115.snapshot.json";
+import { readOfficialInput } from "../scripts/lib/read-official-input-500.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 
@@ -20,7 +20,7 @@ describe("#115 ANPR historical additional official source, time-bounded and fail
     expect(ANPR_HISTORICAL_115_METADATA.lastRepoCommitAt).toBe("2023-10-03");
     expect(ANPR_HISTORICAL_115_METADATA.coverageUpperBound).toBe("2023-10-03");
     for (const { path, sha256 } of ANPR_HISTORICAL_115_METADATA.artifacts) {
-      const bytes = await readFile(resolve(root, path));
+      const bytes = readOfficialInput(root, path);
       expect(`sha256:${createHash("sha256").update(bytes).digest("hex")}`).toBe(sha256);
     }
   });

@@ -1,7 +1,7 @@
 {
   "toolId": "screenshot-border-background-helper",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Aggiunge bordo e sfondo misurati a uno screenshot locale usando un canvas con limiti definiti. Public jobs: Usa Bordo e sfondo per screenshot",
   "observedFunctionality": "Current job adds measured border/padding/background to a local screenshot and verifies bounded canvas output. Ticket 213 adds a broader direct-manipulation workspace but is not required by this helper’s current promise.",

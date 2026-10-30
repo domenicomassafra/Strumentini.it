@@ -1,7 +1,7 @@
 {
   "toolId": "redirect-chain-inspector",
   "category": "web-operations",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/296-existing-web-operations-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:296",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Analizza una catena di reindirizzamenti incollata e segnala stati, destinazioni e cicli. Public jobs: Usa Controlla una catena di redirect.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/expanded-local/redirect-chain-inspector.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

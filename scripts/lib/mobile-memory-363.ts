@@ -92,6 +92,24 @@ export function validateMobileMemory363(value: unknown): string[] {
       if (!identity(row.limitation) || String(row.limitation).length < 20) errors.push(prefix + " NOT_RUN needs concrete limitation");
       continue;
     }
+    if (row.status === "FAIL") {
+      const failure = obj(row.failure);
+      if (!["CRASH", "OOM", "CANCEL", "CORRUPTION", "OTHER"].includes(String(failure.kind)) ||
+          !identity(failure.detail) || String(failure.detail).length < 20) {
+        errors.push(prefix + " observed failure requires kind and detail");
+      }
+      const device = obj(row.device);
+      const input = obj(row.input);
+      if (![device.model, device.osVersion, device.browser, device.browserVersion].every(identity) ||
+          row.compiledConsumer !== true ||
+          row.route !== MOBILE_363_ROUTES[row.format as keyof typeof MOBILE_363_ROUTES] ||
+          !sha(row.routeSha256) || !positive(input.bytes) || !sha(input.sha256) ||
+          row.evidenceSource !== `${MOBILE_363_EVIDENCE_DIR}/${caseSlug(row)}.json` ||
+          !sha(row.evidenceSha256)) {
+        errors.push(prefix + " observed failure lacks compiled/device/input evidence");
+      }
+      continue;
+    }
     if (row.status !== "PASS") { errors.push(prefix + " unsupported status"); continue; }
     const device = obj(row.device);
     if (![device.model, device.osVersion, device.browser, device.browserVersion].every(identity))

@@ -1,7 +1,7 @@
 {
   "toolId": "hash-generator",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Calcola SHA-256, SHA-384 o SHA-512 di un testo UTF-8 direttamente nel browser. Public jobs: Usa Calcola hash di un testo",
   "observedFunctionality": "The current implementation performs the declared developer job locally with explicit bounds and errors: Calcola SHA-256, SHA-384 o SHA-512 di un testo UTF-8 direttamente nel browser. Tool-specific Gold evidence, developer engine vectors and real-route browser acceptance cover the supported scope.",

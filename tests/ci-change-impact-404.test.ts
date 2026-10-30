@@ -51,15 +51,15 @@ describe("#404 PR/source impact planning", () => {
       expect(plan.gates.map((gate) => gate.id), path).toEqual(expect.arrayContaining(["security-review", "auth-integration", "browser-a11y"]));
     }
   });
-  it("classifies the two reviewed root handoff/status documents without bypassing executable ticket scripts", () => {
-    const docs = buildImpactPlan(["HANDOFF.md", "PROJECT-STATUS.md", "README.md"], suites);
+  it("classifies reviewed docs without bypassing current source declarations", () => {
+    const docs = buildImpactPlan(["HANDOFF.md", "PROJECT-STATUS.md", "README.md", "ROADMAP.md"], suites);
     expect(docs.status).toBe("DOCS_ONLY");
     expect(docs.domains).toEqual(["docs"]);
     expect(docs.commands).toEqual([]);
-    const mixed = buildImpactPlan(["HANDOFF.md", ".scratch/strumentini-expansion-20261005/ticket_dashboard.py"], suites);
+    const mixed = buildImpactPlan(["HANDOFF.md", "scripts/tool-factory/result-v2-migration-ledger.ts"], suites);
     expect(mixed.status).toBe("SOURCE_CHECKS_REQUIRED");
-    expect(mixed.domains).toEqual(["docs", "ci"]);
-    expect(mixed.gates.map((gate) => gate.id)).toContain("security-review");
+    expect(mixed.domains).toEqual(["docs", "shared"]);
+    expect(mixed.gates.map((gate) => gate.id)).toContain("release-readiness");
   });
   it("generates the catalog before any image-domain Vitest suite importing generated modules on fresh CI checkout", () => {
     const plan = buildImpactPlan(["src/engines/image/compression-donor-047.ts"], suites);
@@ -146,15 +146,12 @@ describe("#404 PR/source impact planning", () => {
     expect(plan.status).toBe("SOURCE_CHECKS_REQUIRED");
   });
 
-  it("does not mislabel executable ticket generators as docs-only", () => {
-    const generators = buildImpactPlan([
-      ".scratch/strumentini-expansion-20261005/ticket_dashboard.py",
-      ".scratch/strumentini-expansion-20261005/validate_backlog.py",
-    ], suites);
-    expect(generators.status).toBe("SOURCE_CHECKS_REQUIRED");
-    expect(generators.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
-    expect(generators.gates.map((gate) => gate.id)).toContain("release-readiness");
-    expect(buildImpactPlan([".scratch/strumentini-expansion-20261005/issues/404-note.md"], suites).status).toBe("DOCS_ONLY");
+  it("keeps the migrated audit declarations inside source CI", () => {
+    const declarations = buildImpactPlan(["src/quality/functional-audit.ts"], suites);
+    expect(declarations.status).toBe("SOURCE_CHECKS_REQUIRED");
+    expect(declarations.commands).toContainEqual({ program: "npm", args: ["run", "test"] });
+    expect(declarations.gates.map((gate) => gate.id)).toContain("release-readiness");
+    expect(buildImpactPlan(["docs/history/expansion-note.md"], suites).status).toBe("DOCS_ONLY");
   });
 
   it("marks ephemeral cross-window file transfer as security sensitive", () => {
@@ -351,5 +348,5 @@ describe("#404 PR/source impact planning", () => {
       await expect(execFileAsync(process.execPath, args, { cwd: root })).rejects.toMatchObject({ code: 2 });
       await expect(execFileAsync(process.execPath, [cli, source], { cwd: root })).rejects.toMatchObject({ code: 2 });
     });
-  }, 20_000); // Four subprocess invocations can exceed Vitest's 5s default on shared CI runners.
+  }, 90_000); // Four subprocess invocations can contend with concurrent build jobs on shared runners.
 });

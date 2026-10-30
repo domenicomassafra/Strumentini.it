@@ -288,10 +288,12 @@ export async function deleteUserIfSessionCredentialUnchanged(
     `DELETE FROM users WHERE id = ?1 AND password_hash = ?2 AND password_salt = ?3
      AND password_iterations = ?4 AND password_login_enabled = ?5
      AND EXISTS (SELECT 1 FROM sessions s WHERE s.id = ?6
-       AND s.user_id = users.id AND s.expires_at > ?7)`,
+       AND s.user_id = users.id AND s.expires_at > ?7)
+     RETURNING id`,
   ).bind(userId, expected.hash, expected.salt, expected.iterations,
-    expected.loginEnabled, sessionId, at).run();
-  return result.meta.changes === 1;
+    expected.loginEnabled, sessionId, at).first<{ id: string }>();
+  // D1 meta.changes includes cascaded rows; RETURNING names only the deleted user.
+  return result?.id === userId;
 }
 
 /** Deletes the user and every session they own. */

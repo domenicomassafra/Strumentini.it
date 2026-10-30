@@ -1,7 +1,7 @@
 {
   "toolId": "batch-rename-preview",
   "category": "files",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:290",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Mostra in anteprima una rinomina deterministica e nomi di uscita sicuri anche in caso di collisioni. Public job: Usa Anteprima rinomina multipla.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/local-jobs/batch-rename-preview.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/local-jobs/browser-acceptance.json verifies the real route interaction and local-only contract.",

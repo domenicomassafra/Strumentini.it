@@ -26,4 +26,4 @@ Authority: 2026-10-10 confirmed OWN decisions. Not an authorization to implement
 
 The machine-readable complete allocation is EXECUTION-PROMPT-ROUTING.csv, covering all 424 IDs. Every future prompt contains actual issue AC and verification. Canonical original and newly numbered issue files in issues/ are the source of truth.
 
-Supporting links: OWNER-DECISION-COVERAGE.md, FORMAT-OPERATION-COVERAGE.md, TOOL-CAPABILITY-COVERAGE.csv, DONOR-ADOPTION-MATRIX.md, PLANNING-ACCEPTANCE.md, docs/PRODUCT-SPEC-2026-10-10-EXPANSION.md, native worker dossiers under tasks/prompt2prompt/20261010-233813-strumentini-ticket-finalization/native-work/.
+Supporting links: OWNER-DECISION-COVERAGE.md, FORMAT-OPERATION-COVERAGE.md, TOOL-CAPABILITY-COVERAGE.csv, DONOR-ADOPTION-MATRIX.md, PLANNING-ACCEPTANCE.md, docs/PRODUCT-SPEC-2026-10-10-EXPANSION.md, historical worker dossiers recoverable at Git baseline 7fe2dfd and decision index docs/RESEARCH-DECISIONS-2026-10-27.md.

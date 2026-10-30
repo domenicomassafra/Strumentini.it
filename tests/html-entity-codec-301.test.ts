@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   htmlEntityOperation,
-  legacyHtmlEntityOperation,
   runDeveloperWebTool,
 } from "../src/engines/developer-web";
 
@@ -9,22 +8,21 @@ const value = async (text: string, mode: "encode" | "decode", numeric = false) =
   String((await htmlEntityOperation(text, mode, numeric)).value);
 
 describe("#301 he@2.0.0 HTML entity adapter", () => {
-  it("matches the legacy decoder on its canonical named and numeric fixtures", async () => {
+  it("decodes canonical named and numeric fixtures", async () => {
     const fixtures = [
-      "&amp; &lt; &gt; &quot; &#39;",
-      "&nbsp; &copy; &reg; &trade; &hellip; &ndash; &mdash;",
-      "&laquo; &raquo; &eacute; &egrave; &uuml; &ouml; &auml; &szlig;",
-      "&#169; &#xA9; &#x1F600; &unknown;",
-      "Plain text without entities",
-    ];
-    for (const fixture of fixtures) {
-      expect(await value(fixture, "decode"), fixture).toBe(legacyHtmlEntityOperation(fixture, "decode").value);
+      ["&amp; &lt; &gt; &quot; &#39;", "& < > \" '"],
+      ["&nbsp; &copy; &reg; &trade; &hellip; &ndash; &mdash;", "\u00a0 © ® ™ … – —"],
+      ["&laquo; &raquo; &eacute; &egrave; &uuml; &ouml; &auml; &szlig;", "« » é è ü ö ä ß"],
+      ["&#169; &#xA9; &#x1F600; &unknown;", "© © 😀 &unknown;"],
+      ["Plain text without entities", "Plain text without entities"],
+    ] as const;
+    for (const [fixture, expected] of fixtures) {
+      expect(await value(fixture, "decode"), fixture).toBe(expected);
     }
   });
 
-  it("retains the numeric mode's decimal escaping for the five legacy punctuation marks", async () => {
-    const fixture = `&<>"'`;
-    expect(await value(fixture, "encode", true)).toBe(legacyHtmlEntityOperation(fixture, "encode", true).value);
+  it("retains decimal escaping for the five punctuation marks", async () => {
+    expect(await value(`&<>"'`, "encode", true)).toBe("&#38;&#60;&#62;&#34;&#39;");
   });
 
   it("expands named entities per WHATWG, including multi-codepoint and semicolonless cases", async () => {

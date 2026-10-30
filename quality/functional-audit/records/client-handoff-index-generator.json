@@ -1,7 +1,7 @@
 {
   "toolId": "client-handoff-index-generator",
   "category": "files",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:290",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Crea un indice ordinato dei file da consegnare con nomi sicuri, dimensioni e checksum facoltativi. Public job: Usa Indice dei file da consegnare.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/expanded-local/client-handoff-index-generator.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/expanded-local/browser-acceptance.json verifies the real route interaction and local-only contract.",

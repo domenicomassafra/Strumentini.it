@@ -699,11 +699,9 @@ There is currently **no screenshot capture** in any acceptance script
 - Keep `MANUAL_DETECTOR_REQUIRED`: after each wave, run
   `node /Users/domenico/.agents/skills/design-impeccable/scripts/detect.mjs --json <changed targets>`
   **once**, at the end of the wave, not per edit.
-- `.impeccable/build/state.json` is at `phase: "comps"`, `status: "open"`. Per
-  `COMP_ROUND_OPEN`, run
-  `node /Users/domenico/.agents/skills/design-impeccable/scripts/build-phase.mjs status`
-  and follow its NEXT line before W4 writes any UI. **This plan does not close that
-  gate and must not be read as doing so.**
+- The retired September journal recorded `comps/open`, zero attempts;
+  it proved no design gate. `design/WORLD.md` and #114/#115/#120 govern
+  future design sessions, which must establish their own current state.
 
 ---
 
@@ -861,7 +859,7 @@ Access=9, Onboarding=10. The comps number **Onboarding=08, Access=09, Settings=1
 New aesthetic direction · new palette or type voice · any change to the 10-surface
 information architecture · any change to a tool's *computation* · any change to the
 account API or its storage scope · the reference comps' forbidden claims, 3D tiles, or
-figure illustration · closing `.impeccable`'s open comps round.
+figure illustration · completing the superseded September comps round.
 
 ### 11.3 Reproducing the measurements
 

@@ -1,7 +1,7 @@
 {
   "toolId": "recurring-date-generator",
   "category": "date-time",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/287-existing-date-time-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:287",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Genera una sequenza di date giornaliera, settimanale, mensile o annuale. Public jobs: Usa Crea date ricorrenti",
   "observedFunctionality": "The current implementation performs the declared date/time job locally and deterministically: Genera una sequenza di date giornaliera, settimanale, mensile o annuale. Tool-specific Gold evidence plus engine/module tests cover boundary/error behavior; browser acceptance covers the real route. Unsupported scope is surfaced rather than silently broadened.",

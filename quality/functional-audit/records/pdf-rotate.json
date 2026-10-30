@@ -1,7 +1,7 @@
 {
   "toolId": "pdf-rotate",
   "category": "documents",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/289-existing-documents-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:289",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Ruota localmente le pagine selezionate di 90, 180 o 270 gradi in modo esplicito. Public jobs: Usa Ruota PDF",
   "observedFunctionality": "The current implementation performs the deliberately scoped document job locally: Ruota localmente le pagine selezionate di 90, 180 o 270 gradi in modo esplicito. The PDF/document corpus verifies actual bytes/structure and explicit refusals for unsupported behavior; the Gold receipt and real-route acceptance cover the public route.",

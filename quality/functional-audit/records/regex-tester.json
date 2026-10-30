@@ -1,7 +1,7 @@
 {
   "toolId": "regex-tester",
   "category": "developer",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/288-existing-developer-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:288",
   "decision": "UPGRADED",
   "expectedFunctionality": "Testa un'espressione regolare sul testo e mostra corrispondenze e gruppi trovati. Public jobs: Usa Prova una regex",
   "observedFunctionality": "The route preserves ordinary ECMAScript regex matching while executing the potentially expensive RegExp operation in a dedicated worker with input/result bounds, AbortSignal termination and a 750 ms hard timeout. Real Chromium acceptance observes the worker, forces a timeout with an adversarial non-match, and proves the route recovers for the next benign run.",
@@ -29,11 +29,11 @@
     },
     {
       "kind": "source-contract",
-      "ref": ".scratch/strumentini-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md",
+      "ref": "legacy-expansion:178",
       "claim": "Targeted ticket records the completed worker-isolation and hard-timeout acceptance criteria."
     }
   ],
   "childTickets": [
-    ".scratch/strumentini-expansion-20261005/issues/178-regex-execution-isolation-and-hard-timeout.md"
+    "legacy-expansion:178"
   ]
 }

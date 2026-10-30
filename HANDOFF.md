@@ -7,7 +7,7 @@
 Repository: /Users/domenico/Code/Strumentini.it
 Branch: main (tracking `origin/main`; the redesign/backend tranche, Google auth/mobile tranche and refreshed evidence are committed; see `PROJECT-STATUS.md` for the authoritative state and source fingerprint)
 Public brand: Strumentini.it
-Live ticket counts: `PROJECT-STATUS.md` generated panel / `.scratch/strumentini-expansion-20261005/CURRENT-TICKET-DASHBOARD.md`. Historical repository context and routes: remainder of `PROJECT-STATUS.md`.
+Current ticket status: GitHub Issues. Historical repository context and routes: `PROJECT-STATUS.md`.
 
 **2026-10-08 source-vs-production boundary:** Current main includes image target/batch compression tickets 48/210/211, PDF thumbnails/order/split tickets 215/216/217/52, layered PDF comparison ticket 221, form-inspection/safe-flatten ticket 319 and partial raw-export ticket 59. Full unit suite passes **1,134/1,134**. PDF visual organizer acceptance is **54/54**, layered comparison **24/24**, form/flatten **21/21** (visible annotations explicitly refused, downloaded safe-subset output independently re-rendered pixel-identical), page-selection/ZIP **18/18** across Chromium/Firefox/WebKit, plus the pre-existing 20-route PDF suite. **Do not equate main with a Cloudflare release:** the production Worker is still based on the older `2af6e8c` / `2c38b13c…` source; newer main cannot pass source-bound Gold/browser/rollback release gates without fresh evidence, and real physical Android/iOS resize receipts are still missing. See `PROJECT-STATUS.md` for the exact boundary.
 
@@ -37,7 +37,7 @@ Live ticket counts: `PROJECT-STATUS.md` generated panel / `.scratch/strumentini-
 | `PRODUCT-SPEC.md` | Acceptance criteria US-01…US-17, the contract a change must not break. |
 | `PROJECT-STATUS.md` | Generated live ticket totals at the top; historical 2026-10-08 release blocker context and verification table below. |
 
-Most of `.scratch/`, `tasks/prompt2prompt/`, `research/` and `docs/history/` is historical provenance. The exception is `.scratch/strumentini-expansion-20261005/TICKET-DAG.md` plus its linked issue files, which remain the active dependency/scheduling authority for unfinished expansion work.
+Prompt/response runs and research lanes were retired from the working tree in #498. Their unique decisions are indexed in `docs/RESEARCH-DECISIONS-2026-10-27.md`, with full originals in Git history. Other `research/` and `docs/history/` records remain historical. The frozen expansion DAG and ticket files were retired in #499; GitHub Issues governs unfinished work, with historical ticket declarations retained in active audit and migration registries.
 
 ## 3. The gates and what each proves
 

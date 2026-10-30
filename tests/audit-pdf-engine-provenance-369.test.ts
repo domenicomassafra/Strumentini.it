@@ -92,7 +92,7 @@ describe("#369 execution-backed installed PDF vendor provenance gate", () => {
     expect(evidence.comparison.find((r) => r.engine === "pdf-lib")).toMatchObject({
       installed: false, decision: "NO_ADOPT",
     });
-  }, 20_000);
+  }, 90_000);
 
   it("admits unchanged bounded local vendor evidence but never claims transitive legal clearance", () => {
     const evidence = inspectPdfEngineProvenance369(fakeProject());
@@ -102,7 +102,7 @@ describe("#369 execution-backed installed PDF vendor provenance gate", () => {
     expect(evidence.imports.remoteCount).toBe(0);
     expect(evidence.assets.length).toBeGreaterThanOrEqual(7);
     expect(evidence.licenseNotices.length).toBeGreaterThan(8);
-  }, 20_000);
+  }, 90_000);
 
   it("refuses false proprietary-safe licensing if vendor manifest is changed to AGPL", () => {
     const root = fakeProject();

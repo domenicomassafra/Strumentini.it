@@ -1,7 +1,7 @@
 {
   "toolId": "duplicate-file-finder",
   "category": "files",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/290-existing-files-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:290",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Trova file identici confrontando dimensione e SHA-256 senza caricarli online. Public job: Usa Trova file duplicati.",
   "observedFunctionality": "The current implementation is Gold-certified for the declared narrow file job at quality/receipts/expanded-local/duplicate-file-finder.gold.json; executable test coverage verifies the underlying file/hash/archive/privacy behavior, while quality/receipts/expanded-local/browser-acceptance.json verifies the real route interaction and local-only contract.",

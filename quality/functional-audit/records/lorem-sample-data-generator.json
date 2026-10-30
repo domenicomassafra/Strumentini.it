@@ -1,7 +1,7 @@
 {
   "toolId": "lorem-sample-data-generator",
   "category": "text",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/295-existing-text-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:295",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Genera parole, frasi, paragrafi, nomi, email, numeri o righe di esempio riproducibili. Public jobs: Usa Crea dati di esempio.",
   "observedFunctionality": "The current implementation has a tool-specific Gold receipt at quality/receipts/local-jobs/lorem-sample-data-generator.gold.json; executable unit coverage and real-route browser acceptance cover the declared narrow public job and its error/locality contract.",

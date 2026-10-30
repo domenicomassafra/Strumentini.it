@@ -68,6 +68,10 @@ describe("#65 exhaustive high-priority format-operation gate", () => {
       .toContain("compress-image-target-size: missing target verification contract");
     const refused = rows.map((row) => row.id === "compress-gzip" ? { ...row, reason: undefined } : row);
     expect(auditFormatOperationCoverage65(refused, evidence, files).errors.join(" ")).toMatch(/REFUSE rows require a reason/u);
+    const inventedDecision = rows.map((row) => row.id === "compress-gzip"
+      ? { ...row, ticket: "legacy-expansion:999" } : row);
+    expect(auditFormatOperationCoverage65(inventedDecision, evidence, files).errors)
+      .toContain("REFUSED row has no source decision file: compress-gzip");
   });
 
   it("measures a real PNG compressor result, independently reopens actual bytes, and refuses an unmet byte ceiling", async () => {

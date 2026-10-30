@@ -1,7 +1,7 @@
 {
   "toolId": "image-crop",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Ritaglia un'immagine locale in un rettangolo limitato con risultato prodotto interamente nel browser. Public jobs: Usa Ritaglio immagine",
   "observedFunctionality": "Current public job is an explicit bounded rectangular crop with local output, and the shared image engine validates the rectangle and output. Ticket 213 adds direct-manipulation/round-crop workspace behavior beyond this numeric crop contract.",

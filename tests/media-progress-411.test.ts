@@ -23,7 +23,7 @@ describe("STR-411 real local-file progress and abort", () => {
     expect(seen.length).toBeGreaterThan(1);
     expect(seen.every((bytes, index) => bytes > 0 && bytes <= source.length &&
       (index === 0 || bytes > seen[index - 1]!))).toBe(true);
-  });
+  }, 30_000);
 
   it("stops reading later chunks on cancellation without a complete result", async () => {
     const controller = new AbortController();

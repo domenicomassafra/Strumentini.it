@@ -1,55 +1,5 @@
 import { assertInputSize, invalid, type DeveloperWebResult } from "./types";
 
-const HTML_NAMED_ENTITIES: Readonly<Record<string, string>> = {
-  amp: "&",
-  apos: "'",
-  gt: ">",
-  lt: "<",
-  quot: "\"",
-  nbsp: "\u00a0",
-  copy: "©",
-  reg: "®",
-  trade: "™",
-  hellip: "…",
-  ndash: "–",
-  mdash: "—",
-  laquo: "«",
-  raquo: "»",
-  eacute: "é",
-  egrave: "è",
-  uuml: "ü",
-  ouml: "ö",
-  auml: "ä",
-  szlig: "ß",
-};
-
-export function encodeHtmlEntities(input: string, numeric = false): string {
-  assertInputSize(input);
-  return input.replaceAll("&", numeric ? "&#38;" : "&amp;").replaceAll("<", numeric ? "&#60;" : "&lt;").replaceAll(">", numeric ? "&#62;" : "&gt;").replaceAll('"', numeric ? "&#34;" : "&quot;").replaceAll("'", numeric ? "&#39;" : "&#39;");
-}
-
-export function decodeHtmlEntities(input: string): string {
-  assertInputSize(input);
-  return input.replaceAll(/&(#x[0-9a-f]+|#\d+|[a-z][a-z0-9]+);?/giu, (full, body: string) => {
-    if (body.startsWith("#x") || body.startsWith("#")) {
-      const codePoint = Number.parseInt(body.slice(body.startsWith("#x") ? 2 : 1), body.startsWith("#x") ? 16 : 10);
-      if (!Number.isSafeInteger(codePoint) || codePoint < 0 || codePoint > 0x10ffff) invalid("INVALID_HTML_ENTITY", "HTML numeric entity is outside the Unicode range.");
-      try {
-        return String.fromCodePoint(codePoint);
-      } catch {
-        invalid("INVALID_HTML_ENTITY", "HTML numeric entity cannot be represented.");
-      }
-    }
-    return HTML_NAMED_ENTITIES[body.toLowerCase()] ?? full;
-  });
-}
-
-/** The original small codec remains available for a one-line rollback of this route. */
-export function legacyHtmlEntityOperation(input: string, mode: string, numeric = false): DeveloperWebResult {
-  const value = mode === "decode" || mode === "from-entities" ? decodeHtmlEntities(input) : encodeHtmlEntities(input, numeric);
-  return { valid: true, mode, value, warning: "La decodifica delle entità converte testo: non esegue una sanificazione HTML." } as DeveloperWebResult;
-}
-
 function assertLegalHtmlUnicode(input: string): void {
   for (let index = 0; index < input.length; index += 1) {
     const unit = input.charCodeAt(index);

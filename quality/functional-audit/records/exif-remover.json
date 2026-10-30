@@ -1,7 +1,7 @@
 {
   "toolId": "exif-remover",
   "category": "files-assets",
-  "ownerTicket": ".scratch/strumentini-expansion-20261005/issues/291-existing-files-assets-200-audit-tranche.md",
+  "ownerTicket": "legacy-expansion:291",
   "decision": "ALREADY_COMPLETE",
   "expectedFunctionality": "Crea una nuova copia dell'immagine senza i metadati EXIF che possono contenere informazioni personali. Public jobs: Usa Rimuovi metadati EXIF",
   "observedFunctionality": "Current job is removal of privacy-bearing EXIF/metadata from a newly produced local copy. Gold evidence inventories source segments and re-scans the output before calling it clean; ticket 315 adds richer before/after classification rather than repairing this declared removal job.",

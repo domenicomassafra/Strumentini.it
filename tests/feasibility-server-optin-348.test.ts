@@ -62,6 +62,21 @@ describe("#348 fail-closed source inventory", () => {
       .toContain("CHANGED_WORKER_SOURCE:worker/wrangler.staging.jsonc");
   });
 
+  it("pins #482 deletion results and rejects loss of either credential or live-session guards", () => {
+    const path = "worker/db.ts";
+    const reviewed = source(path);
+    expect(reviewed).toContain("RETURNING id");
+    for (const changed of [
+      reviewed.replace("id = ?1 AND password_hash = ?2 AND password_salt = ?3", "id = ?1"),
+      reviewed.replace("AND s.user_id = users.id AND s.expires_at > ?7", "AND s.user_id = users.id"),
+    ]) {
+      expect(changed).not.toBe(reviewed);
+      expect(auditStaticSurface(project, (p) => p === path ? changed : source(p)).violations)
+        .toContain("CHANGED_WORKER_SOURCE:worker/db.ts");
+    }
+    expect(auditStaticSurface(project).serverMode).toBe("NO_GO");
+  });
+
   it("rejects hidden uploads injected into a previously reviewed client transport", () => {
     const path = "src/components/tools/research-knowledge/ViesVerificationPanel.tsx";
     const changed = `${source(path)}\nvoid fetch('/api/upload', { method: 'POST', body: new FormData() });\n`;

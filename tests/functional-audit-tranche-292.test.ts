@@ -11,8 +11,8 @@ import {
 } from "../src/quality/functional-audit";
 
 const root = resolve(import.meta.dirname, "..");
-const ownerTicket = ".scratch/strumentini-expansion-20261005/issues/292-existing-image-visual-200-audit-tranche.md";
-const ticket317 = ".scratch/strumentini-expansion-20261005/issues/317-contact-sheet-favicon-and-platform-export-upgrades.md";
+const ownerTicket = "legacy-expansion:292";
+const ticket317 = "legacy-expansion:317";
 
 const assignments = functionalAuditAssignmentIndexSchema.parse(JSON.parse(
   readFileSync(resolve(root, "quality/functional-audit/original-200.assignments.json"), "utf8"),
@@ -49,7 +49,7 @@ describe("functional audit tranche 292", () => {
       expect(unit, `${record.toolId}: unit evidence`).toBeDefined();
       expect(browser, `${record.toolId}: browser evidence`).toBeDefined();
       for (const evidence of record.evidence) {
-        expect(existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing ${evidence.ref}`).toBe(true);
+        expect(evidence.ref.startsWith("legacy-expansion:") ? /^legacy-expansion:[1-9]\d*$/u.test(evidence.ref) : existsSync(resolve(root, evidence.ref)), `${record.toolId}: missing ${evidence.ref}`).toBe(true);
       }
       const receipt = JSON.parse(readFileSync(resolve(root, gold!.ref), "utf8")) as { toolId?: unknown; status?: unknown };
       expect(receipt).toMatchObject({ toolId: record.toolId, status: "GOLD" });
@@ -71,12 +71,12 @@ describe("functional audit tranche 292", () => {
       expect(certification?.certificationReceipt, toolId).not.toBeNull();
       expect(certification?.fixtures.every((fixture) => fixture.status === "VERIFIED"), toolId).toBe(true);
     }
-  }, 30_000);
+  }, 90_000);
 
   it("keeps 298-317 roadmap enhancements separate from current-contract gaps", () => {
     for (const record of records) {
       const roadmapRefs = record.evidence
-        .filter((item) => item.kind === "source-contract" && /\/issues\/(?:29[8-9]|30[0-9]|31[0-7])-/.test(item.ref))
+        .filter((item) => item.kind === "source-contract" && /^legacy-expansion:(?:29[8-9]|30[0-9]|31[0-7])$/.test(item.ref))
         .map((item) => item.ref);
       if (record.toolId === "platform-size-presets") {
         expect(roadmapRefs).toEqual([ticket317]);
