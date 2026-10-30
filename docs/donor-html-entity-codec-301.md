@@ -1,4 +1,4 @@
-# STR-301 — `html-entity-codec` donor e rollback
+# STR-301 — `html-entity-codec` con donor `he`
 
 ## Provenienza e licenze
 
@@ -14,7 +14,7 @@ L'API `runDeveloperWebTool("html-entity-codec", …)` mantiene `mode`, `numeric`
 
 Il vecchio codec HTML locale (`legacyHtmlEntityOperation`, `encodeHtmlEntities`, `decodeHtmlEntities`) è stato rimosso con #522: nessuna route runtime lo utilizzava. `htmlEntityOperation` usa il solo decoder/encoder mantenuto `he`; gli input e le risposte pubbliche conservano la stessa interfaccia. I controlli locali mantengono il limite **1.000.000 caratteri**, l'errore tipizzato `INVALID_HTML_ENTITY` per Unicode non rappresentabile (surrogate non appaiati e punti numerici fuori intervallo/surrogati), `INPUT_TOO_LARGE`, `AbortError` e l'envelope precedente.
 
-Differenze previste e coperte da test: la codifica named include anche caratteri Unicode prima lasciati verbatim (`©` → `&copy;`), gli apostrofi diventano `&apos;` in named (`&#39;` in numeric), i riferimenti HTML5 mancanti nella tabella locale ora si risolvono, e i code point numerici WHATWG di controllo C1 sono normalizzati. Le fixture canoniche e un oracle Python HTML5 indipendente verificano il comportamento attivo: `tests/html-entity-codec-301.test.ts`; gold esistente: `tests/developer-web-engine.test.ts`.
+Differenze previste e coperte da test: la codifica named include anche caratteri Unicode prima lasciati verbatim (`©` → `&copy;`), gli apostrofi diventano `&apos;` in named (`&#39;` in numeric), i riferimenti HTML5 mancanti nella tabella locale ora si risolvono, e i code point numerici WHATWG di controllo C1 sono normalizzati. Le fixture canoniche sono in `tests/html-entity-codec-301.test.ts`; l'oracle Python HTML5 indipendente è in `tests/html-entity-codec-301-regression.test.ts`; gold esistente: `tests/developer-web-engine.test.ts`.
 
 ## Prove ripetibili
 
