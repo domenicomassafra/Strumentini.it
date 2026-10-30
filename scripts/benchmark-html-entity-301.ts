@@ -1,6 +1,6 @@
 /** Reproducible #301 local benchmark: npx tsx scripts/benchmark-html-entity-301.ts */
 import { performance } from "node:perf_hooks";
-import { htmlEntityOperation, legacyHtmlEntityOperation } from "../src/engines/developer-web";
+import { htmlEntityOperation } from "../src/engines/developer-web";
 
 const fixtures = [
   { label: "encode-64k", input: "<Caffè & ©> ' ".repeat(4_096), mode: "encode" },
@@ -15,23 +15,17 @@ const summary = (values: number[]) => {
 
 for (const { label, input, mode } of fixtures) {
   const runs = label === "decode-1m" ? 3 : 12;
-  const stats = [];
-  for (const [name, operation] of [
-    ["legacy", async () => legacyHtmlEntityOperation(input, mode)],
-    ["he-2.0.0", async () => htmlEntityOperation(input, mode)],
-  ] as const) {
-    const elapsed: number[] = [];
-    let maxHeapAfterCall = 0;
-    let maxRssAfterCall = 0;
-    for (let index = 0; index < runs; index += 1) {
-      const start = performance.now();
-      await operation();
-      elapsed.push(performance.now() - start);
-      const memory = process.memoryUsage();
-      maxHeapAfterCall = Math.max(maxHeapAfterCall, memory.heapUsed);
-      maxRssAfterCall = Math.max(maxRssAfterCall, memory.rss);
-    }
-    stats.push({ name, ...summary(elapsed), sampledHeapAfterCallsMiB: Number((maxHeapAfterCall / 1_048_576).toFixed(2)), sampledRssAfterCallsMiB: Number((maxRssAfterCall / 1_048_576).toFixed(2)) });
+  const elapsed: number[] = [];
+  let maxHeapAfterCall = 0;
+  let maxRssAfterCall = 0;
+  for (let index = 0; index < runs; index += 1) {
+    const start = performance.now();
+    await htmlEntityOperation(input, mode);
+    elapsed.push(performance.now() - start);
+    const memory = process.memoryUsage();
+    maxHeapAfterCall = Math.max(maxHeapAfterCall, memory.heapUsed);
+    maxRssAfterCall = Math.max(maxRssAfterCall, memory.rss);
   }
+  const stats = [{ name: "he-2.0.0", ...summary(elapsed), sampledHeapAfterCallsMiB: Number((maxHeapAfterCall / 1_048_576).toFixed(2)), sampledRssAfterCallsMiB: Number((maxRssAfterCall / 1_048_576).toFixed(2)) }];
   console.log(JSON.stringify({ label, characters: input.length, runs, stats }));
 }
