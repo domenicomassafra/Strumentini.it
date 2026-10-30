@@ -268,7 +268,7 @@ export function urlCodecOperation(input: string, mode: string, set = "component"
   return { valid: true, mode, set, value, roundTrip: mode === "decode" ? percentEncodeSet(value, set as "component" | "query" | "path" | "userinfo") === input : percentDecode(value) === input } as DeveloperWebResult;
 }
 
-export { encodeHtmlEntities, decodeHtmlEntities, legacyHtmlEntityOperation, htmlEntityOperation } from "./html-entities";
+export { htmlEntityOperation } from "./html-entities";
 
 export type DeveloperHashAlgorithm = "SHA-256" | "SHA-384" | "SHA-512";
 

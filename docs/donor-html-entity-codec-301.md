@@ -1,4 +1,4 @@
-# STR-301 — `html-entity-codec` donor e rollback
+# STR-301 — `html-entity-codec` con donor `he`
 
 ## Provenienza e licenze
 
@@ -12,9 +12,9 @@
 
 L'API `runDeveloperWebTool("html-entity-codec", …)` mantiene `mode`, `numeric`, `valid`, `value`, `warning` e `engineVersion`. Import dinamico di `he` solo alla prima conversione, nella stessa origine, senza chiamate a servizi esterni. `encode` usa i nomi HTML canonici quando disponibili; la modalità numerica usa riferimenti **decimali** (come il percorso precedente). Il decode usa le regole **WHATWG in contesto testo**: copre i nomi completi, le entità multi-codepoint, ampersand ambigui e il mapping legacy dei controlli C1 (es. `&#x80;` → `€`). Gli input HTML restano **testo**: la decodifica non è una sanificazione.
 
-Il vecchio percorso (`legacyHtmlEntityOperation`, `encodeHtmlEntities`, `decodeHtmlEntities`) è conservato in `src/engines/developer-web/html-entities.ts` per ripristino, con re-export pubblico da `encoding-crypto.ts`; si torna al comportamento precedente chiamando `legacyHtmlEntityOperation` dal branch `html-entity-codec` in `src/engines/developer-web/index.ts` e rimuovendo la dipendenza soltanto in un rollback dedicato. I controlli locali mantengono il limite **1.000.000 caratteri**, l'errore tipizzato `INVALID_HTML_ENTITY` per Unicode non rappresentabile (surrogate non appaiati e punti numerici fuori intervallo/surrogati), `INPUT_TOO_LARGE`, `AbortError` e l'envelope precedente.
+Il vecchio codec HTML locale (`legacyHtmlEntityOperation`, `encodeHtmlEntities`, `decodeHtmlEntities`) è stato rimosso con #522: nessuna route runtime lo utilizzava. `htmlEntityOperation` usa il solo decoder/encoder mantenuto `he`; gli input e le risposte pubbliche conservano la stessa interfaccia. I controlli locali mantengono il limite **1.000.000 caratteri**, l'errore tipizzato `INVALID_HTML_ENTITY` per Unicode non rappresentabile (surrogate non appaiati e punti numerici fuori intervallo/surrogati), `INPUT_TOO_LARGE`, `AbortError` e l'envelope precedente.
 
-Differenze previste e coperte da test: la codifica named include anche caratteri Unicode prima lasciati verbatim (`©` → `&copy;`), gli apostrofi diventano `&apos;` in named (`&#39;` in numeric), i riferimenti HTML5 mancanti nella tabella locale ora si risolvono, e i code point numerici WHATWG di controllo C1 sono normalizzati. Il fallback legacy resta verificabile con gli stessi input. Fixture dirette e differential: `tests/html-entity-codec-301.test.ts`; gold esistente: `tests/developer-web-engine.test.ts`.
+Differenze previste e coperte da test: la codifica named include anche caratteri Unicode prima lasciati verbatim (`©` → `&copy;`), gli apostrofi diventano `&apos;` in named (`&#39;` in numeric), i riferimenti HTML5 mancanti nella tabella locale ora si risolvono, e i code point numerici WHATWG di controllo C1 sono normalizzati. Le fixture canoniche sono in `tests/html-entity-codec-301.test.ts`; l'oracle Python HTML5 indipendente è in `tests/html-entity-codec-301-regression.test.ts`; gold esistente: `tests/developer-web-engine.test.ts`.
 
 ## Prove ripetibili
 
@@ -25,7 +25,7 @@ npm run build
 node scripts/acceptance-html-entity-301.browser.mjs
 ```
 
-Il benchmark Node misura latenze mediane e p95 e **campioni di memoria heap/RSS dopo ogni chiamata**, non un vero high-water mark nativo durante l'esecuzione. Su questo Mac Studio (Node 24.18.0, 19/10/2026), 12 esecuzioni per input brevi e 3 per 1M caratteri: encode 57.344 caratteri mediana `0,862 ms` legacy / `4,077 ms` donor; decode 66.000 caratteri `1,664 ms` / `1,912 ms`; decode 999.996 caratteri `163,066 ms` / `179,617 ms`. RSS post-call massimo campionato sul caso 1M: `190,86 MiB` legacy / `227,20 MiB` donor. Questi sono valori di processo influenzati da warmup/GC, non budget di memoria dei browser; confrontarli come indicatori di overhead e non come benchmark deterministico.
+Il benchmark Node misura ora solo `he`: mediane, p95 e **campioni di memoria heap/RSS dopo ogni chiamata**, non un vero high-water mark nativo durante l'esecuzione. A titolo storico, il confronto prima della rimozione sul Mac Studio (Node 24.18.0, 19/10/2026), 12 esecuzioni per input brevi e 3 per 1M caratteri: encode 57.344 caratteri mediana `0,862 ms` legacy / `4,077 ms` donor; decode 66.000 caratteri `1,664 ms` / `1,912 ms`; decode 999.996 caratteri `163,066 ms` / `179,617 ms`. RSS post-call massimo campionato sul caso 1M: `190,86 MiB` legacy / `227,20 MiB` donor. Questi sono valori di processo influenzati da warmup/GC, non budget di memoria dei browser; confrontarli come indicatori di overhead e non come benchmark deterministico.
 
 I browser Chromium, Firefox e WebKit vengono provati sulla **pagina pubblica compilata** `/tools/html-entity-codec/` servita soltanto su loopback con `script-src 'self'` più hash SHA-256 degli script Astro inline. Il layout comune interroga `/api/auth/session`: il server isolato restituisce una sessione anonima deterministica e `connect-src` autorizza esclusivamente quell'URL sulla stessa origine. Il codec non usa API: il test rifiuta ogni altra richiesta `fetch`/XHR e ogni destinazione esterna, verifica output scaricato, import lazy di `he`, warning e assenza di errori JS. Non usa chiavi, upload o deploy di produzione. Le emulazioni browser non attestano un dispositivo iOS/Android fisico.
 
