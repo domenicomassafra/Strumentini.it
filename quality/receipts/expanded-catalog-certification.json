@@ -33609,7 +33609,7 @@
         },
         "module": {
           "path": "src/tools/url-bulk-normalizer/module.ts",
-          "sha256": "8573627dc087e519f9cba53c82dd589d1331a0a02e145c9f3a60cae8f35d2575"
+          "sha256": "17bc053f463d8e53eb37a7f8cb787d3ea949131ff7d736b9f12af16a1355cc2b"
         },
         "page": {
           "path": "src/pages/tools/url-bulk-normalizer.astro",
@@ -33874,7 +33874,7 @@
         },
         "module": {
           "path": "src/tools/url-comparison/module.ts",
-          "sha256": "b4f50a18cb8cd89b26460eb5c6230e104860408a29449137cfaaf17799a55cbd"
+          "sha256": "62ff7f90c6d495b526a5eb3f8707a1f558e7822cf22c7c13d900e363d36d6360"
         },
         "page": {
           "path": "src/pages/tools/url-comparison.astro",
