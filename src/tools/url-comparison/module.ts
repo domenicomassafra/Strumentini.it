@@ -33,14 +33,8 @@ function input(value: unknown): {
 const module: ToolModule = {
   run(value, _context, signal): unknown {
     if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-    const parsed = input(value);
-    return compareUrls(parsed.leftUrl, parsed.rightUrl, {
-      ...(parsed.mode === undefined ? {} : { mode: parsed.mode }),
-      ...(parsed.ignoreFragment === undefined ? {} : { ignoreFragment: parsed.ignoreFragment }),
-      ...(parsed.sortQuery === undefined ? {} : { sortQuery: parsed.sortQuery }),
-      ...(parsed.removeTrailingSlash === undefined ? {} : { removeTrailingSlash: parsed.removeTrailingSlash }),
-      ...(parsed.dropTracking === undefined ? {} : { dropTracking: parsed.dropTracking }),
-    });
+    const { leftUrl, rightUrl, ...options } = input(value);
+    return compareUrls(leftUrl, rightUrl, options);
   },
 };
 
