@@ -19,24 +19,15 @@ interface SourceUrl {
   readonly value: string;
 }
 
-function safeInput(value: string): string {
-  return redactUrlCredentials(value);
-}
-
 function input(value: unknown): { urls: readonly SourceUrl[]; sortQuery: boolean; removeFragment: boolean; removeTrailingSlash: boolean; dropTracking: boolean } {
   if (typeof value !== "object" || value === null) throw new Error("INVALID_INPUT");
   const record = value as Record<string, unknown>;
   const source = record.urls ?? record.input ?? record.text;
-  let urls: readonly SourceUrl[];
-  if (typeof source === "string") {
-    urls = source.replace(/\r\n?/gu, "\n").split("\n")
-      .map((item, sourceIndex) => ({ sourceIndex, sourceRow: sourceIndex + 1, value: item.trim() }))
-      .filter((item) => item.value !== "");
-  } else {
-    if (!Array.isArray(source) || source.some((item) => typeof item !== "string")) throw new Error("INVALID_INPUT");
-    urls = source.map((item, sourceIndex) => ({ sourceIndex, sourceRow: sourceIndex + 1, value: item.trim() }))
-      .filter((item) => item.value !== "");
-  }
+  const lines = typeof source === "string" ? source.replace(/\r\n?/gu, "\n").split("\n") : source;
+  if (!Array.isArray(lines) || lines.some((item) => typeof item !== "string")) throw new Error("INVALID_INPUT");
+  const urls: SourceUrl[] = (lines as string[])
+    .map((item, sourceIndex) => ({ sourceIndex, sourceRow: sourceIndex + 1, value: item.trim() }))
+    .filter((item) => item.value !== "");
   if (urls.length === 0) throw new Error("INVALID_INPUT");
   const bool = (key: string, fallback: boolean): boolean => {
     const candidate = record[key];
@@ -56,16 +47,11 @@ function input(value: unknown): { urls: readonly SourceUrl[]; sortQuery: boolean
 const module: ToolModule = {
   run(value, _context, signal): unknown {
     if (signal?.aborted) throw new DOMException("Operation cancelled", "AbortError");
-    const parsed = input(value);
-    const results: RawItem[] = parsed.urls.map(({ value: url, sourceIndex, sourceRow }) => {
-      const before = safeInput(url);
+    const { urls, ...rules } = input(value);
+    const results: RawItem[] = urls.map(({ value: url, sourceIndex, sourceRow }) => {
+      const before = redactUrlCredentials(url);
       try {
-        const normalized = normalizeUrlDetails(url, {
-          sortQuery: parsed.sortQuery,
-          removeFragment: parsed.removeFragment,
-          removeTrailingSlash: parsed.removeTrailingSlash,
-          dropTracking: parsed.dropTracking,
-        });
+        const normalized = normalizeUrlDetails(url, rules);
         return {
           sourceIndex,
           sourceRow,
@@ -92,12 +78,7 @@ const module: ToolModule = {
       count: results.length,
       validCount: results.filter((item) => item.url !== undefined).length,
       errorCount: results.filter((item) => item.error !== undefined).length,
-      rules: {
-        sortQuery: parsed.sortQuery,
-        removeFragment: parsed.removeFragment,
-        removeTrailingSlash: parsed.removeTrailingSlash,
-        dropTracking: parsed.dropTracking,
-      },
+      rules,
       network: "not-used",
       verificationScope: "local-transform-only",
       engineVersion: URL_MARKETING_ENGINE_VERSION,
