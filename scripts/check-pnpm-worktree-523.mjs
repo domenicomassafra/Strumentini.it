@@ -30,14 +30,25 @@ function localDirectory(path, expected, required) {
 }
 localDirectory(modules, resolve(rootReal, "node_modules"), probe !== "--preflight");
 localDirectory(virtualStore, resolve(rootReal, "node_modules/.pnpm"), probe !== "--preflight");
+const metadata = resolve(modules, ".modules.yaml");
+let installed;
+try {
+  const entry = lstatSync(metadata);
+  if (!entry.isFile() || entry.isSymbolicLink() ||
+      realpathSync(metadata) !== resolve(rootReal, "node_modules/.modules.yaml")) {
+    throw new Error("pnpm mutable install metadata escapes this worktree: " + metadata);
+  }
+  installed = JSON.parse(readFileSync(metadata, "utf8"));
+  if (typeof installed.virtualStoreDir !== "string" ||
+      resolve(modules, installed.virtualStoreDir) !== virtualStore) {
+    throw new Error("pnpm virtual store is not the local .pnpm directory");
+  }
+} catch (error) {
+  if (error?.code !== "ENOENT" || probe !== "--preflight") throw error;
+}
 if (probe === "--preflight") {
   console.log("pnpm worktree install paths safe: " + root);
   process.exit(0);
-}
-const installed = JSON.parse(readFileSync(resolve(modules, ".modules.yaml"), "utf8"));
-if (typeof installed.virtualStoreDir !== "string" ||
-    resolve(modules, installed.virtualStoreDir) !== virtualStore) {
-  throw new Error("pnpm virtual store is not the local .pnpm directory");
 }
 const contentStore = realpathSync(installed.storeDir);
 if (statSync(root).dev !== statSync(contentStore).dev) {

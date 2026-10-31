@@ -63,8 +63,21 @@ test("rejects metadata with a foreign virtual store", () => fixture(({ root, sep
   const modules = join(root, "node_modules");
   mkdirSync(join(modules, ".pnpm"), { recursive: true });
   installMetadata(modules, store, separate);
-  assert.equal(check("--preflight").status, 0);
-  const result = check();
-  assert.notEqual(result.status, 0, result.stdout);
-  assert.match(result.stderr, /not the local/);
+  for (const mode of ["--preflight", null]) {
+    const result = check(mode);
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.match(result.stderr, /not the local/);
+  }
+}));
+test("rejects symlinked metadata before and after install", () => fixture(({ root, separate, store, check }) => {
+  const modules = join(root, "node_modules");
+  mkdirSync(join(modules, ".pnpm"), { recursive: true });
+  const foreign = join(separate, ".modules.yaml");
+  writeFileSync(foreign, JSON.stringify({ virtualStoreDir: ".pnpm", storeDir: store }));
+  symlinkSync(foreign, join(modules, ".modules.yaml"));
+  for (const mode of ["--preflight", null]) {
+    const result = check(mode);
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.match(result.stderr, /mutable install metadata escapes/);
+  }
 }));
