@@ -1,10 +1,13 @@
+import { createHash } from "node:crypto";
 import { readFileSync, realpathSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 
 // Run only after pnpm's isolated install. The npm lockfiles remain authoritative.
 const [directory = ".", probe] = process.argv.slice(2);
-if (probe && probe !== "--probe-buffer") throw new Error("Unknown post-install check: " + probe);
+if (probe && !["--probe-buffer", "--probe-runtime"].includes(probe)) {
+  throw new Error("Unknown post-install check: " + probe);
+}
 const root = resolve(directory);
 const modules = resolve(root, "node_modules");
 const installed = JSON.parse(readFileSync(resolve(modules, ".modules.yaml"), "utf8"));
@@ -29,5 +32,31 @@ if (probe === "--probe-buffer") {
   if (realpathSync(dirname(fromSafer)) !== rootBuffer) {
     throw new Error("safer-buffer resolves a different buffer package: " + fromSafer);
   }
+}
+if (probe === "--probe-runtime") {
+  // Build output must retain #274's independently pinned ONNX bytes. A strict
+  // pnpm install must expose the actual locked runtime at the project root.
+  const upstreamPackage = JSON.parse(readFileSync(resolve(modules, "onnxruntime-web/package.json"), "utf8"));
+  const lock = JSON.parse(readFileSync(resolve(root, "package-lock.json"), "utf8"));
+  const pinned = lock.packages["node_modules/onnxruntime-web"];
+  const expectedVersion = "1.31.0-dev.20260914-8d85527a0";
+  if (upstreamPackage.name !== "onnxruntime-web" || upstreamPackage.license !== "MIT" ||
+      upstreamPackage.version !== expectedVersion || pinned?.version !== expectedVersion ||
+      !pinned.integrity?.startsWith("sha512-") ||
+      lock.packages[""].dependencies?.["onnxruntime-web"] !== expectedVersion) {
+    throw new Error("ONNX runtime is not the pinned direct production dependency");
+  }
+  for (const [file, expected] of Object.entries({
+    "ort-wasm-simd-threaded.mjs": "c57ca56328877353a575e51bbca6f18450027d6c9bf2307a2cb2c41363b4de9f",
+    "ort-wasm-simd-threaded.wasm": "06ba057753da3847e4c24f02d91ab133455b0817c69a44993a9a53a2146df9e3",
+  })) {
+    const hash = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
+    const source = resolve(modules, "onnxruntime-web/dist", file);
+    const emitted = resolve(root, "dist/vendor/portrait-modnet", file);
+    if (hash(source) !== expected || hash(emitted) !== expected) {
+      throw new Error("ONNX runtime source/output identity mismatch: " + file);
+    }
+  }
+  console.log("ONNX runtime locked package and distributed bytes verified");
 }
 console.log("pnpm local store and volume verified: " + root);
