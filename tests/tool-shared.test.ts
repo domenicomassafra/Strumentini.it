@@ -6,7 +6,7 @@ import {
   ResultStateCue,
 } from "../src/components/tools/shared/ResultAccessibility";
 import { ToolSubmitButton } from "../src/components/tools/shared/ToolActions";
-import { gutterStateFor } from "../src/components/tools/shared/ToolGutter";
+import { gutterStateFor, ToolGutter } from "../src/components/tools/shared/ToolGutter";
 import { ToolResultPanel } from "../src/components/tools/shared/ToolResultPanel";
 import { ProvenanceBadge } from "../src/components/tools/shared/Provenance";
 import {
@@ -119,6 +119,16 @@ describe("shared tool operation vocabulary", () => {
     expect(gutterStateFor("warning")).toBe("warning");
     expect(gutterStateFor("partial")).toBe("partial");
     expect(gutterStateFor("cancelled")).toBe("cancelled");
+  });
+
+  it("shows the empty-state hint only when no gutter result content exists", () => {
+    const hasIdleHint = (props: Parameters<typeof ToolGutter>[0]) =>
+      JSON.stringify(ToolGutter(props)).includes("Nessun risultato. Compila i campi");
+
+    expect(hasIdleHint({ label: "JSON", state: "idle" })).toBe(true);
+    expect(hasIdleHint({ label: "JSON", state: "success", children: '{"valido":true}' })).toBe(false);
+    expect(hasIdleHint({ label: "JSON", state: "success", entries: [{ label: "Conteggio", value: "2" }] })).toBe(false);
+    expect(hasIdleHint({ label: "JSON", state: "success", value: "42" })).toBe(false);
   });
 
   it("defines deterministic error and cancellation focus recovery", () => {
