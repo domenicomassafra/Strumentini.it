@@ -77,7 +77,7 @@ describe("#126 actual static distribution provenance", () => {
         ["../../node_modules/.pnpm/onnxruntime-web@0.0.0/node_modules/onnxruntime-web/dist/main.js", "onnxruntime-web"],
         ["../../node_modules/.pnpm/onnxruntime-web@1.31.0/node_modules/onnxruntime-common/dist/index.js", "onnxruntime-common"],
         ["../../node_modules/.pnpm/onnxruntime-web@1.31.0/node_modules/onnxruntime-web/node_modules/unverified/index.js", "unverified"],
-      ]) {
+      ] as const) {
         writeSources([source]);
         expect(audit().failures).toContain("UNVERIFIED_BUNDLED_PACKAGE _astro/tool.js.map -> " + name);
       }
