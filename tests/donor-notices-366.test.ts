@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -41,6 +42,31 @@ describe("#366 distributed donor notices", () => {
       });
     }
     expect(auditDonorNotices366(root)).toEqual([]);
+  });
+
+  it("covers the exact nested ONNX Runtime Common version with unchanged upstream MIT notice", () => {
+    const lock = JSON.parse(readFileSync(join(root, "package-lock.json"), "utf8"));
+    const nested = lock.packages["node_modules/onnxruntime-web/node_modules/onnxruntime-common"];
+    const pkg = "onnxruntime-common@1.31.0-dev.20260911-2a43ec07e";
+    expect(nested).toMatchObject({ version: "1.31.0-dev.20260911-2a43ec07e", license: "MIT" });
+    const notice = DONOR_NOTICES_366.find((candidate) => candidate.packages.includes(pkg));
+    expect(notice).toMatchObject({
+      file: "onnxruntime-web-274-MIT.txt", spdx: "MIT",
+      sha256: "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    });
+    const noticeHash = createHash("sha256")
+      .update(readFileSync(join(root, "public/licenses/onnxruntime-web-274-MIT.txt"))).digest("hex");
+    expect(noticeHash).toBe(notice?.sha256);
+    const packages = [{
+      name: "onnxruntime-common", version: nested.version, license: nested.license,
+      source: nested.resolved, integrity: nested.integrity,
+    }];
+    expect(auditBundleNoticeCoverage366([pkg], packages)[0]).toMatchObject({
+      status: "NOTICE_REGISTERED", failures: [],
+    });
+    expect(auditBundleNoticeCoverage366([pkg], packages,
+      DONOR_NOTICES_366.filter((candidate) => !candidate.packages.includes(pkg)))[0]?.failures)
+      .toContain("MISSING_BUNDLED_NOTICE");
   });
 
   it("fails closed when a registered notice is absent from the build", () => {

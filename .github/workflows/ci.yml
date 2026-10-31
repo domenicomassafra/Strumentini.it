@@ -81,7 +81,7 @@ jobs:
       - run: pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite -C spikes/heavy-browser --frozen-lockfile --prefer-offline --allow-build esbuild
       - run: node scripts/check-pnpm-worktree-523.mjs spikes/heavy-browser
       - run: git diff --exit-code -- package-lock.json spikes/heavy-local-feasibility/package-lock.json spikes/heavy-browser/package-lock.json
-      - run: pnpm exec vitest run tests/donor-dist-inventory-366.test.ts tests/portrait-modnet-274.test.ts
+      - run: pnpm exec vitest run tests/donor-dist-inventory-366.test.ts tests/donor-notices-366.test.ts tests/portrait-modnet-274.test.ts
       - run: npm run check
       - run: npm run build
       - run: node scripts/check-pnpm-worktree-523.mjs . --probe-runtime
