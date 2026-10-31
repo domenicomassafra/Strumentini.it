@@ -55,7 +55,6 @@ const browser = await chromium.launch({ executablePath: "/Applications/Google Ch
 
 try {
   await waitForServer();
-  assert(gold.size > 0, "No Gold-certified tool is available to seed a starter set");
 
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const page = await context.newPage();
@@ -81,8 +80,10 @@ try {
   record("first-task-uninterrupted", "A tool job stays fully usable without ever completing onboarding", "tool route hydrated with no onboarding interstitial");
 
   // Stage 1 is the welcome: it asks for nothing, so it must be a single action.
-  assert(await page.locator("[data-onboarding-action='start']").isVisible(), "The welcome stage offers no way forward");
-  await page.locator("[data-onboarding-action='start']").click();
+  await page.bringToFront();
+  const start = page.locator("[data-onboarding-action='start']");
+  assert(await start.isVisible(), "The welcome stage offers no way forward");
+  await start.click();
 
   // AC-02.1: the flow gates on a real answer rather than pre-selecting for the user.
   const continueButton = page.locator("[data-onboarding-action='continue-context']");
@@ -103,7 +104,6 @@ try {
   const offeredIds = await review.locator("[data-starter-tool-id]").evaluateAll(
     (nodes) => nodes.map((node) => node.getAttribute("data-starter-tool-id")).filter(Boolean),
   );
-  assert(offeredIds.length > 0, "Starter review offered no tools");
   assert(offeredIds.length <= 12, `Starter review offered ${offeredIds.length} tools; the starter set must stay small`);
   assert(new Set(offeredIds).size === offeredIds.length, "Starter review offered a duplicate tool");
   record("starter-set-bounded", "The starter review offers a small, distinct, editable set", `${offeredIds.length} starter tool(s): ${offeredIds.join(", ")}`);
@@ -115,6 +115,15 @@ try {
 
   const save = page.locator("[data-onboarding-action='save']");
   await save.waitFor();
+  if (offeredIds.length === 0) {
+    assert(await page.locator("[data-no-gold-starters]").isVisible(), "Empty Gold review did not explain the lack of automatic recommendations");
+    assert(await save.isDisabled(), "Empty starter review could be saved without an explicit selection");
+    await review.locator('input[type="search"]').fill("json");
+    await review.getByRole("button", { name: "Aggiungi", exact: true }).first().click();
+    const manual = review.locator('[data-starter-tool-id][data-quality="not-certified"]');
+    assert(await manual.count() === 1, "Manual selection was not clearly marked as non-Gold");
+    record("manual-starter-opt-in", "No Gold receipts: the user can explicitly select a non-Gold tool", "manual JSON tool selected and correctly labelled");
+  }
   assert(await save.isEnabled(), "Save starter set stayed disabled for a valid review");
   await save.click();
 

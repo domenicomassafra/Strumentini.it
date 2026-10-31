@@ -110,6 +110,13 @@ export function toolIconSvg(tool: ToolIconInput, className = "tool-icon"): strin
   return iconSvgMarkup(toolIconKey(tool), className);
 }
 
+/** One shared SVG definition per glyph, for pages rendering hundreds of cards. */
+export function toolIconSpriteMarkup(): string {
+  return Object.entries(ICON_BODY)
+    .map(([key, body]) => `<symbol id="directory-tool-icon-${key}" viewBox="0 0 16 16">${body}</symbol>`)
+    .join("");
+}
+
 export function categoryIconSvg(category: string, className = "category-icon"): string {
   return iconSvgMarkup(categoryIconKey(category), className);
 }

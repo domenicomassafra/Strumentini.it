@@ -2,7 +2,7 @@
 import type { ToolSummary } from "../../catalog/manifest";
 import { categoryLabelIt } from "../../i18n/it/taxonomy";
 import { toneForCategory } from "../../catalog/groups";
-import { toolIconSvg } from "../../ui/tool-icons";
+import { toolIconKey, toolIconSvg } from "../../ui/tool-icons";
 import UiIcon from "../icons/UiIcon.astro";
 
 /**
@@ -19,13 +19,16 @@ interface Props {
   variant?: "row" | "card";
   tone?: number;
   membership?: boolean;
+  compactIcons?: boolean;
 }
 
-const { tool, variant = "row", tone = toneForCategory(tool.category), membership = false } = Astro.props;
+const { tool, variant = "row", tone = toneForCategory(tool.category), membership = false, compactIcons = false } = Astro.props;
+const compactToolIcon = `<svg class="icon-tile-glyph" viewBox="0 0 16 16" aria-hidden="true"><use href="#directory-tool-icon-${toolIconKey(tool)}"></use></svg>`;
+const compactHeartIcon = '<svg class="directory-heart" viewBox="0 0 24 24" aria-hidden="true"><use href="#directory-tool-heart"></use></svg>';
 ---
 
 <li class:list={["tool-card", `tool-card-${variant}`]} style={`--tile-tone: var(--tone-${tone})`}>
-  <span class="icon-tile" set:html={toolIconSvg(tool, "icon-tile-glyph")} />
+  <span class="icon-tile" set:html={compactIcons ? compactToolIcon : toolIconSvg(tool, "icon-tile-glyph")} />
   <div class="tool-card-body">
     <h3 class="tool-card-name"><a href={tool.route}>{tool.name}</a></h3>
     <p class="tool-card-summary">{tool.summary}</p>
@@ -42,9 +45,9 @@ const { tool, variant = "row", tone = toneForCategory(tool.category), membership
         aria-busy="true"
         aria-pressed="false"
         aria-label="Aggiungi ai tuoi strumenti"
-        title="Aggiungi ai tuoi strumenti"
+        title={compactIcons ? undefined : "Aggiungi ai tuoi strumenti"}
       >
-        <UiIcon name="heart" size={16} />
+        {compactIcons ? <Fragment set:html={compactHeartIcon} /> : <UiIcon name="heart" size={16} />}
       </button>
     ) : (
       <span class="tool-card-arrow" aria-hidden="true">→</span>
@@ -96,6 +99,9 @@ const { tool, variant = "row", tone = toneForCategory(tool.category), membership
   }
 
   .tool-card-favorite[data-installed="true"] :global(svg) { fill: currentColor; }
+
+  :global(.icon-tile-glyph) { fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
+  :global(.directory-heart) { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
   :global(.icon-tile-glyph) { width: 22px; height: 22px; }
 </style>
