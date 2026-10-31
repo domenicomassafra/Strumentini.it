@@ -1126,18 +1126,3 @@ export function languageStatistics(value: unknown): LanguageStatisticsResult {
   const sentences = text.trim() === "" ? 0 : Math.max(1, (text.match(/[.!?]+(?:\s|$)/gu) ?? []).length);
   return { text, language, detectedLanguage: language, dominantScript, scripts, languages, words, wordCount: words, characters: Array.from(text).length, characterCount: Array.from(text).length, sentences, sentenceCount: sentences, confidence: "heuristic", engineVersion: TEXT_WRITING_ENGINE_VERSION };
 }
-
-export const convertCase = convertTextCase;
-export const normalizeUnicodeText = normalizeUnicode;
-export const normalizeSmartQuotes = normalizeQuotes;
-export const sortTextLines = sortLines;
-export const dedupeTextLines = deduplicateLines;
-export const intersectTextLists = intersectLists;
-export const differenceTextLists = differenceLists;
-export const previewTextReplacement = previewFindReplace;
-export const previewMarkdown = renderMarkdown;
-export const makeSlug = generateSlug;
-export const convertTextToCsv = textToCsv;
-export const extractCsvColumn = csvColumnToList;
-export const generateLoremSampleData = generateSampleData;
-export const analyzeLanguage = languageStatistics;
