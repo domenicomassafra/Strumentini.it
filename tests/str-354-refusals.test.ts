@@ -26,7 +26,7 @@ describe("#115 / STR-354: honest file refusals", () => {
       mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       name: "private.docx", bytes: 800, readBytes: 800,
       method: "bounded-signature-and-container-metadata" as const,
-      note: "candidate only; decoding and content safety are not verified",
+      note: "candidate only; decoding and content safety are not verified" as const,
     };
     expect(fileSuggestions335(outcome, catalog, published)).toEqual([]);
   });

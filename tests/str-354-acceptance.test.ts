@@ -26,7 +26,7 @@ describe("#115 / STR-354: real anonymous Home destinations", () => {
       status: "supported" as const, format: "pdf" as const, mime: "application/pdf",
       name: "PRIVATE_354.pdf", bytes: 2048, readBytes: 32,
       method: "bounded-signature-and-container-metadata" as const,
-      note: "candidate only; decoding and content safety are not verified",
+      note: "candidate only; decoding and content safety are not verified" as const,
     };
     const choices = fileSuggestions335(detected, catalog, published);
     expect(choices[0]).toMatchObject({ toolId: "pdf-page-count-verifier", route: "/tools/pdf-page-count-verifier" });
