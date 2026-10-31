@@ -1,8 +1,3 @@
-/**
- * Four-step onboarding: welcome, work context, recurring jobs and starter set.
- * /impostazioni/ owns the work profile. Draft answers prefill future visits
- * from the local workbench database; none leave this device.
- */
 
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { toneForCategory } from "../../catalog/groups";
@@ -49,10 +44,7 @@ const MAX_CONTEXTS = 3;
 /** The draft key sits beside the workbench state in the same local database. */
 const DRAFT_KEY = "onboarding/answers:v1";
 
-/**
- * The glyph on a context card, keyed by what the pack actually covers. Icons
- * carry no claim: the label and the description next to them do.
- */
+/** Icons for each declared work context. */
 const CONTEXT_ICONS: Readonly<Record<WorkContextId, ToolIconKey>> = {
   "client-services": "calculator",
   "marketing-growth": "chart",
@@ -370,6 +362,7 @@ export function Onboarding({ tools, quality }: OnboardingProps) {
               </div>
               <p class={styles.muted}>{contextSummary} · {selectedCount}/{MAX_STARTER_TOOLS}</p>
               <p class={styles.muted}>{COPY.onboarding.hints[4]}</p>
+              {quality.tools.length === 0 && <p role="status" data-no-gold-starters>Nessuno strumento ha una certificazione Gold valida per questa versione. Puoi cercare e aggiungere manualmente gli strumenti che preferisci.</p>}
               <div class={styles.reviewLayout}>
                 <ul class={styles.reviewList}>
                   {review.recommendations.map((item) => {

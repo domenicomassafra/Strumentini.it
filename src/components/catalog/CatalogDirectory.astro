@@ -3,6 +3,8 @@ import type { ToolSummary } from "../../catalog/manifest";
 import { groups, groupForCategory } from "../../catalog/groups";
 import { inputTypeLabelIt } from "../../i18n/it/taxonomy";
 import { iconSvgMarkup } from "../../ui/tool-icons";
+import { directoryMetaJson } from "../../catalog/directory-meta";
+import DirectoryIconSprite from "./DirectoryIconSprite.astro";
 import UiIcon from "../icons/UiIcon.astro";
 import ToolCard from "../tools/ToolCard.astro";
 import MembershipBootstrap from "../account/MembershipBootstrap.astro";
@@ -40,16 +42,7 @@ const qualityFacets = [
   { value: "verifica", label: "In verifica", count: tools.length - verifiedCount },
 ];
 
-const meta: Record<string, [string, string, string, string]> = {};
-for (const tool of tools) {
-  meta[tool.route] = [
-    tool.category,
-    groupForCategory(tool.category).slug,
-    tool.inputTypes.join(" "),
-    verifiedIds.has(tool.id) ? "verificato" : "verifica",
-  ];
-}
-const metaJson = JSON.stringify(meta).replace(/</gu, "\\u003c");
+const metaJson = directoryMetaJson(tools, verifiedIds);
 
 const totalPages = Math.max(1, Math.ceil(tools.length / PAGE_SIZE));
 const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
@@ -60,6 +53,7 @@ const groupedTools = groups.map((group) => ({
 ---
 
 <div class="directory" data-directory>
+  <DirectoryIconSprite />
   <nav class="directory-tabs" aria-label="Viste del catalogo">
     <a class="pill directory-tab pill-brand" href="/strumenti/" data-tab="tutti" aria-current="page">
       Tutti ({tools.length})
@@ -191,7 +185,7 @@ const groupedTools = groups.map((group) => ({
               </span>
               <a class="section-link" href={`/categorie/${group.slug}/`}>Apri la categoria</a>
             </li>
-            {groupTools.map((tool) => <ToolCard tool={tool} variant="card" membership />)}
+            {groupTools.map((tool) => <ToolCard tool={tool} variant="card" membership compactIcons />)}
           </>
         ))}
       </ul>
