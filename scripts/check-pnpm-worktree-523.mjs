@@ -11,6 +11,11 @@ if (probe && !["--preflight", "--probe-buffer", "--probe-runtime"].includes(prob
 }
 const root = resolve(directory);
 const rootReal = realpathSync(root);
+// A redirected spike directory can make both mutable paths appear local when
+// compared only against their redirected parent. Refuse that root before import.
+if (rootReal !== root) {
+  throw new Error("pnpm worktree root escapes its declared path: " + root);
+}
 const modules = resolve(root, "node_modules");
 const virtualStore = resolve(modules, ".pnpm");
 
@@ -39,8 +44,7 @@ try {
     throw new Error("pnpm mutable install metadata escapes this worktree: " + metadata);
   }
   installed = JSON.parse(readFileSync(metadata, "utf8"));
-  if (typeof installed.virtualStoreDir !== "string" ||
-      resolve(modules, installed.virtualStoreDir) !== virtualStore) {
+  if (installed.virtualStoreDir !== ".pnpm") {
     throw new Error("pnpm virtual store is not the local .pnpm directory");
   }
 } catch (error) {

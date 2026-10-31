@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { lstatSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { lstatSync, mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
 
 const checker = resolve(import.meta.dirname, "check-pnpm-worktree-523.mjs");
 function fixture(fn) {
-  const base = mkdtempSync(join(tmpdir(), "str523-store-"));
+  const base = realpathSync(mkdtempSync(join(tmpdir(), "str523-store-")));
   const root = join(base, "worktree");
   const separate = join(base, "separate");
   const store = join(base, "shared-content-store");
@@ -79,5 +79,23 @@ test("rejects symlinked metadata before and after install", () => fixture(({ roo
     const result = check(mode);
     assert.notEqual(result.status, 0, result.stdout);
     assert.match(result.stderr, /mutable install metadata escapes/);
+  }
+}));
+test("rejects a symlinked spike directory before importing packages", () => fixture(({ root, separate }) => {
+  const external = join(separate, "heavy-browser");
+  mkdirSync(external);
+  symlinkSync(separate, join(root, "spikes"), "dir");
+  const check = spawnSync(process.execPath, [checker, join(root, "spikes/heavy-browser"), "--preflight"], { encoding: "utf8" });
+  assert.notEqual(check.status, 0, check.stdout);
+  assert.match(check.stderr, /worktree root escapes/);
+}));
+test("rejects metadata with aliased virtual store paths", () => fixture(({ root, store, check }) => {
+  const modules = join(root, "node_modules");
+  mkdirSync(join(modules, ".pnpm"), { recursive: true });
+  installMetadata(modules, store, ".pnpm/../.pnpm");
+  for (const mode of ["--preflight", null]) {
+    const result = check(mode);
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.match(result.stderr, /not the local/);
   }
 }));
