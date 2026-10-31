@@ -144,7 +144,26 @@ export function auditDistributedAssets366(
       const names = segments.slice(1).map((part) =>
         part.startsWith("@") ? part.split("/").slice(0, 2).join("/") : part.split("/")[0]!).filter(Boolean);
       const name = names.at(-1)!;
-      const locked = lockEntries[`node_modules/${names.join("/node_modules/")}`];
+      // pnpm's isolated linker uses a versioned virtual-store path; npm lock v3
+      // records the same package at its npm resolution-tree location.
+      const pnpm = segments[1]?.match(/^\.pnpm\/([^/]+)\/$/u);
+      let locked: LockEntry | undefined = lockEntries["node_modules/" + names.join("/node_modules/")];
+      if (pnpm) {
+        locked = undefined;
+        if (segments.length === 3 && names.length === 2) {
+          const prefix = name.replace("/", "+") + "@";
+          const slug = pnpm[1] ?? "";
+          const matches = Object.entries(lockEntries).filter(([path, entry]) => {
+            if (path.split("node_modules/").at(-1) !== name || !entry.version) return false;
+            const id = prefix + entry.version;
+            return slug === id || slug.startsWith(id + "_") || slug.startsWith(id + "(");
+          }).map(([, entry]) => entry);
+          // Reject ambiguous npm positions with conflicting package metadata.
+          const identities = new Set(matches.map((entry) =>
+            JSON.stringify([entry.version, entry.license, entry.resolved, entry.integrity])));
+          if (identities.size === 1) locked = matches[0];
+        }
+      }
       const row = packages.find((entry) => entry.name === name &&
         entry.version === locked?.version && entry.license === locked?.license &&
         entry.source === locked?.resolved && entry.integrity === locked?.integrity);

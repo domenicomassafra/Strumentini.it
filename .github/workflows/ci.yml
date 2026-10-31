@@ -23,6 +23,68 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 jobs:
+  pnpm-paths-523:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.detect.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Detect changes affecting pnpm resolution and provenance
+        id: detect
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git cat-file -e "$BASE_SHA^{commit}"
+          git cat-file -e "$HEAD_SHA^{commit}"
+          git diff --name-only --no-renames -z "$BASE_SHA" "$HEAD_SHA" > "$RUNNER_TEMP/pnpm-paths-523"
+          required=false
+          while IFS= read -r -d '' path; do
+            case "$path" in
+              .github/workflows/ci.yml|.gitignore|AGENTS.md|orca.yaml|package.json|package-lock.json|pnpm-lock.yaml|pnpm-workspace.yaml|astro.config.mjs|spikes/heavy-local-feasibility/*|spikes/heavy-browser/*|scripts/check-pnpm-worktree-523.mjs|scripts/donor-*.ts|scripts/inspect-build.ts|tests/donor-*.test.ts)
+                required=true
+                break
+                ;;
+            esac
+          done < "$RUNNER_TEMP/pnpm-paths-523"
+          echo "run=$required" >> "$GITHUB_OUTPUT"
+
+  pnpm-worktree-523:
+    needs: pnpm-paths-523
+    if: github.event_name == 'pull_request' && needs.pnpm-paths-523.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.14.0
+      # Reproduce Orca's three npm-lock imports and isolated hardlink layout.
+      - run: pnpm import
+      - run: pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite --frozen-lockfile --prefer-offline --allow-build esbuild --allow-build onnxruntime-node --allow-build protobufjs --allow-build workerd
+      - run: node scripts/check-pnpm-worktree-523.mjs . --probe-buffer
+      - run: pnpm import -C spikes/heavy-local-feasibility
+      - run: pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite -C spikes/heavy-local-feasibility --frozen-lockfile --prefer-offline --allow-build esbuild --allow-build tesseract.js
+      - run: node scripts/check-pnpm-worktree-523.mjs spikes/heavy-local-feasibility
+      - run: pnpm import -C spikes/heavy-browser
+      - run: pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite -C spikes/heavy-browser --frozen-lockfile --prefer-offline --allow-build esbuild
+      - run: node scripts/check-pnpm-worktree-523.mjs spikes/heavy-browser
+      - run: git diff --exit-code -- package-lock.json spikes/heavy-local-feasibility/package-lock.json spikes/heavy-browser/package-lock.json
+      - run: pnpm exec vitest run tests/donor-dist-inventory-366.test.ts
+      - run: npm run check
+      - run: npm run build
+
   changed-source:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest

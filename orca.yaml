@@ -2,8 +2,18 @@ scripts:
   setup: |
     #!/usr/bin/env bash
     set -euo pipefail
-    npm ci
-    npm ci --prefix spikes/heavy-local-feasibility
-    npm ci --prefix spikes/heavy-browser
+    # npm lockfiles remain authoritative; pnpm imports them into its shared store.
+    case "$(node --version)" in v26.*) ;; *) echo "Expected Node 26" >&2; exit 2 ;; esac
+    test "$(pnpm --version)" = "12.14.0" || { echo "Expected pnpm 12.14.0" >&2; exit 2; }
+    python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- pnpm import
+    python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite --frozen-lockfile --prefer-offline --allow-build esbuild --allow-build onnxruntime-node --allow-build protobufjs --allow-build workerd
+    node scripts/check-pnpm-worktree-523.mjs . --probe-buffer
+    python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- pnpm import -C spikes/heavy-local-feasibility
+    python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite -C spikes/heavy-local-feasibility --frozen-lockfile --prefer-offline --allow-build esbuild --allow-build tesseract.js
+    node scripts/check-pnpm-worktree-523.mjs spikes/heavy-local-feasibility
+    python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- pnpm import -C spikes/heavy-browser
+    python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite -C spikes/heavy-browser --frozen-lockfile --prefer-offline --allow-build esbuild
+    node scripts/check-pnpm-worktree-523.mjs spikes/heavy-browser
+    git diff --exit-code -- package-lock.json spikes/heavy-local-feasibility/package-lock.json spikes/heavy-browser/package-lock.json
     bash scripts/install-public-git-hooks.sh
 setupAgentStartupPolicy: wait-for-setup

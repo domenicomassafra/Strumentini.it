@@ -22,7 +22,7 @@ Lavorare sul Mac Studio: creare il worktree per issue con `orca worktree create`
 ```sh
 python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- <comando>
 ```
-Il MiniPC serve per runtime Linux, servizi installati e verifiche mirate, secondo le istruzioni globali. Setup del worktree: `python3 ~/.local/share/controlcenter/resource-guard/workload_launcher.py build -- npm ci`; per lo spike heavy, usare lo stesso launcher con `npm ci --prefix spikes/heavy-local-feasibility --omit=dev`; installare gli hook con `bash scripts/install-public-git-hooks.sh`.
+Il MiniPC serve per runtime Linux, servizi installati e verifiche mirate, secondo le istruzioni globali. Setup dei nuovi worktree: `orca.yaml` richiede Node 26 e pnpm 12.14.0 per importare i tre `package-lock.json` (che restano autoritativi) e installare dal suo store condiviso tramite resource guard; le configurazioni pnpm generate restano locali e ignorate da Git. Lo script `scripts/check-pnpm-worktree-523.mjs` controlla il virtual store locale, il volume condiviso e la risoluzione `buffer/` dopo l'installazione. La CI continua con `npm ci`. Il primo popolamento dello store è più lento; per lo spike heavy, usare lo stesso launcher con `npm ci --prefix spikes/heavy-local-feasibility --omit=dev`; installare gli hook con `bash scripts/install-public-git-hooks.sh`.
 
 Controlli mirati: `npm run ci:scope -- --base="$(git merge-base HEAD origin/main)" --run`.
 Gate integrato (sempre attraverso il launcher sopra): `npm test -- --maxWorkers=1`, `npm run check`, `npm run build`, `npm run deploy:check`. `check`/`test`/`build` possono rigenerare file: rivedi il diff. `deploy:check` è solo dry-run. Lo stato dei ticket è su GitHub; lo snapshot in `PROJECT-STATUS.md` è storico.

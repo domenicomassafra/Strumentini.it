@@ -1,5 +1,8 @@
 .DS_Store
 node_modules/
+# pnpm import regenerates these from the tracked npm lockfiles in each worktree.
+pnpm-lock.yaml
+pnpm-workspace.yaml
 dist/
 .env
 .env.*
