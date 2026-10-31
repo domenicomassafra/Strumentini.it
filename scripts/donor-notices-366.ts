@@ -260,7 +260,10 @@ export const DONOR_NOTICES_366: readonly DonorNotice366[] = [
   },
   {
     file: "onnxruntime-web-274-MIT.txt",
-    packages: ["onnxruntime-web@1.31.0-dev.20260914-8d85527a0", "onnxruntime-common@1.30.0"],
+    // Common 1.31 dev is MIT in the exact npm-lock SRI package. Its upstream
+    // Microsoft/onnxruntime commit 2a43ec07e/LICENSE hashes to the identical
+    // pinned notice SHA-256 below; no new or invented licence text is shipped.
+    packages: ["onnxruntime-web@1.31.0-dev.20260914-8d85527a0", "onnxruntime-common@1.30.0", "onnxruntime-common@1.31.0-dev.20260911-2a43ec07e"],
     spdx: "MIT",
     upstream: "https://github.com/microsoft/onnxruntime/tree/8d85527a0",
     sha256: "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",

@@ -52,6 +52,51 @@ describe("#126 actual static distribution provenance", () => {
       const audit = () => auditDistributedAssets366(root, pins, packages, lock);
       expect(audit().failures).toEqual([]);
 
+      // pnpm's isolated store must map back to authoritative npm metadata.
+      const mapFile = join(root, "dist/_astro/tool.js.map");
+      const writeSources = (sources: string[]) =>
+        writeFileSync(mapFile, JSON.stringify({ version: 3, sources }));
+      writeSources([
+        "../../node_modules/.pnpm/onnxruntime-web@1.31.0/node_modules/onnxruntime-web/dist/main.js",
+        "../../node_modules/.pnpm/onnxruntime-common@1.31.0/node_modules/onnxruntime-common/dist/index.js",
+      ]);
+      expect(audit().failures).toEqual([]);
+      const scopedRow = {
+        name: "@pdf-lib/standard-fonts", version: "1.0.0", license: "MIT",
+        source: "https://registry.npmjs.org/@pdf-lib/standard-fonts/-/standard-fonts-1.0.0.tgz",
+        integrity: packageRow.integrity,
+      };
+      packages.push(scopedRow);
+      Object.assign(lock, { "node_modules/@pdf-lib/standard-fonts": {
+        version: scopedRow.version, license: scopedRow.license,
+        resolved: scopedRow.source, integrity: scopedRow.integrity,
+      } });
+      writeSources(["../../node_modules/.pnpm/@pdf-lib+standard-fonts@1.0.0/node_modules/@pdf-lib/standard-fonts/index.js"]);
+      expect(audit().failures).toEqual([]);
+      for (const [source, name] of [
+        ["../../node_modules/.pnpm/onnxruntime-web@0.0.0/node_modules/onnxruntime-web/dist/main.js", "onnxruntime-web"],
+        ["../../node_modules/.pnpm/onnxruntime-web@1.31.0/node_modules/onnxruntime-common/dist/index.js", "onnxruntime-common"],
+        ["../../node_modules/.pnpm/onnxruntime-web@1.31.0/node_modules/onnxruntime-web/node_modules/unverified/index.js", "unverified"],
+      ] as const) {
+        writeSources([source]);
+        expect(audit().failures).toContain("UNVERIFIED_BUNDLED_PACKAGE _astro/tool.js.map -> " + name);
+      }
+      writeSources(["../../node_modules/.pnpm/onnxruntime-web@1.31.0/node_modules/onnxruntime-web/dist/main.js"]);
+      const originalIntegrity = lock["node_modules/onnxruntime-web"].integrity;
+      lock["node_modules/onnxruntime-web"].integrity = "sha512-unverified";
+      expect(audit().failures).toContain("UNVERIFIED_BUNDLED_PACKAGE _astro/tool.js.map -> onnxruntime-web");
+      lock["node_modules/onnxruntime-web"].integrity = originalIntegrity;
+      Object.assign(lock, { "node_modules/other/node_modules/onnxruntime-web": {
+        ...lock["node_modules/onnxruntime-web"], integrity: "sha512-conflicting",
+      } });
+      expect(audit().failures).toContain("UNVERIFIED_BUNDLED_PACKAGE _astro/tool.js.map -> onnxruntime-web");
+      delete (lock as Record<string, unknown>)["node_modules/other/node_modules/onnxruntime-web"];
+      writeSources([
+        "../../node_modules/onnxruntime-web/dist/main.js",
+        "../../node_modules/onnxruntime-web/node_modules/onnxruntime-common/dist/index.js",
+      ]);
+      expect(audit().failures).toEqual([]);
+
       writeFileSync(join(root, "dist/_astro/facade.js"),
         'import{n as e}from"./tool.js";export{e as PublicTool};');
       // Vite 8.3.5 / Rolldown may emit an export-from-only facade without a sourcemap.
