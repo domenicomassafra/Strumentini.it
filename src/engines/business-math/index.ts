@@ -304,8 +304,6 @@ export function calculateTargetIncomeRate(input: TargetIncomeRateInput): TargetI
   };
 }
 
-export const targetIncomeRate = calculateTargetIncomeRate;
-
 export interface UtilizationInput {
   readonly availableHours: DecimalInput;
   readonly billableHours: DecimalInput;
@@ -376,8 +374,6 @@ export function planCapacity(input: CapacityPlannerInput): CapacityPlannerResult
     rounding: BUSINESS_ROUNDING,
   };
 }
-
-export const capacityPlanner = planCapacity;
 
 export interface RetainerCapacityInput {
   readonly capacityHours: DecimalInput;
@@ -451,8 +447,6 @@ export function calculateRetainerCapacity(input: RetainerCapacityInput): Retaine
   };
 }
 
-export const retainerCapacity = calculateRetainerCapacity;
-
 export interface ScopeCreepCostInput {
   readonly hourlyRate: DecimalInput;
   readonly additionalHours: DecimalInput;
@@ -500,8 +494,6 @@ export function calculateScopeCreepCost(input: ScopeCreepCostInput): ScopeCreepC
     rounding: BUSINESS_ROUNDING,
   };
 }
-
-export const scopeCreepCost = calculateScopeCreepCost;
 
 export interface BreakEvenInput {
   readonly fixedCosts: DecimalInput;
@@ -580,8 +572,6 @@ export function calculateBreakEven(input: BreakEvenInput): BreakEvenResult {
   };
 }
 
-export const breakEven = calculateBreakEven;
-
 export interface PaymentFeeInput {
   readonly targetNet: DecimalInput;
   readonly feeRate?: DecimalInput;
@@ -627,8 +617,6 @@ export function grossUpForFee(input: PaymentFeeInput | DecimalInput, positionalF
   };
 }
 
-export const paymentFeeGrossUp = grossUpForFee;
-
 export interface LatePaymentInput {
   readonly principal: DecimalInput;
   readonly annualRatePercent?: DecimalInput;
@@ -670,8 +658,6 @@ export function calculateLatePaymentInterest(input: LatePaymentInput): LatePayme
     rounding: BUSINESS_ROUNDING,
   };
 }
-
-export const latePaymentInterest = calculateLatePaymentInterest;
 
 export interface DiscountImpactInput {
   readonly originalPrice: DecimalInput;
@@ -724,8 +710,6 @@ export function calculateDiscountImpact(input: DiscountImpactInput): DiscountImp
     rounding: BUSINESS_ROUNDING,
   };
 }
-
-export const discountImpact = calculateDiscountImpact;
 
 export interface ProposalBudgetInput {
   readonly quotedPrice: DecimalInput;
@@ -800,8 +784,6 @@ export function checkProposalBudget(input: ProposalBudgetInput): ProposalBudgetR
   };
 }
 
-export const proposalBudget = checkProposalBudget;
-
 export interface ProjectProfitabilityInput {
   readonly revenue: DecimalInput;
   readonly fixedCosts?: DecimalInput;
@@ -853,8 +835,6 @@ export function calculateProjectProfitability(input: ProjectProfitabilityInput):
     rounding: BUSINESS_ROUNDING,
   };
 }
-
-export const projectProfitability = calculateProjectProfitability;
 
 export interface InvoiceNumberInput {
   readonly prefix: string;
@@ -987,8 +967,6 @@ export function validateInvoiceMath(input: InvoiceMathInput): InvoiceMathResult 
     rounding: BUSINESS_ROUNDING,
   };
 }
-
-export const invoiceMath = validateInvoiceMath;
 
 export type PercentageMode =
   | "add"
@@ -1128,8 +1106,6 @@ export function calculatePercentage(input: PercentageInput): PercentageResult {
   return result(net, subtract(base, net), base, net, rate, formulas.reverse);
 }
 
-export const percentageHelper = calculatePercentage;
-
 export interface CurrencyScenarioInput {
   readonly amount: DecimalInput;
   readonly rate?: DecimalInput;
@@ -1175,7 +1151,6 @@ export function calculateCurrencyScenario(input: CurrencyScenarioInput): Currenc
   };
 }
 
-export const currencyScenario = calculateCurrencyScenario;
 
 const MAX_SCIENTIFIC_EXPRESSION_LENGTH = 512;
 const MAX_SCIENTIFIC_TOKENS = 256;
@@ -2356,16 +2331,6 @@ export function calculateEverydayCost(input: EverydayCostInput): Record<string, 
   }
   throw new Error("INVALID_MODE");
 }
-
-export const calculateCapacity = planCapacity;
-export const calculateScopeCreep = calculateScopeCreepCost;
-export const calculateLateInterest = calculateLatePaymentInterest;
-export const calculateDiscount = calculateDiscountImpact;
-export const calculateProposalBudget = checkProposalBudget;
-export const calculateInvoiceNumber = generateInvoiceNumber;
-export const calculateVat = calculatePercentage;
-export const calculatePercentageHelper = calculatePercentage;
-export const calculateCurrency = calculateCurrencyScenario;
 
 export type BusinessOperation =
   | "effective-hourly-rate"
