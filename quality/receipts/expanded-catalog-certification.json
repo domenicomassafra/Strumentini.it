@@ -23978,7 +23978,8 @@
         },
         "testFiles": [
           "tests/pdf-catalog.test.ts",
-          "tests/pdf-document-tools.test.ts"
+          "tests/pdf-document-tools.test.ts",
+          "tests/str-354-acceptance.test.ts"
         ]
       },
       "oracle": {
@@ -34269,7 +34270,8 @@
         },
         "testFiles": [
           "tests/explainable-suggestions-344.test.ts",
-          "tests/home-recent-navigation-345.test.ts"
+          "tests/home-recent-navigation-345.test.ts",
+          "tests/str-354-acceptance.test.ts"
         ]
       },
       "oracle": {
