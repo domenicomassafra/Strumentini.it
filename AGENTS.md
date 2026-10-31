@@ -28,7 +28,7 @@ Controlli mirati: `npm run ci:scope -- --base="$(git merge-base HEAD origin/main
 Gate integrato (sempre attraverso il launcher sopra): `npm test -- --maxWorkers=1`, `npm run check`, `npm run build`, `npm run deploy:check`. `check`/`test`/`build` possono rigenerare file: rivedi il diff. `deploy:check` è solo dry-run. Lo stato dei ticket è su GitHub; lo snapshot in `PROJECT-STATUS.md` è storico.
 
 ## Merge, consumer e pubblicazione
-Il repository usa PR verso `main` con CI source scoped verde e review; il pre-push non permette il push diretto su main. Dopo il merge rileggi `origin/main` e la CI cumulativa, poi prova il consumer compilato; non dedurre dal merge che la produzione sia aggiornata.
+Il repository usa PR verso `main` con i controlli CI richiesti verdi; il pre-push non permette il push diretto su main. L’autore può integrare la propria PR quando i controlli richiesti sono verdi. Dopo il merge rileggi `origin/main` e la CI cumulativa, poi prova il consumer compilato; non dedurre dal merge che la produzione sia aggiornata.
 
 Il deploy di produzione è separato e richiede release admission valida per il SHA esatto, suite completa, browser, Android Emulator, iOS Simulator e rollback staging realmente provato (decisione owner 20/10). Comandi, tramite launcher: `npm run acceptance:browser-performance`, `npm run acceptance:android-chrome-avd:277`, `npm run acceptance:ios-safari-sim`, `npm run release:rollback:420`, `npm run release:gate:420`. Solo con autorizzazione release: `npm run deploy:production:guarded -- --expected-sha="$(git rev-parse origin/main)"`. I gate e i rifiuti `NO_GO` documentati conservano i loro effetti; #506 coordina l'eventuale pubblicazione.
 
