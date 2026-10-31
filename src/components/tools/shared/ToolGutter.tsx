@@ -1,4 +1,4 @@
-import type { ComponentChildren } from "preact";
+import { toChildArray, type ComponentChildren } from "preact";
 import { PreviousValue } from "./PreviousValue";
 import { ResultStateCue, type AccessibleResultStatus } from "./ResultAccessibility";
 
@@ -86,6 +86,7 @@ export function ToolGutter({
 }: ToolGutterProps) {
   const hasValue = value !== undefined && value !== "";
   const hasRows = entries !== undefined && entries.length > 0;
+  const hasContent = hasValue || hasRows || toChildArray(children).length > 0;
 
   return (
     <aside
@@ -101,9 +102,9 @@ export function ToolGutter({
           <PreviousValue value={value} />
           {unit !== undefined && unit !== "" && <span class="gutter-unit">{unit}</span>}
         </>
-      ) : (
+      ) : !hasContent ? (
         <p class="gutter-placeholder">{placeholder}</p>
-      )}
+      ) : null}
 
       {hasRows && (
         <dl class="gutter-rows">
