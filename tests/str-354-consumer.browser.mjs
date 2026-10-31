@@ -19,13 +19,15 @@ const server = createServer(async (request, response) => {
     const filename = resolve(root, `.${decodeURIComponent(path)}`, path.endsWith("/") ? "index.html" : "");
     const rel = relative(root, filename);
     if (rel === ".." || rel.startsWith(`..${sep}`)) return response.writeHead(403).end();
+    let contentType = mime[extname(filename)] ?? "application/octet-stream";
     const body = await readFile(filename).catch(async (error) => {
       if (extname(filename) !== "" || error.code !== "EISDIR" && error.code !== "ENOENT") throw error;
       // The command palette links to extensionless routes; the static artifact
       // stores their content in /tools/<slug>/index.html.
+      contentType = "text/html";
       return readFile(resolve(filename, "index.html"));
     });
-    response.writeHead(200, { "Content-Type": mime[extname(filename)] ?? "application/octet-stream" });
+    response.writeHead(200, { "Content-Type": contentType });
     response.end(request.method === "HEAD" ? undefined : body);
   } catch { response.writeHead(404).end(); }
 });
@@ -70,7 +72,8 @@ try {
     await page.locator("[data-search-input]").fill("utm builder");
     const searchChoice = page.locator('[data-search-dialog] a[href="/tools/utm-builder"]');
     await searchChoice.waitFor();
-    await searchChoice.click();
+    await page.locator("[data-search-input]").press("Enter");
+    await page.waitForURL((url) => url.pathname.replace(/\/$/u, "") === "/tools/utm-builder", { timeout: 4000 });
     assert.equal(new URL(page.url()).pathname.replace(/\/$/u, ""), "/tools/utm-builder");
     await page.getByRole("textbox", { name: "URL di destinazione" }).fill("https://example.org/home354");
     await page.getByRole("textbox", { name: "Sorgente" }).fill("home354");
