@@ -1,20 +1,43 @@
 import { createHash } from "node:crypto";
-import { readFileSync, realpathSync, statSync } from "node:fs";
+import { lstatSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 
-// Run only after pnpm's isolated install. The npm lockfiles remain authoritative.
+// Preflight install destinations and verify them again after pnpm installs.
+// The npm lockfiles remain authoritative.
 const [directory = ".", probe] = process.argv.slice(2);
-if (probe && !["--probe-buffer", "--probe-runtime"].includes(probe)) {
+if (probe && !["--preflight", "--probe-buffer", "--probe-runtime"].includes(probe)) {
   throw new Error("Unknown post-install check: " + probe);
 }
 const root = resolve(directory);
+const rootReal = realpathSync(root);
 const modules = resolve(root, "node_modules");
+const virtualStore = resolve(modules, ".pnpm");
+
+// Do not resolve a link and then compare it against a second resolved link:
+// both could point to another worktree's mutable directory.
+function localDirectory(path, expected, required) {
+  let entry;
+  try {
+    entry = lstatSync(path);
+  } catch (error) {
+    if (!required && error?.code === "ENOENT") return;
+    throw error;
+  }
+  if (!entry.isDirectory() || entry.isSymbolicLink() || realpathSync(path) !== expected) {
+    throw new Error("pnpm mutable install path escapes this worktree: " + path);
+  }
+}
+localDirectory(modules, resolve(rootReal, "node_modules"), probe !== "--preflight");
+localDirectory(virtualStore, resolve(rootReal, "node_modules/.pnpm"), probe !== "--preflight");
+if (probe === "--preflight") {
+  console.log("pnpm worktree install paths safe: " + root);
+  process.exit(0);
+}
 const installed = JSON.parse(readFileSync(resolve(modules, ".modules.yaml"), "utf8"));
-const actualVirtualStore = realpathSync(resolve(modules, installed.virtualStoreDir));
-const localVirtualStore = realpathSync(resolve(modules, ".pnpm"));
-if (actualVirtualStore !== localVirtualStore) {
-  throw new Error("pnpm virtual store is outside this worktree: " + actualVirtualStore);
+if (typeof installed.virtualStoreDir !== "string" ||
+    resolve(modules, installed.virtualStoreDir) !== virtualStore) {
+  throw new Error("pnpm virtual store is not the local .pnpm directory");
 }
 const contentStore = realpathSync(installed.storeDir);
 if (statSync(root).dev !== statSync(contentStore).dev) {

@@ -46,7 +46,7 @@ jobs:
           required=false
           while IFS= read -r -d '' path; do
             case "$path" in
-              .github/workflows/ci.yml|.gitignore|AGENTS.md|orca.yaml|package.json|package-lock.json|pnpm-lock.yaml|pnpm-workspace.yaml|astro.config.mjs|spikes/heavy-local-feasibility/*|spikes/heavy-browser/*|scripts/check-pnpm-worktree-523.mjs|scripts/donor-*.ts|scripts/inspect-build.ts|tests/donor-*.test.ts)
+              .github/workflows/ci.yml|.gitignore|AGENTS.md|orca.yaml|package.json|package-lock.json|pnpm-lock.yaml|pnpm-workspace.yaml|astro.config.mjs|spikes/heavy-local-feasibility/*|spikes/heavy-browser/*|scripts/check-pnpm-worktree-523*.mjs|scripts/donor-*.ts|scripts/inspect-build.ts|tests/donor-*.test.ts)
                 required=true
                 break
                 ;;
@@ -70,13 +70,18 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 12.14.0
+      # Reject redirected mutable install paths before any pnpm import or install.
+      - run: node --test scripts/check-pnpm-worktree-523.test.mjs
+      - run: node scripts/check-pnpm-worktree-523.mjs . --preflight
       # Reproduce Orca's three npm-lock imports and isolated hardlink layout.
       - run: pnpm import
       - run: pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite --frozen-lockfile --prefer-offline --allow-build esbuild --allow-build onnxruntime-node --allow-build protobufjs --allow-build workerd
       - run: node scripts/check-pnpm-worktree-523.mjs . --probe-buffer
+      - run: node scripts/check-pnpm-worktree-523.mjs spikes/heavy-local-feasibility --preflight
       - run: pnpm import -C spikes/heavy-local-feasibility
       - run: pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite -C spikes/heavy-local-feasibility --frozen-lockfile --prefer-offline --allow-build esbuild --allow-build tesseract.js
       - run: node scripts/check-pnpm-worktree-523.mjs spikes/heavy-local-feasibility
+      - run: node scripts/check-pnpm-worktree-523.mjs spikes/heavy-browser --preflight
       - run: pnpm import -C spikes/heavy-browser
       - run: pnpm install --config.enable-global-virtual-store=false --config.package-import-method=hardlink --node-linker=isolated --config.public-hoist-pattern=vite -C spikes/heavy-browser --frozen-lockfile --prefer-offline --allow-build esbuild
       - run: node scripts/check-pnpm-worktree-523.mjs spikes/heavy-browser
