@@ -83,7 +83,3 @@ export function optionalEnum<T extends string>(value: unknown, field: string, al
 export function tableModule(run: (value: unknown, signal?: AbortSignal) => unknown): ToolModule {
   return { run: (value, _context, signal) => { ensureRunning(signal); return run(value, signal); } };
 }
-
-export function omitUndefined<T extends Record<string, unknown>>(value: T): T {
-  return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined)) as T;
-}

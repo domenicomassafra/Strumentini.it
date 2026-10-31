@@ -18,10 +18,6 @@ export function requireFiles(value: unknown, label = "files"): PdfToolFile[] {
   return value.map((item) => requireFile(item, label));
 }
 
-export function requireBlobArray(value: unknown, label = "files"): Blob[] {
-  return requireFiles(value, label).map(({ blob }) => blob);
-}
-
 export function parsePageList(value: unknown): number[] {
   if (Array.isArray(value)) {
     if (value.some((item) => !Number.isInteger(item) || Number(item) < 1)) throw new Error("INVALID_INPUT: Page numbers must be positive whole numbers.");

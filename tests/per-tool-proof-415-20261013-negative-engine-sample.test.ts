@@ -11,6 +11,7 @@ import { unzipSync as unzipIndependent } from "fflate";
 import { describe, expect, it } from "vitest";
 import { catalog } from "../src/generated/catalog";
 import { qualityIndex } from "../src/generated/quality";
+import { goldToolIds } from "../src/onboarding/quality";
 import { auditCurrentProofMap415 } from "../scripts/audit-per-tool-proof-415";
 import { createZip } from "../src/engines/file-privacy";
 import { BATCH_410_MAX_FILE_BYTES, runBatchTextGzip410 } from "../src/runtime/batch-file-410";
@@ -40,7 +41,7 @@ describe("#415 representative independent real engine proof (source-only, no Gol
       if (entry.currentProof === "PENDING") expect(entry.currentReceipt, entry.toolId).toBeNull();
       else expect(entry.currentReceipt, entry.toolId).toMatch(/^quality\/receipts\/[a-z0-9_/-]+\.gold\.json$/u);
     }
-    const publicGoldIds = new Set<string>(qualityIndex.tools.map((item) => item.toolId));
+    const publicGoldIds = goldToolIds(qualityIndex);
     expect(map.summary).toMatchObject({
       tools: 274, sourceErrors: 0,
       runtimeLimitsPending: 231, registryBindingsPending: 0,
