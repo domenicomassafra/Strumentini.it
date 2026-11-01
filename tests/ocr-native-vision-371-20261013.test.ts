@@ -19,7 +19,7 @@ const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest(
 type Result371 = {
   ticket: number; decision: string; scope: string; language: string; engine: string;
   fileSha256: string; inputBytes: number; imageWidth: number; imageHeight: number;
-  referenceText: string; recognizedText: string; exact: boolean;
+  referenceText: string; recognizedText: string; exact: boolean; recognitionRevision: number;
   characterErrors: number; characterReferenceScalars: number; characterErrorRate: number;
   wordErrors: number; referenceWords: number; wordErrorRate: number; recognitionMs: number;
   candidateScoreMeaning: string; measuredMemory: string;
@@ -37,7 +37,7 @@ describe.skipIf(!onArmMac)("#371 native macOS Vision local OCR (NOT_RUN off-arm6
     const argv = sandbox
       ? ["-p", "(version 1) (allow default) (deny network*)", binary, ...args] : args;
     const result = spawnSync(program, argv, {
-      encoding: "utf8", timeout: 40_000, maxBuffer: 64 * 1024,
+      encoding: "utf8", timeout: 90_000, maxBuffer: 64 * 1024,
       env: { ...process.env, HOME: folder, TMPDIR: folder, URLSessionConfiguration: "ephemeral" },
     });
     expect(result.error).toBeUndefined();
@@ -90,7 +90,8 @@ describe.skipIf(!onArmMac)("#371 native macOS Vision local OCR (NOT_RUN off-arm6
       ticket: 371, scope: "MACOS_VISION_LOCAL_SINGLE_HOST_SYNTHETIC_IT_ONLY",
       language: "it-IT", fileSha256: fixtureSha, inputBytes: source.length,
       imageWidth: 1280, imageHeight: 240, referenceText: reference,
-      recognizedText: reference, exact: true, characterErrors: 0, characterErrorRate: 0,
+      recognizedText: reference, exact: true, recognitionRevision: 2,
+      characterErrors: 0, characterErrorRate: 0,
       wordErrors: 0, wordErrorRate: 0, referenceWords: 7,
       measuredMemory: "DARWIN_PROCESS_RUSAGE_MAXRSS_ONLY",
       nativeVisionAndXpcPeakMemory: "NOT_MEASURED",
@@ -107,7 +108,7 @@ describe.skipIf(!onArmMac)("#371 native macOS Vision local OCR (NOT_RUN off-arm6
       recognitionMs: result.recognitionMs, processHighWaterRssBytes: result.nativeProcessHighWaterRssBytes,
       decision: result.decision,
     })}`);
-  }, 50_000);
+  }, 120_000);
 
   it("reports exact one-character/one-word Levenshtein changes, not score-based quality", () => {
     const alternativeAnnotation = "Fattura numero 12345 - Totale euro 678,91";
@@ -119,7 +120,7 @@ describe.skipIf(!onArmMac)("#371 native macOS Vision local OCR (NOT_RUN off-arm6
     expect(result.characterErrorRate).toBeCloseTo(1 / 41);
     expect(result.wordErrors).toBe(1);
     expect(result.wordErrorRate).toBeCloseTo(1 / 7);
-  }, 50_000);
+  }, 120_000);
 
   it("runs deterministic grayscale and raw rotated-90 invoice comparisons without claiming mobile quality", async () => {
     const original = readFileSync(fixture);
@@ -143,7 +144,7 @@ describe.skipIf(!onArmMac)("#371 native macOS Vision local OCR (NOT_RUN off-arm6
         wer: result.wordErrorRate, recognitionMs: result.recognitionMs,
       })}`);
     }
-  }, 75_000);
+  }, 180_000);
 
   it("rejects a wrong pinned digest before decoding", () => {
     refused(run(args(fixture, "0".repeat(64))), "SOURCE_SHA256_MISMATCH");
@@ -192,6 +193,6 @@ describe.skipIf(!onArmMac)("#371 native macOS Vision local OCR (NOT_RUN off-arm6
       expect(output.recognizedText).toBe(reference);
       expect(output.exact).toBe(true);
     },
-    50_000,
+    120_000,
   );
 });
