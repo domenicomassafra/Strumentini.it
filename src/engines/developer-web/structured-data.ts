@@ -51,7 +51,6 @@ function skipJsonWhitespace(parser: JsonParser): void {
 }
 
 function parseJsonString(parser: JsonParser): string {
-  const start = parser.index;
   if (parser.input[parser.index] !== "\"") jsonFail(parser, "Expected a string");
   parser.index += 1;
   let output = "";
@@ -82,7 +81,6 @@ function parseJsonString(parser: JsonParser): string {
     output += character;
     parser.index += 1;
   }
-  void start;
   jsonFail(parser, "Unterminated string");
 }
 
