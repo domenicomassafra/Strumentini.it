@@ -157,6 +157,9 @@ private func run371(_ options: Arguments371) throws -> [String: Any] {
 
     let request = VNRecognizeTextRequest()
     request.recognitionLevel = .accurate
+    // Pin Vision revision 2: the default revision 3 stalls in TextRecognition
+    // model initialization on the current macOS 27.2 Studio runtime.
+    request.revision = 2
     request.recognitionLanguages = [options.language]
     request.automaticallyDetectsLanguage = false
     request.usesLanguageCorrection = false
@@ -204,6 +207,7 @@ private func run371(_ options: Arguments371) throws -> [String: Any] {
         "imageHeight": height,
         "language": options.language,
         "recognitionLevel": "accurate",
+        "recognitionRevision": request.revision,
         "automaticLanguageDetection": false,
         "languageCorrection": false,
         "referenceText": expected,

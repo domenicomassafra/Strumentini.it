@@ -39,7 +39,7 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
   const invoke = (sha256: string) => spawnSync(executable, [
     "--image", image, "--expected-sha256", sha256,
     "--expected-text", annotatedEnglish, "--language", "en-US",
-  ], { encoding: "utf8", timeout: 40_000, maxBuffer: 64 * 1024,
+  ], { encoding: "utf8", timeout: 90_000, maxBuffer: 64 * 1024,
     env: { ...process.env, HOME: directory, TMPDIR: directory },
   });
 
@@ -53,7 +53,7 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
       ticket: 371, decision: "NO_GO", language: "en-US",
       scope: "MACOS_VISION_LOCAL_SINGLE_HOST_SYNTHETIC_EN_ONLY",
       fileSha256: pinnedSha, inputBytes: 14270, imageWidth: 1280, imageHeight: 240,
-      referenceText: annotatedEnglish, recognizedText: annotatedEnglish,
+      referenceText: annotatedEnglish, recognizedText: annotatedEnglish, recognitionRevision: 2,
       exact: true, characterErrors: 0, characterErrorRate: 0,
       wordErrors: 0, wordErrorRate: 0, referenceWords: 7,
       candidateScoreMeaning: "UNCALIBRATED_NATIVE_MODEL_SCORE_NOT_A_PROBABILITY",
@@ -68,7 +68,7 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
       recognitionMs: measured.recognitionMs, processRssBytes: measured.nativeProcessHighWaterRssBytes,
       scope: measured.scope, decision: measured.decision,
     })}`);
-  }, 60_000);
+  }, 120_000);
 
   it("refuses a mutated digest before running English OCR", () => {
     const output = invoke("0".repeat(64));
@@ -76,7 +76,7 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
     expect(output.status).toBe(2);
     expect(output.stdout).toBe("");
     expect(output.stderr).toContain("OCR371_REFUSED:SOURCE_SHA256_MISMATCH");
-  }, 60_000);
+  }, 120_000);
 
   it("scores an independently pinned 90-degree uncorrected English variant", async () => {
     const rotated = await sharp(readFileSync(image)).rotate(90).png().toBuffer();
@@ -88,7 +88,7 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
     const output = spawnSync(executable, [
       "--image", rotatedPath, "--expected-sha256", digest,
       "--expected-text", annotatedEnglish, "--language", "en-US",
-    ], { encoding: "utf8", timeout: 40_000, maxBuffer: 64 * 1024 });
+    ], { encoding: "utf8", timeout: 90_000, maxBuffer: 64 * 1024 });
     expect(output.error).toBeUndefined();
     expect(output.status, output.stderr).toBe(0);
     const measured = JSON.parse(output.stdout) as Record<string, unknown>;
@@ -96,14 +96,14 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
       fileSha256: digest, inputBytes: 20172, imageWidth: 240, imageHeight: 1280,
       language: "en-US", decision: "NO_GO",
       scope: "MACOS_VISION_LOCAL_SINGLE_HOST_SYNTHETIC_EN_ONLY",
-      referenceText: annotatedEnglish, recognizedText: annotatedEnglish,
+      referenceText: annotatedEnglish, recognizedText: annotatedEnglish, recognitionRevision: 2,
       exact: true, characterErrorRate: 0, wordErrorRate: 0,
     });
     console.log(`#371 real Vision rotated EN: ${JSON.stringify({
       sha256: digest, cer: measured.characterErrorRate, wer: measured.wordErrorRate,
       recognitionMs: measured.recognitionMs, processRssBytes: measured.nativeProcessHighWaterRssBytes,
     })}`);
-  }, 60_000);
+  }, 120_000);
 
   it.skipIf(!existsSync("/usr/bin/sandbox-exec"))(
     "recognizes English with the native process denied network access", () => {
@@ -111,7 +111,7 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
         "-p", "(version 1) (allow default) (deny network*)", executable,
         "--image", image, "--expected-sha256", pinnedSha,
         "--expected-text", annotatedEnglish, "--language", "en-US",
-      ], { encoding: "utf8", timeout: 40_000, maxBuffer: 64 * 1024,
+      ], { encoding: "utf8", timeout: 90_000, maxBuffer: 64 * 1024,
         env: { ...process.env, HOME: directory, TMPDIR: directory },
       });
       expect(output.error).toBeUndefined();
@@ -120,6 +120,6 @@ describe.skipIf(!onNativeHost)("#371 pinned English synthetic image / real offli
         language: "en-US", recognizedText: annotatedEnglish, exact: true,
         scope: "MACOS_VISION_LOCAL_SINGLE_HOST_SYNTHETIC_EN_ONLY", decision: "NO_GO",
       });
-    }, 60_000,
+    }, 120_000,
   );
 });

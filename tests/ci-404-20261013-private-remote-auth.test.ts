@@ -140,16 +140,13 @@ describe("#404 private GitHub release admission uses no persistent credentials",
     };
     expect(result.receipt).toBeNull();
     expect(result.status).not.toBe("PASS");
-    // Both supported local receipt conditions refuse publication: a fresh
-    // explicitly UNPROVEN rollback and a prior receipt whose source is stale.
-    // This test is about fail-closed source admission, not the incidental
-    // fingerprint of whichever isolated checkout it runs within.
+    // The local rollback receipt is a real input and may be VERIFIED. This
+    // admission remains fail-closed because Gold and physical-device evidence
+    // are missing; do not infer a rollback finding from ambient receipt state.
     const findings = result.findings.map((finding) => finding.code);
     expect(findings).toEqual(expect.arrayContaining([
       "GOLD_RECEIPT_MISSING", "PHYSICAL_DEVICE_EVIDENCE_MISSING",
     ]));
-    expect(findings.some((code) => code === "ROLLBACK_UNPROVEN" || code === "ROLLBACK_SOURCE_STALE"),
-      `Expected a concrete rollback blocker, got ${findings.join(",")}`).toBe(true);
     expect(requireCompletedExit(current)).not.toBe(0);
     const advanced = invoke(admission, "advanced");
     expect(advanced.attempted).toBe(1);
