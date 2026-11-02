@@ -32,6 +32,7 @@ try {
   const response = await page.goto(`${origin}/tools/file-hash/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`file-hash route returned ${response?.status()}`);
   await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
+  await page.locator('[data-tool-page] astro-island:not([ssr])').first().waitFor({ timeout: 30000 });
   if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)) {
     throw new Error("mobile file-hash layout has horizontal overflow");
   }

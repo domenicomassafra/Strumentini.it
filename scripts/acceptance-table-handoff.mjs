@@ -31,6 +31,7 @@ try{
   const cleaner=await context.newPage();
   const cleanerRequests=[];cleaner.on("request",request=>cleanerRequests.push({url:request.url(),method:request.method(),postData:request.postData()}));
   await cleaner.goto(`${origin}/tools/csv-cleaner/`,{waitUntil:"networkidle"});
+  await cleaner.locator("astro-island:not([ssr])").first().waitFor({timeout:30000});
   const csv="\uFEFFid,name\r\n1,Ada\r\n1,Ada\r\n2,Grace\r\n";
   await cleaner.getByLabel("File CSV").setInputFiles({name:"people.csv",mimeType:"text/csv",buffer:Buffer.from(csv)});
   const requestStart=cleanerRequests.length;
@@ -47,6 +48,7 @@ try{
   const dedupe=await targetPromise;
   const dedupeRequests=[];dedupe.on("request",request=>dedupeRequests.push({url:request.url(),method:request.method(),postData:request.postData()}));
   await dedupe.waitForLoadState("networkidle");
+  await dedupe.locator("astro-island:not([ssr])").first().waitFor({timeout:30000});
   await dedupe.getByText(/Ricevuto da un altro strumento · 3 righe di dati × 2 colonne/u).waitFor();
   if(dedupe.url().includes("1%2CAda")||dedupe.url().includes("1,Ada")||dedupe.url().includes("handoff="))throw new Error("handoff payload/token remained in target URL after transfer");
   if(await storageContains(dedupe,"1,Ada"))throw new Error("handoff payload persisted in browser storage");
@@ -64,6 +66,7 @@ try{
   const mapper=await context.newPage();
   const mapperRequests=[];mapper.on("request",request=>mapperRequests.push({url:request.url(),method:request.method(),postData:request.postData()}));
   await mapper.goto(`${origin}/tools/csv-column-map/`,{waitUntil:"networkidle"});
+  await mapper.locator("astro-island:not([ssr])").first().waitFor({timeout:30000});
   const mapCsv="first,last,email\nAda,Lovelace,ada@example.com\nGrace,Hopper,grace@example.com";
   await mapper.getByLabel("File CSV").setInputFiles({name:"contacts.csv",mimeType:"text/csv",buffer:Buffer.from(mapCsv)});
   await mapper.getByRole("button",{name:"Sposta in su la colonna di origine 3"}).click();
