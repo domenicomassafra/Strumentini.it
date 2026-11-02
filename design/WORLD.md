@@ -1,4 +1,4 @@
-> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10 design status: this file remains the CURRENT implementation/token reference, because design-system tests compare its palette to CSS. The earlier familiar expected version is NOT owner-approved as the next design. New direction awaits #351 three complete alternatives and #352 dated explicit owner choice. Preserve present table and style sync until a gated full redesign, not a cosmetic palette swap.
+> **DECISION (2026-11-02, Strumentini.it #115):** The owner delegated the visual choice to the implementing agent. For the Home, direction **A — essential and rigorous** from the three delivered proposals is selected: search and local-file entry share the first task area; three verified editorial jobs provide an immediate route to a working tool. The existing blue/white token set and Inter face serve this direction without a global palette migration. Other surfaces retain their current visual authority until their own scoped redesign is implemented and verified. Production release still follows the separate admission gates.
 
 ---
 
@@ -111,9 +111,10 @@ One shell: `SiteHeader` (brand, three destinations, search, theme, account chip)
 every page, `SiteFooter` under it. The palette (`⌘K` / `Ctrl+K`) is the only overlay and
 the only element with the deep shadow.
 
-1. **Homepage** — hero with the one-line promise, a search field, three trust items, the
-   ten public categories, the device's own recent tools, an editorial starter set, and a
-   closing band with four real numbers.
+1. **Homepage** — compact task area: search, three real editorial task links and
+   a local-file picker side by side on desktop, search then file on mobile; then
+   three trust items, ten public categories, this device's recent tools, the full
+   editorial starter set, and a closing band with four real numbers.
 2. **Directory** (`/strumenti/`) — filters, tabs, sort, and all 200 tools, driven from the
    URL so a filtered view is linkable.
 3. **Search** (`/cerca/`) — the query, the honest count, related searches, the device's own
