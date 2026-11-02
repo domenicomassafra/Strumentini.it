@@ -256,7 +256,7 @@ export function FilePrivacyTool({ operation, title, description, directory = fal
           <ToolResetButton onClick={reset} />
         </ToolActions>
       </form>
-      <ToolResultPanel eyebrow={`${publicTitle} — risultato`} placeholder={cancelled ? "Operazione annullata. Nessun risultato è stato prodotto; puoi riprovare." : publicDescription} busy={running} state={gutterState}>
+      <ToolResultPanel eyebrow={`${publicTitle} — risultato`} placeholder={running ? "Elaborazione locale in corso. Nessun risultato ancora disponibile." : cancelled ? "Operazione annullata. Nessun risultato è stato prodotto; puoi riprovare." : error !== "" ? "Nessun risultato prodotto. Correggi l'errore indicato e riprova." : `In attesa. ${publicDescription}`} busy={running} state={gutterState}>
         {result !== null && <FilePrivacyResultV2 operation={operation} prepared={result} onRetry={runOperation} onReset={reset} />}
       </ToolResultPanel>
     </ToolOperation>
