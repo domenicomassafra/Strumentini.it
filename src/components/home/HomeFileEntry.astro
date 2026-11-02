@@ -281,7 +281,7 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
 
 <style>
   .home-file-entry {
-    margin: var(--space-5) 0 var(--space-10);
+    margin: 0;
     padding: var(--space-6);
     min-width: 0;
     border: var(--border-width) solid var(--border);
@@ -333,6 +333,9 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   .home-file-caution { font-size: var(--font-size-sm); color: var(--text-muted); }
   .home-file-reset { cursor: pointer; }
   @media (max-width: 620px) {
+    .home-file-picker-options { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (min-width: 1060px) {
     .home-file-picker-options { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 390px) {

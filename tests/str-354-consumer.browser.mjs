@@ -68,6 +68,12 @@ try {
     }));
     assert(!layout.overflow, `${width}px: home has horizontal overflow`);
     assert(layout.searchEnd < layout.fileStart, `${width}px: search/file visual order inverted`);
+    const tasks = page.getByRole("navigation", { name: "Esempi di operazioni da iniziare" });
+    assert.equal(await tasks.locator('a[href^="/tools/"]').count(), 3, `${width}px: expected three working editorial tasks`);
+    await tasks.getByRole("link", { name: "Unire documenti PDF" }).click();
+    await page.waitForURL((url) => url.pathname.startsWith("/tools/pdf-merge"));
+    assert(await page.locator("h1").count(), `${width}px: editorial task did not open a tool`);
+    await page.goto(origin + "/", { waitUntil: "networkidle" });
     await page.locator("[data-search-open]").click();
     await page.locator("[data-search-input]").fill("utm builder");
     const searchChoice = page.locator('[data-search-dialog] a[href="/tools/utm-builder"]');

@@ -1,4 +1,4 @@
-> **OWNER-ALIGNED PLANNING NOTICE (2026-10-10):** 2026-10-10 redesign status: this document is a factual baseline of the current implementation only. The owner has withdrawn approval of the generic visual direction for the future. No new palette, font or alternate IA has been chosen. The formal direction gate is #351 three interactions/prototypes then #352 dated owner selection and #353 new authority; #354–364 execute only after this gate. Do not misinterpret existing CSS and routes as a preapproved design proposal.
+> **HOME DIRECTION (2026-11-02, #115):** The owner authorized agents to choose and implement the redesign. Home uses option A from the delivered A/B/C previews, concentrating search, file selection and real task links into the first area. The established token sheet remains unchanged for this scoped Home work; other surfaces retain their own redesign issues and release gates.
 
 ---
 
@@ -40,8 +40,8 @@ bookmarks keep working.
 ## 3. Catalogue layer
 
 ### Homepage — `/`
-Hero (one-line promise, the search field, which is the same control as `⌘K`),
-three trust facts, the ten public categories, the tools **this device** last used
+First task area with the search field (the same control as `⌘K`), three real
+editorial links, and local file selection; then three trust facts, the ten public categories, the tools **this device** last used
 (hidden when there are none), an explicitly editorial starter set of eight, and a
 closing band with four real numbers. No popularity, no testimonials, no user
 counts — see `WORLD.md` § HONESTY RULES.
