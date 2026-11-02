@@ -27,6 +27,7 @@ async function acceptPage(browser, route, sensitiveValues, operate) {
   const response = await page.goto(`${origin}${route}/`, { waitUntil: "networkidle" });
   if (response?.status() !== 200) throw new Error(`${route}: route returned ${response?.status()}`);
   await page.locator('[data-tool-page][data-runtime="LOCAL"]').waitFor();
+  await page.locator('[data-tool-page] astro-island:not([ssr])').first().waitFor({ timeout: 30000 });
 
   await operate(page, () => { taskStarted = true; });
   await page.waitForTimeout(100);
