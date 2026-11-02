@@ -15,9 +15,11 @@ import ClosingBanner from "../components/home/ClosingBanner.astro";
   description={catalog.length + " strumenti online gratuiti per PDF, immagini, CSV, testo e business. Molte operazioni sono locali nel browser; verifica i dettagli su ogni strumento."}
   imageAlt="Strumentini: strumenti online semplici e gratuiti"
 >
-  <HomeHero />
-  <div class="home-body">
+  <div class="home-start">
+    <HomeHero />
     <HomeFileEntry />
+  </div>
+  <div class="home-body">
     <TrustRow />
     <CategoryGrid />
     <RecentTools />
@@ -27,6 +29,16 @@ import ClosingBanner from "../components/home/ClosingBanner.astro";
 </BaseLayout>
 
 <style>
+  .home-start {
+    display: grid;
+    gap: var(--space-6);
+    width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
+    margin: var(--space-10) auto var(--space-8);
+    align-items: stretch;
+  }
+  @media (min-width: 1060px) {
+    .home-start { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  }
   .home-body {
     width: min(calc(100% - (var(--container-gutter) * 2)), var(--container-max));
     margin: 0 auto;
