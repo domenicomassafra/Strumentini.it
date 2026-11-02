@@ -31,6 +31,7 @@ interface SectionLink {
 
 const sections: readonly SectionLink[] = [
   { id: "come-funziona", label: "Come funziona" },
+  { id: "stati-operazione", label: "Stati e ripresa" },
   { id: "privacy", label: "Privacy" },
   { id: "domande-frequenti", label: "Domande frequenti" },
   { id: "qualita", label: "Qualità dei risultati" },
@@ -130,6 +131,19 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
             Se un'operazione si interrompe, controlla lo stato prima di ricaricare: un risultato
             ancora solo nella scheda potrebbe non essere recuperabile dopo il caricamento.
           </p>
+        </section>
+
+        <section class="resources-section" aria-labelledby="stati-operazione">
+          <h2 id="stati-operazione">Stati e ripresa</h2>
+          <p>Il pannello risultato indica cosa è successo davvero. Nessun messaggio di completamento appare prima che lo strumento produca un risultato.</p>
+          <dl class="resources-states">
+            <div><dt>In attesa</dt><dd>Non hai ancora eseguito l'operazione, oppure hai cambiato i dati. Controlla gli input e scegli «Esegui in locale».</dd></div>
+            <div><dt>In elaborazione</dt><dd>Il browser sta lavorando. Se compare «Annulla», puoi interrompere senza salvare un risultato incompleto.</dd></div>
+            <div><dt>Completato</dt><dd>Il risultato è presente nel pannello. Copia o scarica solo quando l'azione è effettivamente disponibile.</dd></div>
+            <div><dt>Annullata</dt><dd>L'operazione è stata fermata. Non è stato prodotto un risultato; gli input restano disponibili per riprovare.</dd></div>
+            <div><dt>Errore</dt><dd>Il lavoro non è riuscito. Leggi il motivo, correggi l'input o il file e riprova: un errore non equivale a un successo.</dd></div>
+          </dl>
+          <p class="resources-note">Puoi provare gli stati con lo <a href="/tools/filename-sanitizer/">strumento locale per i nomi file</a>. Una pagina o una libreria non ancora caricata può richiedere rete anche quando l'elaborazione successiva è locale.</p>
         </section>
 
         <section class="resources-section" aria-labelledby="privacy">
@@ -377,6 +391,23 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
     font-size: var(--font-size-sm);
   }
 
+  .resources-states {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
+  }
+
+  .resources-states > div {
+    padding: var(--space-4) var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .resources-states dt { margin-bottom: var(--space-2); color: var(--text); font-weight: var(--font-weight-semibold); }
+  .resources-states dd { margin: 0; color: var(--text-muted); line-height: var(--line-height-body); }
+
   .resources-step-icon {
     display: grid;
     place-items: center;
@@ -552,6 +583,7 @@ const faqs: readonly { readonly question: string; readonly answer: string }[] = 
 
   /* The rail becomes a sticky column only where there is width for one. */
   @media (min-width: 900px) {
+    .resources-states { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .resources-layout { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
 
     .resources-toc {
