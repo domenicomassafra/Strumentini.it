@@ -63,11 +63,11 @@ try {
     assert.equal((await page.goto(origin + "/", { waitUntil: "networkidle" }))?.status(), 200);
     const layout = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth > window.innerWidth + 1,
-      searchEnd: document.querySelector("[data-search-open]")?.getBoundingClientRect().bottom,
-      fileStart: document.querySelector("[data-home-file-entry]")?.getBoundingClientRect().top,
+      search: document.querySelector("[data-search-open]")?.getBoundingClientRect().toJSON(),
+      file: document.querySelector("[data-home-file-entry]")?.getBoundingClientRect().toJSON(),
     }));
     assert(!layout.overflow, `${width}px: home has horizontal overflow`);
-    assert(layout.searchEnd < layout.fileStart, `${width}px: search/file visual order inverted`);
+    assert(width >= 1060 ? layout.search.right < layout.file.left : layout.search.bottom < layout.file.top, `${width}px: search/file visual order inverted`);
     const tasks = page.getByRole("navigation", { name: "Esempi di operazioni da iniziare" });
     assert.equal(await tasks.locator('a[href^="/tools/"]').count(), 3, `${width}px: expected three working editorial tasks`);
     await tasks.getByRole("link", { name: "Unire documenti PDF" }).click();
