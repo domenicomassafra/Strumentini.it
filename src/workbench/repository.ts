@@ -74,7 +74,7 @@ export function createWorkbenchRepository(
       }
       try {
         const stored = await persistence.get<WorkbenchState>(STATE_KEY);
-        if (stored !== undefined) sessionState = normalizeStoredState(stored);
+        sessionState = stored === undefined ? structuredClone(initialState) : normalizeStoredState(stored);
         return { state: structuredClone(sessionState), persisted: true };
       } catch {
         return {
@@ -114,6 +114,27 @@ export function createWorkbenchRepository(
       } catch {
         sessionOnly = true;
         return { persisted: false, warning: storageWarning() };
+      }
+    },
+
+    async update(mutate: (state: WorkbenchState) => WorkbenchState): Promise<WorkbenchLoadResult> {
+      try {
+        if (persistence.update === undefined) throw new Error("ATOMIC_UPDATE_UNAVAILABLE");
+        const next = await persistence.update<WorkbenchState>(STATE_KEY, (stored) => {
+          const current = stored === undefined ? structuredClone(initialState) : normalizeStoredState(stored);
+          const state = normalizeStoredState(mutate(current));
+          if (new TextEncoder().encode(JSON.stringify(state)).byteLength > MAX_STATE_BYTES) {
+            throw new Error("STATE_TOO_LARGE");
+          }
+          return state;
+        });
+        sessionState = structuredClone(next);
+        sessionOnly = false;
+        return { state: structuredClone(next), persisted: true };
+      } catch {
+        sessionState = normalizeStoredState(mutate(structuredClone(sessionState)));
+        sessionOnly = true;
+        return { state: structuredClone(sessionState), persisted: false, warning: storageWarning() };
       }
     },
   };

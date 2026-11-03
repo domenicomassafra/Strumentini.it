@@ -1,6 +1,8 @@
 export interface PersistenceAdapter {
   get<T>(key: string): Promise<T | undefined>;
   put<T>(key: string, value: T): Promise<void>;
+  /** Synchronous read-modify-write inside one native IndexedDB transaction. */
+  update?<T>(key: string, mutate: (current: T | undefined) => T): Promise<T>;
   /** Atomic create-only write; supported by the native IndexedDB add operation. */
   add?<T>(key: string, value: T): Promise<void>;
   delete(key: string): Promise<void>;
@@ -21,6 +23,11 @@ export function createMemoryPersistence(): PersistenceAdapter {
     },
     async put<T>(key: string, value: T) {
       values.set(key, clone(value));
+    },
+    async update<T>(key: string, mutate: (current: T | undefined) => T) {
+      const next = mutate(values.has(key) ? clone(values.get(key) as T) : undefined);
+      values.set(key, clone(next));
+      return clone(next);
     },
     async add<T>(key: string, value: T) {
       if (values.has(key)) throw new Error("Persistence key already exists");
@@ -92,6 +99,27 @@ export function createIndexedDbPersistence(
     },
     async put<T>(key: string, value: T) {
       await request("readwrite", (store) => store.put(value, key));
+    },
+    async update<T>(key: string, mutate: (current: T | undefined) => T) {
+      const db = await database();
+      return new Promise<T>((resolve, reject) => {
+        const transaction = db.transaction(storeName, "readwrite");
+        const store = transaction.objectStore(storeName);
+        const read = store.get(key);
+        let next: T;
+        read.onsuccess = () => {
+          try {
+            next = mutate(read.result as T | undefined);
+            store.put(next, key);
+          } catch (error) {
+            transaction.abort();
+            reject(error);
+          }
+        };
+        transaction.oncomplete = () => resolve(next);
+        transaction.onerror = () => reject(transaction.error ?? new Error("IndexedDB transaction failed"));
+        transaction.onabort = () => reject(transaction.error ?? new Error("IndexedDB transaction aborted"));
+      });
     },
     async add<T>(key: string, value: T) {
       await request("readwrite", (store) => store.add(value, key));
