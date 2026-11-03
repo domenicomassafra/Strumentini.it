@@ -8,6 +8,7 @@
  */
 
 import { createIndexedDbPersistence } from "../../persistence/persistence";
+import { forgetFavoriteSyncBaseline } from "../../workbench/membership";
 import {
   createDefaultWorkProfile,
   type WorkProfile,
@@ -28,6 +29,10 @@ export const THEME_KEY = THEME_STORAGE_KEY;
 
 /** Every key this site may own, so "delete local data" is the whole list. */
 const DEVICE_KEY_PREFIX = "strumentini:";
+const LEGACY_DEVICE_KEYS = new Set(["strumentini.resilient-clock.v1"]);
+function ownedStorageKey(key: string): boolean {
+  return key.startsWith(DEVICE_KEY_PREFIX) || LEGACY_DEVICE_KEYS.has(key);
+}
 /** The file name the workbench already uses for the same export. */
 const CONFIG_FILE_NAME = "workbench-config-v1.json";
 
@@ -96,7 +101,7 @@ function sweep(storage: Storage | undefined): boolean {
   const doomed: string[] = [];
   for (let index = 0; index < storage.length; index += 1) {
     const key = storage.key(index);
-    if (key !== null && key.startsWith(DEVICE_KEY_PREFIX)) doomed.push(key);
+    if (key !== null && ownedStorageKey(key)) doomed.push(key);
   }
   let cleared = true;
   for (const key of doomed) {
@@ -110,7 +115,7 @@ function sweep(storage: Storage | undefined): boolean {
   // An exception during enumeration also reaches the caller's failure path.
   for (let index = 0; index < storage.length; index += 1) {
     const key = storage.key(index);
-    if (key !== null && key.startsWith(DEVICE_KEY_PREFIX)) cleared = false;
+    if (key !== null && ownedStorageKey(key)) cleared = false;
   }
   return cleared;
 }
@@ -131,12 +136,54 @@ async function clearVoluntaryPdfArchive(): Promise<boolean> {
   }
 }
 
+/** Empty a known local archive in one IndexedDB transaction, then read back. */
+async function clearIndexedDbStore(databaseName: string, storeName: string): Promise<boolean> {
+  let database: IDBDatabase | undefined;
+  try {
+    database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const opening = indexedDB.open(databaseName, 1);
+      opening.onupgradeneeded = () => {
+        // A first reset must not leave a new database without its expected store.
+        if (!opening.result.objectStoreNames.contains(storeName)) {
+          opening.result.createObjectStore(storeName);
+        }
+      };
+      opening.onsuccess = () => resolve(opening.result);
+      opening.onerror = () => reject(opening.error);
+      opening.onblocked = () => reject(new Error("IndexedDB open blocked"));
+    });
+    if (!database.objectStoreNames.contains(storeName)) return true;
+    await new Promise<void>((resolve, reject) => {
+      const transaction = database!.transaction(storeName, "readwrite");
+      transaction.objectStore(storeName).clear();
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
+    return await new Promise<boolean>((resolve, reject) => {
+      const transaction = database!.transaction(storeName, "readonly");
+      const request = transaction.objectStore(storeName).count();
+      let count = -1;
+      request.onsuccess = () => { count = request.result; };
+      transaction.oncomplete = () => resolve(count === 0);
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
+  } catch {
+    return false;
+  } finally {
+    database?.close();
+  }
+}
+
 /**
  * Removes everything this site keeps on the device: the IndexedDB record, the
  * `strumentini:*` keys in both web storages, and the per-tab telemetry
  * markers through the module that owns them. Nothing on the account is touched.
  */
 export async function clearDeviceData(): Promise<{ readonly persisted: boolean }> {
+  // Invalidate any pending remote reconciliation before its delayed response can write.
+  forgetFavoriteSyncBaseline();
   let persisted = true;
   try {
     resetTelemetryAdapter();
@@ -162,6 +209,15 @@ export async function clearDeviceData(): Promise<{ readonly persisted: boolean }
     persisted = persisted && result.persisted;
   } catch {
     persisted = false;
+  }
+  // The workbench, account sync, onboarding draft and presets share this store.
+  // Editor archives hold opted-in original PDF/image bytes in separate stores.
+  for (const [databaseName, storeName] of [
+    ["utility-workbench", "state"],
+    ["strumentini-editor-projects-412", "state"],
+    ["strumentini-image-projects-385", "projects"],
+  ] as const) {
+    persisted = (await clearIndexedDbStore(databaseName, storeName)) && persisted;
   }
   // Independent best-effort deletion even if another storage step failed.
   // A different tab holding this database open can block deletion: fail closed

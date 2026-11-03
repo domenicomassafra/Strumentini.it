@@ -94,6 +94,14 @@ describe("#348 fail-closed source inventory", () => {
     const changed = reviewed + '\n<script>void fetch("/api/private-upload", { method: "POST", body: document.body.textContent });</script>\n';
     expect(transportFingerprintFailure(path, changed)).toBe(`CHANGED_BROWSER_TRANSPORT:${path}`);
   });
+  it("pins the reviewed #550 sync fence without accepting credential drift", () => {
+    const path = "src/workbench/membership.ts";
+    const reviewed = source(path);
+    expect(transportFingerprintFailure(path, reviewed)).toBeNull();
+    const changed = reviewed.replace('credentials: "same-origin"', 'credentials: "include"');
+    expect(changed).not.toBe(reviewed);
+    expect(transportFingerprintFailure(path, changed)).toBe(`CHANGED_BROWSER_TRANSPORT:${path}`);
+  });
 
   it("pins the cookie-backed #328 login probe without adding upload capabilities", () => {
     const path = "src/components/account/auth-client.ts";

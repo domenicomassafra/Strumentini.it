@@ -93,7 +93,9 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   "src/pages/preferiti.astro": "3e849ac21c096ac8e4e4e9f33827615848171ff749cd224995581b72d94f79d7",
   "src/telemetry/adapter.ts": "cc00368b762ea6d80d00b5a854764765a84e127b25c15049cf1b30e27cbbf50e",
   "src/telemetry/browser.ts": "2f2ecebad8da951a2329bd8364c727ec5f43f97fdc525ecc6c6077587f40ac1a",
-  "src/workbench/membership.ts": "388f065b92d835c6b8cbef93d220a5959ca31a84caf3f9d9a88305c499f9c788",
+  // #550: reviewed sync generation fence and memory erasure. Same fixed GET/POST,
+  // same origin credentials, request payload and endpoints; reject future drift.
+  "src/workbench/membership.ts": "96692c2407ea8990910c2c84cc31edfb564b891236cf4584db1e8b3bf6e0e69f",
 });
 
 const ALLOWED_ROUTES: ReadonlySet<string> = new Set([

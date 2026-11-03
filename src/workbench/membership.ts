@@ -250,6 +250,13 @@ export function pendingFavoriteChanges(
 
 const syncPersistence = createIndexedDbPersistence({ databaseName: "utility-workbench", storeName: "state" });
 let sessionBaseline: FavoriteSyncBaseline | undefined;
+let erasureGeneration = 0;
+
+/** Local erasure also removes the in-memory fallback for a former account. */
+export function forgetFavoriteSyncBaseline(): void {
+  erasureGeneration += 1;
+  sessionBaseline = undefined;
+}
 
 async function loadBaseline(): Promise<FavoriteSyncBaseline | undefined> {
   try {
@@ -300,11 +307,14 @@ function confirmFavorite(baseline: FavoriteSyncBaseline, entry: FavoriteRemoteEn
 }
 
 async function reconcileWithAccount(): Promise<Membership | undefined> {
+  const generation = erasureGeneration;
+  const isCurrent = () => generation === erasureGeneration;
   try {
     const remote = await fetchFavoriteSnapshot();
-    if (remote === undefined) return undefined;
+    if (remote === undefined || !isCurrent()) return undefined;
     const local = await loadMembership();
     const stored = await loadBaseline();
+    if (!isCurrent()) return undefined;
     // Even a zero-revision account can have pre-migration deletions. Its
     // state is authoritative until this device has acknowledged a baseline.
     const baseline: FavoriteSyncBaseline = stored?.account === remote.account ? stored : {
@@ -324,23 +334,25 @@ async function reconcileWithAccount(): Promise<Membership | undefined> {
         confirmed = { ...confirmed, inflight: (confirmed.inflight ?? []).filter((row) => row.toolId !== pending.toolId) };
       }
     }
-    if (confirmed !== baseline && !await persistBaseline(confirmed)) return undefined;
+    if (confirmed !== baseline && (!isCurrent() || !await persistBaseline(confirmed))) return undefined;
     const changes = stored?.account === remote.account
       ? pendingFavoriteChanges(local.installed, confirmed, remote)
       : [];
     for (const change of changes) {
+      if (!isCurrent()) return undefined;
       const baseRevision = confirmed.acknowledged?.find((entry) => entry.toolId === change.toolId)?.revision
         ?? baseline.revision;
       const operationId = confirmed.inflight?.find((entry) => entry.toolId === change.toolId)?.operationId
         ?? crypto.randomUUID();
       confirmed = { ...confirmed, inflight: [...(confirmed.inflight ?? []).filter((entry) => entry.toolId !== change.toolId),
         { ...change, operationId }] };
-      if (!await persistBaseline(confirmed)) return undefined;
+      if (!isCurrent() || !await persistBaseline(confirmed) || !isCurrent()) return undefined;
       const response = await fetch("/api/favorites/sync", {
         method: "POST", credentials: "same-origin",
         headers: { "content-type": "application/json", accept: "application/json" },
         body: JSON.stringify({ ...change, baseRevision, operationId, expectedAccount: remote.account }),
       });
+      if (!isCurrent()) return undefined;
       if (response.status === 409) {
         const conflict = parseSnapshot(await response.json());
         // 409 from a newer edit is resolved by the server; a quota/corrupt
@@ -361,22 +373,22 @@ async function reconcileWithAccount(): Promise<Membership | undefined> {
         confirmed = confirmFavorite(confirmed, actual);
         // Persist each successful server write before any later network call:
         // a second local click or fetch failure cannot erase its CAS anchor.
-        if (!await persistBaseline(confirmed)) return undefined;
+        if (!isCurrent() || !await persistBaseline(confirmed) || !isCurrent()) return undefined;
       }
     }
     const final = changes.length > 0 ? await fetchFavoriteSnapshot() : remote;
-    if (final === undefined || final.account !== remote.account) return undefined;
+    if (!isCurrent() || final === undefined || final.account !== remote.account) return undefined;
     // A click made during the network round-trip remains local, to be sent
     // by the next queued sync. Never overwrite an unacknowledged edit.
-    if (!sameTools((await loadMembership()).installed, local.installed)) return undefined;
-    const membership = await writeInstalled((state) => sameTools(state.installedTools, local.installed)
+    if (!isCurrent() || !sameTools((await loadMembership()).installed, local.installed)) return undefined;
+    const membership = await writeInstalled((state) => isCurrent() && sameTools(state.installedTools, local.installed)
       ? { ...state, installedTools: [...final.tools] } : state);
     // A baseline must never advance past the durable local installed list:
     // on the next reload stale IndexedDB bytes could look like a new add and
     // resurrect the server tombstone.
-    if (!membership.persisted) return undefined;
+    if (!isCurrent() || !membership.persisted) return undefined;
     const saved = await persistBaseline({ version: 1, account: final.account, revision: final.revision, tools: [...final.tools] });
-    return saved ? membership : undefined;
+    return saved && isCurrent() ? membership : undefined;
   } catch {
     // Offline, expired session, unavailable storage/backend: retain local
     // choices and the previous baseline for a later explicit retry.
