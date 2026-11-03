@@ -84,10 +84,8 @@ async function writeInstalled(
 ): Promise<Membership> {
   return serializeWrite(async () => {
     const repo = await repository();
-    const { state, persisted } = await repo.load();
-    const next = mutate(state);
-    const saved = next === state ? { persisted } : await repo.save(next);
-    const membership: Membership = { installed: [...next.installedTools], recent: [...next.recent], persisted: saved.persisted };
+    const { state, persisted } = await repo.update(mutate);
+    const membership: Membership = { installed: [...state.installedTools], recent: [...state.recent], persisted };
     broadcast(membership);
     return membership;
   });
@@ -111,11 +109,8 @@ export async function noteToolUse(toolId: string): Promise<void> {
   const update = async (): Promise<void> => {
     try {
       const repo = await repository();
-      const { state } = await repo.load();
-      const next = recordRecentTool(state, toolId);
-      if (next === state) return;
-      const { persisted } = await repo.save(next);
-      broadcast({ installed: [...next.installedTools], recent: [...next.recent], persisted });
+      const { state, persisted } = await repo.update((current) => recordRecentTool(current, toolId));
+      broadcast({ installed: [...state.installedTools], recent: [...state.recent], persisted });
     } catch {
       // Recording metadata must never invalidate a successfully produced file.
     }

@@ -67,6 +67,7 @@ async function isolatedDevice(values = new Map<string, unknown>()) {
     createIndexedDbPersistence: () => ({
       get: async (key: string) => structuredClone(values.get(key)),
       put: async (key: string, value: unknown) => { values.set(key, structuredClone(value)); },
+      update: async <T>(key: string, fn: (v: T | undefined) => T) => { const next = fn(structuredClone(values.get(key)) as T | undefined); values.set(key, structuredClone(next)); return next; },
       delete: async (key: string) => { values.delete(key); },
     }),
   }));
@@ -96,7 +97,7 @@ describe("#332 two independent devices and tombstones", () => {
     const a = await isolatedDevice();
     const b = await isolatedDevice();
 
-    // Unknown local state cannot resurrect old (possibly pre-migration) deletions.
+    // Unknown local state cannot resurrect remote deletions.
     expect((await a.syncMembershipWithAccount())?.installed).toEqual([]);
     expect((await b.syncMembershipWithAccount())?.installed).toEqual([]);
     await a.setInstalled("business-day", true);
@@ -108,14 +109,14 @@ describe("#332 two independent devices and tombstones", () => {
     await a.pushMembershipChange("rare-tool", false, true);
     expect(service.snapshot().entries.find((row) => row.toolId === "rare-tool")?.installed).toBe(false);
 
-    // B never saw rare-tool: its offline addition is older than A's tombstone.
+    // B's offline addition predates A's tombstone.
     await b.setInstalled("rare-tool", true);
     const before = service.writes.length;
     expect((await b.syncMembershipWithAccount())?.installed).toEqual(["business-day"]);
     expect(service.writes).toHaveLength(before);
     expect(service.snapshot().tools).not.toContain("rare-tool");
 
-    // B may still add a different tool, while A's deletion of the default wins.
+    // B adds an unrelated tool while A's deletion wins.
     await b.setInstalled("offline-tool", true);
     await a.setInstalled("business-day", false);
     await a.pushMembershipChange("business-day", false, true);
@@ -153,8 +154,7 @@ describe("#332 two independent devices and tombstones", () => {
     await a.syncMembershipWithAccount();
     await a.setInstalled("business-day", false);
     service.afterNextPost(async () => {
-      // The removal has reached the server, but the client has not completed
-      // its fetch/acknowledgement when the user clicks Add again.
+      // Server received removal, but the tab still awaits its reply.
       await a.setInstalled("business-day", true);
     });
     await a.syncMembershipWithAccount();
@@ -218,7 +218,7 @@ describe("#332 two independent devices and tombstones", () => {
     service.loseNextPostAcknowledgement();
     expect(await a.syncMembershipWithAccount()).toBeUndefined();
     expect(service.snapshot().tools).toEqual([]);
-    // Reload completely resets module state; only durable IndexedDB survives.
+    // Reload preserves only IndexedDB state.
     const reloaded = await isolatedDevice(storage);
     await reloaded.setInstalled("business-day", true);
     expect((await reloaded.syncMembershipWithAccount())?.installed).toEqual(["business-day"]);
