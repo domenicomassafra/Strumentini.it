@@ -56,7 +56,7 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   "worker/validation.ts": "8bdffe2dcc64ab1793b605e08c18920c54bb4f4128e77ef287f7ae3dc731e808",
   // #554: VIES accepts only SOAP 1.1 checkVatResponse with exact namespace,
   // Italian country/VAT echo and unambiguous validity; no new routes or writes.
-  "worker/vies.ts": "ed11c0cfa04677d106a2a751866b076b24200ea29b67a84ed09a6dc46e76d85e",
+  "worker/vies.ts": "326573971d15fdda32b7eae50da5c9b8cbd1e763fae381f8c1049b4e98e49ef3",
   // A second, explicitly nonproduction Wrangler file is itself executable
   // deployment policy. Exact bytes are pinned so routes, assets or D1 cannot
   // silently acquire production resources under a harmless config filename.

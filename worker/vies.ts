@@ -61,7 +61,9 @@ function xmlElement(
   if (typeof parent !== "object" || parent === null || Array.isArray(parent)) return null;
   const matches = Object.entries(parent).filter(([tag]) => tag.split(":").at(-1) === localName);
   if (matches.length !== 1) return null;
-  const [tag, value] = matches[0];
+  const match = matches[0];
+  if (!match) return null;
+  const [tag, value] = match;
   const namespaces = { ...inherited };
   if (typeof value === "object" && value !== null && !Array.isArray(value)) {
     for (const [key, uri] of Object.entries(value)) {
