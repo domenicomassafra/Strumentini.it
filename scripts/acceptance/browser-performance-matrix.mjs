@@ -11,7 +11,6 @@ import { runSiblingAcceptance } from "./browser-performance-siblings.mjs";
 // Runs via `node`; shares the exact release source binding through tsx.
 const { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } =
   await tsImport("../lib/current-revision.ts", import.meta.url);
-const { startDistServer } = await tsImport("./dist-server.ts", import.meta.url);
 
 const root = resolve(import.meta.dirname, "../..");
 const dist = resolve(root, "dist");
@@ -322,7 +321,8 @@ async function runEngine(definition, engineChunkNames) {
 
 const staticData = await staticInspection();
 
-// In-process transport: the old spawned python server reset parallel connections.
+// In-process transport (loaded late so --check stays a pure source audit).
+const { startDistServer } = await tsImport("./dist-server.ts", import.meta.url);
 const server = await startDistServer({ dist, port });
 try {
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
