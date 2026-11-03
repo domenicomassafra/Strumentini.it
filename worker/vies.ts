@@ -71,7 +71,7 @@ function xmlElement(
       else if (key.startsWith("@_xmlns:") && typeof uri === "string") namespaces[key.slice(8)] = uri;
     }
   }
-  const prefix = tag.includes(":") ? tag.split(":", 1)[0] : "";
+  const prefix = tag.includes(":") ? tag.slice(0, tag.indexOf(":")) : "";
   if (namespaces[prefix] !== expectedNamespace) return null;
   return { value, namespaces };
 }
