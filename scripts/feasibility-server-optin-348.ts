@@ -54,7 +54,7 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   "worker/password-kdf.ts": "871aaa3142cbe2f51925105fcf99fd65f1d8a1a743c4535ae94bd3b0934e2f54",
   "worker/turnstile.ts": "bd7434f8233b9fe0e99fc42bdc5a4b11f919649364b58258b6ae77f0fcf32124",
   "worker/validation.ts": "1b82c7b041b17959ed31f6e6d61e34ab1fd7cbc91f1519eea3a91d889a5519f3",
-  "worker/vies.ts": "344c9deae1b7dde4eaa374e713252fb7b9d4987e40e8bf717f9e31b761eb2d04",
+  "worker/vies.ts": "9db4c40c3db0fa8d2994cdf65656d101ea7f8c163947fa32734a1046ce7b07ff",
   // A second, explicitly nonproduction Wrangler file is itself executable
   // deployment policy. Exact bytes are pinned so routes, assets or D1 cannot
   // silently acquire production resources under a harmless config filename.
