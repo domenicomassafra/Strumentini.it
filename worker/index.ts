@@ -581,17 +581,14 @@ async function handleLogout(context: RouteContext): Promise<Response> {
   return noContent(setCookieHeader(clearSessionCookie()));
 }
 
-/**
- * Best-effort identity probe called by the static header on every page load:
- * an unusable session is simply reported as signed out and never as an error.
- */
+/** Missing, revoked or expired means anonymous; an unreadable store does not. */
 async function handleSession(context: RouteContext): Promise<Response> {
-  let auth: AuthSession | null = null;
+  let auth: AuthSession | null;
   try {
     auth = await resolveSession(context);
   } catch (error) {
     console.error("session lookup failed", error);
-    auth = null;
+    return errorResponse(503, MESSAGES.sessionUnavailable);
   }
   return jsonResponse({ user: auth === null ? null : sessionUser(auth.user) }, 200);
 }
