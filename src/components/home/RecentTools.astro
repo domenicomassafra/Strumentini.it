@@ -1,4 +1,5 @@
 ---
+import MembershipBootstrap from "../account/MembershipBootstrap.astro";
 /**
  * #345: A recent activity is a completed tool ID, not a cached document,
  * pasted input or last scalar value. The canonical state is the same bounded
@@ -19,9 +20,10 @@
     La memoria del browser non è disponibile: questi recenti sono temporanei e potrebbero sparire cambiando pagina.
   </p>
 </section>
+<MembershipBootstrap />
 
 <script>
-  import { loadMembership, subscribeMembership } from "../../workbench/membership";
+  import { subscribeMembership } from "../../workbench/membership";
   import type { Membership } from "../../workbench/membership";
   import { selectHomeRecent345 } from "./recent-tools-345";
 
@@ -29,6 +31,7 @@
   const list = section?.querySelector<HTMLElement>("[data-recent-list]");
   const warning = section?.querySelector<HTMLElement>("[data-recent-warning]");
   let sequence = 0;
+  let accessible = false;
 
   // The small workbench projection is deferred; never import the full catalog.
   const catalog = import("../../generated/workbench-catalog").catch(() => null);
@@ -78,9 +81,19 @@
     section.hidden = recent.length === 0 && membership.persisted !== false;
   }
 
-  subscribeMembership((membership) => { void render(membership).catch(() => undefined); });
-  void loadMembership().then(render).catch(() => {
+  document.addEventListener("strumentini:membership-loading", () => {
+    accessible = false;
+    sequence++;
+    list?.replaceChildren();
     if (section) section.hidden = true;
+  });
+  document.addEventListener("strumentini:membership-ready", (event) => {
+    const membership = (event as CustomEvent<Membership & { accessible: boolean }>).detail;
+    accessible = membership.accessible;
+    void render(membership).catch(() => undefined);
+  });
+  subscribeMembership((membership) => {
+    if (accessible) void render(membership).catch(() => undefined);
   });
 </script>
 

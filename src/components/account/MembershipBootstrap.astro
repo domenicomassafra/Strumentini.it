@@ -141,7 +141,9 @@
       const shown = accessible ? membership ?? await loadMembership() : { installed: [], recent: [] };
       paint(shown);
       controlsReady(accessible);
-      document.dispatchEvent(new CustomEvent<Membership>("strumentini:membership-ready", { detail: shown }));
+      document.dispatchEvent(new CustomEvent<Membership & { accessible: boolean }>(
+        "strumentini:membership-ready", { detail: { ...shown, accessible } },
+      ));
     } finally {
       loading = false;
       if (onlineRetryQueued) {
