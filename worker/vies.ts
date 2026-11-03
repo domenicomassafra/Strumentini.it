@@ -1,6 +1,12 @@
+import { XMLParser, XMLValidator } from "fast-xml-parser";
+
 export const VIES_AUTHORITY = "European Commission — VIES VAT Information Exchange System";
 export const VIES_SOURCE = "https://ec.europa.eu/taxation_customs/vies/";
 export const VIES_ENDPOINT = "https://ec.europa.eu/taxation_customs/vies/services/checkVatService";
+
+const SOAP_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
+const VIES_NAMESPACE = "urn:ec.europa.eu:taxud:vies:services:checkVat:types";
+const xmlParser = new XMLParser({ ignoreAttributes: false, ignoreDeclaration: true, parseTagValue: false });
 
 type FetchLike = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
@@ -42,6 +48,52 @@ function xmlValue(xml: string, tag: string): string | null {
 
 function faultReason(xml: string): string | null {
   return xmlValue(xml, "faultstring") ?? xmlValue(xml, "faultcode");
+}
+
+type XmlNamespaces = Record<string, string>;
+
+function xmlElement(
+  parent: unknown,
+  localName: string,
+  expectedNamespace: string,
+  inherited: XmlNamespaces,
+): { value: unknown; namespaces: XmlNamespaces } | null {
+  if (typeof parent !== "object" || parent === null || Array.isArray(parent)) return null;
+  const matches = Object.entries(parent).filter(([tag]) => tag.split(":").at(-1) === localName);
+  if (matches.length !== 1) return null;
+  const match = matches[0];
+  if (!match) return null;
+  const [tag, value] = match;
+  const namespaces = { ...inherited };
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    for (const [key, uri] of Object.entries(value)) {
+      if (key === "@_xmlns" && typeof uri === "string") namespaces[""] = uri;
+      else if (key.startsWith("@_xmlns:") && typeof uri === "string") namespaces[key.slice(8)] = uri;
+    }
+  }
+  const prefix = tag.includes(":") ? tag.slice(0, tag.indexOf(":")) : "";
+  if (namespaces[prefix] !== expectedNamespace) return null;
+  return { value, namespaces };
+}
+
+function verifiedViesResponse(xml: string, vatNumber: string): { valid: boolean; requestDate: string | null } | null {
+  if (XMLValidator.validate(xml) !== true) return null;
+  let document: unknown;
+  try {
+    document = xmlParser.parse(xml);
+  } catch {
+    return null;
+  }
+  const envelope = xmlElement(document, "Envelope", SOAP_NAMESPACE, {});
+  const body = envelope && xmlElement(envelope.value, "Body", SOAP_NAMESPACE, envelope.namespaces);
+  const response = body && xmlElement(body.value, "checkVatResponse", VIES_NAMESPACE, body.namespaces);
+  if (!response) return null;
+  const country = xmlElement(response.value, "countryCode", VIES_NAMESPACE, response.namespaces)?.value;
+  const number = xmlElement(response.value, "vatNumber", VIES_NAMESPACE, response.namespaces)?.value;
+  const validity = xmlElement(response.value, "valid", VIES_NAMESPACE, response.namespaces)?.value;
+  if (country !== "IT" || number !== vatNumber || (validity !== "true" && validity !== "false")) return null;
+  const date = xmlElement(response.value, "requestDate", VIES_NAMESPACE, response.namespaces)?.value;
+  return { valid: validity === "true", requestDate: typeof date === "string" ? date : null };
 }
 
 function unavailable(vatNumber: string, retrievedAt: string, reason: string): ViesCheckResult {
@@ -121,15 +173,15 @@ export async function checkViesVat(
   const fault = faultReason(xml);
   if (!response.ok || fault !== null) return unavailable(vatNumber, retrievedAt, fault ?? `VIES_HTTP_${String(response.status)}`);
 
-  const validText = xmlValue(xml, "valid");
-  if (validText !== "true" && validText !== "false") return unavailable(vatNumber, retrievedAt, "VIES_RESPONSE_INVALID");
-  const valid = validText === "true";
+  const verified = verifiedViesResponse(xml, vatNumber);
+  if (verified === null) return unavailable(vatNumber, retrievedAt, "VIES_RESPONSE_INVALID");
+  const valid = verified.valid;
   return {
     state: valid ? "remote-valid" : "remote-invalid",
     valid,
     countryCode: "IT",
     vatNumber,
-    requestDate: xmlValue(xml, "requestDate"),
+    requestDate: verified.requestDate,
     authority: VIES_AUTHORITY,
     source: VIES_SOURCE,
     retrievedAt,

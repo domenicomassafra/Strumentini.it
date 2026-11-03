@@ -23,6 +23,26 @@ describe("opt-in VIES adapter", () => {
     expect(await checkViesVat("12345678903", { fetchImpl: async () => new Response(fault, { status: 500 }) })).toMatchObject({ state: "unavailable", valid: null, reason: "MS_UNAVAILABLE" });
   });
 
+  it.each([
+    ["HTML with a valid tag", "<html><valid>true</valid></html>"],
+    ["SOAP for another country", validSoap.replace("<countryCode>IT</countryCode>", "<countryCode>DE</countryCode>")],
+    ["SOAP for another VAT", validSoap.replace("<vatNumber>12345678903</vatNumber>", "<vatNumber>99999999999</vatNumber>")],
+    ["SOAP with a foreign response namespace", validSoap.replace("urn:ec.europa.eu:taxud:vies:services:checkVat:types", "urn:unrelated")],
+    ["SOAP with conflicting valid values", validSoap.replace("<valid>true</valid>", "<valid>true</valid><valid>false</valid>")],
+    ["SOAP with a malformed closing tag", validSoap.replace("</checkVatResponse>", "</wrongResponse>")],
+  ])("never certifies %s", async (_case, body) => {
+    const result = await checkViesVat("12345678903", { fetchImpl: async () => new Response(body, { status: 200 }) });
+    expect(result).toMatchObject({ state: "unavailable", valid: null, reason: "VIES_RESPONSE_INVALID" });
+  });
+
+  it("accepts a namespace-qualified VIES response with matching echo fields", async () => {
+    const prefixed = validSoap
+      .replace('<checkVatResponse xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types">', '<v:checkVatResponse xmlns:v="urn:ec.europa.eu:taxud:vies:services:checkVat:types" xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types">')
+      .replace("</checkVatResponse>", "</v:checkVatResponse>")
+      .replace("<valid>true</valid>", "<valid>false</valid>");
+    expect(await checkViesVat("12345678903", { fetchImpl: async () => new Response(prefixed, { status: 200 }) })).toMatchObject({ state: "remote-invalid", valid: false });
+  });
+
   it("refuses malformed input before any network request", async () => {
     const fetchImpl = vi.fn();
     await expect(checkViesVat("123", { fetchImpl })).rejects.toThrow("VIES_IT_VAT_INVALID");
