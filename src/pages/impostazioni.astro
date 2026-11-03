@@ -940,7 +940,7 @@ const unitSystems = [
       const button = form.querySelector<HTMLButtonElement>("[data-preferences-submit]");
       const compactRows = form.querySelector<HTMLInputElement>("[data-compact-rows]")?.checked ?? false;
       if (button !== null) setBusy(button, true);
-      void savePreferences(state, { profile, compactRows })
+      void savePreferences({ profile, compactRows })
         .then((result) => {
           paintPreferences(result.state);
           if (!result.persisted) {
