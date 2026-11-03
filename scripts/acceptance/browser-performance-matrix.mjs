@@ -1,5 +1,4 @@
 import { chromium, firefox, webkit } from "@playwright/test";
-import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
@@ -12,6 +11,7 @@ import { runSiblingAcceptance } from "./browser-performance-siblings.mjs";
 // Runs via `node`; shares the exact release source binding through tsx.
 const { currentEvidenceSourceFingerprint, EVIDENCE_SOURCE_SCOPE_VERSION } =
   await tsImport("../lib/current-revision.ts", import.meta.url);
+const { startDistServer } = await tsImport("./dist-server.ts", import.meta.url);
 
 const root = resolve(import.meta.dirname, "../..");
 const dist = resolve(root, "dist");
@@ -44,18 +44,6 @@ if (process.argv.includes("--check")) {
   }
   console.log(`browser matrix source binding current (${EVIDENCE_SOURCE_SCOPE_VERSION}); this is NOT browser, physical or release PASS`);
   process.exit(0);
-}
-
-async function waitForServer() {
-  for (let attempt = 0; attempt < 40; attempt += 1) {
-    try {
-      const response = await fetch(origin);
-      if (response.ok) return;
-    } catch {
-    }
-    await sleep(100);
-  }
-  throw new Error(`static server did not become ready at ${origin}`);
 }
 
 async function staticInspection() {
@@ -240,7 +228,9 @@ async function runEngine(definition, engineChunkNames) {
       } catch {
       }
     });
-    const response = await page.goto(`${origin}/tools/business-day/`, { waitUntil: "networkidle" });
+    // Prove readiness through the interaction below: the page never consumes the
+    // static-only /api/auth/session 404 body, so "networkidle" never settles.
+    const response = await page.goto(`${origin}/tools/business-day/`, { waitUntil: "domcontentloaded" });
     if (response?.status() !== 200) throw new Error(`route HTTP ${response?.status()}`);
     await page.getByText("Il risultato si calcola nel tuo browser, senza attese di caricamento.", { exact: true }).waitFor();
     const userAgent = await page.evaluate(() => navigator.userAgent);
@@ -285,10 +275,10 @@ async function runEngine(definition, engineChunkNames) {
     });
     await page.setViewportSize({ width: 390, height: 844 });
     const mobileToolOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-    const homeResponse = await page.goto(`${origin}/`, { waitUntil: "networkidle" });
+    const homeResponse = await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
     await page.locator("[data-search-trigger]").waitFor();
     const homeMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-    const directoryResponse = await page.goto(`${origin}/strumenti/?q=lavorativi`, { waitUntil: "networkidle" });
+    const directoryResponse = await page.goto(`${origin}/strumenti/?q=lavorativi`, { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("[data-directory-grid] .tool-card:not([hidden])").length > 0);
     const directoryRows = await page.locator("[data-directory-grid] .tool-card:not([hidden])").count();
     const directoryMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
@@ -332,9 +322,9 @@ async function runEngine(definition, engineChunkNames) {
 
 const staticData = await staticInspection();
 
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { cwd: root, stdio: "ignore" });
+// In-process transport: the old spawned python server reset parallel connections.
+const server = await startDistServer({ dist, port });
 try {
-  await waitForServer();
   const sourceFingerprint = await currentEvidenceSourceFingerprint(root);
   const engineChunkNames = staticData.engineChunks.map((entry) => entry.file);
   const results = [];
@@ -374,5 +364,5 @@ try {
   console.log(JSON.stringify({ report: resolve(receiptDir, "fresh-browser-matrix.json"), verdict, static: staticData, matrix: results.map((result) => ({ engine: result.engine, status: result.status, classification: result.classification, longTaskGate: result.longTasks?.gate, lazy: result.lazy?.observedEngineChunk })) }, null, 2));
   if (verdict.status !== "PASS") process.exitCode = 1;
 } finally {
-  server.kill("SIGTERM");
+  await server.close();
 }
