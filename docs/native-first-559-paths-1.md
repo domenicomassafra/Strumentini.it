@@ -1,4 +1,4 @@
-# Native-first #559 — path inventory 1/3
+# Native-first #559 — path inventory 1/5
 
 Source census, 2026-11-03. **REVIEW is still open**: these files must not be counted as accepted GAPs or native replacements. Group rationale, evidence and links: [main inventory](native-first-559-inventory.md).
 

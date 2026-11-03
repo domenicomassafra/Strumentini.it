@@ -1,142 +1,74 @@
-# Native-first #559 — path inventory 2/3
+# Native-first #559 — path inventory 2/5
 
-Source census, 2026-11-03. **REVIEW is still open**: these files must not be counted as accepted GAPs or native replacements. Group rationale, evidence and links: [main inventory](native-first-559-inventory.md).
+Source review completed 2026-11-03, per file SHA and native behavior below; source references: [main inventory](native-first-559-inventory.md).
 
-| Path | Tool/category | Class |
-| --- | --- | --- |
-| `scripts/acceptance-android-chrome-avd-277.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-android-chrome-avd-461.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-android-heavy.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-audio-dsp-231.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-audio-loudness-307.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-audio-polish-231.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-audio-timeline-231.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-audio-timeline-stress-231.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-audio-timeline-ui-231.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-audio-varispeed-231.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-auth.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-barcode.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-browser-audio-certification.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-browser-diagnostics.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-business-italy-date.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-business-math-expansion.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-business-math.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-calcolatutto-018.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-campaign-url.mjs` | Playwright/HTTP server | REVIEW |
+| Path | Tool/category | Class | Source check (2026-11-03) |
+| --- | --- | --- | --- |
+| `scripts/acceptance-android-chrome-avd-277.mjs` | Node subprocess/CLI | GAP | Native Node net/HTTP fixture and Playwright; domain-specific browser assertions; source SHA256 `3b955382fb` |
+| `scripts/acceptance-android-chrome-avd-461.mjs` | Node subprocess/CLI | GAP | Native Node net/HTTP fixture and Playwright; domain-specific browser assertions; source SHA256 `879653c48d` |
+| `scripts/acceptance-android-heavy.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `491aa31a44` |
+| `scripts/acceptance-audio-dsp-231.ts` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `aa50acbba9` |
+| `scripts/acceptance-audio-loudness-307.ts` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `ab3f486b14` |
+| `scripts/acceptance-audio-polish-231.ts` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `33ffdfd72e` |
+| `scripts/acceptance-audio-timeline-231.ts` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `0889d62baf` |
+| `scripts/acceptance-audio-timeline-stress-231.browser.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `ef6b41127c` |
+| `scripts/acceptance-audio-timeline-ui-231.browser.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `5de92824d8` |
+| `scripts/acceptance-audio-varispeed-231.ts` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `b4c9ab90b3` |
+| `scripts/acceptance-auth.mjs` | Node subprocess/CLI | GAP | Wrangler CLI used directly; product-specific exit check, fixture or receipt; source SHA256 `5e87828bb0` |
+| `scripts/acceptance-barcode.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `ca6f7e0f8c` |
+| `scripts/acceptance-browser-audio-certification.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `f2c2ce4e70` |
+| `scripts/acceptance-browser-diagnostics.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `1a50e8e9a7` |
+| `scripts/acceptance-business-italy-date.ts` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `fb45cf28c3` |
+| `scripts/acceptance-business-math-expansion.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `215e082be8` |
+| `scripts/acceptance-business-math.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `322201457c` |
+| `scripts/acceptance-calcolatutto-018.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `5e51ab73bf` |
+| `scripts/acceptance-campaign-url.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `4db94f72a5` |
 | `scripts/acceptance-certification-frontier-bundle.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-client-time-math.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-color-vision-simulation.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-conversion-matrix.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-csv-cleaner.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-data-table.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-date-time.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-developer-transform-download.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-developer-web-operations.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-developer-web.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-directory.mjs` | Playwright/HTTP server | REVIEW |
+| `scripts/acceptance-client-time-math.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `9830317cb0` |
+| `scripts/acceptance-color-vision-simulation.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `069c9076c3` |
+| `scripts/acceptance-conversion-matrix.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `fd053ba569` |
+| `scripts/acceptance-csv-cleaner.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `193d715f09` |
+| `scripts/acceptance-data-table.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `ec54ea5c43` |
+| `scripts/acceptance-date-time.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `c0a5bc3143` |
+| `scripts/acceptance-developer-transform-download.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `bcb73f8551` |
+| `scripts/acceptance-developer-web-operations.ts` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `94d92e3c0a` |
+| `scripts/acceptance-developer-web.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `ca50e78fb4` |
+| `scripts/acceptance-directory.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `d5d9b60c0f` |
 | `scripts/acceptance-easypiva-284.browser.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-epub-422.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-expanded-local.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-expansion-operations-458.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-expansion-routes-458.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-family-matrix.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-favorites-332-local.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-file-certification-frontier.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-file-hash.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-gif-animation-273.browser.ts` | Playwright/HTTP server | REVIEW |
+| `scripts/acceptance-epub-422.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `3f3ec50f5a` |
+| `scripts/acceptance-expanded-local.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `7198cfeb03` |
+| `scripts/acceptance-expansion-operations-458.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `23e029fe64` |
+| `scripts/acceptance-expansion-routes-458.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `dca32d4fb1` |
+| `scripts/acceptance-family-matrix.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `e5d42ee780` |
+| `scripts/acceptance-favorites-332-local.mjs` | Node subprocess/CLI | GAP | Native Node net/HTTP fixture and Playwright; domain-specific browser assertions; source SHA256 `8f26a1cdfd` |
+| `scripts/acceptance-file-certification-frontier.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `c65a078cbd` |
+| `scripts/acceptance-file-hash.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `5d8b8f8635` |
+| `scripts/acceptance-gif-animation-273.browser.ts` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `d9673cb27f` |
 | `scripts/acceptance-gif-animation-273.py` | Product acceptance | GAP |
-| `scripts/acceptance-heavy-local-runtime.ts` | Node subprocess/CLI | REVIEW |
+| `scripts/acceptance-heavy-local-runtime.ts` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `0f218a9fc6` |
 | `scripts/acceptance-heavy-preflight-browser.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-html-entity-301.browser.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-image-advanced-workspace.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-image-compression-47.browser.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-image-compression-47.ts` | Node subprocess/CLI | REVIEW |
+| `scripts/acceptance-html-entity-301.browser.mjs` | Node subprocess/CLI | GAP | Native Node net/HTTP fixture and Playwright; domain-specific browser assertions; source SHA256 `e474137ada` |
+| `scripts/acceptance-image-advanced-workspace.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `ce2e536414` |
+| `scripts/acceptance-image-compression-47.browser.mjs` | Node subprocess/CLI | GAP | Native Node net/HTTP fixture and Playwright; domain-specific browser assertions; source SHA256 `94e90b5c69` |
+| `scripts/acceptance-image-compression-47.ts` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `4e2967dbb6` |
 | `scripts/acceptance-image-directional-212.browser.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-image-directional-212.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-image-idat-public-47.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-image-resize-ios-physical-webdriver.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-image-resize-stale-result.ts` | Playwright/HTTP server | REVIEW |
+| `scripts/acceptance-image-directional-212.ts` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `9b335fc1a9` |
+| `scripts/acceptance-image-idat-public-47.browser.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `d20c5b2891` |
+| `scripts/acceptance-image-resize-ios-physical-webdriver.mjs` | Node subprocess/CLI | GAP | Node native fs/crypto/JSON; product-specific source, artifact or provenance verification; source SHA256 `fdea977f6b` |
+| `scripts/acceptance-image-resize-stale-result.ts` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `3807f5e89a` |
 | `scripts/acceptance-image-resize-upgrade.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-image-resize.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-image-target-size.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-image-upgrade-cluster.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-image-visual-stale-result.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-images-to-pdf-235.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-ios-safari-sim-281.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-italy-2026-consumers.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-job-routes-45.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-local-jobs.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-marketing-media.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-microphone-recorder.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-minifier-059-directives-browser.mjs` | Playwright/HTTP server | REVIEW |
+| `scripts/acceptance-image-resize.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `86d45469e6` |
+| `scripts/acceptance-image-target-size.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `2909b32eb9` |
+| `scripts/acceptance-image-upgrade-cluster.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `34c81db71e` |
+| `scripts/acceptance-image-visual-stale-result.ts` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `eda0e81e41` |
+| `scripts/acceptance-images-to-pdf-235.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `06aa805cf1` |
+| `scripts/acceptance-ios-safari-sim-281.mjs` | Node subprocess/CLI | GAP | Native Node net/HTTP fixture and Playwright; domain-specific browser assertions; source SHA256 `63d3d9d400` |
+| `scripts/acceptance-italy-2026-consumers.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `cbc2fcc758` |
+| `scripts/acceptance-job-routes-45.mjs` | Node subprocess/CLI | GAP | Native Node net/HTTP fixture and Playwright; domain-specific browser assertions; source SHA256 `01b2d53546` |
+| `scripts/acceptance-local-jobs.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `8a1820aa3a` |
+| `scripts/acceptance-marketing-media.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `2c1eef9ba7` |
+| `scripts/acceptance-microphone-recorder.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `09d85aca46` |
+| `scripts/acceptance-minifier-059-directives-browser.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `272022b58e` |
 | `scripts/acceptance-ocr-246-desktop-corpus.ts` | Product acceptance | GAP |
-| `scripts/acceptance-office-interchange.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-office-markdown-024.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-office-print-56.browser.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-onboarding.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-original-200-result-v2-457.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-partita-iva-vies.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-password-security.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-password-strength-donor-304.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-booklet-interleave-251.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-comparison.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-engine-369.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-export-compression.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-fill-overlays-243.ts` | Product acceptance | GAP |
-| `scripts/acceptance-pdf-form-flatten.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-image-aware-218.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-page-reorder-strict.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-page-selection.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-project-138.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-redaction-237-dev.browser.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-pdf-repair-418.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-repair-418.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-pdf-rotated-236.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-search-markdown.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-pdf-size-split-249.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-table-xlsx-254.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-target-batch-219.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-text-stale-result.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-thumbnails.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf-upgrades.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-pdf-visual-signature-241.ts` | Product acceptance | GAP |
-| `scripts/acceptance-pdf-workspace-372.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-pdf.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-printable-pdf-256.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-printable-pdf-all-pages-256.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-qr-reader-279-safari.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-qr-reader-279.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-research-knowledge.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-result-accessibility.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-result-operation-control.ts` | Product acceptance | GAP |
-| `scripts/acceptance-result-state-matrix.tsx` | Product acceptance | GAP |
-| `scripts/acceptance-result-v2-a11y.tsx` | Product acceptance | GAP |
-| `scripts/acceptance-result-v2-conformance.ts` | Product acceptance | GAP |
-| `scripts/acceptance-result-v2-exemplars.ts` | Product acceptance | GAP |
-| `scripts/acceptance-result-v2-performance.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-result-v2-privacy-network.ts` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-str-375-crop.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-str-375.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-subtitle-transform.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-svg-donor-059.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-table-handoff.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-telemetry.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-text-data-certification.ts` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-text-diff-300.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-text-markup-converter.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance-text-research.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-text-writing.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-turndown-293.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-url-marketing-upgrades.mjs` | Product acceptance | GAP |
-| `scripts/acceptance-user-agent-281.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-video-transform-bounds-234.browser.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance-xml-adoption-291.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance/browser-performance-matrix.mjs` | Playwright/HTTP server | REVIEW |
-| `scripts/acceptance/browser-performance-siblings.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/acceptance/browser-performance-verdict.mjs` | Product acceptance | GAP |
-| `scripts/arquero-browser-gate-292.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/arquero-built-ui-gate-292.mjs` | Node subprocess/CLI | REVIEW |
-| `scripts/arquero-gate-292.mts` | Source certification/build | REVIEW |
-| `scripts/audit-expansion-routes-458.py` | Source certification/build | REVIEW |
-| `scripts/audit-gold-source-binding-347.ts` | Source certification/build | REVIEW |
-| `scripts/audit-legacy-result-primary.ts` | Source certification/build | REVIEW |
+| `scripts/acceptance-office-interchange.mjs` | Node subprocess/CLI | GAP | Native Playwright browser API; product-specific fixture, assertions or matrix; source SHA256 `7db8ab498c` |
+| `scripts/acceptance-office-markdown-024.mjs` | Playwright/HTTP server | GAP | Python stdlib HTTP server + Playwright; standalone browser assertions, fixtures and receipts (native Playwright webServer requires runner migration); source SHA256 `379fd90b10` |
