@@ -1,5 +1,5 @@
 import { chromium } from "@playwright/test";
-import { spawn } from "node:child_process";
+import { tsImport } from "tsx/esm/api";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
@@ -7,7 +7,8 @@ const root = resolve(import.meta.dirname, "..");
 const receiptDir = resolve(root, "quality/receipts/onboarding");
 const port = 18400 + (process.pid % 500);
 const origin = `http://127.0.0.1:${port}`;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { stdio: "ignore" });
+const { startDistServer } = await tsImport("./acceptance/dist-server.ts", import.meta.url);
+const server = await startDistServer({ dist: resolve(import.meta.dirname, "..", "dist"), port, host: "127.0.0.1" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 
 function assert(condition, message) {
@@ -179,5 +180,5 @@ try {
   console.log("receipt: quality/receipts/onboarding/browser-acceptance.json");
 } finally {
   await browser.close();
-  server.kill("SIGTERM");
+  await server.close();
 }

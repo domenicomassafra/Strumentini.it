@@ -1,12 +1,13 @@
 import { chromium } from "@playwright/test";
-import { spawn } from "node:child_process";
+import { tsImport } from "tsx/esm/api";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root=resolve(import.meta.dirname,"..");
 const port=18140;
 const origin=`http://127.0.0.1:${port}`;
-const server=spawn("python3",["-m","http.server",String(port),"--bind","127.0.0.1","--directory","dist"],{stdio:"ignore"});
+const { startDistServer } = await tsImport("./acceptance/dist-server.ts", import.meta.url);
+const server=await startDistServer({dist:resolve(import.meta.dirname,"..","dist"),port,host:"127.0.0.1"});
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const sensitive=["1,Ada","2,Grace","ada@example.com"];
 
@@ -87,4 +88,4 @@ try{
   await mkdir(resolve(root,"quality/receipts/table-ops"),{recursive:true});
   await writeFile(resolve(root,"quality/receipts/table-ops/browser-acceptance.json"),`${JSON.stringify({schemaVersion:1,status:"PASS",cleanerToDedupe:{preview:"PASS",dismiss:"PASS",explicitTransfer:"PASS",targetReceivesPayload:"PASS",payloadInUrl:false,payloadPersisted:false},csvDedupe:{keyboard:"PASS",mobile390:"PASS",stableOutput:"PASS"},csvColumnMap:{keyboard:"PASS",mobile390:"PASS",schemaPreview:"PASS",reorderRename:"PASS"},network:"same-origin GET assets only; no task content"},null,2)}\n`);
   await context.close();await browser.close();console.log("table browser acceptance PASS: Cleaner→Dedupe preview/dismiss/transfer, no persistence, Dedupe + Column Map keyboard/mobile/locality");
-}finally{server.kill("SIGTERM");}
+}finally{await server.close();}

@@ -1,15 +1,13 @@
 import { chromium } from "@playwright/test";
-import { spawn } from "node:child_process";
+import { tsImport } from "tsx/esm/api";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
 const port = 18128;
 const origin = `http://127.0.0.1:${port}`;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], {
-  cwd: root,
-  stdio: "ignore",
-});
+const { startDistServer } = await tsImport("./acceptance/dist-server.ts", import.meta.url);
+const server = await startDistServer({ dist: resolve(import.meta.dirname, "..", "dist"), port, host: "127.0.0.1" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 
 async function acceptPage(browser, route, sensitiveValues, operate) {
@@ -138,5 +136,5 @@ try {
   await writeFile(resolve(receiptDir, "browser-acceptance.json"), `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
   console.log("text/research browser acceptance PASS: 3 tools, keyboard + mobile + non-color diff + zero task-content network");
 } finally {
-  server.kill("SIGTERM");
+  await server.close();
 }
