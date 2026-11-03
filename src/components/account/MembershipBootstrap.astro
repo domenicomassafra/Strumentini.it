@@ -49,6 +49,7 @@
   }
 
   let signedIn = false;
+  let sessionUnavailableNotice = false;
   let ready = false;
   let loading = false;
   let onlineRetryQueued = false;
@@ -135,11 +136,25 @@
       // authoritative anonymous session. A different/unverified tab stays gated.
       const trustedOffline = !signedIn && sessionUnavailable && !navigator.onLine
         && baselineOwner !== undefined && readVerifiedTab() === baselineOwner;
+      // An unreachable session endpoint is not a logout: say so instead of
+      // silently showing the signed-out state on a browser that may hold a
+      // valid cookie. A trusted offline baseline keeps working without it.
+      sessionUnavailableNotice = sessionUnavailable && !trustedOffline;
       const localIsPrivate = !signedIn && baselineOwner !== undefined && !trustedOffline;
       const cannotVerify = signedIn && membership === undefined;
       const accessible = !localIsPrivate && !cannotVerify;
       const shown = accessible ? membership ?? await loadMembership() : { installed: [], recent: [] };
       paint(shown);
+      if (sessionUnavailableNotice) {
+        // The stored counts are unverified in this state: name the reason in the
+        // same place that usually carries the count instead of claiming zero.
+        for (const label of document.querySelectorAll<HTMLElement>("[data-membership-label]")) {
+          label.textContent = "Account temporaneamente non disponibile: non sei stato disconnesso";
+        }
+        for (const toggle of toggles()) {
+          toggle.setAttribute("title", "Account temporaneamente non disponibile: riprova tra poco");
+        }
+      }
       controlsReady(accessible);
       document.dispatchEvent(new CustomEvent<Membership>("strumentini:membership-ready", { detail: shown }));
     } finally {

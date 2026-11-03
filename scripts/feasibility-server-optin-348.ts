@@ -44,7 +44,7 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   "worker/google.ts": "6f9c7095714b197cc7e5a83833efa7098128f3883bba1b5a8423e2760c75f1c9",
   // #470 source-reviewed: all 19 existing routes are unchanged. The JSON
   // request decoder reads at most 4096 UTF-8 bytes and stops oversized streams.
-  "worker/index.ts": "e942b4ccbe47f6345946b8023dd6a7d5be3a8b621cb996a6701f066c5c912439",
+  "worker/index.ts": "41d9c6465875dfd27656a0b248563309e8d32a04e345ffa711867999d3f20ceb",
   "worker/json-request-body.ts": "5d548896c9eb60c15f290ddec8d86142937feec6fe7b63179bb5eae0d0fea74c",
   "worker/kdf-client.ts": "d2aa12fce473bbbc598eedc7c957a4f67c5484ce9a03afabafea62e59b4cf539",
   "worker/migrations/0001_init.sql": "5402f41511baf4b74f4bf6b8bb46621d663a00d8352746c6acd1089c4c3f7417",
@@ -53,7 +53,7 @@ const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.freeze({
   "worker/migrations/0004_favorite_operation_ids.sql": "19c9a58d9f5e6deb5fab6dafe671fd1a8a9d0c0ad653c285fedbfbc3b8ed1aad",
   "worker/password-kdf.ts": "871aaa3142cbe2f51925105fcf99fd65f1d8a1a743c4535ae94bd3b0934e2f54",
   "worker/turnstile.ts": "bd7434f8233b9fe0e99fc42bdc5a4b11f919649364b58258b6ae77f0fcf32124",
-  "worker/validation.ts": "1b82c7b041b17959ed31f6e6d61e34ab1fd7cbc91f1519eea3a91d889a5519f3",
+  "worker/validation.ts": "8bdffe2dcc64ab1793b605e08c18920c54bb4f4128e77ef287f7ae3dc731e808",
   "worker/vies.ts": "9db4c40c3db0fa8d2994cdf65656d101ea7f8c163947fa32734a1046ce7b07ff",
   // A second, explicitly nonproduction Wrangler file is itself executable
   // deployment policy. Exact bytes are pinned so routes, assets or D1 cannot
@@ -69,7 +69,7 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // POST/204 semantics; browser Axe detects the icon-only accessible name.
   "src/components/account/AccountChip.astro": "93d41212427af8611bd3ece42d9d3993725a17139c7da2f256418299472e9a34",
   // #332: browser bootstrap retries reconnection and preserves account-scoped state.
-  "src/components/account/MembershipBootstrap.astro": "ace5b0f626105a65fd4586102688fcfeec032dc32043dd2ae6b407083708e956",
+  "src/components/account/MembershipBootstrap.astro": "290ba85f0d004533be232f23f790ea811b37b2decc3ab9868314d667e3085348",
   // #328: login/register now require a fresh same-origin cookie-backed session
   // probe before reporting success. #482: DELETE account reports success only
   // on HTTP204, without changing the existing routes, credentials or fetch.

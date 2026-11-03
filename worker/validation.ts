@@ -44,6 +44,7 @@ export const MESSAGES = {
   googleEmailMismatch: "L'account Google deve usare la stessa email del tuo account.",
   googleLinkConflict: "Questa email è già collegata a un altro accesso Google.",
   internal: "Errore interno del server.",
+  sessionUnavailable: "Il tuo account è temporaneamente non disponibile: la sessione non può essere verificata in questo momento. Riprova tra poco.",
 } as const;
 
 export type Validation<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly message: string };
