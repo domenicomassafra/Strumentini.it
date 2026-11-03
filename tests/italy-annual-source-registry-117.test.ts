@@ -74,12 +74,13 @@ describe("STR-117 annual official fiscal source registry", () => {
     expect(beforeCheck.blockedClaims).toEqual(["national-irpef-gross-subset:2026"]);
   });
 
-  it("automates the annual review and reports it on the public page", async () => {
+  it("runs the native scheduled review without creating issues and reports it on the public page", async () => {
     const workflow = await readFile(resolve(import.meta.dirname, "../.github/workflows/annual-fiscal-review.yml"), "utf8");
     expect(workflow).toMatch(/cron: '0 6 1 \* \*'/u);
     expect(workflow).toContain("scripts/italy-annual-source-review-117.ts --check");
-    expect(workflow).toMatch(/gh issue create/u);
-    expect(workflow).toMatch(/issues: write/u);
+    expect(workflow).toMatch(/permissions:\s*\n\s*contents: read/u);
+    expect(workflow).not.toMatch(/\bissues: write\b/u);
+    expect(workflow).not.toMatch(/gh issue (?:create|comment)\b/u);
 
     const page = await readFile(resolve(import.meta.dirname, "../src/pages/fonti-fiscali-italia.astro"), "utf8");
     expect(page).toContain("data-annual-sources117");
