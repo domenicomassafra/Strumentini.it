@@ -85,6 +85,9 @@ export function buildStagingRollbackReceipt420(input: StagingRollbackReceiptInpu
     origin: STAGING_ROLLBACK_ORIGIN_420,
     currentRevision: input.revision,
     sourceFingerprint: input.sourceFingerprint,
+    // Bound to the compiled bytes, not only to the git revision: a later release
+    // that compiles an identical site may reuse this proven rollback (#556).
+    distManifestSha256: manifest,
     currentDeploymentId: candidate,
     previousKnownGoodDeploymentId: previous,
     rollbackCommand: observations.rollbackCommand,

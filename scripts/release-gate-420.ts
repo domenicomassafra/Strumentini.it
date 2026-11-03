@@ -15,10 +15,13 @@ import { resolve } from "node:path";
 import type { ReleaseFinding } from "../src/release/validation";
 import { OWNER_RELEASE_POLICY_420, assessOwnerPolicy420, distPageHashes420 } from "../src/release/owner-policy-420";
 import { currentEvidenceSourceFingerprint } from "./lib/current-revision";
+import { fingerprintPublicationAssets404 } from "./prepublish-404";
+import { assessRollbackReuse420 } from "../src/release/rollback-reuse-420";
 import { inspectReleaseWorkingTree162 } from "./lib/release-evidence-worktree-162";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const RECEIPT = "quality/receipts/release/validation-420.json";
+const ROLLBACK_RECEIPT = "quality/receipts/release/rollback.json";
 
 const flag = (name: string): string | undefined =>
   process.argv.slice(2).find((value) => value.startsWith(`--${name}=`))?.slice(name.length + 3);
@@ -65,6 +68,13 @@ async function main(): Promise<void> {
   const dirty = worktree.dirty;
   const sourceFingerprint = await currentEvidenceSourceFingerprint(ROOT);
   const canonical = canonicalValidation(expectedSha);
+  const distManifestSha256 = await fingerprintPublicationAssets404(resolve(ROOT, "dist"));
+  const rollbackReuse = assessRollbackReuse420({
+    receipt: await json(ROLLBACK_RECEIPT),
+    revision,
+    distManifestSha256,
+    receiptPath: ROLLBACK_RECEIPT,
+  });
 
   const policy = assessOwnerPolicy420({
     revision,
@@ -76,8 +86,8 @@ async function main(): Promise<void> {
     androidReceiptPath: "quality/receipts/android-chrome-avd-277.json",
     iosReceipt: await json("quality/receipts/ios-safari-simulated-281.json"),
     iosReceiptPath: "quality/receipts/ios-safari-simulated-281.json",
-    rollbackReceipt: await json("quality/receipts/release/rollback.json"),
-    rollbackReceiptPath: "quality/receipts/release/rollback.json",
+    rollbackReceipt: await json(ROLLBACK_RECEIPT),
+    rollbackReceiptPath: ROLLBACK_RECEIPT,
     distPageHashes: await distPageHashes420(async (route) => {
       try {
         return await readFile(resolve(ROOT, "dist", route, "index.html"));
@@ -87,15 +97,32 @@ async function main(): Promise<void> {
     }),
   });
 
-  const waived = canonical.findings.map((item) =>
-    item.code.startsWith("GOLD_") || item.code.startsWith("PHYSICAL_")
+  // A verified rollback of a byte-identical build is reused on its dist content
+  // hash: the stale-source findings become warnings that carry both revisions.
+  const reusedStale = (item: ReleaseFinding): ReleaseFinding =>
+    item.code === "ROLLBACK_SOURCE_STALE" || item.code === "POLICY_ROLLBACK_SOURCE_STALE"
       ? {
           ...item,
           severity: "warning" as const,
-          message: `WAIVED_OWNER_DECISION (${OWNER_RELEASE_POLICY_420.id}): ${item.message}`,
+          message: `ROLLBACK_REUSE_420 (${rollbackReuse.record?.provenRevision ?? ""}): ${item.message}`,
         }
-      : item);
-  const findings = [...waived, ...policy.findings].sort((left, right) => left.code.localeCompare(right.code));
+      : item;
+  const waiver = (item: ReleaseFinding): ReleaseFinding => {
+    const reused = rollbackReuse.reused ? reusedStale(item) : item;
+    return reused.code.startsWith("GOLD_") || reused.code.startsWith("PHYSICAL_")
+      ? {
+          ...reused,
+          severity: "warning" as const,
+          message: `WAIVED_OWNER_DECISION (${OWNER_RELEASE_POLICY_420.id}): ${reused.message}`,
+        }
+      : reused;
+  };
+  const waived = canonical.findings.map(waiver);
+  const findings = [
+    ...waived,
+    ...policy.findings.map(waiver),
+    ...(rollbackReuse.reused || rollbackReuse.finding === null ? [] : [rollbackReuse.finding]),
+  ].sort((left, right) => left.code.localeCompare(right.code));
   const counts = {
     errors: findings.filter((item) => item.severity === "error").length,
     blockers: findings.filter((item) => item.severity === "blocker").length,
@@ -123,6 +150,8 @@ async function main(): Promise<void> {
       waived: policy.waived,
     },
     canonical: { status: canonical.status, checks: canonical.checks ?? null },
+    distManifestSha256,
+    rollbackReuse: rollbackReuse.record,
     findings,
   };
   await mkdir(resolve(ROOT, "quality/receipts/release"), { recursive: true });
