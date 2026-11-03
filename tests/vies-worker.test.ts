@@ -29,3 +29,42 @@ describe("opt-in VIES adapter", () => {
     expect(fetchImpl).not.toHaveBeenCalled();
   });
 });
+
+describe("VIES remote transport bounds (#556)", () => {
+  it("gives the outbound SOAP request its own abort deadline", async () => {
+    const fetchImpl = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(validSoap, { status: 200 }));
+    await checkViesVat("12345678903", { fetchImpl });
+    expect(fetchImpl.mock.calls[0]?.[1]?.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("reports an explicit unavailable reason when the remote call exceeds its deadline", async () => {
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit) => new Promise<Response>((_resolve, reject) => {
+      const signal = init?.signal;
+      if (!(signal instanceof AbortSignal)) return reject(new Error("missing abort signal"));
+      signal.addEventListener("abort", () => reject(new DOMException("timed out", "TimeoutError")));
+    });
+    const started = Date.now();
+    const result = await checkViesVat("12345678903", { fetchImpl, timeoutMs: 25 });
+    expect(result).toMatchObject({ state: "unavailable", valid: null, reason: "VIES_TIMEOUT" });
+    expect(Date.now() - started).toBeLessThan(2_000);
+  });
+
+  it("refuses an oversized streamed response before parsing it", async () => {
+    const chunk = new TextEncoder().encode("<checkVatResponse>".repeat(200));
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        for (let index = 0; index < 100; index += 1) controller.enqueue(chunk);
+        controller.close();
+      },
+    });
+    const result = await checkViesVat("12345678903", { fetchImpl: async () => new Response(stream, { status: 200 }) });
+    expect(result).toMatchObject({ state: "unavailable", valid: null, reason: "VIES_RESPONSE_TOO_LARGE" });
+  });
+
+  it("refuses a declared oversized response without reading the body", async () => {
+    const result = await checkViesVat("12345678903", {
+      fetchImpl: async () => new Response(validSoap, { status: 200, headers: { "content-length": "5000000" } }),
+    });
+    expect(result).toMatchObject({ state: "unavailable", valid: null, reason: "VIES_RESPONSE_TOO_LARGE" });
+  });
+});
