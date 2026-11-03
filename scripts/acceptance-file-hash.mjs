@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
-import { spawn } from "node:child_process";
+import { tsImport } from "tsx/esm/api";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
 
@@ -8,10 +8,8 @@ const root = resolve(import.meta.dirname, "..");
 const port = 18124;
 const origin = `http://127.0.0.1:${port}`;
 const dist = process.env.STRUMENTINI_ACCEPTANCE_DIST ?? "dist";
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], {
-  cwd: root,
-  stdio: "ignore",
-});
+const { startDistServer } = await tsImport("./acceptance/dist-server.ts", import.meta.url);
+const server = await startDistServer({ dist, port, host: "127.0.0.1" });
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 
 try {
@@ -86,5 +84,5 @@ try {
   await browser.close();
   console.log(JSON.stringify(receipt, null, 2));
 } finally {
-  server.kill("SIGTERM");
+  await server.close();
 }

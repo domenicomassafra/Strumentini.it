@@ -43,7 +43,7 @@
   "research/tool-catalog-200-qualification-2026-09-24.md": 80465,
   "scripts/acceptance-auth.mjs": 23300,
   "scripts/acceptance-developer-web-operations.ts": 26773,
-  "scripts/acceptance-directory.mjs": 45554,
+  "scripts/acceptance-directory.mjs": 45533,
   "scripts/acceptance-research-knowledge.mjs": 23560,
   "scripts/acceptance/browser-performance-matrix.mjs": 20480,
   "scripts/audit-office-fidelity-368.ts": 34621,

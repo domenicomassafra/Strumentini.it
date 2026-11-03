@@ -1,5 +1,5 @@
 import { chromium } from "@playwright/test";
-import { spawn } from "node:child_process";
+import { tsImport } from "tsx/esm/api";
 import { mkdir, writeFile } from "node:fs/promises";
 import { createServer } from "node:net";
 import { resolve } from "node:path";
@@ -24,7 +24,8 @@ async function freeLoopbackPort() {
 
 const port = await freeLoopbackPort();
 const origin = `http://127.0.0.1:${port}`;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", "dist"], { stdio: "ignore" });
+const { startDistServer } = await tsImport("./acceptance/dist-server.ts", import.meta.url);
+const server = await startDistServer({ dist: resolve(import.meta.dirname, "..", "dist"), port, host: "127.0.0.1" });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function waitForReleaseServer() {
@@ -74,5 +75,5 @@ try {
   await writeFile(resolve(root, "quality/receipts/campaign-url/browser-acceptance.json"), `${JSON.stringify({ schemaVersion: 1, status: "PASS", tools: ["utm-builder", "tracking-cleaner", "campaign-name"], keyboard: "submit via Enter", mobileViewport: { width: 390, height: 844, horizontalOverflow: false }, network: "zero external/task-content requests after task start", presetPersistence: "saved schema persists; current task values do not" }, null, 2)}\n`);
   console.log("campaign URL acceptance PASS: 3 tools, preset persistence, keyboard/mobile, zero task-content network");
 } finally {
-  server.kill("SIGTERM");
+  await server.close();
 }

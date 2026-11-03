@@ -63,6 +63,13 @@ export async function startDistServer(options: DistServerOptions): Promise<Runni
     }
     try {
       const pathname = decodeURIComponent(new URL(request.url ?? "/", "http://127.0.0.1").pathname);
+      // A compiled static site has no API: answer immediately instead of walking the
+      // filesystem, so the browser closes the deliberately unread probe request and
+      // Playwright's networkidle wait can settle.
+      if (pathname.startsWith("/api/")) {
+        response.writeHead(404, { "content-length": "0", "cache-control": "no-store", connection: "close" }).end();
+        return;
+      }
       const target = resolve(root, pathname.replace(/^\/+/, ""), pathname.endsWith("/") ? "index.html" : "");
       if (target !== root && !target.startsWith(root + sep)) {
         response.writeHead(403, { "content-length": "0", connection: "close" }).end();

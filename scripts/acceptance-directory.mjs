@@ -1,9 +1,12 @@
 import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
+import { tsImport } from "tsx/esm/api";
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { basename, resolve } from "node:path";
+
+const { startDistServer } = await tsImport("./acceptance/dist-server.ts", import.meta.url);
 
 /**
  * Discovery acceptance: the server-rendered `/strumenti/` directory, the
@@ -163,8 +166,8 @@ try {
   while (expandedPort === port) expandedPort = await freeLoopbackPort();
   origin = `http://127.0.0.1:${port}`;
   expandedOrigin = `http://127.0.0.1:${expandedPort}`;
-  server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1", "--directory", dist], { stdio: "ignore" });
-  expandedServer = spawn("python3", ["-m", "http.server", String(expandedPort), "--bind", "127.0.0.1", "--directory", expandedDist], { stdio: "ignore" });
+  server = await startDistServer({ dist, port });
+  expandedServer = await startDistServer({ dist: expandedDist, port: expandedPort });
   await Promise.all([waitForServer(origin), waitForServer(expandedOrigin, "/strumenti/")]);
   const toolAssets = await implementationAssets();
   if (toolAssets.length === 0) throw new Error("Could not identify any production tool implementation chunks from source maps");
@@ -739,7 +742,7 @@ try {
   console.log(`discovery acceptance PASS: focus restored, URL/reload/back preserved, ${catalogItems} production tools + ${expandedContract.totalCount} expanded-fixture tools, 390px single-column, eager tool chunks=0`);
 } finally {
   await browser?.close().catch(() => undefined);
-  server?.kill("SIGTERM");
-  expandedServer?.kill("SIGTERM");
+  await server?.close();
+  await expandedServer?.close();
   if (expandedTempDir) await rm(expandedTempDir, { recursive: true, force: true });
 }
