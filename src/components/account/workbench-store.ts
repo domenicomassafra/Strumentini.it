@@ -34,6 +34,7 @@ const CONFIG_FILE_NAME = "workbench-config-v1.json";
 type Repository = ReturnType<typeof createWorkbenchRepository>;
 
 let repositoryPromise: Promise<Repository> | undefined;
+let preferencesWriteQueue: Promise<void> = Promise.resolve();
 
 function browserProfile(): WorkProfile {
   return createDefaultWorkProfile({
@@ -68,21 +69,23 @@ export interface PreferencesUpdate {
   readonly compactRows?: boolean;
 }
 
-/** One write for the whole Preferenze panel, so a half-saved pair cannot exist. */
-export async function savePreferences(
-  current: WorkbenchState,
-  update: PreferencesUpdate,
-): Promise<{ readonly state: WorkbenchState; readonly persisted: boolean }> {
-  const repo = await repository();
-  const next: WorkbenchState = {
-    ...current,
-    profile: update.profile === undefined ? current.profile : updateWorkProfile(current.profile, update.profile),
-    preferences: update.compactRows === undefined
-      ? current.preferences
-      : { ...current.preferences, compactRows: update.compactRows },
-  };
-  const { persisted } = await repo.save(next);
-  return { state: next, persisted };
+/** Reload before each write; a settings-page snapshot can predate new favorites or activity. */
+export function savePreferences(update: PreferencesUpdate): Promise<{ readonly state: WorkbenchState; readonly persisted: boolean }> {
+  const pending = preferencesWriteQueue.then(async () => {
+    const repo = await repository();
+    const { state: current } = await repo.load();
+    const next: WorkbenchState = {
+      ...current,
+      profile: update.profile === undefined ? current.profile : updateWorkProfile(current.profile, update.profile),
+      preferences: update.compactRows === undefined
+        ? current.preferences
+        : { ...current.preferences, compactRows: update.compactRows },
+    };
+    const { persisted } = await repo.save(next);
+    return { state: next, persisted };
+  });
+  preferencesWriteQueue = pending.then(() => undefined, () => undefined);
+  return pending;
 }
 
 /** Best-effort removal must never be mistaken for a fully successful reset.
