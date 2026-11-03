@@ -2506,6 +2506,7 @@
           "sha256": "8c067cb7d1c851af36a4fe9f61fe6e3e1271256c927d277bb69302d1e2546750"
         },
         "testFiles": [
+          "tests/acceptance-dist-server.test.ts",
           "tests/catalog.test.ts",
           "tests/client-time-math-profile.test.ts",
           "tests/date-time-engine.test.ts",
