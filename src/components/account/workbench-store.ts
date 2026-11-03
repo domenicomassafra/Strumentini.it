@@ -138,7 +138,13 @@ async function clearIndexedDbStore(databaseName: string, storeName: string): Pro
   let database: IDBDatabase | undefined;
   try {
     database = await new Promise<IDBDatabase>((resolve, reject) => {
-      const opening = indexedDB.open(databaseName);
+      const opening = indexedDB.open(databaseName, 1);
+      opening.onupgradeneeded = () => {
+        // A first reset must not leave a new database without its expected store.
+        if (!opening.result.objectStoreNames.contains(storeName)) {
+          opening.result.createObjectStore(storeName);
+        }
+      };
       opening.onsuccess = () => resolve(opening.result);
       opening.onerror = () => reject(opening.error);
       opening.onblocked = () => reject(new Error("IndexedDB open blocked"));

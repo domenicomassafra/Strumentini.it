@@ -41,6 +41,16 @@ describe("#550 local data erasure", () => {
     expect(await image.keys?.("")).toEqual([]);
   });
 
+  it("leaves a previously unused editor archive usable after a first reset", async () => {
+    const { clearDeviceData } = await import("../src/components/account/workbench-store");
+    const { createIndexedDbPersistence } = await import("../src/persistence/persistence");
+    expect((await clearDeviceData()).persisted).toBe(true);
+
+    const editor = createIndexedDbPersistence({ databaseName: "strumentini-editor-projects-412", storeName: "state" });
+    await editor.put("after-reset", { synthetic: true });
+    expect(await editor.get("after-reset")).toEqual({ synthetic: true });
+  });
+
   it("forgets the cached account baseline after a successful reset in the same tab", async () => {
     const { clearDeviceData } = await import("../src/components/account/workbench-store");
     const { membershipBaselineOwner, syncMembershipWithAccount } = await import("../src/workbench/membership");
