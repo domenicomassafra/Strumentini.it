@@ -113,6 +113,10 @@ try {
   await redirected;
   await page.waitForLoadState("networkidle");
   await visibleRecent(page, false, "confirmed logout");
+  await page.evaluate(() => window.dispatchEvent(new CustomEvent("strumentini:membership-changed", {
+    detail: { installed: [], recent: [{ toolId: "utm-builder", lastUsedAt: "2026-11-03T09:00:00.000Z", useCount: 2 }] },
+  })));
+  await visibleRecent(page, false, "raw membership update after logout");
 
   await seed(page, false);
   await page.reload({ waitUntil: "networkidle" });
