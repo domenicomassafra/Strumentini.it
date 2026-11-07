@@ -145,6 +145,7 @@
       const accessible = !localIsPrivate && !cannotVerify;
       const shown = accessible ? membership ?? await loadMembership() : { installed: [], recent: [] };
       paint(shown);
+      controlsReady(accessible);
       if (sessionUnavailableNotice) {
         // The stored counts are unverified in this state: name the reason in the
         // same place that usually carries the count instead of claiming zero.
@@ -155,7 +156,6 @@
           toggle.setAttribute("title", "Account temporaneamente non disponibile: riprova tra poco");
         }
       }
-      controlsReady(accessible);
       document.dispatchEvent(new CustomEvent<Membership>("strumentini:membership-ready", { detail: shown }));
     } finally {
       loading = false;
