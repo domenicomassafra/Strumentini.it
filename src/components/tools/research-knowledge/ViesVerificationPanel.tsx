@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import { createReferenceResultProvenance, type ReferenceResultProvenance as ReferenceProvenance } from "../../../runtime/reference-result";
 import { ReferenceResultProvenance } from "../shared/ReferenceResultProvenance";
+import { viesUnavailableMessage } from "./vies-unavailable-message";
 
 interface LocalVatResult {
   readonly valid?: boolean;
@@ -60,7 +61,7 @@ export function ViesVerificationPanel({ localResult }: { readonly localResult: u
           validation: "none",
           network: "denied",
           ...(payload.source === undefined ? {} : { source: payload.source }),
-          message: `VIES non disponibile (${payload.reason ?? "risposta non disponibile"}). Il checksum locale resta valido.`,
+          message: viesUnavailableMessage(payload.reason),
         }));
       }
     } catch {
