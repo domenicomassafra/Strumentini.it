@@ -74,20 +74,23 @@ export interface PreferencesUpdate {
   readonly compactRows?: boolean;
 }
 
-/** Reload before each write; a settings-page snapshot can predate new favorites or activity. */
+/**
+ * Merge the preferences into the record inside the store's own atomic
+ * read-modify-write, so favorites, recent activity and packs written by another
+ * tab (or by the update that landed after this panel was opened) survive the
+ * save. A settings-page snapshot is never written back as the whole state.
+ */
 export function savePreferences(update: PreferencesUpdate): Promise<{ readonly state: WorkbenchState; readonly persisted: boolean }> {
   const pending = preferencesWriteQueue.then(async () => {
     const repo = await repository();
-    const { state: current } = await repo.load();
-    const next: WorkbenchState = {
+    const { state, persisted } = await repo.update((current) => ({
       ...current,
       profile: update.profile === undefined ? current.profile : updateWorkProfile(current.profile, update.profile),
       preferences: update.compactRows === undefined
         ? current.preferences
         : { ...current.preferences, compactRows: update.compactRows },
-    };
-    const { persisted } = await repo.save(next);
-    return { state: next, persisted };
+    }));
+    return { state, persisted };
   });
   preferencesWriteQueue = pending.then(() => undefined, () => undefined);
   return pending;
