@@ -71,7 +71,7 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // POST/204 semantics; browser Axe detects the icon-only accessible name.
   "src/components/account/AccountChip.astro": "93d41212427af8611bd3ece42d9d3993725a17139c7da2f256418299472e9a34",
   // #332: browser bootstrap retries reconnection and preserves account-scoped state.
-  "src/components/account/MembershipBootstrap.astro": "290ba85f0d004533be232f23f790ea811b37b2decc3ab9868314d667e3085348",
+  "src/components/account/MembershipBootstrap.astro": "3fecf6fa8883a401dae6ea6bbf00abe46a4ab22e7a12faaf4100c5481cb8664b",
   // #328: login/register now require a fresh same-origin cookie-backed session
   // probe before reporting success. #482: DELETE account reports success only
   // on HTTP204, without changing the existing routes, credentials or fetch.
