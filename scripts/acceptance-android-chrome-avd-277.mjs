@@ -33,10 +33,20 @@ const server = createServer(async (req, res) => {
   }
 });
 
-function pickerNodes() {
-  const status = adb("shell", "uiautomator", "dump", "/sdcard/window.xml");
-  assert.match(status, /dumped/u, "Android native picker hierarchy unavailable");
-  const xml = adb("shell", "cat", "/sdcard/window.xml");
+async function pickerNodes() {
+  // DocumentsUI may briefly return a null accessibility root while switching views.
+  let xml = "";
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const status = adb("shell", "uiautomator", "dump", "/sdcard/window.xml");
+      if (/dumped/u.test(status)) {
+        xml = adb("shell", "cat", "/sdcard/window.xml");
+        if (xml.includes("<node ")) break;
+      }
+    } catch { /* Retry transient native UI state, never accept an old hierarchy. */ }
+    if (attempt < 4) await sleep(900);
+  }
+  assert(xml.includes("<node "), "Android native picker hierarchy unavailable after 5 attempts");
   return [...xml.matchAll(/<node\s+[^>]*>/gu)].map(([entry]) => {
     const value = (attr) => (entry.match(new RegExp(`${attr}="([^"]*)"`, "u"))?.[1] ?? "").replaceAll("&amp;", "&");
     const bounds = value("bounds").match(/^\[(\d+),(\d+)\]\[(\d+),(\d+)\]$/u)?.slice(1).map(Number);
@@ -48,7 +58,7 @@ async function tapNative(name, maxTries = 7) {
   let seen = [];
   for (let i = 0; i < maxTries; i++) {
     try {
-      const nodes = pickerNodes();
+      const nodes = await pickerNodes();
       seen = nodes.filter((n) => n.text || n.description).map((n) => n.text || n.description);
       const node = nodes.find(({ text, description, bounds }) => bounds && (text === name || description === name || description.startsWith(`${name},`)));
       if (node?.bounds) {
@@ -134,7 +144,7 @@ try {
     await page.locator("#image-resize-file").click({ force: true });
     await sleep(1500);
     try {
-      const names = pickerNodes().map((n) => n.text || n.description);
+      const names = (await pickerNodes()).map((n) => n.text || n.description);
       console.log("AVD_PICKER_OPEN_ATTEMPT", attempt, names.filter(Boolean).slice(-12));
       nativePickerOpened = names.some((n) => ["More options", "Browse…", "Downloads"].includes(n));
     } catch (error) { console.log("AVD_PICKER_OPEN_TRANSIENT", String(error)); }
@@ -144,7 +154,7 @@ try {
   await tapNative("Browse…");
   let downloadsOpened = false;
   for (let attempt = 0; attempt < 4 && !downloadsOpened; attempt++) {
-    const names = pickerNodes().map((n) => n.text || n.description).filter(Boolean);
+    const names = (await pickerNodes()).map((n) => n.text || n.description).filter(Boolean);
     if (names.includes("Images in Downloads") || names.some((n) => n.includes("str277-source.png"))) {
       downloadsOpened = true;
       break;
@@ -153,7 +163,7 @@ try {
     await sleep(850);
     await tapNative("Downloads");
     await sleep(950);
-    const newNames = pickerNodes().map((n) => n.text || n.description).filter(Boolean);
+    const newNames = (await pickerNodes()).map((n) => n.text || n.description).filter(Boolean);
     console.log("AVD_DOWNLOADS_NAV", attempt, newNames.slice(0, 15));
     downloadsOpened = newNames.includes("Images in Downloads") || newNames.some((n) => n.includes("str277-source.png"));
   }
@@ -180,7 +190,7 @@ try {
   await link.click({ timeout: 15000 });
   console.log("AVD_CHROME_LINK_CLICKED", siteFilename);
   await sleep(1200);
-  console.log("AVD_POST_DOWNLOAD_NODES", JSON.stringify(pickerNodes().filter((n) => n.text || n.description).slice(-18)));
+  console.log("AVD_POST_DOWNLOAD_NODES", JSON.stringify((await pickerNodes()).filter((n) => n.text || n.description).slice(-18)));
   const byteCount = await waitDownloaded(siteFilename);
   adb("pull", `/sdcard/Download/${siteFilename}`, resolve(temp, "android-downloaded.jpg"));
   const bytes = await readFile(resolve(temp, "android-downloaded.jpg"));
