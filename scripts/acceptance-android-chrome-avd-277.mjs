@@ -13,6 +13,10 @@ const dist = resolve(root, "dist");
 const temp = resolve(root, ".tmp-str277");
 const adbBin = process.env.ANDROID277_ADB ?? resolve(process.env.HOME ?? "/home/udodo", "Android/Sdk/platform-tools/adb");
 const port = 18875;
+// The CDP bridge port is configurable because a host workstation may already
+// hold 127.0.0.1:9222 with its own Chrome; the emulator lane only needs a free
+// loopback port, and every assertion below stays identical.
+const cdpPort = Number(process.env.ANDROID277_CDP_PORT ?? 9222);
 const fixture = resolve(root, "tests/fixtures/android-chrome-avd-277-input.png");
 const outputFile = resolve(root, "quality/receipts/android-chrome-avd-277-output.jpg");
 const receiptFile = resolve(root, "quality/receipts/android-chrome-avd-277.json");
@@ -105,13 +109,13 @@ let browser;
 await new Promise((done) => server.listen(port, "127.0.0.1", done));
 try {
   adb("reverse", `tcp:${port}`, `tcp:${port}`);
-  adb("forward", "tcp:9222", "localabstract:chrome_devtools_remote");
+  adb("forward", `tcp:${cdpPort}`, "localabstract:chrome_devtools_remote");
   adb("shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", `http://127.0.0.1:${port}/tools/image-resize/`, "com.android.chrome");
   // Chrome creates its remote-debugging socket asynchronously after activity launch.
   let cdpError;
   for (let attempt = 0; attempt < 20 && !browser; attempt++) {
     try {
-      browser = await chromium.connectOverCDP("http://127.0.0.1:9222", { timeout: 3500, noDefaults: true });
+      browser = await chromium.connectOverCDP(`http://127.0.0.1:${cdpPort}`, { timeout: 3500, noDefaults: true });
     } catch (error) {
       cdpError = error;
       await sleep(1000);
@@ -246,5 +250,12 @@ try {
   console.log(`ANDROID_CHROME_AVD_277_PASS ${JSON.stringify({ build: revision.slice(0, 12), browser: browserVersion, source: [320, 240, source.length], output: [decoded.width, decoded.height, bytes.length, fingerprint(bytes)], receipt: "quality/receipts/android-chrome-avd-277.json", simulated: true })}`);
 } finally {
   if (browser) await browser.close();
+  // A leaked reverse/forward from an interrupted run makes the next run fail to
+  // bind its own listeners, so both bridges are released here on every exit.
+  for (const cleanup of [["reverse", `tcp:${port}`], ["forward", `tcp:${cdpPort}`]]) {
+    try {
+      adb(cleanup[0], "--remove", cleanup[1]);
+    } catch { /* already released */ }
+  }
   await new Promise((done) => server.close(done));
 }
