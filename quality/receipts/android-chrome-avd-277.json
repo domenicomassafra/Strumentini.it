@@ -3,12 +3,12 @@
   "ticket": "STR-277",
   "evidenceKind": "ANDROID_EMULATOR_CHROME_SIMULATED",
   "physicalDeviceObserved": false,
-  "observedAt": "2026-10-20T09:32:35.340Z",
+  "observedAt": "2026-11-08T04:32:48.951Z",
   "emulator": {
     "serial": "emulator-5554",
     "avd": "str277-api35",
     "api": 35,
-    "fingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.036/12592187:user/release-keys"
+    "fingerprint": "google/sdk_gphone64_arm64/emu64a:15/AE3A.240806.043/12960925:userdebug/dev-keys"
   },
   "browser": {
     "package": "com.android.chrome",
@@ -16,10 +16,10 @@
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
   },
   "build": {
-    "revision": "625fdbe5aa2dd10449e9f4aeec2ec30fde49a17c",
+    "revision": "8f8f1e004f3ac321c4aafdf19995138efa6b4845",
     "compiled": true,
     "route": "/tools/image-resize/",
-    "htmlSha256": "74b6cd997d448f4295421726f9929ddf60fc18618aa29b3ed2040a1ec72c4255"
+    "htmlSha256": "2b6d7c20c54f952e28cce6cb311320ad48c555a4460776992fc07b51e4ce8f8b"
   },
   "input": {
     "filename": "str277-source.png",
@@ -43,8 +43,8 @@
   "screenshot": {
     "file": "quality/receipts/android-chrome-avd-277-simulated.jpg",
     "kind": "ANDROID_EMULATOR_SCREENSHOT_SIMULATED",
-    "bytes": 15053,
-    "sha256": "351917ff9fc277c3db7e82f051fe1931a4b48f49b2c0e1979d16d87e18705711"
+    "bytes": 10177,
+    "sha256": "014230190a94f3682665f153b51d8e3d37c771d259d845b075cf7a5aaa438f0a"
   },
   "output": {
     "filename": "str277-source-160x120.jpg",

@@ -3,7 +3,7 @@
   "kind": "browser-acceptance",
   "subject": "onboarding",
   "generatedBy": "scripts/acceptance-onboarding.mjs",
-  "revision": "f8c756ed0bae9ae9329a6fe0cce91fc7b7cd2ba9",
+  "revision": "8f8f1e004f3ac321c4aafdf19995138efa6b4845",
   "status": "PASS",
   "browser": "chrome",
   "viewport": {
@@ -40,19 +40,25 @@
       "id": "starter-set-bounded",
       "description": "The starter review offers a small, distinct, editable set",
       "status": "PASS",
-      "observed": "10 starter tool(s): break-even, capacity-planner, currency-scenario, discount-impact, effective-hourly-rate, invoice-math-validator, invoice-number-generator, late-payment-interest, payment-fee-gross-up, percentage-helper"
+      "observed": "0 starter tool(s): "
     },
     {
       "id": "starter-tools-gold",
       "description": "Every starter tool is Gold-certified before it can be a default surface",
       "status": "PASS",
-      "observed": "all 10 starter tool(s) are Gold in the certification index"
+      "observed": "all 0 starter tool(s) are Gold in the certification index"
+    },
+    {
+      "id": "manual-starter-opt-in",
+      "description": "No Gold receipts: the user can explicitly select a non-Gold tool",
+      "status": "PASS",
+      "observed": "manual JSON tool selected and correctly labelled"
     },
     {
       "id": "starter-persisted-locally",
       "description": "The saved starter set is stored on this device, with no account",
       "status": "PASS",
-      "observed": "10 tool(s) in the local workbench state after save"
+      "observed": "1 tool(s) in the local workbench state after save"
     },
     {
       "id": "no-off-origin-traffic",
