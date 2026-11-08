@@ -20,12 +20,13 @@ const STAGING_CONFIG = "worker/wrangler.staging.jsonc";
 
 export function assertStagingConfig(source: string): void {
   const config = JSON.parse(source.replace(/^\s*\/\/[^\n]*(?:\n|$)/gmu, "")) as Record<string, any>;
-  const reviewedKeys = ["$schema", "assets", "compatibility_date", "d1_databases", "durable_objects", "exports", "main", "name", "ratelimits", "routes", "workers_dev"];
+  const reviewedKeys = ["$schema", "assets", "compatibility_date", "d1_databases", "durable_objects", "exports", "main", "name", "ratelimits", "routes", "rules", "workers_dev"];
   if (Object.keys(config).sort().join("|") !== reviewedKeys.join("|")) {
     throw new Error("#328 refusal: unreviewed staging deployment configuration fields");
   }
   if (config.name !== STAGING_WORKER || config.workers_dev !== true ||
       config.compatibility_date !== "2026-09-24" ||
+      JSON.stringify(config.rules) !== JSON.stringify([{ type: "Text", globs: ["**/_headers"], fallthrough: true }]) ||
       !Array.isArray(config.routes) || config.routes.length !== 0 ||
       config.main !== "index.ts" ||
       Object.keys(config.assets ?? {}).sort().join(",") !== "binding,directory,html_handling,not_found_handling" ||

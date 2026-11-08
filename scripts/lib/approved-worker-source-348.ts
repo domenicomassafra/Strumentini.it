@@ -34,5 +34,5 @@ export const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.fre
   // A second, explicitly nonproduction Wrangler file is itself executable
   // deployment policy. Exact bytes are pinned so routes, assets or D1 cannot
   // silently acquire production resources under a harmless config filename.
-  "worker/wrangler.staging.jsonc": "4f6454fbd712d8d539522a7741a73711d7480bb25a91947fdf4a59a8ba802950",
+  "worker/wrangler.staging.jsonc": "d3a651888913200a85aa4ddc851042f6d559433b8934aad0b33bc9d92654b878",
 });
