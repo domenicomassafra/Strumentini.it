@@ -84,7 +84,10 @@ const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze
   // 2026-10-23 #274 reviewed: retain the local Worker/RGBA input for warmed
   // inference and explicit release; same fixed GET paths, no new transport.
   "src/components/tools/image-visual/PortraitMattingPanel274.tsx": "7c7cd655c9ac848d0591267d87a081ecf488c72e2d05960625ecaf112f48e83b",
-  "src/components/tools/research-knowledge/ViesVerificationPanel.tsx": "8e5032a786b97b117b7c079ffd7077ba2f70118fecf0c735b17bd5a05425e147",
+  // #556 reviewed: same explicit opt-in POST /api/vies/check with the same body
+  // and the same provenance contract; only the unavailable reason code is now
+  // rendered as an Italian sentence instead of a raw machine token.
+  "src/components/tools/research-knowledge/ViesVerificationPanel.tsx": "ea224a0b9e0f6cb9075f5ec1d8b01bd76fd4a6e78a3f5bddabe4e0b6aadd84a4",
   "src/engines/pdf/pdf-to-pptx-255.ts": "d810c0cbb05f8d59810bcbf04dc070a953e800e12fdba5b94d073493416b2a6c",
   "src/engines/url-marketing/index.ts": "b21ca7a9fe2002ba75e4a40e83a824e40bf06a57833f5eec58a59f09dbfae521",
   // 2026-10-11 reviewed #340 UI-only island/CSS change: the existing single
