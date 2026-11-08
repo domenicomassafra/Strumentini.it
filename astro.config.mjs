@@ -4,9 +4,11 @@ import sitemap from "@astrojs/sitemap";
 import { copyFile } from "node:fs/promises";
 import { loadEnv } from "vite";
 import { isPublicSitemapUrl } from "./src/seo/sitemap-routes.ts";
+import { applyContentSecurityPolicy } from "./scripts/lib/content-security-policy-573.ts";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 
@@ -37,6 +39,17 @@ export default defineConfig({
         // /sitemap.xml too. Run after the sitemap integration's build hook.
         "astro:build:done": async ({ dir }) => {
           await copyFile(new URL("sitemap-0.xml", dir), new URL("sitemap.xml", dir));
+        },
+      },
+    },
+    {
+      // #573: Cloudflare serves `dist/_headers` verbatim, so the CSP has to be
+      // materialised here from the inline scripts this very build emitted.
+      name: "content-security-policy-573",
+      hooks: {
+        "astro:build:done": async ({ dir }) => {
+          const applied = await applyContentSecurityPolicy(fileURLToPath(dir));
+          console.log(`CSP #573: ${applied.scriptHashCount} inline script hash(es) over ${applied.pages} page(s)`);
         },
       },
     },
