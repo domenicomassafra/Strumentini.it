@@ -59,6 +59,14 @@ export function prepublishSteps404(expectedSha: string, policy420 = releasePolic
     { name: "astro-source-validation", program: "npm", args: ["run", "check"], publishes: false },
     { name: "cumulative-build", program: "npm", args: ["run", "build"], publishes: false },
     { name: "cloudflare-static-dry-run", program: "npm", args: ["run", "deploy:check"], publishes: false },
+    // A rebuild can change Astro-generated HTML even at the same Git SHA.
+    // Prove rollback using these exact production dist bytes on the isolated
+    // staging Worker, then restore its previous staging deployment.
+    ...(policy420 ? [{
+      name: "exact-production-artifact-rollback", program: "node",
+      args: ["node_modules/tsx/dist/cli.mjs", "scripts/staging-rollback-420.ts", "--release-artifact"],
+      publishes: false,
+    }] : []),
     ...admission,
     { name: "wrangler-production-deploy", program: "node_modules/.bin/wrangler", args: ["deploy"], publishes: true },
   ];

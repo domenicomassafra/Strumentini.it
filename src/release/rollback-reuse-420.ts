@@ -62,9 +62,6 @@ export function assessRollbackReuse420(input: RollbackReuse420Input): RollbackRe
   }
   const provenRevision = asString(receipt.currentRevision);
   if (provenRevision === undefined) return { reused: false, record: null, finding: null };
-  // The receipt already belongs to this source: nothing to reuse.
-  if (provenRevision === input.revision) return { reused: false, record: null, finding: null };
-
   if (!HEX64.test(input.distManifestSha256)) {
     return blocked("ROLLBACK_MANIFEST_UNREADABLE", "compiled dist manifest is not a sha256 digest; a fresh staging rollback is required");
   }
@@ -81,6 +78,10 @@ export function assessRollbackReuse420(input: RollbackReuse420Input): RollbackRe
       "the compiled dist differs from the source of the verified rollback receipt: a fresh staging rollback is required",
     );
   }
+  // The same Git revision can generate different published bytes (Astro island
+  // IDs, staging URLs and public site keys). A matching SHA alone must never
+  // admit an unproven production artifact.
+  if (provenRevision === input.revision) return { reused: false, record: null, finding: null };
   return {
     reused: true,
     finding: null,
