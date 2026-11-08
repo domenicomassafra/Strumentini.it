@@ -33,7 +33,9 @@ export const FREE_CLOUDFLARE_LIMITS_2026_10_11 = Object.freeze({
 // #573 Cloudflare's static asset policy is executable response configuration.
 // Pin its exact bytes just like the Worker implementation; a future CSP change
 // or weaker HSTS needs a deliberate new review. Pre-merge review remains separate.
-const STATIC_SECURITY_HEADERS_SHA256 = "7063cdc8a23500359dac16e81e00ff0ee959ef4ff43b4241c77ac571f962c48d";
+// #574 appends per-path cache rules in their own blocks; the global `/*` block
+// keeps sole ownership of the security headers.
+const STATIC_SECURITY_HEADERS_SHA256 = "414d0f429fba76f786a098dfd39cfc2e0456b8f156bb1a295e0752e90c7361ed";
 
 const BROWSER_TRANSPORT_SHA256: Readonly<Record<string, string>> = Object.freeze({
   // 2026-10-12 #328 reviewed: same GET /api/auth/session and same POST

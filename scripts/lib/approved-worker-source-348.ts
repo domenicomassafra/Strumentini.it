@@ -25,7 +25,9 @@ export const WORKER_SOURCE_SHA256: Readonly<Record<string, string>> = Object.fre
   "worker/migrations/0003_favorite_sync.sql": "b9e02301f5b76766039487dab65c57bf06b3c982c23cac3bcfc48dfa1747b6ea",
   "worker/migrations/0004_favorite_operation_ids.sql": "19c9a58d9f5e6deb5fab6dafe671fd1a8a9d0c0ad653c285fedbfbc3b8ed1aad",
   "worker/password-kdf.ts": "871aaa3142cbe2f51925105fcf99fd65f1d8a1a743c4535ae94bd3b0934e2f54",
-  "worker/security-headers.ts": "f126c251284fd8ea8c0a026a671daedef532dfd4ecb2887c6bf17686119326f1",
+  // #574: only the global `/*` block of public/_headers is inherited by API
+  // responses, so per-path cache rules cannot overwrite their no-store policy.
+  "worker/security-headers.ts": "ed9da62acc019084514b1a1c8cd3bc4e36aff6c1eafb70fa953755a4407b7e74",
   "worker/turnstile.ts": "bd7434f8233b9fe0e99fc42bdc5a4b11f919649364b58258b6ae77f0fcf32124",
   "worker/validation.ts": "8bdffe2dcc64ab1793b605e08c18920c54bb4f4128e77ef287f7ae3dc731e808",
   // #554: VIES accepts only SOAP 1.1 checkVatResponse with exact namespace,
