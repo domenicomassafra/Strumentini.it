@@ -1,17 +1,11 @@
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { cloudflareTest, readD1Migrations } from "@cloudflare/vitest-plugin";
 import { defineConfig } from "vitest/config";
+import { securityHeadersTextPlugin } from "./scripts/lib/vitest-security-headers-plugin.ts";
 
 // Entirely local bindings: no production/staging Wrangler config or D1 IDs.
 export default defineConfig({
-  plugins: [{
-    name: "security-headers-text-module",
-    enforce: "pre",
-    load(id) {
-      if (id.endsWith("/public/_headers")) return `export default ${JSON.stringify(readFileSync(id, "utf8"))}`;
-    },
-  }, cloudflareTest(async () => ({
+  plugins: [securityHeadersTextPlugin(), cloudflareTest(async () => ({
     main: "./worker/index.ts",
     miniflare: {
       compatibilityDate: "2026-09-24",
