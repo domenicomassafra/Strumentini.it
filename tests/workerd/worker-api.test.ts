@@ -47,6 +47,17 @@ describe("#285 real workerd Worker/D1/DO integration", () => {
   it("preserves anonymous JSON session, 404/405 Allow and local asset fallback", async () => {
     const session = await dispatch("GET", "/api/auth/session");
     expect(session.status).toBe(200);
+    for (const [name, expected] of Object.entries({
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "x-frame-options": "DENY",
+    })) {
+      expect(session.headers.get(name)).toBe(expected);
+    }
+    expect(session.headers.get("permissions-policy")).toContain("camera=(self)");
+    // A global enforcing CSP is held until local WASM tools are admitted.
+    expect(session.headers.has("content-security-policy")).toBe(false);
     expect(session.headers.get("content-type")).toBe("application/json; charset=utf-8");
     expect(session.headers.get("cache-control")).toBe("no-store");
     expect(session.headers.has("set-cookie")).toBe(false);
@@ -54,6 +65,7 @@ describe("#285 real workerd Worker/D1/DO integration", () => {
 
     const unknown = await dispatch("GET", "/api/unknown");
     expect(unknown.status).toBe(404);
+    expect(unknown.headers.get("x-content-type-options")).toBe("nosniff");
     expect((await unknown.json() as { error: string }).error).toBeTruthy();
     const method = await dispatch("POST", "/api/auth/session", {});
     expect(method.status).toBe(405);

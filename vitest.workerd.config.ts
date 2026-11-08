@@ -1,10 +1,11 @@
 import { resolve } from "node:path";
 import { cloudflareTest, readD1Migrations } from "@cloudflare/vitest-plugin";
 import { defineConfig } from "vitest/config";
+import { securityHeadersTextPlugin } from "./scripts/lib/vitest-security-headers-plugin.ts";
 
 // Entirely local bindings: no production/staging Wrangler config or D1 IDs.
 export default defineConfig({
-  plugins: [cloudflareTest(async () => ({
+  plugins: [securityHeadersTextPlugin(), cloudflareTest(async () => ({
     main: "./worker/index.ts",
     miniflare: {
       compatibilityDate: "2026-09-24",

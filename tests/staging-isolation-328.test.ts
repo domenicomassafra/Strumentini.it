@@ -18,6 +18,7 @@ describe("#328 dedicated Cloudflare staging boundaries", () => {
     expect(stage.routes).toEqual([]);
     expect(stage.workers_dev).toBe(true);
     expect(stage.main).toBe("index.ts");
+    expect(stage.rules).toEqual(prod.rules);
   });
 
   it("has an independently provisioned D1 binding", () => {
