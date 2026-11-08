@@ -218,7 +218,7 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
     const policy = prepublishSteps404(SHA, true);
     expect(policy.map((step) => step.name)).toEqual([
       "source-and-engine-tests", "astro-source-validation",
-      "cumulative-build", "cloudflare-static-dry-run", "owner-policy-automatic-admission",
+      "cumulative-build", "cloudflare-static-dry-run", "exact-production-artifact-rollback", "owner-policy-automatic-admission",
       "wrangler-production-deploy",
     ]);
     expect(policy.find((step) => step.name === "owner-policy-automatic-admission")?.args)
