@@ -1,10 +1,5 @@
-/**
- * Worker entry point.
- *
- * `/api/**` is served by this worker; every other path is handed to the static
- * assets binding untouched, so the site keeps behaving exactly as it does
- * without a worker. Errors inside `/api/**` are always JSON, never HTML.
- */
+/** JSON API under /api/**; all other routes use Cloudflare static assets. */
+import { secureApiResponse } from "./security-headers";
 import {
   PASSWORD_ITERATIONS,
   SESSION_LAST_SEEN_REFRESH_MS,
@@ -891,14 +886,17 @@ export default {
   async fetch(request: Request, env: Env, execution: ExecutionContext): Promise<Response> {
     const path = normalizePath(new URL(request.url).pathname);
     if (!isApiPath(path)) return await env.ASSETS.fetch(request);
+    let response: Response;
     try {
-      return await handleApiRequest(request, env, execution);
+      response = await handleApiRequest(request, env, execution);
     } catch (error) {
       if (error instanceof PasswordKdfUnavailable) {
-        return errorResponse(503, MESSAGES.internal);
+        response = errorResponse(503, MESSAGES.internal);
+      } else {
+        console.error("api request failed", error);
+        response = errorResponse(500, MESSAGES.internal);
       }
-      console.error("api request failed", error);
-      return errorResponse(500, MESSAGES.internal);
     }
+    return secureApiResponse(response);
   },
 };

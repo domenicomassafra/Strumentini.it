@@ -3,6 +3,7 @@
   "name": "strumentini-328-staging-20261015",
   "compatibility_date": "2026-09-24",
   "main": "index.ts",
+  "rules": [{ "type": "Text", "globs": ["**/_headers"], "fallthrough": true }],
   // This file deliberately has NO production custom-domain route.
   "workers_dev": true,
   "routes": [],

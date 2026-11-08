@@ -156,6 +156,23 @@ describe("#348 fail-closed source inventory", () => {
       '"html_handling": "auto-trailing-slash", "run_worker_first": true');
     const audit = auditStaticSurface(project, (path) => path === "wrangler.jsonc" ? changed : source(path));
     expect(audit.violations).toContain("WRANGLER_CONFIG_DRIFT");
+    for (const [needle, replacement] of [
+      ['"globs": ["**/_headers"]', '"globs": ["**/*"]'],
+      ['"fallthrough": true', '"fallthrough": false'],
+    ] as const) {
+      const altered = source("wrangler.jsonc").replace(needle, replacement);
+      expect(altered).not.toBe(source("wrangler.jsonc"));
+      expect(auditStaticSurface(project, (path) => path === "wrangler.jsonc" ? altered : source(path)).violations)
+        .toContain("WRANGLER_CONFIG_DRIFT");
+    }
+  });
+  it("pins the exact static security header policy against later silent weakening", () => {
+    const path = "public/_headers";
+    const current = source(path);
+    const tampered = current.replace("max-age=31536000; includeSubDomains", "max-age=0");
+    expect(tampered).not.toBe(current);
+    expect(auditStaticSurface(project, (p) => p === path ? tampered : source(p)).violations)
+      .toContain("HEADER_POLICY_DRIFT");
   });
   it("pins the reviewed internal-only SQLite KDF binding without granting a public DO or provider bypass", () => {
     const prod = source("wrangler.jsonc");
