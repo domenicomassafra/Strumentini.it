@@ -56,8 +56,8 @@ describe("#285 real workerd Worker/D1/DO integration", () => {
       expect(session.headers.get(name)).toBe(expected);
     }
     expect(session.headers.get("permissions-policy")).toContain("camera=(self)");
-    expect(session.headers.get("content-security-policy")).toContain("frame-ancestors 'none'");
-    expect(session.headers.get("content-security-policy")).not.toContain("'unsafe-eval'");
+    // A global enforcing CSP is held until local WASM tools are admitted.
+    expect(session.headers.has("content-security-policy")).toBe(false);
     expect(session.headers.get("content-type")).toBe("application/json; charset=utf-8");
     expect(session.headers.get("cache-control")).toBe("no-store");
     expect(session.headers.has("set-cookie")).toBe(false);
