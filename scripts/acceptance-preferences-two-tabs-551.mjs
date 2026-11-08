@@ -18,7 +18,7 @@
  * script; it is deleted on exit.
  */
 import { strict as assert } from "node:assert";
-import { spawn } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -32,6 +32,7 @@ const port = Number(process.env.P551_PORT ?? 18551);
 const externalOrigin = process.env.P551_ORIGIN;
 const origin = externalOrigin ?? `http://127.0.0.1:${port}`;
 const root = resolve(import.meta.dirname, "..");
+const astroBin = resolve(root, "node_modules/.bin/astro");
 
 /** Favourites, recents and packs written by the second tab. */
 const ADDED_FAVORITE = "add-subtract-days";
@@ -56,24 +57,58 @@ const VIEWPORTS = [
   },
 ];
 
-let server;
+let serverPid;
 let browser;
 let checks = 0;
 const pass = (description) => { checks += 1; console.log(`PASS ${description}`); };
 
+/**
+ * `astro preview` runs the server as its own background process, so the pid to
+ * stop is the one the CLI reports, not the pid of the command that started it.
+ */
+function previewStatus() {
+  return new Promise((resolve) => {
+    execFile(astroBin, ["preview", "status"], { cwd: root }, (error, stdout, stderr) => {
+      resolve(`${stdout}${stderr}`);
+    });
+  });
+}
+
+async function previewPid() {
+  const status = await previewStatus();
+  if (!status.includes(`127.0.0.1:${String(port)}`)) return undefined;
+  const match = /pid (\d+)/u.exec(status);
+  return match === null ? undefined : Number(match[1]);
+}
+
+function stopPreview() {
+  if (serverPid === undefined) return;
+  const recorded = serverPid;
+  serverPid = undefined;
+  try {
+    process.kill(recorded, "SIGTERM");
+  } catch { /* already gone */ }
+}
+
 async function startPreview() {
-  server = spawn("./node_modules/.bin/astro", ["preview", "--host", "127.0.0.1", "--port", String(port)], {
+  const existing = await previewPid();
+  if (existing !== undefined) {
+    throw new Error(`a preview is already running on port ${String(port)} (pid ${String(existing)}): stop it or set P551_PORT/P551_ORIGIN`);
+  }
+  spawn(astroBin, ["preview", "--host", "127.0.0.1", "--port", String(port)], {
     cwd: root,
-    stdio: ["ignore", "ignore", "inherit"],
+    stdio: "ignore",
+    detached: process.platform !== "win32",
   });
   for (let attempt = 0; attempt < 120; attempt += 1) {
-    if (server.exitCode !== null) throw new Error(`astro preview exited early (${server.exitCode})`);
     try {
-      if ((await fetch(`${origin}/impostazioni/`)).ok) return;
+      if ((await fetch(`${origin}/impostazioni/`)).ok) break;
     } catch { /* the preview is still starting */ }
+    if (attempt === 119) throw new Error("astro preview never became ready: run `npm run build` first");
     await sleep(500);
   }
-  throw new Error("astro preview never became ready: run `npm run build` first");
+  serverPid = await previewPid();
+  if (serverPid === undefined) throw new Error("astro preview did not report the pid it started");
 }
 
 /** The durable record every page of the site shares. */
@@ -209,5 +244,5 @@ try {
   console.log(`\n#551 two-tab preferences smoke: ${checks} checks PASS on desktop and iPhone viewports (${origin})`);
 } finally {
   await browser?.close();
-  server?.kill("SIGTERM");
+  stopPreview();
 }
