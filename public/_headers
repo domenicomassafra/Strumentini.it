@@ -1,0 +1,16 @@
+# Astro gives compiled assets content-hashed filenames, so they can be cached across releases.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# These static assets have stable filenames; allow them to refresh after one week.
+/fonts/*
+  Cache-Control: public, max-age=604800
+
+/models/*
+  Cache-Control: public, max-age=604800
+
+/ocr-246/*
+  Cache-Control: public, max-age=604800
+
+/ocr-395/*
+  Cache-Control: public, max-age=604800
