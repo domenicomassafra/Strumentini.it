@@ -7,6 +7,7 @@ import { publicIndexPaths } from "../src/seo/public-discovery";
 import { auditBundleNoticeCoverage366, auditDistributedNotices366, DONOR_NOTICES_366 } from "./donor-notices-366";
 import { auditLockedPackages366, parseAssetPins366 } from "./donor-provenance-366";
 import { auditDistributedAssets366 } from "./donor-dist-inventory-366";
+import { verifyBuiltContentSecurityPolicy } from "./lib/content-security-policy-573";
 
 const root = resolve(import.meta.dirname, "..");
 const updateBaseline = process.argv.includes("--update-baseline");
@@ -306,6 +307,7 @@ if (noticeCoverage.some((item) => item.status === "NO_GO")) {
     noticeCoverage.filter((item) => item.status === "NO_GO").map((item) => item.package).join(", "));
 }
 
+const csp = await verifyBuiltContentSecurityPolicy(dist);
 console.log(
   `build inspection PASS: ${engineChunks.length} lazy Business Day chunk(s); ` +
     `${baseline.jsAssetCount} JS asset(s), ${baseline.totalJsBytes} B total, ${baseline.initialJsBytes} B initial route JS; ` +
@@ -313,5 +315,6 @@ console.log(
     `${DONOR_NOTICES_366.length} distributed donor notice(s); ` +
     `${distribution366.verifiedFiles} pinned distribution file(s), ${distribution366.bundledPackages.length} mapped npm donor(s); ` +
     `${discoveryUrlMode}; ` +
+    `${csp.scriptHashCount} CSP inline script hash(es) over ${csp.pages} page(s); ` +
     `historical baseline ${updateBaseline ? "updated" : "preserved"}`,
 );
