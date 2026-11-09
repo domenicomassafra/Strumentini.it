@@ -181,9 +181,8 @@ guida **Safari.app 26.6.2** del Mac Studio via SafariDriver
 Entrambe le foto sono state lette: payload esatto, `Livello M` e `Livello Q`,
 `Maschera: non determinata`, i due avvisi, chunk `zxing-adapter` richiesto
 solo dopo il submit, zero richieste offsite, overflow 0, 0,26–0,83 s.
-Ricevuta `quality/receipts/safari-webdriver-279.json`. Le due schermate
-(`safari-279-qr-reader-390.png` e `safari-279-qr-reader-390-lowcontrast.png`)
-restano consultabili nella storia Git al commit `c66f0dfeb33ed38b1e5b3893b2b44d7141f80449`.
+Ricevuta `quality/receipts/safari-webdriver-279.json`, schermate
+`safari-279-qr-reader-390.png` e `safari-279-qr-reader-390-lowcontrast.png`.
 Due limiti sono registrati nella ricevuta: è Safari desktop in una finestra
 da 390 px e non iOS; e l'iniezione file nativa di SafariDriver produce un
 file che la pagina non riesce a leggere (`arrayBuffer` →
