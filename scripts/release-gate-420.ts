@@ -143,6 +143,7 @@ async function main(): Promise<void> {
     policy: {
       id: OWNER_RELEASE_POLICY_420.id,
       decidedAt: OWNER_RELEASE_POLICY_420.decidedAt,
+      releaseAuthorization: OWNER_RELEASE_POLICY_420.releaseAuthorization,
       statement: OWNER_RELEASE_POLICY_420.statement,
       mobileDecision: OWNER_RELEASE_POLICY_420.mobileDecision,
       requiredBrowserEngines: OWNER_RELEASE_POLICY_420.requiredBrowserEngines,

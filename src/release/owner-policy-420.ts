@@ -1,17 +1,5 @@
-/**
- * Owner release policy 20/10/2026 (Strumentini.it #162/#80).
- *
- * The owner changed the release criterion from per-tool Gold receipts and
- * physical-device receipts to *automatic* evidence:
- *   «pubblica con test automatici verdi» — full suite, browser and simulated
- *   phones green, rollback actually proven; a physical phone is optional after
- *   the release. «basta simulatore ed emulatore» for the mobile lanes.
- *
- * This module never fabricates a receipt. It states which evidence the policy
- * requires, which evidence the owner explicitly waived, and evaluates the
- * receipts that exist. Waived evidence is reported as
- * WAIVED_OWNER_DECISION — never as PASS.
- */
+/** Release evidence policy: 20 Oct owner decision, superseded for Android AVD
+ * by decision 50 (10 Nov). Deferred evidence remains visible as warnings. */
 import { createHash } from "node:crypto";
 import type { ReleaseFinding } from "./validation";
 
@@ -19,22 +7,31 @@ export const OWNER_RELEASE_POLICY_420 = {
   schemaVersion: 1,
   id: "owner-20261020",
   decidedAt: "2026-10-20",
+  releaseAuthorization: {
+    decision: 50,
+    decidedAt: "2026-11-10",
+    source: "/Users/domenico/.dstack/docs/evidence/orchestrator-owner-decisions.md",
+    statement: "Rilascio dopo prove browser/responsive pertinenti dei flussi principali; emulatore Android successivo e non bloccante.",
+  },
   statement:
     "Pubblica con test automatici verdi: suite completa, prove browser e telefoni simulati verdi e rollback effettivamente provato prima della pubblicazione. Il telefono fisico è opzionale dopo la release. Se manca anche un gate, mantenere NO_GO e issue aperta.",
-  mobileDecision: "basta simulatore ed emulatore",
+  mobileDecision: "WebKit mobile e responsive prima del rilascio; Android AVD dopo il rilascio (decisione 50, 10/11/2026)",
   requiredGates: ["source", "browser", "simulated-mobile", "rollback"] as const,
   waivedGates: [
     {
       gate: "gold-per-tool",
       replaces: "GOLD_*",
-      reason:
-        "Per-tool Gold receipts are a manual certification inventory. The owner replaced them as a release criterion with the automatic suite; they stay visible but no longer block promotion.",
+      reason: "Per-tool Gold receipts remain visible but do not block automatic release admission.",
     },
     {
       gate: "physical-device",
       replaces: "PHYSICAL_*",
-      reason:
-        "The owner made a physical phone optional after the release and accepted simulator/emulator evidence for the mobile lanes.",
+      reason: "Physical phones are optional after release under the 20 Oct owner decision.",
+    },
+    {
+      gate: "android-avd-post-release",
+      replaces: "POLICY_MOBILE_ANDROID_*",
+      reason: "Owner decision 50 (2026-11-10) explicitly moves Android AVD proof after production release; preserve missing or stale evidence as warnings.",
     },
   ],
   /** Engines the automatic browser matrix must prove on the release commit. */
@@ -327,7 +324,11 @@ export function assessOwnerPolicy420(evidence: OwnerPolicyEvidence): OwnerPolicy
   findings.push(...validateOwnerAndroidPolicy420({
     receipt: evidence.androidReceipt, path: evidence.androidReceiptPath,
     revision: evidence.revision, distPageHashes: evidence.distPageHashes,
-  }));
+  }).map((item) => ({
+    ...item,
+    severity: "warning" as const,
+    message: `DEFERRED_OWNER_DECISION_50 (2026-11-10): ${item.message}`,
+  })));
   findings.push(...validateOwnerIosPolicy420({
     receipt: evidence.iosReceipt, path: evidence.iosReceiptPath,
     revision: evidence.revision, distPageHashes: evidence.distPageHashes,

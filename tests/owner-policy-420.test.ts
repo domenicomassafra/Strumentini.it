@@ -98,7 +98,8 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
   it("records the owner's words instead of reinterpreting them", () => {
     expect(OWNER_RELEASE_POLICY_420.statement).toContain("Pubblica con test automatici verdi");
     expect(OWNER_RELEASE_POLICY_420.statement).toContain("telefono fisico è opzionale dopo la release");
-    expect(OWNER_RELEASE_POLICY_420.mobileDecision).toBe("basta simulatore ed emulatore");
+    expect(OWNER_RELEASE_POLICY_420.mobileDecision).toContain("Android AVD dopo il rilascio");
+    expect(OWNER_RELEASE_POLICY_420.releaseAuthorization.decision).toBe(50);
     expect(OWNER_RELEASE_POLICY_420.requiredBrowserEngines).toEqual(["chrome", "chromium", "firefox", "webkit"]);
   });
 
@@ -115,6 +116,7 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
     expect(result.waived).toEqual([
       { gate: "gold-per-tool", status: "WAIVED_OWNER_DECISION" },
       { gate: "physical-device", status: "WAIVED_OWNER_DECISION" },
+      { gate: "android-avd-post-release", status: "WAIVED_OWNER_DECISION" },
     ]);
     expect(JSON.stringify(result.waived)).not.toContain("PASS");
   });
@@ -153,6 +155,25 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
     expect(validateOwnerAndroidPolicy420({
       receipt: androidReceipt(), path: "android.json", revision: SHA, distPageHashes: pages,
     })).toEqual([]);
+  });
+
+  it("admits release without Android AVD evidence under decision 50 but keeps other gates", () => {
+    const common = {
+      revision: SHA, sourceFingerprint: FINGERPRINT, workingTreeDirty: false,
+      browserReceipt: browserReceipt(), browserReceiptPath: "browser.json",
+      androidReceipt: undefined, androidReceiptPath: "android.json",
+      iosReceipt: iosReceipt(), iosReceiptPath: "ios.json", distPageHashes: pages,
+      rollbackReceipt: rollbackReceipt(), rollbackReceiptPath: "rollback.json",
+    };
+    const deferred = assessOwnerPolicy420(common);
+    expect(deferred.status).toBe("PASS");
+    expect(deferred.gates["simulated-mobile"]).toBe("PASS");
+    expect(deferred.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: "POLICY_MOBILE_ANDROID_MISSING", severity: "warning" }),
+    ]));
+    expect(assessOwnerPolicy420({ ...common, iosReceipt: undefined }).status).toBe("NO_GO");
+    expect(assessOwnerPolicy420({ ...common, browserReceipt: undefined }).status).toBe("NO_GO");
+    expect(assessOwnerPolicy420({ ...common, rollbackReceipt: undefined }).status).toBe("NO_GO");
   });
 
   it("refuses an iOS receipt whose compiled page hashes no longer match the release", () => {
