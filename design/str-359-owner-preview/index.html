@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>STR-359 · Confronto risorse, privacy ed errori</title>
+  <link rel="stylesheet" href="./preview.css">
+  <script src="./preview.js" defer></script>
+</head>
+<body>
+  <div class="demo-notice" role="note">Studio STR-359 · Proposta grafica, non il sito pubblicato · Nessun file viene letto, elaborato o inviato.</div>
+  <header class="studio-bar" aria-label="Controlli per confrontare le proposte">
+    <div class="studio-intro"><strong>Strumentini.it / Laboratorio visivo</strong><span>Stesso contenuto, due modi di orientare le persone.</span></div>
+    <div class="segmented" role="group" aria-label="Scegli una variante">
+      <button type="button" data-variant-choice="guide" aria-pressed="true">A · Guida chiara</button>
+      <button type="button" data-variant-choice="path" aria-pressed="false">B · Percorso guidato</button>
+    </div>
+    <div class="segmented" role="group" aria-label="Scegli una pagina">
+      <button type="button" data-view-choice="resources" aria-pressed="true">Risorse e privacy</button>
+      <button type="button" data-view-choice="error" aria-pressed="false">Errore 404</button>
+    </div>
+  </header>
+
+  <div id="prototype" data-variant="guide">
+    <header class="site-header">
+      <a class="site-logo" href="?variant=guide&view=resources" data-home-link aria-label="Vai alla pagina Risorse di questa anteprima"><span class="logo-box" aria-hidden="true">s.</span>strumentini<span class="logo-it">.it</span></a>
+      <span class="header-strap">Strumenti semplici, risposte chiare.</span>
+      <span class="header-note">Anteprima senza operazioni reali</span>
+    </header>
+
+    <div class="layout">
+      <nav class="side-nav" aria-label="Sezioni dimostrative">
+        <p class="nav-eyebrow">ORIENTATI</p>
+        <button type="button" data-view-choice="resources" aria-current="page">01 <span>Come funziona</span></button>
+        <button type="button" data-view-choice="error">02 <span>Pagina mancante</span></button>
+        <div class="nav-fact"><span class="small-square" aria-hidden="true">✓</span><strong>La privacy comincia prima del clic.</strong><p>Ogni strumento deve dichiarare quando i dati restano qui e quando usa la rete.</p></div>
+      </nav>
+
+      <main id="preview-main" tabindex="-1">
+        <section data-view="resources" aria-labelledby="resources-title">
+          <div class="hero">
+            <div class="hero-copy">
+              <p class="eyebrow">RISORSE <span aria-hidden="true">/</span> LE RISPOSTE CHE SERVONO</p>
+              <h1 id="resources-title">Capire cosa succede, prima di iniziare.</h1>
+              <p class="lead">Dove vengono elaborati i file, come leggere un errore e quando puoi riprovare. Le informazioni essenziali, al posto giusto.</p>
+              <div class="hero-tags" aria-label="Aspetti trattati"><span>File sul dispositivo</span><span>Stati comprensibili</span><span>Rete dichiarata</span></div>
+            </div>
+            <aside class="hero-aside" aria-label="Cosa dichiara il prodotto"><span class="aside-symbol" aria-hidden="true">↗</span><p class="aside-kicker">Prima di ogni operazione</p><strong>La modalità è esplicita.</strong><p>Un'utility che usa la rete deve dirlo. Uno strumento locale deve lavorare nel browser.</p></aside>
+          </div>
+
+          <div class="content-grid">
+            <article class="surface privacy-surface" aria-labelledby="privacy-title">
+              <p class="section-index">01 / I TUOI DATI</p>
+              <h2 id="privacy-title">Privacy, spiegata senza ambiguità.</h2>
+              <p>Per gli strumenti dichiarati locali, i file selezionati vengono letti ed elaborati nel browser. Non esiste un caricamento automatico dei file sul server.</p>
+              <dl class="fact-list">
+                <div><dt><span class="fact-icon" aria-hidden="true">⌂</span> Sul dispositivo</dt><dd>File e risultati temporanei delle operazioni locali.</dd></div>
+                <div><dt><span class="fact-icon" aria-hidden="true">↗</span> Funzioni con rete</dt><dd>Accesso, sincronizzazione dei preferiti e controlli verso fonti esterne sono distinti: lo strumento deve spiegare eventuali invii.</dd></div>
+                <div><dt><span class="fact-icon" aria-hidden="true">◎</span> Salvataggio facoltativo</dt><dd>Preferiti e preferenze possono restare nel browser; l'account è opzionale per gli strumenti locali.</dd></div>
+              </dl>
+              <p class="small-note">Queste sono indicazioni per il design: la versione definitiva manterrà i dettagli esatti della pagina Risorse attuale.</p>
+            </article>
+
+            <article class="surface states-surface" aria-labelledby="states-title">
+              <p class="section-index">02 / LEGGI LO STATO</p>
+              <h2 id="states-title">Ogni messaggio dice cosa è successo.</h2>
+              <p>Seleziona uno stato per confrontare il linguaggio del messaggio. Si tratta di esempi visuali, senza elaborazione.</p>
+              <div class="state-options" role="group" aria-label="Mostra lo stato dimostrativo">
+                <button type="button" data-state-choice="empty" aria-pressed="false">In attesa</button>
+                <button type="button" data-state-choice="loading" aria-pressed="false">In corso</button>
+                <button type="button" data-state-choice="cancelled" aria-pressed="false">Annullata</button>
+                <button type="button" data-state-choice="error" aria-pressed="true">Errore</button>
+                <button type="button" data-state-choice="success" aria-pressed="false">Completata</button>
+              </div>
+              <div class="status-result" data-state="error" aria-live="polite" aria-atomic="true">
+                <span class="status-glyph" aria-hidden="true">!</span>
+                <div><span class="status-caption">Esempio illustrativo · nessun file elaborato</span><h3 data-state-title>Archivio non leggibile</h3><p data-state-description>Non è stato possibile verificare lo ZIP. Controlla che il file sia completo e riprova.</p></div>
+              </div>
+              <p class="small-note">Un esito positivo compare solo dopo una vera operazione. Questa anteprima non produce risultati scaricabili.</p>
+            </article>
+
+            <article class="surface steps-surface" aria-labelledby="steps-title">
+              <p class="section-index">03 / COSA FARE</p>
+              <h2 id="steps-title">Un percorso breve, anche se qualcosa si ferma.</h2>
+              <ol class="step-list"><li><span aria-hidden="true">1</span><div><strong>Scegli uno strumento</strong><p>Leggi se lavora in locale o se richiede la rete.</p></div></li><li><span aria-hidden="true">2</span><div><strong>Controlla il messaggio</strong><p>Attesa, elaborazione, annullamento e rifiuto sono stati distinti.</p></div></li><li><span aria-hidden="true">3</span><div><strong>Riparti quando serve</strong><p>Dopo un errore, correggi l'input e avvia una nuova elaborazione.</p></div></li></ol>
+            </article>
+          </div>
+        </section>
+
+        <section data-view="error" aria-labelledby="error-title" hidden>
+          <div class="error-layout">
+            <div class="error-main">
+              <p class="eyebrow">PAGINA NON DISPONIBILE <span aria-hidden="true">/</span> CODICE 404</p>
+              <div class="error-code" aria-hidden="true">404<span>.</span></div>
+              <h1 id="error-title">Qui non c'è la pagina che cercavi.</h1>
+              <p class="lead">L'indirizzo potrebbe essere cambiato o contenere un errore. I tuoi dati non sono stati elaborati da questa schermata.</p>
+              <div class="error-actions"><button type="button" class="action-primary" data-next-view="resources">Vai alle risorse <span aria-hidden="true">→</span></button><button type="button" class="action-secondary" data-next-view="resources">Capisci come funziona</button></div>
+            </div>
+            <aside class="error-side"><p class="section-index">COME RIPARTIRE</p><h2>Ti aiutiamo a trovare il prossimo passo.</h2><ol><li>Controlla l'indirizzo della pagina.</li><li>Nel sito reale, puoi tornare al catalogo degli strumenti.</li><li>Se un'operazione era aperta, verifica se il risultato è ancora nella scheda.</li></ol><p class="small-note">Pulsanti di questa anteprima: navigano solo tra le schermate dimostrative.</p></aside>
+          </div>
+          <div class="error-bottom"><span aria-hidden="true">↖</span><p>Un errore di navigazione è diverso da un errore di elaborazione: la pagina deve spiegare quale problema è avvenuto.</p></div>
+        </section>
+      </main>
+    </div>
+    <footer class="site-footer"><span>Strumentini.it · Confronto di design STR-359</span><span>Stati e contenuti dimostrativi · Nessun caricamento dati</span></footer>
+  </div>
+</body>
+</html>
