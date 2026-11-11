@@ -6,6 +6,7 @@ import { createServer } from "node:http";
 import { copyFile, mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 import { _android } from "playwright";
+import { chromium } from "@playwright/test";
 import sharp from "sharp";
 
 const root = resolve(import.meta.dirname, "..");
@@ -13,6 +14,11 @@ const dist = resolve(root, "dist");
 const temp = resolve(root, ".tmp-str277");
 const adbBin = process.env.ANDROID277_ADB ?? resolve(process.env.HOME ?? "/home/udodo", "Android/Sdk/platform-tools/adb");
 const port = 18875;
+// Loopback port of the CDP bridge used by the fallback launcher below; the host
+// workstation may already hold 9222 with its own Chrome, so operators can pick
+// another free port. Every assertion of this lane stays identical either way.
+const cdpPort = Number(process.env.ANDROID277_CDP_PORT ?? 9222);
+const nativeLaunchMs = Number(process.env.ANDROID277_NATIVE_LAUNCH_MS ?? 45_000);
 const fixture = resolve(root, "tests/fixtures/android-chrome-avd-277-input.png");
 const outputFile = resolve(root, "quality/receipts/android-chrome-avd-277-output.jpg");
 const receiptFile = resolve(root, "quality/receipts/android-chrome-avd-277.json");
@@ -106,7 +112,9 @@ assert(browserVersion);
 const androidFingerprint = adb("shell", "getprop", "ro.build.fingerprint");
 const api = Number(adb("shell", "getprop", "ro.build.version.sdk"));
 let device;
+let browser;
 let context;
+let cdpForward = false;
 await new Promise((done) => server.listen(port, "127.0.0.1", done));
 try {
   adb("reverse", `tcp:${port}`, `tcp:${port}`);
@@ -114,10 +122,44 @@ try {
   const devices = await _android.devices();
   device = devices.find((candidate) => candidate.serial() === serial);
   assert(device, `Playwright could not discover Android emulator ${serial}`);
-  // Playwright launches Chrome with its own DevTools socket, avoiding the absent
-  // chrome_devtools_remote socket on recent AVD builds.
-  context = await device.launchBrowser({ acceptDownloads: false });
-  console.log("AVD_NATIVE_CHROME_DOWNLOAD_BEHAVIOR", "android-launchBrowser/acceptDownloads:false");
+  // Preferred path: Playwright launches Chrome with its own DevTools socket.
+  // Some AVD builds ignore --remote-debugging-socket-name and only publish the
+  // documented chrome_devtools_remote socket, so the launch is bounded and the
+  // lane then bridges that socket over loopback instead of hanging forever.
+  const launch = device.launchBrowser({ acceptDownloads: false });
+  let timer;
+  try {
+    context = await Promise.race([launch, new Promise((_, fail) => {
+      timer = setTimeout(() => fail(new Error("ANDROID277_NATIVE_LAUNCH_TIMEOUT")), nativeLaunchMs);
+    })]);
+    console.log("AVD_NATIVE_CHROME_DOWNLOAD_BEHAVIOR", "android-launchBrowser/acceptDownloads:false");
+  } catch (error) {
+    console.log("AVD_NATIVE_LAUNCH_FALLBACK", String(error?.message ?? error).slice(0, 160));
+    launch.then((late) => late.close().catch(() => {})).catch(() => {});
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!context) {
+    adb("forward", `tcp:${cdpPort}`, "localabstract:chrome_devtools_remote");
+    cdpForward = true;
+    adb("shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", `http://127.0.0.1:${port}/tools/image-resize/`, "com.android.chrome");
+    // Chrome publishes its remote-debugging socket asynchronously.
+    let cdpError;
+    for (let attempt = 0; attempt < 20 && !browser; attempt++) {
+      try {
+        browser = await chromium.connectOverCDP(`http://127.0.0.1:${cdpPort}`, { timeout: 3500, noDefaults: true });
+      } catch (error) {
+        cdpError = error;
+        await sleep(1000);
+      }
+    }
+    if (!browser) throw cdpError;
+    // No Playwright download directory here: Android Chrome keeps its native
+    // DownloadManager so the saved file is pulled from /sdcard/Download/.
+    console.log("AVD_NATIVE_CHROME_DOWNLOAD_BEHAVIOR", "cdp-bridge/noDefaults");
+    context = browser.contexts()[0];
+    assert(context, "CDP bridge exposed no browser context");
+  }
   const page = context.pages().find((item) => item.url().includes("/tools/image-resize/")) ?? context.pages()[0] ?? await context.newPage();
   console.log("AVD_TABS", context.pages().map((item) => item.url()));
   const errors = [];
@@ -241,8 +283,10 @@ try {
   await writeFile(receiptFile, JSON.stringify(receipt, null, 2) + "\n");
   console.log(`ANDROID_CHROME_AVD_277_PASS ${JSON.stringify({ build: revision.slice(0, 12), browser: browserVersion, source: [320, 240, source.length], output: [decoded.width, decoded.height, bytes.length, fingerprint(bytes)], receipt: "quality/receipts/android-chrome-avd-277.json", simulated: true })}`);
 } finally {
-  if (context) await context.close();
-  if (device) await device.close();
+  if (context) await context.close().catch(() => {});
+  if (browser) await browser.close().catch(() => {});
+  if (device) await device.close().catch(() => {});
   try { adb("reverse", "--remove", `tcp:${port}`); } catch { /* already released */ }
+  if (cdpForward) { try { adb("forward", "--remove", `tcp:${cdpPort}`); } catch { /* already released */ } }
   await new Promise((done) => server.close(done));
 }

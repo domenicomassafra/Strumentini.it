@@ -1,0 +1,84 @@
+{
+  "issue": "Strumentini.it#520",
+  "generatedAt": "2026-11-11T14:11:30.265Z",
+  "origin": "https://strumentini.it",
+  "cdpEndpoint": "http://127.0.0.1:17629",
+  "account": {
+    "email": "st520405061@fldubai.com",
+    "name": "Strumentini Test 520"
+  },
+  "tool": "business-day",
+  "pageErrors": [],
+  "checks": [
+    {
+      "step": "registrazione: token anti-bot del form",
+      "status": "PASS",
+      "detail": "ottenuto"
+    },
+    {
+      "step": "registrazione: redirect a /preferiti/",
+      "status": "PASS"
+    },
+    {
+      "step": "sessione dopo registrazione",
+      "status": "PASS",
+      "detail": "st520405061@fldubai.com"
+    },
+    {
+      "step": "preferito aggiunto dal catalogo",
+      "status": "PASS",
+      "detail": "HTTP 200, 1 preferiti"
+    },
+    {
+      "step": "sessione persistente dopo reload",
+      "status": "PASS",
+      "detail": "st520405061@fldubai.com"
+    },
+    {
+      "step": "preferito rimosso dal catalogo",
+      "status": "PASS",
+      "detail": "HTTP 200, 0 preferiti"
+    },
+    {
+      "step": "logout",
+      "status": "PASS",
+      "detail": "HTTP 204"
+    },
+    {
+      "step": "sessione assente dopo logout",
+      "status": "PASS",
+      "detail": "user null"
+    },
+    {
+      "step": "preferiti anonimi respinti",
+      "status": "PASS",
+      "detail": "HTTP 401"
+    },
+    {
+      "step": "accesso: token anti-bot del form",
+      "status": "PASS",
+      "detail": "ottenuto"
+    },
+    {
+      "step": "accesso con le stesse credenziali",
+      "status": "PASS",
+      "detail": "st520405061@fldubai.com"
+    },
+    {
+      "step": "eliminazione account",
+      "status": "PASS",
+      "detail": "HTTP 204"
+    },
+    {
+      "step": "sessione assente dopo eliminazione",
+      "status": "PASS",
+      "detail": "user null"
+    },
+    {
+      "step": "accesso rifiutato dopo eliminazione",
+      "status": "PASS",
+      "detail": "Email o password non corretti."
+    }
+  ],
+  "status": "PASS"
+}

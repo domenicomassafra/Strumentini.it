@@ -240,8 +240,10 @@ describe("owner release policy 20/10/2026 for Strumentini.it", () => {
     expect(policy.map((step) => step.name)).toEqual([
       "source-and-engine-tests", "astro-source-validation",
       "cumulative-build", "cloudflare-static-dry-run", "exact-production-artifact-rollback", "owner-policy-automatic-admission",
-      "wrangler-production-deploy",
+      "d1-auth-migrations", "wrangler-production-deploy",
     ]);
+    expect(policy.find((step) => step.name === "d1-auth-migrations")?.args)
+      .toEqual(["d1", "migrations", "apply", "AUTH_DB", "--remote"]);
     expect(policy.find((step) => step.name === "owner-policy-automatic-admission")?.args)
       .toEqual(["node_modules/tsx/dist/cli.mjs", "scripts/release-gate-420.ts", `--expected-sha=${SHA}`]);
     expect(policy.filter((step) => step.publishes).map((step) => step.name)).toEqual(["wrangler-production-deploy"]);
