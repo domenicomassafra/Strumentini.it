@@ -52,6 +52,11 @@ export function classifyPath(path: string): readonly ChangeDomain[] {
   if (/^design\/proposals-2026-10-25\/(?:index\.html|proposals(?:-core|-variants)?\.css|proposals\.js)$/u.test(path)) return ["frontend"];
   if (path === "design/proposals-2026-10-25/README.md" ||
       /^design\/proposals-2026-10-25\/previews\/(?:minimal|editorial|workspace)-home-(?:desktop|mobile)\.png$/u.test(path)) return ["docs"];
+  // #120 is another isolated owner-choice visual study. Its executable
+  // preview must run frontend checks; only its exact notes/images are docs.
+  if (/^design\/str-359-owner-preview\/(?:index\.html|preview\.(?:css|js))$/u.test(path)) return ["frontend"];
+  if (path === "design/str-359-owner-preview/README.md" ||
+      /^design\/str-359-owner-preview\/previews\/(?:guide|path)-(?:resources|error)-(?:desktop|mobile)\.png$/u.test(path)) return ["docs"];
   // Historical research retirement #498: these known reports and the old
   // Impeccable journal are prose/data, not executable product inputs. Keep
   // unreviewed design/build paths unknown; a census script still needs CI.
