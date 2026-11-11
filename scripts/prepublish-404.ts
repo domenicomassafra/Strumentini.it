@@ -68,6 +68,12 @@ export function prepublishSteps404(expectedSha: string, policy420 = releasePolic
       publishes: false,
     }] : []),
     ...admission,
+    // The Worker and its D1 schema ship together: releasing code that queries a
+    // table the production database never received answers 500 on every account
+    // route. The guarded deploy therefore applies the tracked migrations (an
+    // additive ALTER/CREATE on the auth database) before it publishes, and a
+    // failed migration stops the release before Wrangler deploy runs.
+    { name: "d1-auth-migrations", program: "node_modules/.bin/wrangler", args: ["d1", "migrations", "apply", "AUTH_DB", "--remote"], publishes: false },
     { name: "wrangler-production-deploy", program: "node_modules/.bin/wrangler", args: ["deploy"], publishes: true },
   ];
 }
