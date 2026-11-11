@@ -1,0 +1,82 @@
+{
+  "issue": "Strumentini.it#520",
+  "lane": "android-emulator",
+  "generatedAt": "2026-11-11T14:24:00.728Z",
+  "origin": "https://strumentini.it",
+  "device": {
+    "serial": "emulator-5554",
+    "chromeVersion": "156.0.8078.73",
+    "fingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.036/12592187:user/release-keys"
+  },
+  "account": {
+    "email": "st520405061@fldubai.com",
+    "name": "Strumentini Test 520 Android"
+  },
+  "tool": "business-day",
+  "pageErrors": [],
+  "checks": [
+    {
+      "step": "registrazione: token anti-bot del form",
+      "status": "PASS",
+      "detail": "ottenuto"
+    },
+    {
+      "step": "registrazione: redirect a /preferiti/",
+      "status": "PASS"
+    },
+    {
+      "step": "sessione dopo registrazione",
+      "status": "PASS",
+      "detail": "st520405061@fldubai.com"
+    },
+    {
+      "step": "preferito aggiunto dal catalogo",
+      "status": "PASS",
+      "detail": "HTTP 200, 1 preferiti"
+    },
+    {
+      "step": "sessione persistente dopo reload",
+      "status": "PASS",
+      "detail": "st520405061@fldubai.com"
+    },
+    {
+      "step": "preferito rimosso dal catalogo",
+      "status": "PASS",
+      "detail": "HTTP 200, 0 preferiti"
+    },
+    {
+      "step": "logout",
+      "status": "PASS",
+      "detail": "HTTP 204"
+    },
+    {
+      "step": "sessione assente dopo logout",
+      "status": "PASS"
+    },
+    {
+      "step": "preferiti anonimi respinti",
+      "status": "PASS",
+      "detail": "HTTP 401"
+    },
+    {
+      "step": "accesso: token anti-bot del form",
+      "status": "PASS",
+      "detail": "ottenuto"
+    },
+    {
+      "step": "accesso con le stesse credenziali",
+      "status": "PASS",
+      "detail": "st520405061@fldubai.com"
+    },
+    {
+      "step": "eliminazione account",
+      "status": "PASS",
+      "detail": "HTTP 204"
+    },
+    {
+      "step": "sessione assente dopo eliminazione",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}
