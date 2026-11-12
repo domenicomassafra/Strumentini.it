@@ -3,7 +3,7 @@
   "ticket": "STR-277",
   "evidenceKind": "ANDROID_EMULATOR_CHROME_SIMULATED",
   "physicalDeviceObserved": false,
-  "observedAt": "2026-10-20T09:32:35.340Z",
+  "observedAt": "2026-11-08T22:44:11.394Z",
   "emulator": {
     "serial": "emulator-5554",
     "avd": "str277-api35",
@@ -12,14 +12,14 @@
   },
   "browser": {
     "package": "com.android.chrome",
-    "version": "124.0.6367.219",
-    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+    "version": "156.0.8078.73",
+    "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Mobile Safari/537.36"
   },
   "build": {
-    "revision": "625fdbe5aa2dd10449e9f4aeec2ec30fde49a17c",
+    "revision": "294b6d8bc3933a4c7b2dcdd25c452de04dfc6d35",
     "compiled": true,
     "route": "/tools/image-resize/",
-    "htmlSha256": "74b6cd997d448f4295421726f9929ddf60fc18618aa29b3ed2040a1ec72c4255"
+    "htmlSha256": "cde1eb29834b1481017d115b878a8cc333123f1574a03190f38c1da08de789bc"
   },
   "input": {
     "filename": "str277-source.png",
@@ -43,8 +43,8 @@
   "screenshot": {
     "file": "quality/receipts/android-chrome-avd-277-simulated.jpg",
     "kind": "ANDROID_EMULATOR_SCREENSHOT_SIMULATED",
-    "bytes": 15053,
-    "sha256": "351917ff9fc277c3db7e82f051fe1931a4b48f49b2c0e1979d16d87e18705711"
+    "bytes": 15691,
+    "sha256": "2cc58dfd4986a2b1d46c3e51befd911a080e7058edf4930468f5640be1bae36e"
   },
   "output": {
     "filename": "str277-source-160x120.jpg",

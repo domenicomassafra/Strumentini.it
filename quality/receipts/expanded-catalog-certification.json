@@ -49,7 +49,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+          "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
           "status": "PASS"
         }
       ],
@@ -63,7 +63,7 @@
         {
           "dimension": "mobileA11y",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+          "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
           "status": "PASS"
         }
       ],
@@ -77,7 +77,7 @@
         {
           "dimension": "lazyLoad",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+          "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
           "status": "UNVERIFIED"
         },
         {
@@ -97,7 +97,7 @@
         {
           "dimension": "physicalDevice",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+          "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
           "status": "PARTIAL"
         },
         {
@@ -2568,7 +2568,7 @@
           {
             "dimension": "locality",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+            "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
             "status": "PASS"
           }
         ]
@@ -2579,7 +2579,7 @@
           {
             "dimension": "mobileA11y",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+            "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
             "status": "PASS"
           }
         ]
@@ -2590,7 +2590,7 @@
           {
             "dimension": "lazyLoad",
             "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-            "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+            "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
             "status": "UNVERIFIED"
           },
           {
@@ -2618,7 +2618,7 @@
         {
           "dimension": "locality",
           "path": "quality/receipts/browser-performance/fresh-browser-matrix.json",
-          "sha256": "2732340415039ce6db32520325d20305a5624538d40c2419db3051995c11c494",
+          "sha256": "955d7ed93e4a21a350b8ede4726823d7df4f8bb15962fd05c5f9e24fbf7976b4",
           "status": "PASS"
         },
         {
