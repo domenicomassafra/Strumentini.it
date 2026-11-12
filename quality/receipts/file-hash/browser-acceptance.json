@@ -12,6 +12,10 @@
   },
   "lazyWorkerRequests": [
     "http://127.0.0.1:18124/_astro/worker-DP4Ep3z2.js",
+    "http://127.0.0.1:18124/_astro/membership.OU368xJK.js",
+    "http://127.0.0.1:18124/_astro/rolldown-runtime.BCiCTKAo.js",
+    "http://127.0.0.1:18124/_astro/state.BszcnlIr.js",
+    "http://127.0.0.1:18124/_astro/persistence.B15RKcP6.js",
     "http://127.0.0.1:18124/fonts/roboto-mono-latin.woff2"
   ],
   "cancellation": "PASS",
