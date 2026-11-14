@@ -27,9 +27,9 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
   <div class="home-file-heading">
     <div>
       <h2 id="home-file-title">Hai già un file?</h2>
-      <p id="home-file-help">Scegli un'immagine da Foto o un file dal dispositivo. Scopri quali strumenti locali possono aprirlo.</p>
+      <p id="home-file-help">Sceglilo qui: ti diciamo quali strumenti possono aprirlo. Il file non lascia il browser.</p>
     </div>
-    <span class="home-file-privacy">Controllo locale, nessun caricamento</span>
+    <span class="home-file-privacy">Controllo locale</span>
   </div>
 
   <div class="home-file-dropzone" data-home-file-dropzone>
@@ -37,15 +37,15 @@ const suggestions = (Object.keys(mimeByFormat) as (keyof typeof mimeByFormat)[])
       <div class="home-file-picker-option">
         <label for="home-photos-picker" class="home-file-picker-label">Foto e immagini</label>
         <input id="home-photos-picker" type="file" accept="image/*" class="home-file-picker" data-home-photos-picker aria-describedby="home-file-photos-help home-file-status" />
-        <p id="home-file-photos-help" class="home-file-picker-help">La galleria disponibile dipende dal dispositivo. Il controllo locale riconosce PNG, JPEG, GIF e WebP.</p>
+        <p id="home-file-photos-help" class="home-file-picker-help">PNG, JPEG, GIF e WebP, dalla galleria del telefono o dal computer.</p>
       </div>
       <div class="home-file-picker-option">
         <label for="home-file-picker" class="home-file-picker-label">File dal dispositivo</label>
         <input id="home-file-picker" type="file" class="home-file-picker" data-home-file-picker aria-describedby="home-file-files-help home-file-status" />
-        <p id="home-file-files-help" class="home-file-picker-help">Apri il selettore File anche per PDF e altri formati. Massimo 32 MiB per il controllo iniziale; per CSV, verifica strutturale completa fino a 256 KiB.</p>
+        <p id="home-file-files-help" class="home-file-picker-help">PDF, ZIP, CSV e altri formati, fino a 32 MiB. I CSV vengono controllati per intero fino a 256 KiB.</p>
       </div>
     </div>
-    <p class="home-file-drop-hint">Oppure trascina un solo file in quest'area, se usi mouse o trackpad. Nessuna foto viene scattata automaticamente.</p>
+    <p class="home-file-drop-hint">Dal computer puoi anche trascinare un file qui.</p>
   </div>
 
   <p id="home-file-status" class="home-file-status" role="status" aria-live="polite" aria-atomic="true" data-home-file-status>

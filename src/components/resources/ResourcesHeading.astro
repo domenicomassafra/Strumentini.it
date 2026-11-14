@@ -1,0 +1,90 @@
+---
+import UiIcon from "../icons/UiIcon.astro";
+---
+
+<header class="resources-heading">
+  <div class="resources-heading-copy">
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Risorse</li>
+    </ol>
+    <p class="resources-eyebrow">Risorse · privacy, stati, domande</p>
+    <h1>Capire cosa succede, prima di iniziare.</h1>
+    <p class="resources-lede">
+      Dove vengono letti i tuoi file, quali strumenti usano la rete, cosa resta salvato
+      nel browser e come leggere un errore. Con i nomi veri delle cose.
+    </p>
+  </div>
+  <aside class="resources-heading-aside" aria-label="In breve">
+    <p class="resources-aside-kicker">In breve</p>
+    <ul>
+      <li><UiIcon name="devices" size={18} /><span>I file che apri vengono letti nel browser e non arrivano ai nostri server.</span></li>
+      <li><UiIcon name="search" size={18} /><span>Cinque strumenti usano la rete, solo quando premi il pulsante: <a href="#rete">quali e perché</a>.</span></li>
+      <li><UiIcon name="check-circle" size={18} /><span>Un risultato compare solo dopo un'operazione vera, mai prima.</span></li>
+    </ul>
+  </aside>
+</header>
+
+<style>
+  .resources-heading {
+    display: grid;
+    gap: var(--space-6);
+    margin-bottom: var(--space-10);
+    align-items: end;
+  }
+
+  .resources-heading-copy { max-width: var(--measure-copy); }
+
+  .resources-eyebrow {
+    margin: 0 0 var(--space-3);
+    color: var(--brand);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 1060px) {
+    .resources-heading { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--space-10); }
+  }
+
+  .resources-heading h1 {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-display);
+    line-height: var(--line-height-display);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .resources-lede {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-body-lg);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .resources-heading-aside {
+    padding: var(--space-5) var(--space-6);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--brand-soft);
+  }
+
+  .resources-aside-kicker {
+    margin: 0 0 var(--space-3);
+    color: var(--text);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .resources-heading-aside ul { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+
+  .resources-heading-aside li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-3);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .resources-heading-aside li :global(svg) { margin-top: 2px; color: var(--brand); }
+</style>

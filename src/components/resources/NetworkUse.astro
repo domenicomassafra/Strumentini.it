@@ -1,0 +1,50 @@
+---
+/** The tools that use the network, read from their source (#120). */
+---
+
+<div class="network-card" id="rete">
+  <h3>Quando serve la rete</h3>
+  <p>
+    Questi strumenti usano la rete, e solo dopo che premi il loro pulsante. Lo
+    strumento lo scrive accanto al pulsante.
+  </p>
+  <ul class="resources-network">
+    <li><a href="/tools/partita-iva-validator/">Verifica Partita IVA italiana e UE</a><p>Il controllo del formato è locale. Se chiedi la verifica su VIES, il numero di partita IVA passa dal nostro server al servizio VIES della Commissione europea.</p></li>
+    <li><a href="/tools/connection-device-info/">Informazioni browser e dispositivo</a><p>Il pulsante «Trova IP pubblico» chiede il tuo indirizzo IP a <code>api64.ipify.org</code>. Gli altri valori restano nel browser.</p></li>
+    <li><a href="/tools/redirect-chain-inspector/">Controlla una catena di redirect</a><p>Nella modalità «Verifica live» il browser visita l'indirizzo che scrivi e i redirect che trova. La modalità con la catena incollata è locale.</p></li>
+    <li><a href="/laboratorio/trascrizione-audio/">Laboratorio: trascrivi audio in italiano</a><p>Al primo avvio scarica il modello da Hugging Face e jsDelivr. L'audio resta sul dispositivo.</p></li>
+    <li><a href="/laboratorio/scontorno-ritratti/">Laboratorio: scontorno locale dei ritratti</a><p>Scarica il modello solo dopo il tuo consenso. La foto resta sul dispositivo.</p></li>
+  </ul>
+  <p class="network-note">
+    L'accesso all'account usa Cloudflare Turnstile contro i bot e, se lo scegli, Google
+    per l'accesso. Come ogni sito, il servizio che lo ospita (Cloudflare) riceve le normali
+    richieste delle pagine.
+  </p>
+</div>
+
+<style>
+  #rete { scroll-margin-top: calc(var(--nav-height) + var(--space-4)); }
+
+  .resources-network { display: grid; gap: var(--space-4); margin: var(--space-4) 0; padding: 0; list-style: none; }
+
+  .resources-network li { padding-top: var(--space-4); border-top: var(--border-width) solid var(--border); }
+
+  .resources-network a { font-weight: var(--font-weight-semibold); }
+
+  .resources-network p { margin: var(--space-1) 0 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+
+  .network-card {
+    padding: var(--space-6);
+    margin-bottom: var(--space-5);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .network-card h3 { margin: 0 0 var(--space-4); font-size: var(--font-size-h3); }
+
+  .network-card > p { max-width: var(--reading-max); margin: 0; color: var(--text-muted); line-height: var(--line-height-body); }
+
+  .network-note { margin: var(--space-4) 0 0; color: var(--text-faint); font-size: var(--font-size-sm); }
+</style>

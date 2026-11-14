@@ -2,7 +2,7 @@
 export const faqs: readonly { readonly question: string; readonly answer: string }[] = [
   {
     question: "Serve un account?",
-    answer: "No. Tutti gli strumenti funzionano senza registrazione. L'account è opzionale e non sblocca nessuna funzione.",
+    answer: "No. Tutti gli strumenti funzionano senza registrazione. L'account serve solo a ritrovare gli strumenti preferiti su un altro dispositivo.",
   },
   {
     question: "Gli strumenti sono davvero gratuiti?",

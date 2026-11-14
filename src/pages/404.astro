@@ -21,22 +21,27 @@ const popularGroups = [...groups]
     </ol>
 
     <header class="not-found-head">
-      <h1>Questa pagina non è disponibile</h1>
+      <p class="not-found-code" aria-hidden="true">404</p>
+      <h1>Qui non c'è la pagina che cercavi.</h1>
       <p class="lede">
-        Il collegamento potrebbe essere vecchio o scritto male. Da qui puoi
-        ripartire dal catalogo: {catalog.length} strumenti, tutti gratuiti.
+        L'indirizzo potrebbe essere cambiato o contenere un errore di battitura. Questa
+        pagina non ha letto né elaborato nessun tuo file.
       </p>
       <div class="actions">
         <a class="btn btn-primary" href="/strumenti/">Tutti gli strumenti</a>
-        <a class="btn" href="/categorie/">Sfoglia per categoria</a>
+        <a class="btn" href="/cerca/">Cerca uno strumento</a>
       </div>
+      <p class="not-found-hint">
+        Un'operazione era ancora aperta in un'altra scheda? Torna a quella scheda: il risultato
+        resta lì finché non la chiudi o la ricarichi.
+      </p>
     </header>
 
     <section class="section">
       <div class="section-head">
         <div>
           <h2 class="section-title">Categorie da cui ripartire</h2>
-          <p class="section-sub">Le quattro categorie più ampie del catalogo.</p>
+          <p class="section-sub">Le quattro con più strumenti, tra i {catalog.length} del catalogo.</p>
         </div>
       </div>
       <ul class="not-found-groups">
@@ -60,6 +65,25 @@ const popularGroups = [...groups]
 <style>
   .not-found-head { max-width: var(--measure-tool); margin-bottom: var(--space-8); }
   .not-found-head .actions { margin-top: var(--space-5); }
+
+  .not-found-code {
+    margin: 0 0 var(--space-2);
+    color: var(--brand);
+    font-size: clamp(3.5rem, 12vw, 6rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .not-found-hint {
+    margin: var(--space-6) 0 0;
+    padding: var(--space-4) var(--space-5);
+    border-left: 3px solid var(--brand);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
 
   .not-found-groups {
     display: grid;

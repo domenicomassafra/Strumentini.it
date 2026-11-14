@@ -12,12 +12,12 @@ const year = new Date().getFullYear();
         <BrandMark size={34} />
         <span>
           <strong>Strumentini</strong>
-          <small>Piccoli strumenti per grandi risultati</small>
+          <small>Lavori piccoli, finiti nel browser</small>
         </span>
       </a>
       <p class="site-footer-note">
-        Gli strumenti girano nel tuo browser. I file che apri non vengono caricati
-        su nessun server e non lasciano il tuo dispositivo.
+        I file che apri vengono letti nel tuo browser e non vengono caricati sui
+        nostri server. Gli strumenti che usano la rete lo dichiarano: <a href="/risorse/#rete">ecco quali</a>.
       </p>
     </div>
 
@@ -84,6 +84,8 @@ const year = new Date().getFullYear();
     color: var(--text-muted);
     font-size: var(--font-size-sm);
   }
+
+  .site-footer-note a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
 
   .site-footer-columns {
     display: grid;
