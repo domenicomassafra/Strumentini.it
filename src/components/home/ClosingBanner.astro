@@ -1,6 +1,7 @@
 ---
 import UiIcon from "../icons/UiIcon.astro";
 import { catalog } from "../../generated/catalog";
+import { groups } from "../../catalog/groups";
 
 /**
  * The closing band: what the product is in one paragraph, one primary action,
@@ -9,27 +10,27 @@ import { catalog } from "../../generated/catalog";
 const toolCount = catalog.length;
 
 const stats = [
-  { icon: "sparkle" as const, value: String(toolCount), label: "Strumenti online, tutti gratuiti" },
+  { icon: "sparkle" as const, value: String(toolCount), label: "Strumenti, tutti gratuiti" },
+  { icon: "grid" as const, value: String(groups.length), label: "Categorie di lavoro" },
   { icon: "shield" as const, value: "0", label: "File caricati sui nostri server" },
-  { icon: "heart" as const, value: "100%", label: "Gratuito, senza registrazione" },
-  { icon: "zap" as const, value: "Istantaneo", label: "Risultati calcolati nel browser" },
+  { icon: "user" as const, value: "0", label: "Account necessari per usarli" },
 ];
 ---
 
 <section class="section home-closing">
   <div class="home-closing-copy">
     <h2 class="home-closing-title">
-      Trova lo strumento giusto,
-      <span>fai di più ogni giorno.</span>
+      Un lavoro piccolo,
+      <span>finito adesso.</span>
     </h2>
     <p>
-      Strumentini è la raccolta italiana di strumenti online gratuiti pensata per
-      semplificare la tua giornata: veloci, riservati e facili da usare, sempre a
-      portata di clic.
+      Unire due PDF, pulire un CSV, calcolare un margine, contare le parole di un
+      testo. Strumentini raccoglie in italiano gli strumenti per questi lavori:
+      apri la pagina, fai la cosa, chiudi.
     </p>
     <div class="home-closing-actions">
-      <a class="btn btn-primary btn-lg" href="/strumenti/">Inizia ora <span aria-hidden="true">→</span></a>
-      <a class="btn btn-lg" href="/strumenti/">Scopri tutti gli strumenti</a>
+      <a class="btn btn-primary btn-lg" href="/strumenti/">Sfoglia tutti gli strumenti <span aria-hidden="true">→</span></a>
+      <a class="btn btn-lg" href="/risorse/#privacy">Cosa succede ai tuoi dati</a>
     </div>
   </div>
 
