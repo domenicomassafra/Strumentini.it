@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strumentini.it</title>
+<meta name="description" content="Strumenti gratuiti per PDF, immagini, CSV e testo. Senza account.">
+<link rel="icon" href="../../../public/favicon.svg">
+<link rel="stylesheet" href="../fonts.css">
+<style>
+:root{--bench:#efede8;--ink:#141414;--soft:#55524c;--line:#d6d2ca;
+  --t-red:#c42b1c;--t-blue:#1d4fb8;--t-black:#1b1b1b;--t-green:#1f6b3a;--t-plum:#7a2d5a;--t-teal:#0e6170;--t-brown:#7a4416}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bench);color:var(--ink);font:400 1.0625rem/1.55 "Source Sans 3",Arial,sans-serif}
+::selection{background:var(--t-red);color:#fff}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--t-blue);outline-offset:3px}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:12px;background:var(--ink);color:#fff;padding:.5rem .8rem;z-index:9}
+.wrap{max-width:1160px;margin:0 auto;padding:0 32px}
+/* the Dymo tape: the one signature of this world */
+.tape{display:inline-flex;align-items:center;gap:.7em;padding:.38em .9em .34em;border-radius:3px;color:#fff;font:700 .95rem/1 "Roboto Mono",monospace;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+  background:var(--c,var(--t-black));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -2px 0 rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.18);
+  text-shadow:0 1px 0 rgba(0,0,0,.45),0 -1px 0 rgba(255,255,255,.12);transition:transform .15s ease-out}
+.tape small{font-size:.8em;opacity:.85;letter-spacing:.04em}
+a.tape:hover{transform:translateY(-2px)}
+a.tape:active{transform:none}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;flex-wrap:wrap}
+.logo{font-size:1.05rem}
+header nav a{margin-left:22px;font-weight:600;text-decoration:none}
+header nav a:hover{text-decoration:underline}
+.hero{padding:56px 0 64px}
+h1{font-family:"Archivo",Arial,sans-serif;font-weight:800;font-size:clamp(2.3rem,6vw,4.6rem);line-height:1;letter-spacing:-.03em;margin:0;max-width:16ch;text-wrap:balance}
+.sub{font-size:1.2rem;max-width:46ch;margin:18px 0 32px;color:var(--soft)}
+form{display:flex;max-width:720px;background:#fff;border:2px solid var(--ink);border-radius:6px;overflow:hidden}
+form label{position:absolute;left:-999px}
+form input{flex:1;min-width:0;border:0;padding:0 18px;height:60px;font:inherit;font-size:1.15rem;background:transparent;color:var(--ink)}
+form input:focus{outline:none}
+form:focus-within{outline:3px solid var(--t-blue);outline-offset:3px}
+form button{border:0;cursor:pointer;margin:6px;--c:var(--t-red);font-size:1rem}
+.hint{margin:12px 0 0;color:var(--soft);font-size:.95rem}
+h2{font-family:"Archivo",Arial,sans-serif;font-size:clamp(1.4rem,2.6vw,1.9rem);letter-spacing:-.02em;margin:0 0 22px}
+section{padding:48px 0;border-top:1px solid var(--line)}
+.wall{display:flex;flex-wrap:wrap;gap:14px 12px;list-style:none;margin:0;padding:0}
+.wall .tape{font-size:1rem;padding:.6em 1em .55em}
+.jobs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px}
+.jobs a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);text-decoration:none;font-size:1.15rem;font-weight:600}
+.jobs a span{color:var(--soft);font-weight:400;font-size:.95rem;white-space:nowrap}
+.jobs a:hover{color:var(--t-red)}
+.all{display:inline-block;margin-top:24px;font-weight:700}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--soft);font-size:.95rem}
+footer a{margin-left:18px}
+@media (max-width:720px){
+  .wrap{padding:0 16px}
+  .hero{padding:28px 0 44px}
+  .jobs{grid-template-columns:1fr}
+  header nav a{margin:0 16px 0 0}
+  form input{height:54px;font-size:1.05rem;padding:0 12px}
+  .tape{letter-spacing:.05em}
+  .wall .tape{font-size:.9rem}
+  footer a{margin:0 16px 0 0}
+}
+@media (prefers-reduced-motion:no-preference){
+  .hero h1{animation:press .6s cubic-bezier(.16,1,.3,1) both}
+  @keyframes press{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#cerca">Vai alla ricerca</a>
+<div class="wrap">
+<header>
+  <a class="tape logo" href="https://strumentini.it/" style="--c:var(--t-red)">Strumentini.it</a>
+  <nav aria-label="Principale"><a href="https://strumentini.it/strumenti/">Tutti gli strumenti</a><a href="https://strumentini.it/accedi/">Accedi</a></nav>
+</header>
+<main>
+  <div class="hero">
+    <h1>Strumenti gratuiti per PDF, immagini e file.</h1>
+    <p class="sub">Senza account. Gli strumenti che lavorano sui file li aprono nel tuo browser; i pochi che usano la rete te lo dicono prima.</p>
+    <form id="cerca" action="https://strumentini.it/cerca/" method="get" role="search">
+      <label for="q">Cosa devi fare?</label>
+      <input id="q" name="q" type="search" placeholder="Cosa devi fare? Es. unire due PDF" autocomplete="off">
+      <button class="tape" type="submit">Cerca</button>
+    </form>
+    <p class="hint">274 strumenti in italiano, in 10 categorie.</p>
+  </div>
+
+  <section aria-labelledby="h-cat">
+    <h2 id="h-cat">Categorie</h2>
+    <ul class="wall">
+      <li><a class="tape" style="--c:var(--t-red)" href="https://strumentini.it/categorie/pdf/">PDF e documenti <small>33</small></a></li>
+      <li><a class="tape" style="--c:var(--t-blue)" href="https://strumentini.it/categorie/immagini/">Immagini <small>21</small></a></li>
+      <li><a class="tape" style="--c:var(--t-green)" href="https://strumentini.it/categorie/dati/">Dati e CSV <small>25</small></a></li>
+      <li><a class="tape" style="--c:var(--t-black)" href="https://strumentini.it/categorie/testo/">Testo <small>29</small></a></li>
+      <li><a class="tape" style="--c:var(--t-teal)" href="https://strumentini.it/categorie/file/">File e media <small>30</small></a></li>
+      <li><a class="tape" style="--c:var(--t-plum)" href="https://strumentini.it/categorie/date/">Date e orari <small>22</small></a></li>
+      <li><a class="tape" style="--c:var(--t-brown)" href="https://strumentini.it/categorie/business/">Soldi e business <small>35</small></a></li>
+      <li><a class="tape" style="--c:var(--t-blue)" href="https://strumentini.it/categorie/marketing/">Marketing e URL <small>22</small></a></li>
+      <li><a class="tape" style="--c:var(--t-green)" href="https://strumentini.it/categorie/ricerca/">Ricerca e fonti <small>21</small></a></li>
+      <li><a class="tape" style="--c:var(--t-black)" href="https://strumentini.it/categorie/sviluppo/">Sviluppo web <small>36</small></a></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="h-jobs">
+    <h2 id="h-jobs">Lavori di tutti i giorni</h2>
+    <ul class="jobs">
+      <li><a href="https://strumentini.it/tools/pdf-merge/">Unire più PDF <span>PDF</span></a></li>
+      <li><a href="https://strumentini.it/tools/image-compression/">Ridurre il peso di un'immagine <span>Immagini</span></a></li>
+      <li><a href="https://strumentini.it/tools/csv-cleaner/">Pulire un CSV <span>Dati</span></a></li>
+      <li><a href="https://strumentini.it/tools/images-to-pdf/">Mettere foto in un PDF <span>PDF</span></a></li>
+      <li><a href="https://strumentini.it/tools/margin-markup/">Calcolare margine e ricarico <span>Business</span></a></li>
+      <li><a href="https://strumentini.it/tools/word-character-line-counter/">Contare parole e caratteri <span>Testo</span></a></li>
+    </ul>
+    <a class="all" href="https://strumentini.it/strumenti/">Vedi tutti i 274 strumenti</a>
+  </section>
+</main>
+<footer><span>Strumentini.it, gratis e senza registrazione.</span><span><a href="https://strumentini.it/risorse/#come-funziona">Come funziona</a><a href="https://strumentini.it/risorse/#privacy">Privacy</a></span></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+/* Faces already shipped in public/fonts (OFL). */
+@font-face{font-family:"Archivo";src:url("../../public/fonts/archivo-latin.woff2") format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:"Archivo";src:url("../../public/fonts/archivo-latin-ext.woff2") format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap;unicode-range:U+0100-024F,U+1E00-1EFF}
+@font-face{font-family:"Source Sans 3";src:url("../../public/fonts/source-sans-3-latin.woff2") format("woff2");font-weight:200 900;font-display:swap}
+@font-face{font-family:"Roboto Mono";src:url("../../public/fonts/roboto-mono-latin.woff2") format("woff2");font-weight:100 700;font-display:swap}

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strumentini.it</title>
+<meta name="description" content="Piccoli strumenti gratuiti per PDF, immagini, CSV, testo e conti. Senza account.">
+<link rel="icon" href="../../../public/favicon.svg">
+<link rel="stylesheet" href="../fonts.css">
+<style>
+:root{--ground:#f3f4f6;--ink:#111a26;--soft:#4b5563;--steel:#1f4e8c;--steel-2:#2a5d9f;--steel-dark:#163a69;--label:#fbf8f0;--rim:#c3cad4;--line:#dde1e7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 1.0625rem/1.55 "Source Sans 3",Arial,sans-serif}
+::selection{background:var(--steel);color:#fff}
+a{color:inherit}
+:focus-visible{outline:3px solid #0b6cfd;outline-offset:3px}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:12px;background:var(--ink);color:#fff;padding:.5rem .8rem;z-index:9}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0;flex-wrap:wrap}
+.logo{font-family:"Archivo",Arial,sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.02em;text-decoration:none}
+.logo span{color:var(--steel)}
+header nav a{margin-left:22px;font-weight:600;text-decoration:none}
+header nav a:hover{color:var(--steel)}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px;align-items:end;padding:48px 0 40px}
+h1{font-family:"Archivo",Arial,sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,4rem);line-height:1.02;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.sub{margin:16px 0 0;font-size:1.2rem;color:var(--soft);max-width:40ch}
+form{display:grid;gap:10px}
+form label{font-weight:700}
+.field{display:flex;background:#fff;border:1px solid var(--rim);border-radius:10px;box-shadow:0 2px 6px rgba(17,26,38,.06)}
+.field:focus-within{outline:3px solid #0b6cfd;outline-offset:2px}
+.field input{flex:1;min-width:0;border:0;background:transparent;height:58px;padding:0 16px;font:inherit;font-size:1.1rem;color:var(--ink)}
+.field input:focus{outline:none}
+.field button{border:0;margin:6px;padding:0 22px;border-radius:7px;background:var(--steel);color:#fff;font:700 1rem "Source Sans 3",sans-serif;cursor:pointer;transition:background .15s}
+.field button:hover{background:var(--steel-dark)}
+/* the cabinet */
+.cabinet{background:var(--steel-dark);padding:14px;border-radius:12px;box-shadow:0 18px 40px -18px rgba(17,26,38,.55)}
+.cabinet ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.cabinet li{display:flex}
+.drawer{flex:1;justify-content:space-between;display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 12px 16px;border-radius:6px;text-decoration:none;
+  background:linear-gradient(var(--steel-2),var(--steel));box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 2px 0 rgba(0,0,0,.25);transition:transform .2s cubic-bezier(.2,.7,.2,1),box-shadow .2s}
+.drawer:hover{transform:translateY(4px) scale(1.02);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 10px 18px rgba(0,0,0,.35)}
+.holder{width:100%;padding:4px;border-radius:4px;background:linear-gradient(#e3e7ec,#aab3bf)}
+.card{display:block;background:var(--label);color:var(--ink);border-radius:2px;padding:10px 8px 9px;text-align:center}
+.card b{display:block;font-family:"Archivo",Arial,sans-serif;font-weight:750;font-size:1.02rem;line-height:1.15}
+.card i{display:block;font-style:normal;font-size:.88rem;color:var(--soft);margin-top:2px}
+.pull{width:54%;height:10px;border-radius:10px;background:linear-gradient(#e8ecf1,#8f99a6);box-shadow:0 2px 0 rgba(0,0,0,.3)}
+section{padding:44px 0}
+h2{font-family:"Archivo",Arial,sans-serif;font-size:clamp(1.4rem,2.4vw,1.8rem);letter-spacing:-.02em;margin:0 0 18px}
+.jobs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 36px}
+.jobs a{display:block;padding:14px 0;border-top:1px solid var(--line);text-decoration:none;font-weight:600;font-size:1.1rem}
+.jobs a:hover{color:var(--steel)}
+.jobs small{display:block;color:var(--soft);font-weight:400;font-size:.9rem}
+.all{display:inline-block;margin-top:18px;font-weight:700;color:var(--steel)}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--soft);font-size:.95rem}
+footer a{margin-left:18px}
+@media (max-width:960px){.cabinet ul{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr;gap:28px}}
+@media (max-width:620px){
+  .wrap{padding:0 16px}
+  .hero{padding:24px 0 28px}
+  .cabinet{padding:10px}
+  .cabinet ul{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .drawer{padding:12px 8px 12px;gap:10px}
+  .card b{font-size:.95rem}
+  .jobs{grid-template-columns:1fr}
+  header nav a{margin:0 16px 0 0}
+  footer a{margin:0 16px 0 0}
+}
+@media (prefers-reduced-motion:reduce){.drawer,.drawer:hover{transition:none;transform:none}}
+@media (prefers-reduced-motion:no-preference){
+  .drawer{animation:shut .5s cubic-bezier(.16,1,.3,1) both}
+  .cabinet li:nth-child(n+6) .drawer{animation-delay:.08s}
+  @keyframes shut{from{transform:translateY(10px);box-shadow:0 12px 20px rgba(0,0,0,.35)}}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#q">Vai alla ricerca</a>
+<div class="wrap">
+<header>
+  <a class="logo" href="https://strumentini.it/">Strumentini<span>.it</span></a>
+  <nav aria-label="Principale"><a href="https://strumentini.it/strumenti/">Tutti gli strumenti</a><a href="https://strumentini.it/accedi/">Accedi</a></nav>
+</header>
+<main>
+  <div class="hero">
+    <div>
+      <h1>Piccoli strumenti per i lavori al computer.</h1>
+      <p class="sub">PDF, immagini, CSV, testo e conti. Gratis, senza account, in italiano.</p>
+    </div>
+    <form action="https://strumentini.it/cerca/" method="get" role="search">
+      <label for="q">Cosa devi fare?</label>
+      <div class="field"><input id="q" name="q" type="search" placeholder="Es. ridurre una foto" autocomplete="off"><button type="submit">Cerca</button></div>
+    </form>
+  </div>
+
+  <nav class="cabinet" aria-label="Categorie">
+    <ul>
+      <li><a class="drawer" href="https://strumentini.it/categorie/pdf/"><span class="holder"><span class="card"><b>PDF e documenti</b><i>33 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/immagini/"><span class="holder"><span class="card"><b>Immagini</b><i>21 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/dati/"><span class="holder"><span class="card"><b>Dati e CSV</b><i>25 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/testo/"><span class="holder"><span class="card"><b>Testo</b><i>29 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/file/"><span class="holder"><span class="card"><b>File e media</b><i>30 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/date/"><span class="holder"><span class="card"><b>Date e orari</b><i>22 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/business/"><span class="holder"><span class="card"><b>Soldi e business</b><i>35 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/marketing/"><span class="holder"><span class="card"><b>Marketing e URL</b><i>22 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/ricerca/"><span class="holder"><span class="card"><b>Ricerca e fonti</b><i>21 strumenti</i></span></span><span class="pull"></span></a></li>
+      <li><a class="drawer" href="https://strumentini.it/categorie/sviluppo/"><span class="holder"><span class="card"><b>Sviluppo web</b><i>36 strumenti</i></span></span><span class="pull"></span></a></li>
+    </ul>
+  </nav>
+
+  <section aria-labelledby="h-jobs">
+    <h2 id="h-jobs">Per cominciare</h2>
+    <ul class="jobs">
+      <li><a href="https://strumentini.it/tools/pdf-merge/">Unire più PDF<small>Il file resta nel browser</small></a></li>
+      <li><a href="https://strumentini.it/tools/image-compression/">Ridurre il peso di una foto<small>Il file resta nel browser</small></a></li>
+      <li><a href="https://strumentini.it/tools/csv-cleaner/">Pulire un CSV<small>Il file resta nel browser</small></a></li>
+      <li><a href="https://strumentini.it/tools/images-to-pdf/">Mettere foto in un PDF<small>Il file resta nel browser</small></a></li>
+      <li><a href="https://strumentini.it/tools/margin-markup/">Calcolare margine e ricarico<small>Prezzo e costo</small></a></li>
+      <li><a href="https://strumentini.it/tools/date-difference/">Giorni tra due date<small>Lavorativi o di calendario</small></a></li>
+    </ul>
+    <a class="all" href="https://strumentini.it/strumenti/">Vedi tutti i 274 strumenti</a>
+  </section>
+</main>
+<footer><span>Strumentini.it, gratis e senza registrazione.</span><span><a href="https://strumentini.it/risorse/#come-funziona">Come funziona</a><a href="https://strumentini.it/risorse/#privacy">Privacy</a></span></footer>
+</div>
+</body>
+</html>
