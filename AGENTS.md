@@ -11,7 +11,7 @@
 - `ROADMAP.md`, `IMPLEMENTATION-PLAN.md`, `PROJECT-STATUS.md`, `PRODUCT-SPEC.md` — piano, stato e specifica: si leggono per primi.
 
 ## Prodotto e architettura
-Sito di utility web italian-first, local-first; tracker: https://github.com/domenicomassafra/Strumentini.it/issues. Gli accordi generali su agenti, Git, segreti e host sono in `~/.dstack/contracts/shared-root/AGENTS.md`: non duplicarli qui.
+Sito di utility web italian-first, local-first; tracker: https://github.com/domenicomassafra/Strumentini.it/issues. Gli accordi generali su agenti, Git, segreti e host sono già nel tuo contesto (ogni agente riceve il contratto dal proprio file nativo): qui non si duplicano.
 
 `business_area_uid: UNKNOWN` — nessun hub Strumentini.it con UID verificato in `~/Obsidian/04-areas/` al 27/10/2026. Il nome del repository e il brand pubblico non attribuiscono da soli un'identità business; risolvere il puntatore soltanto contro un hub canonico verificato, come richiesto da `~/.dstack/docs/business-context.md`.
 
