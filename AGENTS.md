@@ -1,5 +1,15 @@
 # Strumentini.it — istruzioni di repository
 
+## Mappa
+
+- `src/` — il sito Astro; ci scrive chi cambia una pagina o uno strumento.
+- `worker/` — il Worker Cloudflare; ci scrive chi tocca il salvataggio dei dati.
+- `public/` e `design/` — file serviti e materiale di design.
+- `tests/` e `quality/` — prove e controlli di qualità; ci scrive chi aggiunge una prova.
+- `docs/`, `research/`, `spikes/` — documentazione, ricerche e prove usa-e-getta; ci scrive chi sperimenta.
+- `scripts/` — build, prova e pubblicazione.
+- `ROADMAP.md`, `IMPLEMENTATION-PLAN.md`, `PROJECT-STATUS.md`, `PRODUCT-SPEC.md` — piano, stato e specifica: si leggono per primi.
+
 ## Prodotto e architettura
 Sito di utility web italian-first, local-first; tracker: https://github.com/domenicomassafra/Strumentini.it/issues. Gli accordi generali su agenti, Git, segreti e host sono in `~/.dstack/contracts/shared-root/AGENTS.md`: non duplicarli qui.
 
