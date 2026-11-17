@@ -1,3 +1,0 @@
-#!/bin/sh
-# Enforce the common chezmoi-distributed agent file size budget on owner commits.
-exec "$HOME/.local/bin/agent-file-size-check"
